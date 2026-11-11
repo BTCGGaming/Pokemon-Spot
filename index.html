@@ -337,6 +337,7 @@ main{container-type:inline-size;min-width:0;margin:0;position:relative}
 #partySetup{display:grid;grid-template-rows:auto minmax(0,1fr) auto;flex:1;min-height:0;gap:.45cqw}
 #partyHelp{font-size:1.25cqw;text-align:left;margin:.1cqw 0}
 #partyHelp .dex-regions{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.3em;width:100%}
+#tutorialSetupHelp{margin:0 0 .35em}
 #partyHelp button{min-width:0;padding:.28em .2em;font-size:inherit;white-space:nowrap}
 #partyHelp button[aria-pressed=true]{background:#ffe4a0;color:#402e46}
 #teamCards .empty-region{grid-column:1/-1;text-align:center;margin:1em}
@@ -2542,8 +2543,7 @@ $('spin').onclick=async()=>{
   $('notice').textContent='轉動中…';
   pullLever();
   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-  const guided=state.tutorial&&state.stage!==2?stopGroups(state.reels).slice(1).flat().find(result=>
-    moveQueue(state.team[state.active].moves,result.hits).some(move=>move.name==='抓擊')):null;
+  const guided=state.tutorial&&state.stage!==2?stopGroups(state.reels).slice(1).find(group=>group.length)?.[0]:null;
   const {mask:layoutMask,positions}=guided?{mask:0,positions:guided.positions}:state.reelsCustomized
     ?{mask:0,positions:state.reels.map(reel=>randomIndex(reel.length))}
     :weightedStops(state.reels,selectedTypes.length);
@@ -2563,29 +2563,32 @@ $('spin').onclick=async()=>{
   });
   grid.innerHTML=strips.map(strip=>reelMarkup(strip)).join('');
   const tracks=grid.querySelectorAll('.reel-strip');
-  const spinSpeed=battleSpeed;
-  const started=performance.now();
-  async function frame(now){
-    const elapsed=(now-started)*spinSpeed;
-    tracks.forEach((track,column)=>{
-      const lead=reducedMotion.matches?140:350;
-      const progress=Math.max(0,Math.min(1,(elapsed-lead)/(stops[column]-lead)));
-      const remaining=1-reelTravel(progress);
-      const length=strips[column].length;
-      track.style.transform='translate3d(0,'+(-remaining*(length-boardSize)/length*100)+'%,0)';
-    });
-    if(elapsed<stops.at(-1)){requestAnimationFrame(frame);return;}
-    grid.classList.remove('spinning');
-    state.positions=positions;
-    state.layoutMask=layoutMask;
-    delete state.layoutColumn;
-    await resolveSpin(state,finalBoard,tracks);
-    rolling=false;
-    if(state.won&&!state.finished){advanceStage();return;}
-    render(false);
-    if(!$('skill').open) $(state.won&&!state.finished?'nextBattle':state.result?'exitBattle':'spin').focus();
-  }
-  requestAnimationFrame(frame);
+  const lead=reducedMotion.matches?140:350;
+  const animations=Array.from(tracks,(track,column)=>{
+    const distance=(strips[column].length-boardSize)/strips[column].length*100;
+    const duration=stops[column];
+    const leadOffset=lead/duration;
+    const transform=progress=>'translate3d(0,'+(-(1-reelTravel(progress))*distance)+'%,0)';
+    const frames=[{offset:0,transform:transform(0)},...Array.from({length:25},(_,i)=>{
+      const progress=i/24;
+      return {offset:leadOffset+(1-leadOffset)*progress,transform:transform(progress)};
+    })];
+    return track.animate(frames,{duration:duration/battleSpeed,fill:'forwards'});
+  });
+  await Promise.all(animations.map(animation=>animation.finished));
+  tracks.forEach((track,column)=>{
+    track.style.transform='translate3d(0,0,0)';
+    animations[column].cancel();
+  });
+  grid.classList.remove('spinning');
+  state.positions=positions;
+  state.layoutMask=layoutMask;
+  delete state.layoutColumn;
+  await resolveSpin(state,finalBoard,tracks);
+  rolling=false;
+  if(state.won&&!state.finished){advanceStage();return;}
+  render(false);
+  if(!$('skill').open) $(state.won&&!state.finished?'nextBattle':state.result?'exitBattle':'spin').focus();
 };
 function healAtStageEntry(run){
   const amount=upgradeEffect(run,'healing');
@@ -3210,20 +3213,20 @@ function renderSetup(){
     return;
   }
   const help=$('partyHelp');
-  if(mode==='trial') help.innerHTML='<strong>① 組隊與圖案</strong>　小火龍先上場，傑尼龜備戰。選下方 3 個不同屬性，再按右下角「開始教學」。';
-  else{
-    if(!help.querySelector('.dex-regions')){
-      help.innerHTML='<nav class="dex-regions" aria-label="地區圖鑑">'+regions.map((region,i)=>'<button type="button" data-dex-region="'+i+'">'+region+'</button>').join('')+'</nav>';
-    }
-    help.querySelectorAll('[data-dex-region]').forEach(button=>button.setAttribute('aria-pressed',Number(button.dataset.dexRegion)===dexRegion));
+  if(!help.querySelector('.dex-regions')){
+    help.innerHTML='<p id="tutorialSetupHelp" hidden>① 組隊與圖案　小火龍先上場，傑尼龜備戰。選下方 3 個不同屬性，再按右下角「開始教學」。</p>'+
+      '<nav class="dex-regions" aria-label="地區圖鑑">'+regions.map((region,i)=>'<button type="button" data-dex-region="'+i+'">'+region+'</button>').join('')+'</nav>';
   }
+  $('tutorialSetupHelp').hidden=mode!=='trial';
+  help.querySelectorAll('[data-dex-region]').forEach(button=>button.setAttribute('aria-pressed',Number(button.dataset.dexRegion)===dexRegion));
   const teamCards=$('teamCards');
-  teamCards.hidden=mode!=='formal';
-  if(mode==='formal'){
+  teamCards.hidden=false;
+  {
     const scroll=teamCards.scrollTop;
     const unlocked=new Set(profile.unlocked);
+    if(mode==='trial') selectedTeam.forEach(id=>unlocked.add(id));
     const seen=new Set(profile.seen);
-    const key=dexRegion+':'+[...unlocked].sort((a,b)=>a-b).join(',')+'|'+[...seen].sort((a,b)=>a-b).join(',');
+    const key=mode+':'+dexRegion+':'+[...unlocked].sort((a,b)=>a-b).join(',')+'|'+[...seen].sort((a,b)=>a-b).join(',');
     if(teamCards.dataset.unlocked!==key){
       const lower=dexRegionEnds[dexRegion-1]??0,upper=dexRegionEnds[dexRegion];
       const regional=species.filter(mon=>mon.id>lower&&mon.id<=upper);
@@ -3304,7 +3307,7 @@ $('starterCards').onclick=event=>{
 };
 $('teamCards').onclick=event=>{
   const button=event.target.closest('[data-member]');
-  if(!button||button.disabled) return;
+  if(mode==='trial'||!button||button.disabled) return;
   const id=Number(button.dataset.member);
   if(selectedTeam.includes(id)) selectedTeam=selectedTeam.filter(member=>member!==id);
   else if(selectedTeam.length<6) selectedTeam.push(id);
@@ -3405,6 +3408,12 @@ async function animateWildEntrance(run){
   await sparkleShiny('enemy',run.enemy);
 }
 async function openBattleStage(entering=false,playerEnters=entering){
+  if(typeof requestIdleCallback==='function'&&!state.tutorial&&!state.reelsCustomized){
+    const reels=state.reels;
+    requestIdleCallback(()=>{
+      if(state.reels===reels&&!rolling) verticalGroups(reels);
+    });
+  }
   if(state.introSeen) recordSeen(state.enemy.id);
   if(entering){
     if(playerEnters&&!state.trainer) playPokemonCry(state.team[state.active]);

@@ -295,6 +295,7 @@ main{container-type:inline-size;min-width:0;margin:0;position:relative}
 @media(prefers-reduced-motion:no-preference){.tutorial-target{animation:tutorial-glow 1.1s ease-in-out infinite alternate}}
 @keyframes tutorial-glow{to{box-shadow:0 0 0 5px #583005,0 0 21px 9px #ffb900}}
 #tutorialHint strong{display:block;font-size:1.08em;margin-bottom:.15em}
+.battle-feed-head #actionProgress{align-self:center;flex:none;padding:.25em .4em;margin-right:.25em;background:#fce7a4;color:#342946;font-size:1.05cqw;white-space:nowrap}
 .battle-feed-head{display:flex;align-items:stretch;min-width:0;background:#453853}
 .desktop #notice{flex:1;min-width:0;padding:.45cqw .6cqw;line-height:1.12;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .desktop #nextBattle{flex:none;font-size:1.27cqw;line-height:1;padding:.25cqw .55cqw;border:1px solid #252037;box-shadow:none;background:#fce7a4;color:#342946}
@@ -661,7 +662,7 @@ button:not(:disabled):active{filter:brightness(.9)}
 <div id="playerParty" aria-label="我方隊伍"></div>
 <div id="enemyParty" aria-label="對手隊伍"></div>
 <div id="enemyAlert" role="status" class="enemy-alert" hidden></div>
-<button id="itemBox" class="slot-control" title="道具">道具</button><button id="ballBox" class="slot-control" title="收服">收服</button><button id="exitBattle" aria-label="暫停選單" title="暫停選單">X</button><img id="redOnField" class="trainer-on-field" alt="RED" hidden><img id="trainerOnField" class="trainer-on-field" alt="" hidden><div id="playerSendBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="trainerBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="captureBall" class="catch-ball" aria-hidden="true" hidden></div><button id="reelInfo" type="button">輪盤圖案</button><div class="battle-feed"><div class="battle-feed-head"><p id="notice" role="status"></p><button id="nextBattle" hidden>前往下一關</button></div><ol id="log" aria-label="對戰回顧" tabindex="0"></ol></div>
+<button id="itemBox" class="slot-control" title="道具">道具</button><button id="ballBox" class="slot-control" title="收服">收服</button><button id="exitBattle" aria-label="暫停選單" title="暫停選單">X</button><img id="redOnField" class="trainer-on-field" alt="RED" hidden><img id="trainerOnField" class="trainer-on-field" alt="" hidden><div id="playerSendBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="trainerBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="captureBall" class="catch-ball" aria-hidden="true" hidden></div><button id="reelInfo" type="button">輪盤圖案</button><div class="battle-feed"><div class="battle-feed-head"><p id="notice" role="status"></p><span id="actionProgress"></span><button id="nextBattle" hidden>前往下一關</button></div><ol id="log" aria-label="對戰回顧" tabindex="0"></ol></div>
 </div>
 </div><dialog id="battlePause" aria-labelledby="pauseTitle">
   <header><h2 id="pauseTitle">暫停</h2><form method="dialog"><button id="pauseClose" autofocus>繼續對戰</button></form></header>
@@ -680,12 +681,12 @@ button:not(:disabled):active{filter:brightness(.9)}
 <dialog id="surrenderDialog" aria-labelledby="surrenderTitle"><h2 id="surrenderTitle">確定要投降嗎？</h2>
   <form method="dialog"><button id="surrenderCancel" value="cancel" autofocus>取消</button><button id="surrenderConfirm" value="surrender">投降</button></form>
 </dialog>
-<dialog id="settingsDialog" aria-labelledby="settingsTitle"><h2 id="settingsTitle">設定</h2><p><label><span id="musicVolumeLabel">音量</span> <input id="musicVolume" type="range" min="0" max="100" value="100"> <output id="musicVolumeValue" for="musicVolume">100%</output></label></p><p><label><span id="gameLanguageLabel">Language</span> <select id="gameLanguage"><option value="zh-Hant">繁體中文</option><option value="en">English</option></select></label></p><form method="dialog"><button id="settingsClose">關閉</button></form></dialog><dialog id="upgradeDialog" aria-labelledby="upgradeTitle"><h2 id="upgradeTitle"></h2><p id="upgradeInfo"></p><form method="dialog"><button value="cancel" autofocus>取消</button> <button id="buyUpgrade" value="buy">確認強化</button></form></dialog><dialog id="replacementDialog" aria-labelledby="replacementTitle"><h2 id="replacementTitle">派哪隻寶可夢上場？</h2><form id="replacementChoices" method="dialog"></form></dialog><dialog id="evolutionDialog" aria-labelledby="evolutionTitle"><div class="evolution-scene"><img id="evolutionBefore" alt=""><img id="evolutionAfter" alt="" hidden></div><p id="evolutionTitle" role="status"></p><form method="dialog"><button id="evolutionContinue" hidden>繼續</button></form></dialog><dialog id="trainerIntro" aria-labelledby="trainerIntroTitle"><div class="trainer-card"><img id="trainerIntroSprite" alt=""><div><h2 id="trainerIntroTitle"></h2><p id="trainerIntroText"></p><div id="trainerIntroItem"></div><form method="dialog"><button autofocus>繼續</button></form></div></div></dialog><dialog id="regionDialog" aria-label="選擇地區"><h2>選擇地區</h2><form id="regionChoices" method="dialog"></form></dialog><dialog id="rewardDialog" aria-labelledby="rewardTitle"><h2 id="rewardTitle">選擇一項過關獎勵</h2><form id="rewardChoices" method="dialog"></form></dialog><dialog id="useItemDialog" aria-labelledby="useItemTitle"><h2 id="useItemTitle"></h2><form id="useItemChoices" method="dialog"></form></dialog><dialog id="combatStats" aria-labelledby="combatStatTitle"><h2 id="combatStatTitle"></h2><div id="combatStatBody"></div><form method="dialog"><button id="combatSwap" type="button" hidden>更換上場</button> <button>關閉</button></form></dialog><dialog id="reference" aria-label="圖鑑與試玩規則"><details id="dex"><summary>全國圖鑑 001–251</summary><p><label>寶可夢 <select id="dexSpecies"></select></label> <label>預覽等級 <input id="dexLevel" type="number" min="1" max="100" value="5"></label></p><div id="dexInfo"></div></details><details><summary>試玩規則與暫定數值</summary>
+<dialog id="settingsDialog" aria-labelledby="settingsTitle"><h2 id="settingsTitle">設定</h2><p><label><span id="musicVolumeLabel">音量</span> <input id="musicVolume" type="range" min="0" max="100" value="100"> <output id="musicVolumeValue" for="musicVolume">100%</output></label></p><p><label><span id="gameLanguageLabel">Language</span> <select id="gameLanguage"><option value="zh-Hant">繁體中文</option><option value="en">English</option></select></label></p><form method="dialog"><button id="settingsClose">關閉</button></form></dialog><dialog id="upgradeDialog" aria-labelledby="upgradeTitle"><h2 id="upgradeTitle"></h2><p id="upgradeInfo"></p><form method="dialog"><button value="cancel" autofocus>取消</button> <button id="buyUpgrade" value="buy">確認強化</button></form></dialog><dialog id="replacementDialog" aria-labelledby="replacementTitle"><h2 id="replacementTitle">派哪隻寶可夢上場？</h2><form id="replacementChoices" method="dialog"></form></dialog><dialog id="evolutionDialog" aria-labelledby="evolutionTitle"><div class="evolution-scene"><img id="evolutionBefore" alt=""><img id="evolutionAfter" alt="" hidden></div><p id="evolutionTitle" role="status"></p><form method="dialog"><button id="evolutionContinue" hidden>繼續</button></form></dialog><dialog id="trainerIntro" aria-labelledby="trainerIntroTitle"><div class="trainer-card"><img id="trainerIntroSprite" alt=""><div><h2 id="trainerIntroTitle"></h2><p id="trainerIntroText"></p><p id="tutorialRivalHelp" class="tutorial-dialog-next" hidden>特定關卡會出現不同的強勁對手 來挑戰看看吧!</p><div id="trainerIntroItem"></div><form method="dialog"><button autofocus>繼續</button></form></div></div></dialog><dialog id="regionDialog" aria-label="選擇地區"><h2>選擇地區</h2><form id="regionChoices" method="dialog"></form></dialog><dialog id="rewardDialog" aria-labelledby="rewardTitle"><h2 id="rewardTitle">選擇一項過關獎勵</h2><form id="rewardChoices" method="dialog"></form></dialog><dialog id="useItemDialog" aria-labelledby="useItemTitle"><h2 id="useItemTitle"></h2><form id="useItemChoices" method="dialog"></form></dialog><dialog id="combatStats" aria-labelledby="combatStatTitle"><h2 id="combatStatTitle"></h2><div id="combatStatBody"></div><form method="dialog"><button id="combatSwap" type="button" hidden>更換上場</button> <button>關閉</button></form></dialog><dialog id="reference" aria-label="圖鑑與試玩規則"><details id="dex"><summary>全國圖鑑 001–251</summary><p><label>寶可夢 <select id="dexSpecies"></select></label> <label>預覽等級 <input id="dexLevel" type="number" min="1" max="100" value="5"></label></p><div id="dexInfo"></div></details><details><summary>試玩規則與暫定數值</summary>
 <p>試玩與正式模式皆由 Lv. 5 開始。永久增強會套用於新開的正式局。正式局通關可累積金幣，結算時入帳。開局會帶上截至該等級已能習得的招式。普通系能由任一屬性連線觸發，其他招式需要同屬性。同一招每次拉霸最多因連線發動一次，所有成線累加這次的傷害倍率。每條線必須由五個同屬性圖案構成。普通線可代替其他屬性的指定線型；只有靠普通線才能達標的招式，效果為 50%。五個輪盤各有六個固定格位，每次先依攜帶屬性數的試玩權重抽出中線數，再從輪盤可達成的停點組合中隨機選一組，畫面顯示每輪連續五格。三屬性各占兩格，五屬性各一格且每輪隨機重複一種，六屬性各占一格。盤面為 5×5。五條橫線、五條直線與兩條主對角線皆可中獎。部分中線結果使用同色堆疊輪帶，讓直線能實際停出。1／2／3／4 條線分別為 ×1.0／×1.2／×1.5／×3，之後每多一條加 1 倍。試玩可重複挑戰至 Lv. 13。正式關都挑戰共 100 關，等級上限為 100。野生寶可夢依原作的等級進化，進化道具與交換型態在野外採試玩門檻。訓練家關有備戰隊伍。對手倒下後會優先派出克制當前寶可夢的隊員。招式依原作升級習得。試玩個體設定為中性性格、個體值與努力值為 0。圖鑑可預覽等級與進化能力值。連線負責觸發招式，招式再判定命中率。灼傷與凍傷每次拉霸扣 5% 最大 HP，中毒扣 8%。睡眠與冰凍會暫停出招，受到傷害或對手完成下次行動後解除；對應的物理或特殊傷害增加 50%。麻痺有一半機率讓招式失效，混亂則可能使攻擊打向自己。</p>
 <p>試玩球不限數量，正式模式初始有 5 顆神奇寶貝球。訓練家關卡無法捕捉。</p>
 <p>每次拉霸先結算我方所有相符招式。若至少一招成功且對手仍在場，對手才隨機反擊一招。確認換人後，對手依序使用目前所有已學招式。換人不消耗拉霸次數，也不回復血量。場上寶可夢倒下時由存活隊友自動接替。對手倒下即過關，我方全倒即失敗。血量、攻擊、技能與連線都是本關測試設定。</p>
 <small>道具圖案參考 <a href="https://wiki.52poke.com/zh-hant/%E9%81%93%E5%85%B7%E5%88%97%E8%A1%A8">神奇寶貝百科</a> · 寶可夢像素圖來源 <a href="https://github.com/PokeAPI/sprites/tree/master/sprites/pokemon/versions/generation-iii/emerald">PokeAPI · Emerald</a></small></details>
-<form method="dialog"><button>關閉</button></form></dialog><dialog id="saveDialog" aria-labelledby="saveTitle"><header><h2 id="saveTitle"></h2><button id="closeSave" aria-label="關閉">X</button></header><div id="saveBody"></div><p id="saveStatus" role="status"></p></dialog><dialog id="items" aria-labelledby="itemTitle"><h2 id="itemTitle">道具</h2><div id="itemInfo"></div><div class="item-actions"><button id="showReference">圖鑑與規則</button><button id="reset">重新開始本局</button></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="catchDialog" aria-labelledby="catchTitle"><h2 id="catchTitle"></h2><p id="catchInfo"></p><form method="dialog"><span id="ballChoices"></span> <button value="cancel" autofocus>關閉</button></form></dialog><dialog id="reelInfoDialog" aria-labelledby="reelInfoTitle"><h2 id="reelInfoTitle">輪盤圖案</h2><div id="reelInfoCounts"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="tutorialComplete" aria-labelledby="tutorialCompleteTitle"><h2 id="tutorialCompleteTitle">⑥ 教學完成！</h2><p>你打贏了小茂！正式遊戲中，連線能發動招式，過關可選道具，野生寶可夢也能收進隊伍。</p><form method="dialog"><button autofocus>返回主畫面</button></form></dialog><dialog id="partyPicker" aria-labelledby="partyPickerTitle"><h2 id="partyPickerTitle"></h2><form id="partyPickerChoices" method="dialog"></form></dialog><dialog id="learn" aria-labelledby="learnTitle"><h2 id="learnTitle"></h2><form id="learnChoices" method="dialog"></form></dialog><dialog id="skill" aria-labelledby="skillTitle"><h2 id="skillTitle">技能詳情</h2><div id="skillBody" class="skill-card"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="swapDialog" aria-labelledby="swapTitle"><h2 id="swapTitle"></h2><p>換人後，對手會依序使用目前所有已學招式。</p><form method="dialog"><button value="cancel" autofocus>取消</button> <button value="confirm">確認換人</button></form></dialog></main>
+<form method="dialog"><button>關閉</button></form></dialog><dialog id="saveDialog" aria-labelledby="saveTitle"><header><h2 id="saveTitle"></h2><button id="closeSave" aria-label="關閉">X</button></header><div id="saveBody"></div><p id="saveStatus" role="status"></p></dialog><dialog id="items" aria-labelledby="itemTitle"><h2 id="itemTitle">道具</h2><div id="itemInfo"></div><div class="item-actions"><button id="showReference">圖鑑與規則</button><button id="reset">重新開始本局</button></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="catchDialog" aria-labelledby="catchTitle"><h2 id="catchTitle"></h2><p id="catchInfo"></p><form method="dialog"><span id="ballChoices"></span> <button value="cancel" autofocus>關閉</button></form></dialog><dialog id="reelInfoDialog" aria-labelledby="reelInfoTitle"><h2 id="reelInfoTitle">輪盤圖案</h2><div id="reelInfoCounts"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="tutorialComplete" aria-labelledby="tutorialCompleteTitle"><h2 id="tutorialCompleteTitle">⑥ 教學完成！</h2><p>這遊戲就是如此簡單,帶上你的金幣<br>成為拉霸大...不是,成為寶可夢大師吧!</p><form method="dialog"><button autofocus>返回主畫面</button></form></dialog><dialog id="partyPicker" aria-labelledby="partyPickerTitle"><h2 id="partyPickerTitle"></h2><form id="partyPickerChoices" method="dialog"></form></dialog><dialog id="learn" aria-labelledby="learnTitle"><h2 id="learnTitle"></h2><form id="learnChoices" method="dialog"></form></dialog><dialog id="skill" aria-labelledby="skillTitle"><h2 id="skillTitle">技能詳情</h2><div id="skillBody" class="skill-card"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="swapDialog" aria-labelledby="swapTitle"><h2 id="swapTitle"></h2><p>換人後，對手會依序使用目前所有已學招式。</p><form method="dialog"><button value="cancel" autofocus>取消</button> <button value="confirm">確認換人</button></form></dialog></main>
 <div style="position:fixed;bottom:8px;left:8px;z-index:20;max-width:75vw;color:white;font-size:12px;overflow-wrap:anywhere"><button id="musicToggle" type="button">播放音樂</button> <span id="musicStatus" role="status"></span></div>
 <aside id="tutorialHint" role="status" hidden></aside>
 <script>
@@ -1050,7 +1051,7 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false){
   const run={tutorial,team:party,enemy:foes[0],foes,foeIndex:0,rivalStarter,trainer:foe.trainer??null,introSeen:!foe.kind,stage,kind:foe.kind,phase:foe.phase,phaseType:foe.phaseType,
     region:mode==='formal'?regions[0]:null,items:prior?.items??{},balls:prior?.balls??{poke:5,great:0,ultra:0,master:0},used:{},
     reels,positions,active,spins:0,result:'',won:false,board:boardAt(reels,positions),matches:[],log:['第 '+stage+' 關開始。'],
-    runId:prior?.runId??newRunId(),coins:prior?.coins??0,newUnlocks:prior?.newUnlocks??[],upgrades,counterSpins:0,fluteUntil,reelsCustomized:prior?.reelsCustomized??false};
+    runId:prior?.runId??newRunId(),coins:prior?.coins??0,newUnlocks:prior?.newUnlocks??[],upgrades,counterSpins:0,fluteUntil,reelsCustomized:prior?.reelsCustomized??false,reelGemCount:prior?.reelGemCount??(prior?.reelsCustomized?1:0)};
   if(mode==='formal'&&!team){
     for(const mon of party){setBattleLevel(mon,mon.level,run);mon.left=mon.hp;}
   }
@@ -2097,7 +2098,8 @@ async function replaceFainted(s){
 function renderBattleProgress(state){
   const target=counterTarget(state);
   const progress=Math.max(0,Math.min(state.counterSpins??0,target));
-  $('stageBadge').textContent='關卡 '+state.stage+(mode==='formal'?'/100':'')+' · '+progress+'/'+target+' 對手行動';
+  $('stageBadge').textContent='關卡 '+state.stage+(mode==='formal'?'/100':'');
+  $('actionProgress').textContent=progress+'/'+target+' 對手行動';
 }
 function counterTarget(s){
   return (itemCount(s,'quick-claw')?6:5)+upgradeEffect(s,'delay');
@@ -2329,7 +2331,7 @@ function renderTutorialHint(){
   const messages={
     1:reading?['② 查看招式','點左側小火龍的「抓擊」。普通系招式可用任意屬性的有效連線觸發。']:
       state.spins===0?['② 按把手試拉一次','五個相同圖案連成指定線型才會發動招式。其他屬性招式可用全普通系連線代替，但傷害或效果只有 50%。我方招式發動後，對手會還擊一次。']:
-      state.spins<5?['② 觀察對手行動計數','再按把手。對手還擊不會歸零計數。累積到 5 次時，對手會依序用出 4 個已學招式，各用一次。']:
+      state.spins<5?['② 快轉看對手行動','看戰報右上角的行動計數。再按一次把手，教學會快轉到第 5 次，示範對手把 4 招各用一次。']:
       ['② 結束練習戰','對手已完成一輪行動。再按一次把手，擊敗練習對手。'],
     2:['④ 捕捉野生寶可夢','點右下方「收服」，再點寶可夢球。目標血量越低，通常越容易捕捉。'],
     3:['⑤ 挑戰小茂','確認台詞後，按發光的把手，用抓擊擊敗傑尼龜。']
@@ -2540,6 +2542,7 @@ function changeReelSymbols(run,type){
   const reels=run.reels.map(reel=>reel.slice());
   for(const [col,row] of shuffle(cells).slice(0,3)) reels[col][row]=type;
   run.reels=reels;
+  run.reelGemCount=(run.reelGemCount??(run.reelsCustomized?1:0))+1;
   run.reelsCustomized=true;
   run.layoutMask=0;
   delete run.layoutColumn;
@@ -2547,12 +2550,27 @@ function changeReelSymbols(run,type){
   run.matches=[];
   return true;
 }
-function weightedStops(reels,count){
+function reelWeights(count,gems=0){
+  const [miss,single,double,multi]=outcomeWeights[count];
+  const boosts=Math.min(3,gems);
+  return [miss-5*boosts,single-3*boosts,double+4*boosts,multi+4*boosts];
+}
+function weightedStops(reels,count,gems=0){
   const groups=stopGroups(reels);
   let draw=Math.random()*100;
-  const index=outcomeWeights[count].findIndex(weight=>(draw-=weight)<0);
-  const vertical=index>0&&Math.random()<verticalShare?verticalGroups(reels)[index]:[];
-  const result=vertical.length?pick(vertical):pick(groups[index].length?groups[index]:groups.flat());
+  const index=reelWeights(count,gems).findIndex(weight=>(draw-=weight)<0);
+  const stacks=index>0?verticalGroups(reels):null;
+  const normal=groups[index];
+  const vertical=stacks?.[index]??[];
+  let pool=vertical.length&&(!normal.length||Math.random()<verticalShare)?vertical:normal;
+  if(!pool.length){
+    const alternates=index===0?[1,2,3]:[3,2,1].filter(value=>value!==index);
+    for(const alternative of alternates){
+      pool=groups[alternative].length?groups[alternative]:verticalGroups(reels)[alternative];
+      if(pool.length) break;
+    }
+  }
+  const result=pick(pool);
   return {mask:result.mask??0,positions:result.positions};
 }
 function lineOdds(reels,moves,count){
@@ -2608,15 +2626,15 @@ $('spin').onclick=async()=>{
   pullLever();
   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
   let guided=null;
+  const fastForward=state.tutorial&&state.stage===1&&state.spins>0&&state.spins<5;
   if(state.tutorial&&state.stage!==2){
     const groups=stopGroups(state.reels);
-    const demonstratingTurns=state.stage===1&&state.spins>0&&state.spins<5;
+    const demonstratingTurns=fastForward;
     guided=demonstratingTurns?groups[0][0]:groups.slice(1).find(group=>group.length)?.[0];
     if(state.stage===1&&state.spins>=5) state.enemy.left=1;
   }
-  const {mask:layoutMask,positions}=guided?{mask:0,positions:guided.positions}:state.reelsCustomized
-    ?{mask:0,positions:state.reels.map(reel=>randomIndex(reel.length))}
-    :weightedStops(state.reels,selectedTypes.length);
+  const gems=state.reelGemCount??(state.reelsCustomized?1:0);
+  const {mask:layoutMask,positions}=guided?{mask:0,positions:guided.positions}:weightedStops(state.reels,selectedTypes.length,gems);
   const layout=stackLayout(state.reels,layoutMask);
   const finalBoard=boardAt(layout,positions);
   const stops=Array.from({length:boardSize},(_,column)=>2000+column*1000/(boardSize-1));
@@ -2643,7 +2661,7 @@ $('spin').onclick=async()=>{
       const progress=i/24;
       return {offset:leadOffset+(1-leadOffset)*progress,transform:transform(progress)};
     })];
-    return track.animate(frames,{duration:duration/battleSpeed,fill:'forwards'});
+    return track.animate(frames,{duration:duration/(fastForward?Math.max(2.5,battleSpeed):battleSpeed),fill:'forwards'});
   });
   await Promise.all(animations.map(animation=>animation.finished));
   tracks.forEach((track,column)=>{
@@ -2654,6 +2672,11 @@ $('spin').onclick=async()=>{
   state.positions=positions;
   state.layoutMask=layoutMask;
   delete state.layoutColumn;
+  if(fastForward){
+    state.spins=4;
+    state.counterSpins=4;
+    state.log.unshift('教學快轉：跳到第 5 次拉霸，示範對手完整行動。');
+  }
   await resolveSpin(state,finalBoard,tracks);
   rolling=false;
   if(state.won&&!state.finished){advanceStage();return;}
@@ -3481,7 +3504,7 @@ async function animateWildEntrance(run){
   await sparkleShiny('enemy',run.enemy);
 }
 async function openBattleStage(entering=false,playerEnters=entering){
-  if(typeof requestIdleCallback==='function'&&!state.tutorial&&!state.reelsCustomized){
+  if(typeof requestIdleCallback==='function'&&!state.tutorial){
     const reels=state.reels;
     requestIdleCallback(()=>{
       if(state.reels===reels&&!rolling) verticalGroups(reels);
@@ -3508,6 +3531,7 @@ async function openBattleStage(entering=false,playerEnters=entering){
   const dialog=$('trainerIntro');
   const img=$('trainerIntroSprite');
   const held=itemCatalog[run.enemy.heldItem];
+  $('tutorialRivalHelp').hidden=!(run.tutorial&&run.stage===3);
   $('trainerIntroItem').innerHTML=held?itemButton(held,'type="button"',held.name):'';
   if(run.trainer){
     const [kind,name,art,line]=run.trainer;
@@ -3797,6 +3821,7 @@ function rewardOptions(s){
   const typesInTeam=new Set(s.team.flatMap(mon=>mon.type));
   const moveTypes=new Set(s.team.flatMap(mon=>mon.moves.map(move=>skillDetails[move]?.type)));
   const all=Object.keys(rewards).filter(id=>(!rewards[id].type||typesInTeam.has(rewards[id].type))&&
+    (!immediateReward(id)||canApplyItem(s,id))&&
     !stoneIds.includes(id)&&!(id==='razor-fang'&&s.items[id])&&
     (!id.startsWith('gem:')||id==='gem:普通'||moveTypes.has(id.slice(4))));
   const results=[];
@@ -3813,15 +3838,20 @@ function rewardOptions(s){
 async function chooseReward(s){
   const dialog=$('rewardDialog');
   const options=rewardOptions(s);
-  if(s.tutorial&&!options.includes('potion')) options[0]='potion';
+  if(s.tutorial&&canApplyItem(s,'potion')&&!options.includes('potion')) options[0]='potion';
   $('rewardTitle').textContent=s.tutorial?'③ 選道具 · 點一件領取，接著練習捕捉':'第 '+s.stage+' 關獎勵 · 四選一或領取金幣';
-  $('rewardChoices').innerHTML=(s.tutorial?'<p class="tutorial-dialog-next">↓ 點任一件道具，接著練習捕捉。</p>':'')+options.map((id,i)=>itemButton(rewards[id],'value="'+i+'"',rewards[id].name+' · '+rarityNames[rewards[id].tier])).join('')+(s.tutorial?'':'<button value="coins" style="grid-column:1/-1">跳過道具 · +20 金幣</button>');
-  dialog.returnValue='';
+  $('rewardChoices').innerHTML=(s.tutorial?'<p class="tutorial-dialog-next">↓ 點任一件道具。一次性道具會立刻使用，再進入捕捉練習。</p>':'')+options.map((id,i)=>itemButton(rewards[id],'value="'+i+'"',rewards[id].name+' · '+rarityNames[rewards[id].tier]+(immediateReward(id)?' · 立即使用':''))).join('')+(s.tutorial?'':'<button value="coins" style="grid-column:1/-1">跳過道具 · +20 金幣</button>');
   dialog.oncancel=event=>event.preventDefault();
-  const selected=await new Promise(resolve=>{
-    dialog.onclose=()=>resolve(dialog.returnValue==='coins'?'coins':options[Number(dialog.returnValue)]??options[0]);
-    dialog.showModal();
-  });
+  let selected;
+  while(true){
+    dialog.returnValue='';
+    selected=await new Promise(resolve=>{
+      dialog.onclose=()=>resolve(dialog.returnValue==='coins'?'coins':options[Number(dialog.returnValue)]??options[0]);
+      dialog.showModal();
+    });
+    if(!immediateReward(selected)) break;
+    if(await applyUsableItem(s,selected,true)) return;
+  }
   if(selected==='coins'){
     s.coins=(s.coins??0)+20;
     s.log.unshift('跳過道具，取得 20 金幣。');
@@ -3837,6 +3867,14 @@ async function chooseReward(s){
   }
   s.log.unshift('取得 '+rewards[selected].name+'。');
 }
+function immediateReward(id){
+  return Boolean(itemCatalog[id]?.usable&&id!=='max-potion');
+}
+function canApplyItem(run,id){
+  if(id==='white-flute') return true;
+  if(id.startsWith('gem:')) return run.reels.flat().filter(type=>type!==id.slice(4)).length>=3;
+  return run.team.some(mon=>usableTarget(id,mon));
+}
 function usableTarget(id,p){
   if(potionRates[id]) return p.left>0&&p.left<p.hp;
   if(stoneIds.includes(id)) return Boolean(stoneEvolution(id,p));
@@ -3847,9 +3885,9 @@ function consumeItem(run,id){
   if(run.items[id]>0) run.items[id]--;
   else if(run.stolenItems?.[id]>0) run.stolenItems[id]--;
 }
-function useItem(run,id,index){
+function useItem(run,id,index,fromReward=false){
   const p=run.team[index];
-  if(!itemCatalog[id]?.usable||!itemCount(run,id)||run.used[id]||!p||!usableTarget(id,p)) return false;
+  if(!itemCatalog[id]?.usable||(!fromReward&&(!itemCount(run,id)||run.used[id]))||!p||!usableTarget(id,p)) return false;
   if(potionRates[id]){
     p.left=Math.min(p.hp,p.left+Math.max(1,Math.floor(p.hp*potionRates[id])));
   }else if(id==='full-heal'){
@@ -3859,7 +3897,7 @@ function useItem(run,id,index){
     p.left=id==='revive'?Math.max(1,Math.floor(p.hp/2)):p.hp;
   }else return false;
   if(id==='max-potion') run.used[id]=true;
-  else consumeItem(run,id);
+  else if(!fromReward) consumeItem(run,id);
   run.log.unshift('對'+p.name+'使用'+itemCatalog[id].name+'。');
   return true;
 }
@@ -3873,38 +3911,38 @@ function itemPrompt(title,buttons){
     dialog.showModal();
   });
 }
+async function applyUsableItem(run,id,fromReward=false){
+  if(!canApplyItem(run,id)) return false;
+  const def=itemCatalog[id];
+  if(id==='white-flute'){
+    run.fluteUntil=Math.max(run.stage,run.fluteUntil??0)+5;
+    run.log.unshift('白色玻璃哨生效至第 '+run.fluteUntil+' 關。');
+  }else if(id.startsWith('gem:')){
+    if(!changeReelSymbols(run,id.slice(4))) return false;
+    run.log.unshift(def.name+'轉換了 3 個輪盤圖案。');
+  }else{
+    const target=await choosePartyMember(run,'選擇'+def.name+'的使用對象',mon=>usableTarget(id,mon),'返回');
+    if(target<0) return false;
+    if(!stoneIds.includes(id)) return useItem(run,id,target,fromReward);
+    const mon=run.team[target],evolution=stoneEvolution(id,mon);
+    if(!evolution) return false;
+    await evolvePartyMember(mon,evolution,run);
+  }
+  if(!fromReward) consumeItem(run,id);
+  return true;
+}
 async function useInventoryItem(id){
   const def=itemCatalog[id];
-  if(rolling||!def?.usable||state.used[id]||state.result) return;
+  if(rolling||!def?.usable||!itemCount(state,id)||state.used[id]||state.result) return;
   $('items').close();
   const confirmed=await itemPrompt('確認使用'+def.name+'嗎？','<button value="yes">確認</button>');
   if(confirmed==='yes'){
-    if(id==='white-flute'){
-      state.fluteUntil=Math.max(state.stage,state.fluteUntil??0)+5;
-      consumeItem(state,id);
-      state.log.unshift('白色玻璃哨生效至第 '+state.fluteUntil+' 關。');
+    rolling=true;
+    try{
+      if(await applyUsableItem(state,id)) render(id.startsWith('gem:'));
+    }finally{
+      rolling=false;
       render(false);
-    }else if(id.startsWith('gem:')){
-      if(changeReelSymbols(state,id.slice(4))){
-        consumeItem(state,id);
-        state.log.unshift(def.name+'轉換了 3 個輪盤圖案。');
-        render();
-      }else{
-        state.log.unshift('輪盤上不足 3 個其他屬性圖案。');
-        render(false);
-      }
-    }else{
-      const target=await choosePartyMember(state,'選擇'+def.name+'的使用對象',mon=>usableTarget(id,mon),'取消');
-      if(target>=0&&stoneIds.includes(id)){
-        const mon=state.team[target],evolution=stoneEvolution(id,mon);
-        if(evolution){
-          rolling=true;
-          await evolvePartyMember(mon,evolution,state);
-          consumeItem(state,id);
-          rolling=false;
-          render(false);
-        }
-      }else if(target>=0&&useItem(state,id,target)) render(false);
     }
   }
   $('itemBox').onclick();

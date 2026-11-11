@@ -3,6 +3,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>寶可夢拉霸 POKEMON SPOT</title>
+<meta name="description" content="拉一下，讓連線變成招式！收服色違、組出你的隊伍，挑戰關都 100 關。免費開玩。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="POKEMON SPOT">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:title" content="寶可夢拉霸 POKEMON SPOT">
+<meta property="og:description" content="拉一下，讓連線變成招式！收服色違、組出你的隊伍，挑戰關都 100 關。免費開玩。">
+<meta property="og:url" content="https://btcggaming.github.io/Pokemon-Spot/">
+<meta property="og:image" content="https://btcggaming.github.io/Pokemon-Spot/assets/share-preview.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="800">
+<meta property="og:image:alt" content="訓練家和寶可夢倒映在藍色水面">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="寶可夢拉霸 POKEMON SPOT">
+<meta name="twitter:description" content="拉一下，讓連線變成招式！收服色違、組出你的隊伍，挑戰關都 100 關。免費開玩。">
+<meta name="twitter:image" content="https://btcggaming.github.io/Pokemon-Spot/assets/share-preview.png">
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX////vMSkxMTG1jCnerSH/ziG9GRlzWgD/96X/70J1F/WZAAAAAXRSTlMAQObYZgAAAJBJREFUGNNjYKANEBRA4TIyMKIICICEkAATRAwOVNUSkPlK6gpsSHwmk5AihgSEAcqhU90VkPgarZEhCmxwPpNFR+gUJAOYWjumhiDzOyJnBiPxlSOmznRiSIC7UDV0ZqgTG8hTMH7kFCM2BriTVULBxsP56qGhzgpA/TA+U0mIEQMoAGAGKikpgMIELYxoAgBx1Rbk2ARNxgAAAABJRU5ErkJggg==">
 <style>
 *{box-sizing:border-box}body{margin:0;background:#101626;color:#fff4ce;font:16px system-ui,sans-serif}main{max-width:1060px;margin:auto;padding:24px}header{text-align:center;margin-bottom:24px}h1{margin:8px 0;color:#ffe37b;text-shadow:3px 3px #8a4637}small{color:#b8c4df}section,.machine,details{background:#212b46;border:3px solid #465575;box-shadow:5px 5px #080b15;padding:16px} .arena{display:grid;grid-template-columns:1fr 1.55fr 1fr;gap:14px;align-items:start}h2{margin:0;font-size:18px}.portrait{display:grid;place-items:center;height:112px;background:repeating-linear-gradient(#16223a 0 4px,#182740 4px 8px);margin:10px 0;color:var(--ink)}svg{width:88px;height:88px;shape-rendering:crispEdges}progress{width:100%;accent-color:#76dfa0}p{margin:8px 0}.moves{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:12px 0}.moves span{padding:6px;background:#131c30;font-size:13px}.machine{border-color:#f4a657;background:#703a46;text-align:center}.reels{display:grid;grid-template-columns:1fr 52px;gap:10px;margin:14px 0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;background:#171e32;padding:6px}.tile{display:grid;place-items:center;aspect-ratio:1;background:#273855;font-size:clamp(14px,4vw,30px);color:var(--ink);font-weight:900}.tile.hit{outline:3px solid #ffe37b;outline-offset:-3px;background:#55513b}button{font:inherit;font-weight:700;color:#172039;background:#ffe37b;border:2px solid #13182b;box-shadow:2px 3px #13182b;padding:7px;cursor:pointer}button:disabled{opacity:.45;cursor:default}#spin{display:grid;place-content:center;gap:8px;background:#ff9e80}#spin b{font-size:27px;color:#812b42}#notice{min-height:3em}#log{padding-left:20px;min-height:6em;text-align:left;font-size:14px}details{margin-top:16px}summary{cursor:pointer}.badge{color:#ffd985;font:700 14px monospace;letter-spacing:.12em}@media(max-width:730px){main{padding:12px}.arena{grid-template-columns:1fr 1fr}.machine{grid-column:1/-1;grid-row:2}.portrait{height:80px}svg{width:65px;height:65px}.grid{max-width:290px;width:100%;justify-self:center}}
@@ -644,6 +660,18 @@ button:not(:disabled):active{filter:brightness(.9)}
 .berry-healed .berry-ring{position:absolute;width:42%;aspect-ratio:1;border:3px solid #a2f5d3;border-radius:50%;animation:berry-ring .43s ease-out both}
 @keyframes berry-spark{25%{opacity:1}to{opacity:0;transform:translateY(-.7cqw) scale(1.3)}}
 @keyframes berry-ring{from{opacity:1;transform:scale(.45)}to{opacity:0;transform:scale(1.65)}}
+
+#teamMemberDialog{width:min(42em,88vw)}
+#teamSelection .team-slot-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:min(100%,28cqw);gap:.28cqw;margin:0}
+#teamSelection .team-slot-options button{display:grid;place-items:center;text-align:center;min-width:0;white-space:nowrap;padding:.32em .15em}
+#teamSelection .selection-slot[aria-pressed=true]{background:#ffe3a5;outline:2px solid #8a5632}
+#teamMemberDetails{max-height:35vh;overflow:auto;min-height:5em;margin:.6em 0}
+#teamMemberDetails label{display:block;margin:.35em 0}
+#teamMemberDialog form{display:flex;justify-content:flex-end;gap:.45em}
+#log .damage-value{color:#bc1029;font-weight:bold}
+#log .effect-weak{color:#186b34}
+#log .effect-strong{color:#ac1024}
+#log .effect-immune,#log .effect-immune .damage-value{color:#131117}
 </style>
 <main>
 <section id="menu" class="screen" style="position:relative">
@@ -656,7 +684,7 @@ button:not(:disabled):active{filter:brightness(.9)}
   </div>
   <button type="button" class="home">返回主畫面</button>
 </section>
-<section id="setup" class="screen" hidden><h1 id="setupTitle"></h1><div id="starterSetup" hidden><p>選擇你的第一隻寶可夢</p><div id="starterCards" class="mon-cards"></div></div><div id="partySetup"><div id="partyHelp"></div><div id="teamCards" class="mon-cards" aria-label="圖鑑隊員清單"></div><div class="setup-footer"><div class="energy-panel"><div class="energy-header"><label>攜帶屬性 <select id="typeCount"><option>3</option><option>5</option><option>6</option></select></label><span id="setupStatus" role="status"></span></div><div id="typeChoices"></div></div><div class="party-confirm"><p id="teamSelection"></p><button id="startBattle">確定開始</button></div></div></div><button class="home">返回主畫面</button></section>
+<section id="setup" class="screen" hidden><h1 id="setupTitle"></h1><div id="starterSetup" hidden><p>選擇你的第一隻寶可夢</p><div id="starterCards" class="mon-cards"></div></div><div id="partySetup"><div id="partyHelp"></div><div id="teamCards" class="mon-cards" aria-label="圖鑑隊員清單"></div><div class="setup-footer"><div class="energy-panel"><div class="energy-header"><label>攜帶屬性 <select id="typeCount"><option>3</option><option>5</option><option>6</option></select></label><span id="setupStatus" role="status"></span></div><div id="typeChoices"></div></div><div class="party-confirm"><div id="teamSelection"></div><button id="startBattle">確定開始</button></div></div></div><button class="home">返回主畫面</button></section>
 <section id="shop" class="screen" hidden><h1>商店</h1><div class="capsule-machine" aria-hidden="true"><i></i><b>◆</b></div><h2>扭蛋機</h2><p id="shopTickets"></p><button disabled>使用扭蛋券抽蛋</button><p>扭蛋功能尚未開放。開放後，每張券可抽一顆蛋。</p><div id="shopEggs"></div><button class="home">返回主畫面</button></section>
 <section id="upgradeScreen" class="screen" hidden><h1>永久增強</h1><p id="walletBalance" role="status"></p><div id="upgradeCards"></div><button class="home">返回主畫面</button></section>
 <section id="settlementScreen" class="screen" hidden><h1 id="settlementTitle">正式模式結算</h1><div class="settlement-grid">
@@ -696,7 +724,12 @@ button:not(:disabled):active{filter:brightness(.9)}
 <dialog id="surrenderDialog" aria-labelledby="surrenderTitle"><h2 id="surrenderTitle">確定要投降嗎？</h2>
   <form method="dialog"><button id="surrenderCancel" value="cancel" autofocus>取消</button><button id="surrenderConfirm" value="surrender">投降</button></form>
 </dialog>
-<dialog id="settingsDialog" aria-labelledby="settingsTitle"><h2 id="settingsTitle">設定</h2><p><label><span id="musicVolumeLabel">音量</span> <input id="musicVolume" type="range" min="0" max="100" value="100"> <output id="musicVolumeValue" for="musicVolume">100%</output></label></p><p><label><span id="gameLanguageLabel">Language</span> <select id="gameLanguage"><option value="zh-Hant">繁體中文</option><option value="en">English</option></select></label></p><form method="dialog"><button id="settingsClose">關閉</button></form></dialog><dialog id="upgradeDialog" aria-labelledby="upgradeTitle"><h2 id="upgradeTitle"></h2><p id="upgradeInfo"></p><form method="dialog"><button value="cancel" autofocus>取消</button> <button id="buyUpgrade" value="buy">確認強化</button></form></dialog><dialog id="replacementDialog" aria-labelledby="replacementTitle"><h2 id="replacementTitle">派哪隻寶可夢上場？</h2><form id="replacementChoices" method="dialog"></form></dialog><dialog id="evolutionDialog" aria-labelledby="evolutionTitle"><div class="evolution-scene"><img id="evolutionBefore" alt=""><img id="evolutionAfter" alt="" hidden></div><p id="evolutionTitle" role="status"></p><form method="dialog"><button id="evolutionContinue" hidden>繼續</button></form></dialog><dialog id="trainerIntro" aria-labelledby="trainerIntroTitle"><div class="trainer-card"><img id="trainerIntroSprite" alt=""><div><h2 id="trainerIntroTitle"></h2><p id="trainerIntroText"></p><p id="tutorialRivalHelp" class="tutorial-dialog-next" hidden>特定關卡會出現不同的強勁對手 來挑戰看看吧!</p><div id="trainerIntroItem"></div><form method="dialog"><button autofocus>繼續</button></form></div></div></dialog><dialog id="regionDialog" aria-label="選擇地區"><h2>選擇地區</h2><form id="regionChoices" method="dialog"></form></dialog><dialog id="rewardDialog" aria-labelledby="rewardTitle"><h2 id="rewardTitle">選擇一項過關獎勵</h2><form id="rewardChoices" method="dialog"></form></dialog><dialog id="useItemDialog" aria-labelledby="useItemTitle"><h2 id="useItemTitle"></h2><form id="useItemChoices" method="dialog"></form></dialog><dialog id="combatStats" aria-labelledby="combatStatTitle"><h2 id="combatStatTitle"></h2><div id="combatStatBody"></div><form method="dialog"><button id="combatSwap" type="button" hidden>更換上場</button> <button>關閉</button></form></dialog><dialog id="reference" aria-label="圖鑑與試玩規則"><details id="dex"><summary>全國圖鑑 001–251</summary><p><label>寶可夢 <select id="dexSpecies"></select></label> <label>預覽等級 <input id="dexLevel" type="number" min="1" max="100" value="5"></label></p><div id="dexInfo"></div></details><details><summary>試玩規則與暫定數值</summary>
+<dialog id="teamMemberDialog" aria-labelledby="teamMemberTitle">
+  <h2 id="teamMemberTitle"></h2>
+
+  <div id="teamMemberDetails"></div>
+  <form method="dialog"><button type="button" id="teamMemberToggle"></button><button>關閉</button></form>
+</dialog><dialog id="settingsDialog" aria-labelledby="settingsTitle"><h2 id="settingsTitle">設定</h2><p><label><span id="musicVolumeLabel">音量</span> <input id="musicVolume" type="range" min="0" max="100" value="100"> <output id="musicVolumeValue" for="musicVolume">100%</output></label></p><p><label><span id="gameLanguageLabel">Language</span> <select id="gameLanguage"><option value="zh-Hant">繁體中文</option><option value="en">English</option></select></label></p><form method="dialog"><button id="settingsClose">關閉</button></form></dialog><dialog id="upgradeDialog" aria-labelledby="upgradeTitle"><h2 id="upgradeTitle"></h2><p id="upgradeInfo"></p><form method="dialog"><button value="cancel" autofocus>取消</button> <button id="buyUpgrade" value="buy">確認強化</button></form></dialog><dialog id="replacementDialog" aria-labelledby="replacementTitle"><h2 id="replacementTitle">派哪隻寶可夢上場？</h2><form id="replacementChoices" method="dialog"></form></dialog><dialog id="evolutionDialog" aria-labelledby="evolutionTitle"><div class="evolution-scene"><img id="evolutionBefore" alt=""><img id="evolutionAfter" alt="" hidden></div><p id="evolutionTitle" role="status"></p><form method="dialog"><button id="evolutionContinue" hidden>繼續</button></form></dialog><dialog id="trainerIntro" aria-labelledby="trainerIntroTitle"><div class="trainer-card"><img id="trainerIntroSprite" alt=""><div><h2 id="trainerIntroTitle"></h2><p id="trainerIntroText"></p><p id="tutorialRivalHelp" class="tutorial-dialog-next" hidden>特定關卡會出現不同的強勁對手 來挑戰看看吧!</p><div id="trainerIntroItem"></div><form method="dialog"><button autofocus>繼續</button></form></div></div></dialog><dialog id="regionDialog" aria-label="選擇地區"><h2>選擇地區</h2><form id="regionChoices" method="dialog"></form></dialog><dialog id="rewardDialog" aria-labelledby="rewardTitle"><h2 id="rewardTitle">選擇一項過關獎勵</h2><form id="rewardChoices" method="dialog"></form></dialog><dialog id="useItemDialog" aria-labelledby="useItemTitle"><h2 id="useItemTitle"></h2><form id="useItemChoices" method="dialog"></form></dialog><dialog id="combatStats" aria-labelledby="combatStatTitle"><h2 id="combatStatTitle"></h2><div id="combatStatBody"></div><form method="dialog"><button id="combatSwap" type="button" hidden>更換上場</button> <button>關閉</button></form></dialog><dialog id="reference" aria-label="圖鑑與試玩規則"><details id="dex"><summary>全國圖鑑 001–251</summary><p><label>寶可夢 <select id="dexSpecies"></select></label> <label>預覽等級 <input id="dexLevel" type="number" min="1" max="100" value="5"></label></p><div id="dexInfo"></div></details><details><summary>試玩規則與暫定數值</summary>
 <p>試玩與正式模式皆由 Lv. 5 開始。永久增強會套用於新開的正式局。正式局通關可累積金幣，結算時入帳。開局會帶上截至該等級已能習得的招式。普通系能由任一屬性連線觸發，其他招式需要同屬性。同一招每次拉霸最多因連線發動一次，所有成線累加這次的傷害倍率。每條線必須由五個同屬性圖案構成。普通線可代替其他屬性的指定線型；只有靠普通線才能達標的招式，效果為 50%。五個輪盤各有六個固定格位，每次先依攜帶屬性數的試玩權重抽出中線數，再從輪盤可達成的停點組合中隨機選一組，畫面顯示每輪連續五格。三屬性各占兩格，五屬性各一格且每輪隨機重複一種，六屬性各占一格。盤面為 5×5。五條橫線、五條直線與兩條主對角線皆可中獎。部分中線結果使用同色堆疊輪帶，讓直線能實際停出。1／2／3／4 條線分別為 ×1.0／×1.2／×1.5／×3，之後每多一條加 1 倍。試玩可重複挑戰至 Lv. 13。正式關都挑戰共 100 關，等級上限為 100。野生寶可夢依原作的等級進化，進化道具與交換型態在野外採試玩門檻。訓練家關有備戰隊伍。對手倒下後會優先派出克制當前寶可夢的隊員。招式依原作升級習得。試玩個體設定為中性性格、個體值與努力值為 0。圖鑑可預覽等級與進化能力值。連線負責觸發招式，招式再判定命中率。灼傷與凍傷每次拉霸扣 5% 最大 HP，中毒扣 8%。睡眠與冰凍會暫停出招，受到傷害或對手完成下次行動後解除；對應的物理或特殊傷害增加 50%。麻痺有一半機率讓招式失效，混亂則可能使攻擊打向自己。</p>
 <p>試玩球不限數量，正式模式初始有 5 顆神奇寶貝球。訓練家關卡無法捕捉。</p>
 <p>每次拉霸先結算我方所有相符招式。若至少一招成功且對手仍在場，對手才隨機反擊一招。確認換人後，對手依序使用目前所有已學招式。換人不消耗拉霸次數，也不回復血量。場上寶可夢倒下時由存活隊友自動接替。對手倒下即過關，我方全倒即失敗。血量、攻擊、技能與連線都是本關測試設定。</p>
@@ -727,11 +760,25 @@ const emeraldData={"mons":[{"id":1,"name":"妙蛙種子","type":["草","毒"],"b
 const species=emeraldData.mons;
 emeraldData.ms[232]={name:'金屬爪',type:'鋼',power:50,accuracy:95,pp:35,effect:'ATTACK_UP_HIT',chance:10};
 const speciesById=id=>species[id-1];
+const abilityNames={"1":"惡臭","2":"降雨","3":"加速","4":"戰鬥盔甲","5":"結實","6":"濕氣","7":"柔軟","8":"沙隱","9":"靜電","10":"蓄電","11":"儲水","12":"遲鈍","13":"無關天氣","14":"複眼","15":"不眠","16":"變色","17":"免疫","18":"引火","19":"鱗粉","20":"我行我素","21":"吸盤","22":"威嚇","23":"踩影","24":"粗糙皮膚","25":"神奇守護","26":"漂浮","27":"孢子","28":"同步","29":"恆淨之軀","30":"自然回復","31":"避雷針","32":"天恩","33":"悠游自如","34":"葉綠素","35":"發光","36":"複製","37":"大力士","38":"毒刺","39":"精神力","40":"熔岩鎧甲","41":"水幕","42":"磁力","43":"隔音","44":"雨盤","45":"揚沙","46":"壓迫感","47":"厚脂肪","48":"早起","49":"火焰之軀","50":"逃跑","51":"銳利目光","52":"怪力鉗","53":"撿拾","54":"懶惰","55":"活力","56":"迷人之軀","57":"正電","58":"負電","59":"陰晴不定","60":"黏著","61":"蛻皮","62":"毅力","63":"神奇鱗片","64":"污泥漿","65":"茂盛","66":"猛火","67":"激流","68":"蟲之預感","69":"堅硬腦袋","70":"日照","71":"沙穴","72":"幹勁","73":"白色煙霧","74":"瑜珈之力","75":"硬殼盔甲","76":"氣閘","77":"雜音"};
+const abilityDescriptions=["","每次攻擊有 5% 機率增加 1 次可拉霸機會。","每次拉霸將 5 個未連線圖案變成水。","增加 1 次可拉霸機會。","單次傷害超過最大 HP 的 50% 時，該次傷害減半。","滿血時受到的傷害減少 75%。","每次拉霸將 1 個非水圖案變成水，持續至本關結束。","免疫麻痺。","地面系連線時對手無法反擊。","受到物理傷害時有 50% 機率使對手麻痺。","電系傷害改為回復自身 HP。","水系傷害改為回復自身 HP。","免疫混亂。","免疫天氣效果。","招式必定命中。","免疫睡眠。","受傷後變成命中招式的屬性。","免疫中毒與劇毒。","火系傷害改為攻擊與特攻各提升 1 階。","免疫攻擊招式機率附帶的異常狀態。","免疫混亂。","對手的減益轉移到其後續上場的寶可夢。","對手每次反擊後攻擊降低 1 階。","對手無法主動更換。","受到物理傷害時使對手損失 10% 最大 HP。","只會受到效果絕佳的招式傷害。","免疫地面系傷害。","受到物理傷害時，有 50% 機率使對手中毒、麻痺或灼傷。","每次拉霸後將自身的中毒、麻痺或灼傷傳給對手。","免疫能力下降。","換下場時治癒異常狀態。","電系傷害改為攻擊與特攻各提升 1 階。","造成傷害時有 25% 機率額外造成 50% 傷害。","雨天多 2 次可拉霸機會。","晴天多 2 次可拉霸機會。","將命中率下降返還給對手。","上場時複製對手的特性。","物理傷害變為 2 倍。","受到物理傷害時有 50% 機率使對手中毒。","免疫威嚇。","免疫冰凍與凍傷。","免疫灼傷。","對手無法主動更換。","免疫特殊傷害。","每條水系連線回復 5% 最大 HP。","每次拉霸將 5 個未連線圖案變成地面。","對手反擊後損失 10% 最大 HP。","受到的火系和冰系傷害減半。","睡眠時免疫額外傷害。","受到物理傷害時有 50% 機率使對手灼傷。","免疫無法更換的效果。","招式必定命中。","免疫攻擊下降。","每次拉霸有 10% 機率偷走對手的道具。","一次拉霸計為兩次。","上場時攻擊提高 2 階，命中降低 2 階。","受到物理傷害時有 50% 機率使對手混亂。","使用電系招式後，特攻提高 1 階。","使用電系招式後，攻擊提高 1 階。","依天氣變成水、火或冰屬性。","道具不會被偷走。","陷入異常狀態時有 50% 機率立即痊癒。","受到異常狀態時攻擊提高 3 階。","受到異常狀態時防禦提高 3 階。","每次拉霸使對手損失 5% 最大 HP。","低於 50% HP 時，拉霸後將 8 個未連線圖案變成草。","低於 50% HP 時，拉霸後將 8 個未連線圖案變成火。","低於 50% HP 時，拉霸後將 8 個未連線圖案變成水。","低於 50% HP 時，拉霸後將 8 個未連線圖案變成蟲。","造成物理傷害時有 10% 機率使對手混亂。","每次拉霸將 5 個未連線圖案變成火。","對手無法主動更換。","免疫睡眠。","免疫能力下降。","物理傷害變為 2 倍。","單次傷害超過最大 HP 的 50% 時，該次傷害減半。","消除場上的天氣效果。","免疫混亂。"];
+const speciesAbilities={"1":{"common":[65],"hidden":34},"2":{"common":[65],"hidden":34},"3":{"common":[65],"hidden":34},"4":{"common":[66],"hidden":null},"5":{"common":[66],"hidden":null},"6":{"common":[66],"hidden":null},"7":{"common":[67],"hidden":44},"8":{"common":[67],"hidden":44},"9":{"common":[67],"hidden":44},"10":{"common":[19],"hidden":50},"11":{"common":[61],"hidden":null},"12":{"common":[14],"hidden":null},"13":{"common":[19],"hidden":50},"14":{"common":[61],"hidden":null},"15":{"common":[68],"hidden":null},"16":{"common":[51],"hidden":null},"17":{"common":[51],"hidden":null},"18":{"common":[51],"hidden":null},"19":{"common":[50,62],"hidden":55},"20":{"common":[50,62],"hidden":55},"21":{"common":[51],"hidden":null},"22":{"common":[51],"hidden":null},"23":{"common":[22,61],"hidden":null},"24":{"common":[22,61],"hidden":null},"25":{"common":[9],"hidden":31},"26":{"common":[9],"hidden":31},"27":{"common":[8],"hidden":null},"28":{"common":[8],"hidden":null},"29":{"common":[38],"hidden":55},"30":{"common":[38],"hidden":55},"31":{"common":[38],"hidden":null},"32":{"common":[38],"hidden":55},"33":{"common":[38],"hidden":55},"34":{"common":[38],"hidden":null},"35":{"common":[56],"hidden":null},"36":{"common":[56],"hidden":null},"37":{"common":[18],"hidden":70},"38":{"common":[18],"hidden":70},"39":{"common":[56],"hidden":null},"40":{"common":[56],"hidden":null},"41":{"common":[39],"hidden":null},"42":{"common":[39],"hidden":null},"43":{"common":[34],"hidden":50},"44":{"common":[34],"hidden":1},"45":{"common":[34],"hidden":27},"46":{"common":[27],"hidden":6},"47":{"common":[27],"hidden":6},"48":{"common":[14],"hidden":50},"49":{"common":[19],"hidden":null},"50":{"common":[8,71],"hidden":null},"51":{"common":[8,71],"hidden":null},"52":{"common":[53],"hidden":null},"53":{"common":[7],"hidden":null},"54":{"common":[6,13],"hidden":33},"55":{"common":[6,13],"hidden":33},"56":{"common":[72],"hidden":null},"57":{"common":[72],"hidden":null},"58":{"common":[22,18],"hidden":null},"59":{"common":[22,18],"hidden":null},"60":{"common":[11,6],"hidden":33},"61":{"common":[11,6],"hidden":33},"62":{"common":[11,6],"hidden":33},"63":{"common":[28,39],"hidden":null},"64":{"common":[28,39],"hidden":null},"65":{"common":[28,39],"hidden":null},"66":{"common":[62],"hidden":null},"67":{"common":[62],"hidden":null},"68":{"common":[62],"hidden":null},"69":{"common":[34],"hidden":null},"70":{"common":[34],"hidden":null},"71":{"common":[34],"hidden":null},"72":{"common":[29,64],"hidden":44},"73":{"common":[29,64],"hidden":44},"74":{"common":[69,5],"hidden":8},"75":{"common":[69,5],"hidden":8},"76":{"common":[69,5],"hidden":8},"77":{"common":[50,18],"hidden":49},"78":{"common":[50,18],"hidden":49},"79":{"common":[12,20],"hidden":null},"80":{"common":[12,20],"hidden":null},"81":{"common":[42,5],"hidden":null},"82":{"common":[42,5],"hidden":null},"83":{"common":[51,39],"hidden":null},"84":{"common":[50,48],"hidden":null},"85":{"common":[50,48],"hidden":null},"86":{"common":[47],"hidden":null},"87":{"common":[47],"hidden":null},"88":{"common":[1,60],"hidden":null},"89":{"common":[1,60],"hidden":null},"90":{"common":[75],"hidden":null},"91":{"common":[75],"hidden":null},"92":{"common":[26],"hidden":null},"93":{"common":[26],"hidden":null},"94":{"common":[26],"hidden":null},"95":{"common":[69,5],"hidden":null},"96":{"common":[15],"hidden":39},"97":{"common":[15],"hidden":39},"98":{"common":[52,75],"hidden":null},"99":{"common":[52,75],"hidden":null},"100":{"common":[43,9],"hidden":null},"101":{"common":[43,9],"hidden":null},"102":{"common":[34],"hidden":null},"103":{"common":[34],"hidden":null},"104":{"common":[69,31],"hidden":4},"105":{"common":[69,31],"hidden":4},"106":{"common":[7],"hidden":null},"107":{"common":[51],"hidden":39},"108":{"common":[20,12],"hidden":13},"109":{"common":[26],"hidden":1},"110":{"common":[26],"hidden":1},"111":{"common":[31,69],"hidden":null},"112":{"common":[31,69],"hidden":null},"113":{"common":[30,32],"hidden":null},"114":{"common":[34],"hidden":null},"115":{"common":[48],"hidden":39},"116":{"common":[33],"hidden":6},"117":{"common":[38],"hidden":6},"118":{"common":[33,41],"hidden":31},"119":{"common":[33,41],"hidden":31},"120":{"common":[35,30],"hidden":null},"121":{"common":[35,30],"hidden":null},"122":{"common":[43],"hidden":null},"123":{"common":[68],"hidden":null},"124":{"common":[12],"hidden":null},"125":{"common":[9],"hidden":72},"126":{"common":[49],"hidden":72},"127":{"common":[52],"hidden":null},"128":{"common":[22],"hidden":null},"129":{"common":[33],"hidden":null},"130":{"common":[22],"hidden":null},"131":{"common":[11,75],"hidden":null},"132":{"common":[7],"hidden":null},"133":{"common":[50],"hidden":null},"134":{"common":[11],"hidden":null},"135":{"common":[10],"hidden":null},"136":{"common":[18],"hidden":62},"137":{"common":[36],"hidden":null},"138":{"common":[33,75],"hidden":null},"139":{"common":[33,75],"hidden":null},"140":{"common":[33,4],"hidden":null},"141":{"common":[33,4],"hidden":null},"142":{"common":[69,46],"hidden":null},"143":{"common":[17,47],"hidden":null},"144":{"common":[46],"hidden":null},"145":{"common":[46],"hidden":9},"146":{"common":[46],"hidden":49},"147":{"common":[61],"hidden":63},"148":{"common":[61],"hidden":63},"149":{"common":[39],"hidden":null},"150":{"common":[46],"hidden":null},"151":{"common":[28],"hidden":null},"152":{"common":[65],"hidden":null},"153":{"common":[65],"hidden":null},"154":{"common":[65],"hidden":null},"155":{"common":[66],"hidden":18},"156":{"common":[66],"hidden":18},"157":{"common":[66],"hidden":18},"158":{"common":[67],"hidden":null},"159":{"common":[67],"hidden":null},"160":{"common":[67],"hidden":null},"161":{"common":[50,51],"hidden":null},"162":{"common":[50,51],"hidden":null},"163":{"common":[15,51],"hidden":null},"164":{"common":[15,51],"hidden":null},"165":{"common":[68,48],"hidden":null},"166":{"common":[68,48],"hidden":null},"167":{"common":[68,15],"hidden":null},"168":{"common":[68,15],"hidden":null},"169":{"common":[39],"hidden":null},"170":{"common":[10,35],"hidden":11},"171":{"common":[10,35],"hidden":11},"172":{"common":[9],"hidden":31},"173":{"common":[56],"hidden":null},"174":{"common":[56],"hidden":null},"175":{"common":[55,32],"hidden":null},"176":{"common":[55,32],"hidden":null},"177":{"common":[28,48],"hidden":null},"178":{"common":[28,48],"hidden":null},"179":{"common":[9],"hidden":57},"180":{"common":[9],"hidden":57},"181":{"common":[9],"hidden":57},"182":{"common":[34],"hidden":null},"183":{"common":[47,37],"hidden":null},"184":{"common":[47,37],"hidden":null},"185":{"common":[5,69],"hidden":null},"186":{"common":[11,6],"hidden":2},"187":{"common":[34],"hidden":null},"188":{"common":[34],"hidden":null},"189":{"common":[34],"hidden":null},"190":{"common":[50,53],"hidden":null},"191":{"common":[34],"hidden":48},"192":{"common":[34],"hidden":48},"193":{"common":[3,14],"hidden":null},"194":{"common":[6,11],"hidden":null},"195":{"common":[6,11],"hidden":null},"196":{"common":[28],"hidden":null},"197":{"common":[28],"hidden":39},"198":{"common":[15],"hidden":null},"199":{"common":[12,20],"hidden":null},"200":{"common":[26],"hidden":null},"201":{"common":[26],"hidden":null},"202":{"common":[23],"hidden":null},"203":{"common":[39,48],"hidden":null},"204":{"common":[5],"hidden":null},"205":{"common":[5],"hidden":null},"206":{"common":[32,50],"hidden":null},"207":{"common":[52,8],"hidden":17},"208":{"common":[69,5],"hidden":null},"209":{"common":[22,50],"hidden":null},"210":{"common":[22],"hidden":null},"211":{"common":[38,33],"hidden":22},"212":{"common":[68],"hidden":null},"213":{"common":[5],"hidden":null},"214":{"common":[68,62],"hidden":null},"215":{"common":[39,51],"hidden":null},"216":{"common":[53],"hidden":null},"217":{"common":[62],"hidden":null},"218":{"common":[40,49],"hidden":null},"219":{"common":[40,49],"hidden":null},"220":{"common":[12],"hidden":47},"221":{"common":[12],"hidden":47},"222":{"common":[55,30],"hidden":null},"223":{"common":[55],"hidden":null},"224":{"common":[21],"hidden":null},"225":{"common":[72,55],"hidden":15},"226":{"common":[33,11],"hidden":41},"227":{"common":[51,5],"hidden":null},"228":{"common":[48,18],"hidden":null},"229":{"common":[48,18],"hidden":null},"230":{"common":[33],"hidden":6},"231":{"common":[53],"hidden":8},"232":{"common":[5],"hidden":8},"233":{"common":[36],"hidden":null},"234":{"common":[22],"hidden":null},"235":{"common":[20],"hidden":null},"236":{"common":[62],"hidden":72},"237":{"common":[22],"hidden":null},"238":{"common":[12],"hidden":null},"239":{"common":[9],"hidden":72},"240":{"common":[49],"hidden":72},"241":{"common":[47],"hidden":null},"242":{"common":[30,32],"hidden":null},"243":{"common":[46],"hidden":39},"244":{"common":[46],"hidden":39},"245":{"common":[46],"hidden":39},"246":{"common":[62],"hidden":8},"247":{"common":[61],"hidden":null},"248":{"common":[45],"hidden":null},"249":{"common":[46],"hidden":null},"250":{"common":[46],"hidden":null},"251":{"common":[30],"hidden":null}};
+const natures={"1":{"name":"勤奮","down":1,"up":1},"2":{"name":"大膽","down":1,"up":2},"3":{"name":"內斂","down":1,"up":3},"4":{"name":"溫和","down":1,"up":4},"5":{"name":"膽小","down":1,"up":5},"6":{"name":"怕寂寞","down":2,"up":1},"7":{"name":"坦率","down":2,"up":2},"8":{"name":"慢吞吞","down":2,"up":3},"9":{"name":"溫順","down":2,"up":4},"10":{"name":"急躁","down":2,"up":5},"11":{"name":"固執","down":3,"up":1},"12":{"name":"淘氣","down":3,"up":2},"13":{"name":"害羞","down":3,"up":3},"14":{"name":"慎重","down":3,"up":4},"15":{"name":"馬虎","down":4,"up":3},"16":{"name":"爽朗","down":3,"up":5},"17":{"name":"頑皮","down":4,"up":1},"18":{"name":"樂天","down":4,"up":2},"19":{"name":"浮躁","down":4,"up":4},"20":{"name":"天真","down":4,"up":5},"21":{"name":"勇敢","down":5,"up":1},"22":{"name":"悠閒","down":5,"up":2},"23":{"name":"冷靜","down":5,"up":3},"24":{"name":"自大","down":5,"up":4},"25":{"name":"認真","down":5,"up":5}};
+function rollAbility(id){
+  const {common,hidden}=speciesAbilities[id];
+  const roll=Math.random()*(common.length+(hidden ? .1 : 0));
+  return roll>=common.length?hidden:common[Math.floor(roll)];
+}
+function natureStatPercent(natureId,index){
+  const nature=natures[natureId];
+  if(!nature||nature.up===nature.down) return 100;
+  return nature.up===index?110:nature.down===index?90:100;
+}
 const statNames=['HP','攻擊','防禦','特攻','特防','速度'];
 function statsAt(mon,level,{iv=[],ev=[],nature=[]}={}){
   return mon.base.map((base,i)=>{
     const scaled=Math.floor((2*base+(iv[i]??0)+Math.floor((ev[i]??0)/4))*level/100);
-    return i===0?scaled+level+10:Math.floor((scaled+5)*(nature[i]??100)/100);
+    return i===0?scaled+level+10:Math.floor((scaled+5)*(nature[i]??natureStatPercent(mon.natureId,i))/100);
   });
 }
 function experienceAt(mon,n){
@@ -748,6 +795,53 @@ function experienceAt(mon,n){
 }
 const specialTypes=['火','水','草','電','冰','超能力','龍','惡'];
 const matchup=emeraldData.chart;
+function activeAbility(mon){
+  return mon?.copiedAbility??mon?.abilityId??0;
+}
+function abilityImmuneToStatus(mon,status){
+  const ability=activeAbility(mon);
+  return status==='paralysis'&&ability===7||
+    status==='confusion'&&[12,20,77].includes(ability)||
+    status==='sleep'&&[15,72].includes(ability)||
+    ['poison','toxic'].includes(status)&&ability===17||
+    ['freeze','frostbite'].includes(status)&&ability===40||
+    status==='burn'&&ability===41;
+}
+function clearMonStatus(mon){
+  mon.status=null;mon.burned=false;mon.confusion=0;mon.sleep=0;mon.toxicTurns=0;
+  delete mon.statusUntil;delete mon.confusionUntil;
+}
+function activateAbility(run,mon,opponent){
+  delete mon.copiedAbility;
+  if(mon.abilityId===36&&opponent?.left&&opponent.abilityId!==36){
+    mon.copiedAbility=activeAbility(opponent);
+    if(mon.copiedAbility) run.log.unshift(mon.name+'複製了'+abilityNames[mon.copiedAbility]+'。');
+  }
+  if(activeAbility(mon)===55){
+    changeStage(mon,1,2);
+    changeStage(mon,6,-2);
+  }
+  updateWeatherAbilities(run);
+}
+function updateWeatherAbilities(run){
+  const pair=[run.team[run.active],run.enemy];
+  if(pair.some(mon=>mon?.left&&activeAbility(mon)===76)) delete run.weather;
+  for(const mon of pair){
+    if(!mon?.left||activeAbility(mon)!==59) continue;
+    const type={rain:'水',sun:'火',hail:'冰'}[run.weather?.kind]??'普通';
+    mon.abilityBaseType??=mon.type.slice();
+    mon.type=[type];
+  }
+}
+function leaveAbility(mon,withdrawing=true){
+  if(withdrawing&&activeAbility(mon)===30) clearMonStatus(mon);
+  if(mon.abilityBaseType) mon.type=mon.abilityBaseType;
+  delete mon.abilityBaseType;
+  delete mon.copiedAbility;
+}
+function blocksSwitch(mon,opponent){
+  return activeAbility(mon)!==50&&(mon.noSwitch||(opponent?.left&&[23,42,71].includes(activeAbility(opponent))));
+}
 function damageAt(attacker,defender,move,roll,critical=false){
   const special=specialTypes.includes(move.type);
   const attackIndex=special?3:1;
@@ -758,8 +852,7 @@ function damageAt(attacker,defender,move,roll,critical=false){
   const attack=stat(attacker,attackIndex,critical?Math.max(0,attackStage):attackStage);
   const defense=stat(defender,defenseIndex,critical?Math.min(0,defenseStage):defenseStage);
   const type=move.type;
-  const abilityType={1:'草',2:'草',3:'草',4:'火',5:'火',6:'火',7:'水',8:'水',9:'水',152:'草',153:'草',154:'草',155:'火',156:'火',157:'火',158:'水',159:'水',160:'水'}[attacker.id];
-  const power=type===abilityType&&attacker.left*3<=attacker.hp?Math.floor(move.power*1.5):move.power;
+  const power=move.power;
   let damage=Math.floor((Math.floor(2*attacker.level/5)+2)*power*attack/defense/50);
   const statusPenalty=(!special&&(attacker.status==='burn'||attacker.burned))||(special&&attacker.status==='frostbite')?0.75:1;
   damage=(special?damage:Math.max(1,damage))+2;
@@ -791,6 +884,7 @@ function showCombatStats(mon,index=null){
   $('combatStatBody').innerHTML='<p>圖鑑 '+String(mon.id).padStart(3,'0')+' · HP '+mon.left+' / '+mon.hp+' · '+mon.type.map(type=>'<span class="type-inline">'+symbol(type)+'</span>').join('／')+'</p>'+
     statTable(mon,mon.level,[mon.hp,...mon.stats.slice(1)])+
     '<p>能力階級　'+statNames.slice(1).map((name,i)=>name+' '+mon.stages[i+1]).join(' ／ ')+'</p>'+
+    '<p>性格　'+natureLabel(mon.natureId)+' ／ 特性　'+(abilityNames[activeAbility(mon)]??'—')+'</p>'+
     '<p>狀態　'+(statusNames[mon.status]||(mon.burned?'灼傷':'正常'))+'</p><p>招式　'+mon.moves.join('、')+'</p>';
   const swap=$('combatSwap');
   swap.hidden=index===null||!canSwap(index);
@@ -947,20 +1041,23 @@ let mode='trial';
 let selectedTypes=['火','水','草'];
 let selectedTeam=[];
 const selectedShiny=new Set();
+const selectedTraits=new Map();
 const neutralStages=()=>Array(8).fill(0);
 const startingLevel=5;
 const enemyStartingLevel=3;
-function battleMon(entry,level=startingLevel){
+function battleMon(entry,level=startingLevel,traits={}){
   const id=typeof entry==='number'?entry:entry.id;
   const mon=speciesById(id);
-  const stats=statsAt(mon,level);
+  const natureId=traits.natureId??1+Math.floor(Math.random()*25);
+  const abilitySlot=traits.abilitySlot??rollAbility(id);
+  const stats=statsAt({...mon,natureId},level);
   const moves=[];
   for(const [required,name] of learnsets[id]){
     if(required>level||moves.includes(name)) continue;
     moves.push(name);
     if(moves.length>4) moves.shift();
   }
-  return {...mon,...roster.find(p=>p.id===id),level,exp:experienceAt(mon,level),moves,stats,hp:stats[0],left:stats[0],stages:neutralStages()};
+  return {...mon,...roster.find(p=>p.id===id),natureId,abilityId:abilitySlot,level,exp:experienceAt(mon,level),moves,stats,hp:stats[0],left:stats[0],stages:neutralStages()};
 }
 const regions=['關都地區','城都地區','豐緣地區','神奧地區','合眾地區','卡洛斯地區','阿羅拉地區'];
 const legendaryIds=[144,145,146,150,151];
@@ -1048,7 +1145,7 @@ function formalEncounter(stage,prior,rivalStarter){
 }
 function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false){
   const entries=selectedTeam.length?selectedTeam:[4,7];
-  const party=team??entries.map(id=>({...battleMon(id),shiny:mode==='formal'&&selectedShiny.has(id)&&profile.shinyUnlocked.includes(id)}));
+  const party=team??entries.map(id=>({...battleMon(id,startingLevel,mode==='formal'?selectedTraits.get(id):undefined),shiny:mode==='formal'&&selectedShiny.has(id)&&profile.shinyUnlocked.includes(id)}));
   const upgrades=mode==='formal'?(prior?.upgrades??{...readWallet().upgrades}):{};
   const rivalStarter=mode==='formal'?(prior?.rivalStarter??pick([7,4,1])):null;
   const foe=mode==='formal'?formalEncounter(stage,prior,rivalStarter):tutorial&&stage===3
@@ -1201,6 +1298,10 @@ async function evolvePartyMember(p,targetId,run){
     const evolved=speciesById(targetId);
     await showEvolution(p,{...evolved,shiny:p.shiny});
     const {id,name,type,base,growth,evol}=evolved;
+    const previousAbilities=speciesAbilities[p.id],nextAbilities=speciesAbilities[id];
+    const slot=previousAbilities.common.indexOf(p.abilityId);
+    p.abilityId=p.abilityId===previousAbilities.hidden&&nextAbilities.hidden?nextAbilities.hidden:
+      nextAbilities.common.includes(p.abilityId)?p.abilityId:nextAbilities.common[Math.max(0,slot)]??nextAbilities.common[0];
     Object.assign(p,{id,name,type,base,growth,evol});
     recordSeen(id);
     delete p.art;delete p.eye;
@@ -1345,7 +1446,7 @@ async function damagePopup(side,damage){
   portrait.classList.remove('impact-number');
 }
 function changeStage(p,index,amount){
-  if(amount<0&&p.mistGuard) return 0;
+  if(amount<0&&(p.mistGuard||[29,73].includes(activeAbility(p))||index===1&&activeAbility(p)===52)) return 0;
   const before=p.stages[index];
   p.stages[index]=Math.max(-6,Math.min(6,before+amount));
   return p.stages[index]!==before;
@@ -1431,7 +1532,8 @@ async function playBerryAnimations(run){
     }
   }
 }
-function giveStatus(s,p,status){
+function giveStatus(s,p,status,secondary=false){
+  if(abilityImmuneToStatus(p,status)||secondary&&activeAbility(p)===19) return false;
   if(p.status||p.burned||!p.left||s.safeguard?.[s.team.includes(p)?'player':'enemy']) return false;
   if((status==='burn'&&p.type.includes('火'))||(['freeze','frostbite'].includes(status)&&p.type.includes('冰'))||
      (['poison','toxic'].includes(status)&&p.type.some(type=>['毒','鋼'].includes(type)))) return false;
@@ -1440,8 +1542,20 @@ function giveStatus(s,p,status){
   refreshFighterStatus(s,p);
   if(status==='sleep'||status==='freeze') p.statusUntil=(s.enemyTurns??0)+1;
   s.log.unshift(p.name+'陷入'+statusNames[status]+'。');
-  consumeStatusBerry(s,p,status);
+  if(!applyStatusAbility(s,p)) consumeStatusBerry(s,p,status);
   return true;
+}
+function applyStatusAbility(run,mon){
+  const ability=activeAbility(mon);
+  if(ability===61&&Math.random()<.5){
+    clearMonStatus(mon);
+    refreshFighterStatus(run,mon);
+    run.log.unshift(mon.name+'因蛻皮恢復正常。');
+    return true;
+  }
+  if(ability===62) changeStage(mon,1,3);
+  if(ability===63) changeStage(mon,2,3);
+  return false;
 }
 function healMon(s,p,side,amount){
   if(!p.left) return;
@@ -1474,6 +1588,7 @@ function equipEnemy(mon){
 }
 const weatherArt={"sunlight":"iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACHSURBVFhH7ZbBCsAwCEP7//vojo6UjZGCWLWXPHiHUTU5ru3Q+9WH+KxjBv/Fcx4slInxOFiIRaz7YUc94pwddiRCnF/DljJE3AsbqvBo+FQFVEAFVEAFVEAFzhc4+U/whH9hQxkibg1bihDn7bAjHnHODztqEetxsBAmxvNgoUM817Ef3NoNP6GYl0ghjJkAAAAASUVORK5CYII=","ice_spikes":"iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAOSURBVChTYxgFQMDAAAABCAABwQSzUgAAAABJRU5ErkJggg==","rain_drops":"iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA2SURBVDhPY6AqePbs/38okzxAsQEgMPCu+A8EUCZ5gGIDQGBgXQHSDANQIdIBRZpHAamAgQEAGCovCYxJYvsAAAAASUVORK5CYII="};
 function weatherDamage(s,type,side){
+  if(activeAbility(side==='player'?s.team[s.active]:s.enemy)===13) return 1;
   const potency=s.weather?.potency??1;
   let factor=1;
   if(s.weather?.kind==='sun'&&type==='火') factor+=.25*potency;
@@ -1535,14 +1650,15 @@ function noteEffect(s,mon,text){
   s.log.unshift(mon.name+text);
   return true;
 }
-function confuseTarget(s,target,potency){
+function confuseTarget(s,target,potency,secondary=false){
+  if(abilityImmuneToStatus(target,'confusion')||secondary&&activeAbility(target)===19) return false;
   const side=s.team.includes(target)?'player':'enemy';
   if(!target.left||target.confusion||s.safeguard?.[side]||(potency<1&&Math.random()>=potency)) return false;
   target.confusion=1;
   target.confusionUntil=(s.enemyTurns??0)+1;
   refreshFighterStatus(s,target);
   noteEffect(s,target,'陷入混亂。');
-  consumeStatusBerry(s,target,'confusion');
+  if(!applyStatusAbility(s,target)) consumeStatusBerry(s,target,'confusion');
   return true;
 }
 function hiddenPowerFor(mon){
@@ -1611,7 +1727,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
     }
     case 'present':case 'hiddenPower':case 'psywave':case 'tripleKick':case 'beatUp':break;
     case 'sacredFire':
-      if(Math.random()<.5*potency) giveStatus(s,target,'burn');
+      if(Math.random()<.5*potency) giveStatus(s,target,'burn',true);
       break;
     case 'trapSwitch':
       if(Math.random()>=potency) return false;
@@ -1635,9 +1751,9 @@ async function applyCustomMove(s,source,target,skill,side,context){
     case 'howl':
       return Boolean(changeStage(source,1,scaledStages(1,potency)))&&noteEffect(s,source,'的攻擊提高。');
     case 'burn10':case 'burn20':case 'burn50':
-      if(Math.random()<Number(effect.slice(4))/100*potency) giveStatus(s,target,'burn');
+      if(Math.random()<Number(effect.slice(4))/100*potency) giveStatus(s,target,'burn',true);
       break;
-    case 'burnAlways':return Math.random()<potency&&giveStatus(s,target,'burn');
+    case 'burnAlways':return Math.random()<potency&&giveStatus(s,target,'burn',true);
     case 'petal':return confuseTarget(s,source,1);
     case 'seed3':
       if(target.type.includes('草')||target.seeded) return false;
@@ -1649,7 +1765,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
       for(const mon of side==='player'?s.team:s.foes){mon.status=null;mon.burned=false;mon.confusion=0;}
       return noteEffect(s,source,'治癒了己方隊伍。');
     case 'sun':case 'rain':case 'sand':case 'hail':
-      s.weather={kind:effect,until:(s.enemyTurns??0)+1,potency};return noteEffect(s,source,'改變了天氣。');
+      s.weather={kind:effect,until:(s.enemyTurns??0)+1,potency};updateWeatherAbilities(s);return noteEffect(s,source,'改變了天氣。');
     case 'waterSport':case 'mudSport':
       (s.fieldEffects??={})[effect]={side,until:(s.enemyTurns??0)+1,potency};return noteEffect(s,source,'改變了場地效果。');
     case 'spikes25':
@@ -1686,7 +1802,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
       return noteEffect(s,source,'解除了異常狀態。');
     }
     case 'steal':
-      if(side==='player'&&target.heldItem&&itemCatalog[target.heldItem]&&Math.random()<.2){
+      if(side==='player'&&target.heldItem&&activeAbility(target)!==60&&itemCatalog[target.heldItem]&&Math.random()<.2){
         s.stolenItems??={};const id=target.heldItem;
         s.stolenItems[id]=(s.stolenItems[id]??0)+1;target.borrowedItem=id;target.heldItem=null;
         if(['hp-up','protein','iron'].includes(id))for(const mon of s.team)setBattleLevel(mon,mon.level,s);
@@ -1720,7 +1836,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
       if(side==='player'&&!s.trainer){s.skipWild=true;return noteEffect(s,target,'被吹離了戰鬥。');}
       if(side==='player'){
         const reserves=s.foes.flatMap((mon,i)=>i!==s.foeIndex&&mon.left?[i]:[]);
-        if(!reserves.length||target.noSwitch) return false;
+        if(!reserves.length||blocksSwitch(target,source)) return false;
         await sendEnemy(s,pick(reserves),true);return true;
       }
       return false;
@@ -1728,13 +1844,14 @@ async function applyCustomMove(s,source,target,skill,side,context){
       const team=side==='player'?s.team:s.foes;
       const index=side==='player'?s.active:s.foeIndex;
       const reserves=team.flatMap((mon,i)=>i!==index&&mon.left?[i]:[]);
-      if(source.noSwitch||!reserves.length) return false;
+      if(blocksSwitch(source,target)||!reserves.length) return false;
       const next=pick(reserves);
       const stages=source.stages.slice();
       source.stages=neutralStages();
       if(side==='enemy') await sendEnemy(s,next,true);
       else{
-        undoTransform(source);source.seeded=false;source.confusion=0;
+        transferAbilityDebuffs(source,s.team[next],s.enemy);
+        undoTransform(source);leaveAbility(source);source.seeded=false;source.confusion=0;
         s.active=next;s.playerSending=true;render(false);await animatePlayerSendOut(s);spikeDamage(s,'player',s.team[next]);if(!s.team[next].left)await replaceFainted(s);
       }
       if(effect==='baton') team[next].stages=stages;
@@ -1805,12 +1922,13 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     return false;
   }
   source.lastMove=name;
+  if(activeAbility(source)===1&&skill.power&&Math.random()<.05) alterSpinDelay(s,side,1);
   $('notice').textContent=action+'！'+sequence;
   await animateAttack(side,skill.self?side:other,skill);
   const powder=other==='player'&&itemCount(s,'bright-powder')?1:0;
   const accuracy=Math.max(-6,Math.min(6,source.stages[6]-Math.min(6,target.stages[7]+powder)));
   const accuracyFactor=accuracy>=0?(3+accuracy)/3:3/(3-accuracy);
-  if((skill.effect!=='OHKO'&&custom!=='always'&&!skill.self&&skill.accuracy&&skill.effect!=='ALWAYS_HIT'&&!locked&&!target.identified&&Math.random()*100>=skill.accuracy*accuracyFactor)||
+  if((skill.effect!=='OHKO'&&custom!=='always'&&!skill.self&&skill.accuracy&&skill.effect!=='ALWAYS_HIT'&&![14,51].includes(activeAbility(source))&&!locked&&!target.identified&&Math.random()*100>=skill.accuracy*accuracyFactor)||
     (skill.effect==='OHKO'&&custom!=='fissure'&&(source.level<target.level||Math.random()*100>=30+source.level-target.level))){
     s.log.unshift(action+'，沒有命中。');
     return false;
@@ -1826,6 +1944,20 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   }
   let inflicted=0;
   if(skill.power){
+    const effectiveness=typeMultiplier(skill.type,target);
+    const defenseAbility=activeAbility(target);
+    const absorb=(skill.type==='電'&&defenseAbility===10)||(skill.type==='水'&&defenseAbility===11);
+    const boost=(skill.type==='火'&&defenseAbility===18)||(skill.type==='電'&&defenseAbility===31);
+    const immune=absorb||boost||!effectiveness||(defenseAbility===25&&effectiveness<=1)||
+      (defenseAbility===26&&skill.type==='地面')||(defenseAbility===43&&specialTypes.includes(skill.type));
+    if(immune){
+      s.log.unshift(action+'。'+target.name+'免疫這次傷害。');
+      if(absorb) healMon(s,target,other,Math.max(1,Math.floor(target.hp/4)));
+      if(boost){changeStage(target,1,1);changeStage(target,3,1);}
+      return false;
+    }
+    const effectivenessText=effectiveness>1?' 效果絕佳！':effectiveness<1?' 效果微弱。':'';
+    const attackAbility=activeAbility(source);
     const electricBonus=skill.type==='電'&&source.electricCharge?1+source.electricCharge:1;
     if(skill.type==='電') delete source.electricCharge;
     const allies=(side==='player'?s.team:s.foes).filter(mon=>mon.left&&!mon.status&&!mon.burned);
@@ -1840,7 +1972,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
         damageForMove(s,custom==='beatUp'?allies[hit]:source,target,strike,side);
       const wake=target.status==='sleep'||target.status==='freeze';
       const physical=!specialTypes.includes(skill.type);
-      const wakeFactor=target.status==='sleep'&&physical||target.status==='freeze'&&!physical?1.5:1;
+      const wakeFactor=target.status==='sleep'&&physical&&defenseAbility!==48||target.status==='freeze'&&!physical?1.5:1;
       if(custom==='endeavor') raw=target.left>source.left&&raw?target.left-source.left:0;
       const fixed=['endeavor','fixed20','fissure','psywave'].includes(custom);
       const camouflage=target.moves.includes('保護色')&&target.type.some(type=>source.type.includes(type));
@@ -1848,7 +1980,13 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       if(charge) source.nextDamage=false;
       const factor=potency*(fixed?1:scale*bonus*extraHit*wakeFactor*weatherDamage(s,skill.type,side)*(charge?1.5:1)*(camouflage?0.5:1)*electricBonus*(1-.5*(s.fieldEffects?.[(physical?'physicalScreen:':'specialScreen:')+other]?.potency??0)));
       const lens=side==='player'&&raw>0&&!target.counterGuard&&itemCount(s,'scope-lens')&&Math.random()<.1;
-      let damage=target.counterGuard?0:Math.min(target.left,raw&&factor>0?Math.max(1,Math.floor(raw*factor*(lens?1.5:1)*(other==='player'?resistanceBerryFactor(s,skill.type):1))):0);
+      const strength=physical&&[37,74].includes(attackAbility)?2:1;
+      const grace=attackAbility===32&&raw>0&&Math.random()<.25 ? 1.5 : 1;
+      const fat=defenseAbility===47&&['火','冰'].includes(skill.type) ? .5 : 1;
+      let amount=raw*factor*strength*grace*fat*(lens?1.5:1)*(other==='player'?resistanceBerryFactor(s,skill.type):1);
+      if(defenseAbility===5&&target.left===target.hp) amount*=.25;
+      if([4,75].includes(defenseAbility)&&amount>target.hp*.5) amount*=.5;
+      let damage=target.counterGuard||amount<=0?0:Math.min(target.left,Math.max(1,Math.floor(amount))); 
       if(lens&&damage) s.log.unshift('焦點鏡提高了本次傷害。');
       if(skill.effect==='FALSE_SWIPE') damage=Math.min(damage,Math.max(0,target.left-1));
       if(other==='player'&&damage>0&&damage===target.left&&itemCount(s,'focus-band')&&!s.used['focus-band']){
@@ -1861,10 +1999,21 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       inflicted+=damage;
       if(side==='player'&&damage&&target.heldItem&&itemCount(s,'razor-claw')&&Math.random()<.1) borrowEnemyItem(s,target);
       updateHp(other+'Hp',target);
-      s.log.unshift(action+(count>1?'（第 '+(hit+1)+' 擊）':'')+'，造成 '+damage+' 傷害。');
+      s.log.unshift(action+(count>1?'（第 '+(hit+1)+' 擊）':'')+'，造成 '+damage+' 傷害。'+effectivenessText);
       await damagePopup(other,damage);
+      if(damage){
+        if(defenseAbility===16&&target.left){
+          target.abilityBaseType??=target.type.slice();
+          target.type=[skill.type];
+        }
+        if(physical){
+          await afterPhysicalHit(s,source,target,side,attackAbility,defenseAbility);
+          if(!source.left) break;
+        }
+      }
     }
     if(!inflicted) return false;
+    if(skill.type==='電'&&[57,58].includes(attackAbility)) changeStage(source,attackAbility===57?3:1,1);
     if(!target.left&&target.grudge){source.blockedMove=name;delete target.grudge;}
     if(!target.left&&target.destinyBond){
       delete target.destinyBond;
@@ -1895,8 +2044,9 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       s.log.unshift(source.name+'受到反作用力。');
     }
     if(skill.effect==='RECHARGE') source.recharge=true;
-    if(target.left&&hitStatuses[skill.effect]&&Math.random()*100<Math.min(25,skill.secondaryChance)*potency) giveStatus(s,target,skill.effect==='FREEZE_HIT'&&skill.power<100?'frostbite':hitStatuses[skill.effect]);
+    if(target.left&&hitStatuses[skill.effect]&&Math.random()*100<Math.min(25,skill.secondaryChance)*potency) giveStatus(s,target,skill.effect==='FREEZE_HIT'&&skill.power<100?'frostbite':hitStatuses[skill.effect],true);
   }else s.log.unshift(action+'。');
+  if(skill.type==='電'&&[57,58].includes(activeAbility(source))) changeStage(source,activeAbility(source)===57?3:1,1);
   if(custom) return applyCustomMove(s,source,target,skill,side,{support,full,inflicted,depth,potency});
   const quantitative=skill.stat!==undefined||stageEffects[skill.effect]||['RESTORE_HP','SOFTBOILED','SYNTHESIS','MOONLIGHT','SWALLOW','REST'].includes(skill.effect);
   if(!skill.power&&!quantitative&&potency<1&&Math.random()>=potency){s.log.unshift(action+'，減半效果未生效。');return false;}
@@ -1907,15 +2057,16 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   }
   if(directStatuses[skill.effect]&&!giveStatus(s,target,directStatuses[skill.effect])) return false;
   if(skill.effect==='CONFUSE'||(skill.effect==='CONFUSE_HIT'&&Math.random()*100<skill.secondaryChance*potency)){
-    confuseTarget(s,target,1);
+    confuseTarget(s,target,1,Boolean(skill.power));
   }
   if(skill.stat!==undefined&&(!skill.chance||Math.random()<skill.chance*(skill.power?potency:1))){
     const affected=skill.self||skill.delta>0?source:target;
     const delta=skill.power?skill.delta:scaledStages(skill.delta,potency);
     if(!delta) return false;
-    const changed=changeStage(affected,skill.stat,delta);
+    const recipient=skill.stat===6&&delta<0&&activeAbility(affected)===35?(affected===source?target:source):affected;
+    const changed=changeStage(recipient,skill.stat,delta);
     const stat=skill.stat===6?'命中率':skill.stat===7?'閃避率':statNames[skill.stat];
-    s.log.unshift(affected.name+'的'+stat+(changed?(skill.delta<0?'下降。':'上升。'):'已達上限或下限。'));
+    s.log.unshift(recipient.name+'的'+stat+(changed?(skill.delta<0?'下降。':'上升。'):'已達上限或下限。'));
     if(!changed&&!skill.power) return false;
   }
   if(stageEffects[skill.effect]&&(!skill.power||Math.random()*100<skill.secondaryChance*potency)){
@@ -1926,7 +2077,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     }
   }
   if(['RESTORE_HP','SOFTBOILED','SYNTHESIS','MOONLIGHT','SWALLOW'].includes(skill.effect)) healMon(s,source,side,Math.max(1,Math.floor(source.hp/2*potency)));
-  if(skill.effect==='REST'){source.status='sleep';source.statusUntil=(s.enemyTurns??0)+1;source.burned=false;healMon(s,source,side,Math.floor(source.hp*potency));consumeStatusBerry(s,source,'sleep');}
+  if(skill.effect==='REST'&&!abilityImmuneToStatus(source,'sleep')){source.status='sleep';source.statusUntil=(s.enemyTurns??0)+1;source.burned=false;healMon(s,source,side,Math.floor(source.hp*potency));consumeStatusBerry(s,source,'sleep');}
   if(skill.effect==='PROTECT') source.protected=true;
   if(skill.effect==='ENDURE') source.enduring=true;
   if(skill.effect==='HAZE'){source.stages=neutralStages();target.stages=neutralStages();}
@@ -1943,6 +2094,23 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   }
   if(['SPLASH','TELEPORT','FOLLOW_ME','HELPING_HAND'].includes(skill.effect)) return false;
   return true;
+}
+async function afterPhysicalHit(run,source,target,side,attackAbility,defenseAbility){
+  if(attackAbility===69&&Math.random()<.1) confuseTarget(run,target,1);
+  if(!source.left) return;
+  if(defenseAbility===24) await abilityDamage(run,source,side,.1,'粗糙皮膚');
+  if([9,27,38,49,56].includes(defenseAbility)&&Math.random()<.5){
+    if(defenseAbility===56) confuseTarget(run,source,1);
+    else giveStatus(run,source,{9:'paralysis',27:pick(['poison','paralysis','burn']),38:'poison',49:'burn'}[defenseAbility]);
+  }
+}
+async function abilityDamage(run,mon,side,rate,label){
+  if(!mon.left) return;
+  const loss=Math.min(mon.left,Math.max(1,Math.floor(mon.hp*rate)));
+  mon.left-=loss;
+  updateHp(side+'Hp',mon);
+  run.log.unshift(mon.name+'因'+label+'受到 '+loss+' 傷害。');
+  await damagePopup(side,loss);
 }
 function undoTransform(p){
   if(!p.transformOriginal) return;
@@ -2015,6 +2183,9 @@ function bestEnemyReserve(s,defensive=false){
   return best;
 }
 async function sendEnemy(s,index,switching=false){
+  const previous=s.enemy;
+  transferAbilityDebuffs(previous,s.foes[index],s.team[s.active]);
+  leaveAbility(previous);
   if(switching){
     const old=s.enemy;
     delete s.team[s.active].counterGuard;delete s.team[s.active].tempDefense;
@@ -2024,6 +2195,7 @@ async function sendEnemy(s,index,switching=false){
   }else {undoTransform(s.enemy);s.log.unshift(s.enemy.name+'倒下了。');}
   s.foeIndex=index;
   s.enemy=s.foes[index];
+  activateAbility(s,s.enemy,s.team[s.active]);
   resolveWishOnSwitch(s,'enemy');
   s.introSeen=false;
   render(false);
@@ -2057,13 +2229,62 @@ async function resolveSpin(s,board,settledTracks=null){
   activeBerrySpins.add(s);
   try{
     await resolveSpinCore(s,board,settledTracks);
+    if(!s.result){
+      for(const [mon,opponent] of [[s.team[s.active],s.enemy],[s.enemy,s.team[s.active]]]){
+        if(mon.left&&activeAbility(mon)===28&&['poison','toxic','paralysis','burn'].includes(mon.status)) giveStatus(s,opponent,mon.status);
+      }
+      await playBerryAnimations(s);
+    }
     await checkHealingBerry(s);
   }finally{
     activeBerrySpins.delete(s);
   }
 }
+function abilityBoard(run,original){
+  let board=original;
+  const damp=run.dampSymbols??{};
+  const position=i=>i%boardSize+':'+((run.positions[i%boardSize]+Math.floor(i/boardSize))%6);
+  function change(index,type){
+    if(board===original) board=original.slice();
+    board[index]=type;
+  }
+  for(let i=0;i<board.length;i++) if(damp[position(i)]) change(i,'水');
+  const pair=[run.team[run.active],run.enemy];
+  for(const mon of pair){
+    if(!mon?.left) continue;
+    const ability=activeAbility(mon);
+    if(ability===6){
+      const candidates=board.flatMap((type,i)=>type!=='水'?[i]:[]);
+      if(candidates.length){
+        const index=pick(candidates);
+        damp[position(index)]=true;
+        run.dampSymbols=damp;
+        change(index,'水');
+      }
+      continue;
+    }
+    const type={2:'水',45:'地面',70:'火',65:'草',66:'火',67:'水',68:'蟲'}[ability];
+    if(!type) continue;
+    const low=[65,66,67,68].includes(ability);
+    if(low&&mon.left*2>=mon.hp) continue;
+    const linked=new Set(matchingLines(board).flatMap(line=>line.cells));
+    const available=board.flatMap((symbol,i)=>symbol!==type&&!linked.has(i)?[i]:[]);
+    for(const index of shuffle(available).slice(0,low?8:5)) change(index,type);
+  }
+  return board;
+}
+function transferAbilityDebuffs(previous,next,opponent){
+  if(activeAbility(opponent)!==21) return;
+  previous.stages.forEach((stage,index)=>{if(stage<0) changeStage(next,index,stage);});
+  for(const key of ['taunted','disable','encore','follow','blockedMove','noSwitch','selfCounter','seeded','seedRate','seedStart','spinDrain','drainStart']){
+    if(previous[key]) next[key]=previous[key];
+  }
+}
 async function resolveSpinCore(s,board,settledTracks=null){
   if(s.result) return;
+  const modified=abilityBoard(s,board);
+  if(modified!==board) settledTracks=null;
+  board=modified;
   s.board=board;
   s.spins++;
   for(const side of ['player','enemy']){
@@ -2074,11 +2295,22 @@ async function resolveSpinCore(s,board,settledTracks=null){
     if(wish.index===(side==='player'?s.active:s.foeIndex)) healMon(s,active,side,Math.max(1,Math.floor(active.hp*.25*wish.potency)));
   }
   s.actionFlags={};
-  s.counterSpins=(s.counterSpins??0)+1;
+  const current=s.team[s.active];
+  s.counterSpins=(s.counterSpins??0)+(activeAbility(current)===54?2:1);
+  if(activeAbility(current)===53&&s.enemy.heldItem&&Math.random()<.1) borrowEnemyItem(s,s.enemy,'撿拾');
+  if(activeAbility(current)===64) await abilityDamage(s,s.enemy,'enemy',.05,'汙泥漿');
+  if(activeAbility(s.enemy)===64) await abilityDamage(s,current,'player',.05,'汙泥漿');
+  if(!current.left){await replaceFainted(s);if(s.result)return;}
+  if(!s.enemy.left){await winBattle(s,s.team[s.active]);return;}
   if(itemCount(s,'razor-fang')&&Math.random()<.1){alterSpinDelay(s,'player',1);s.log.unshift('銳利之牙增加 1 次可拉霸機會。');}
   renderBattleProgress(s);
   const p=s.team[s.active];
   const matched=matchingLines(board);
+  const waterLines=matched.filter(line=>line.type==='水').length;
+  if(waterLines){
+    if(activeAbility(p)===44) healMon(s,p,'player',Math.max(1,Math.floor(p.hp*.05*waterLines)));
+    if(activeAbility(s.enemy)===44) healMon(s,s.enemy,'enemy',Math.max(1,Math.floor(s.enemy.hp*.05*waterLines)));
+  }
   s.matches=matched.map(result=>result.cells);
   const multiplier=lineMultiplier(s.matches.length);
   renderBoard(board,[],settledTracks);
@@ -2127,7 +2359,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
   if(!p.left){await replaceFainted(s);return;}
   const beforeCounter=s.weather?.kind;
   if(s.counterSpins>=counterTarget(s)) await enemyAct(s);
-  else if(shouldCounter(s,landed)) await enemyAct(s,true);
+  else if(shouldCounter(s,landed)&&!(activeAbility(p)===8&&matched.some(line=>line.type==='地面'))) await enemyAct(s,true);
   else delete s.team[s.active].counterGuard;
   await playWeather(s.weather?.kind??beforeCounter);
   if(!s.enemy.left){await winBattle(s,s.team[s.active]);return;}
@@ -2185,6 +2417,7 @@ function applyHeldSpeed(run){
   if(itemCount(run,'macho-brace')) run.team[run.active].stages[5]=-2;
 }
 async function animatePlayerSendOut(run){
+  activateAbility(run,run.team[run.active],run.enemy);
   resolveWishOnSwitch(run,'player');
   applyHeldSpeed(run);
   const ball=$('playerSendBall');
@@ -2212,9 +2445,11 @@ async function replaceFainted(s){
   await animateFaint('player',p);
   s.log.unshift(p.name+'倒下了。');
   undoTransform(p);
+  leaveAbility(p);
   const candidates=s.team.flatMap((member,i)=>member.left>0?[i]:[]);
   if(!candidates.length){s.result='挑戰失敗，隊伍已全數倒下。';return;}
   const next=await chooseReplacement(s,candidates);
+  transferAbilityDebuffs(p,s.team[next],s.enemy);
   s.active=next;
   s.log.unshift(s.team[next].name+'接替上場。');
   s.playerSending=true;
@@ -2230,7 +2465,14 @@ function renderBattleProgress(state){
   $('actionProgress').textContent=progress+'/'+target+' 對手行動';
 }
 function counterTarget(s){
-  return (itemCount(s,'quick-claw')?6:5)+upgradeEffect(s,'delay');
+  const player=s.team[s.active];
+  const weather=s.weather?.kind;
+  const delay=mon=>{
+    if(!mon?.left) return 0;
+    const ability=activeAbility(mon);
+    return ability===3?1:ability===33&&weather==='rain'||ability===34&&weather==='sun'?2:0;
+  };
+  return Math.max(1,(itemCount(s,'quick-claw')?6:5)+upgradeEffect(s,'delay')+delay(player)-delay(s.enemy));
 }
 function shouldCounter(s,landed){
   return landed&&!itemCount(s,'quick-claw');
@@ -2246,7 +2488,16 @@ function pickDisabledMove(acting,moves){const name=pick(moves);acting.disable=fa
 async function enemyAct(s,random=false){
   s.enemyTurns=(s.enemyTurns??0)+1;
   if(s.actionFlags) s.actionFlags.enemy=false;
-  try{await enemyActCore(s,random);}finally{
+  try{
+    await enemyActCore(s,random);
+    if(random&&!s.result){
+      const player=s.team[s.active];
+      if(player.left&&s.enemy.left){
+        if(activeAbility(player)===22&&activeAbility(s.enemy)!==39&&changeStage(s.enemy,1,-1)) s.log.unshift(s.enemy.name+'因威嚇降低攻擊。');
+        if(activeAbility(player)===46) await abilityDamage(s,s.enemy,'enemy',.1,'壓迫感');
+      }
+    }
+  }finally{
     for(const mon of [...s.team,...s.foes]){
       if(mon.statusUntil&&mon.statusUntil<=s.enemyTurns&&['sleep','freeze'].includes(mon.status)){s.log.unshift(mon.name+'解除了'+statusNames[mon.status]+'。');mon.status=null;delete mon.statusUntil;}
       if(mon.confusionUntil&&mon.confusionUntil<=s.enemyTurns){mon.confusion=0;delete mon.confusionUntil;}
@@ -2256,12 +2507,13 @@ async function enemyAct(s,random=false){
     delete s.enemy.blockedMove;
     for(const mon of [...s.team,...s.foes]) delete mon.mistGuard;
     if(s.weather?.until<=s.enemyTurns) delete s.weather;
+    updateWeatherAbilities(s);
     for(const [id,field] of Object.entries(s.fieldEffects??{})) if(field.until<=s.enemyTurns) delete s.fieldEffects[id];
   }
 }
 async function enemyActCore(s,random){
   if(!random) s.counterSpins=0;
-  if(!random&&s.trainer&&s.stage>50&&!s.enemy.noSwitch){
+  if(!random&&s.trainer&&s.stage>50&&!blocksSwitch(s.enemy,s.team[s.active])){
     const active=s.team[s.active];
     const next=bestEnemyReserve(s,true);
     if(next>=0&&threat(active,s.enemy)>1&&matchupScore(s.foes[next],active)>matchupScore(s.enemy,active)){
@@ -2454,7 +2706,9 @@ function renderLog(){
   const escape=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
   const rows=entries.slice(0,first).reverse().map(message=>{
     const safe=escape(message);
-    return '<li title="'+safe+'">'+safe+'</li>';
+    const color=message.includes('效果微弱')?'effect-weak':message.includes('效果絕佳')?'effect-strong':message.includes('免疫')?'effect-immune':'';
+    const damage=safe.replace(/(\d+)(?=\s*(?:點)?(?:傷害|HP 傷害))|(?<=損失 |扣除 |扣掉 |失去 )\d+(?=\s*HP)/g,value=>'<span class="damage-value">'+value+'</span>');
+    return '<li class="'+color+'" title="'+safe+'">'+damage+'</li>';
   }).join('');
   if(sameLog) log.insertAdjacentHTML('beforeend',rows);
   else log.innerHTML=rows;
@@ -2547,13 +2801,15 @@ function render(refreshBoard=true){
 }
 let pendingSwap=null;
 function canSwap(index){
-  return !rolling&&!state.tutorial&&!state.result&&!state.team[state.active].noSwitch&&index!==state.active&&state.team[index]?.left>0;
+  return !rolling&&!state.tutorial&&!state.result&&!blocksSwitch(state.team[state.active],state.enemy)&&index!==state.active&&state.team[index]?.left>0;
 }
 $('swapDialog').onclose=async()=>{
   const index=pendingSwap;
   pendingSwap=null;
   if($('swapDialog').returnValue!=='confirm'||!canSwap(index)) return;
+  transferAbilityDebuffs(state.team[state.active],state.team[index],state.enemy);
   undoTransform(state.team[state.active]);
+  leaveAbility(state.team[state.active]);
   state.team[state.active].stages=neutralStages();
   state.team[state.active].seeded=false;
   state.active=index;
@@ -2848,6 +3104,7 @@ function advanceStage(){
   const heal=mode==='trial'||(stage>1&&stage<=91&&stage%10===1);
   for(const p of state.team){
     undoTransform(p);
+    leaveAbility(p,false);
     if(heal) p.left=p.hp;
     p.stages=neutralStages();
     p.seeded=false;
@@ -2877,10 +3134,10 @@ function loadProfile(){
   try{
     const saved=JSON.parse(localStorage.getItem(profileKey));
     if(saved&&Array.isArray(saved.unlocked)&&Array.isArray(saved.eggs)){
-      return {starter:saved.starter,unlocked:[...new Set(saved.unlocked.filter(id=>species[id-1]?.id===id).map(baseSpeciesId))],seen:[...new Set([...(Array.isArray(saved.seen)?saved.seen:[]),...saved.unlocked].filter(id=>speciesById(id)))],shinyUnlocked:[...new Set((Array.isArray(saved.shinyUnlocked)?saved.shinyUnlocked:[]).filter(id=>speciesById(id)).map(baseSpeciesId))],eggs:saved.eggs.filter(egg=>species[egg.id-1]&&Number.isFinite(egg.progress)),tickets:Math.max(0,Number(saved.tickets)||0)};
+      return {starter:saved.starter,unlocked:[...new Set(saved.unlocked.filter(id=>species[id-1]?.id===id).map(baseSpeciesId))],seen:[...new Set([...(Array.isArray(saved.seen)?saved.seen:[]),...saved.unlocked].filter(id=>speciesById(id)))],shinyUnlocked:[...new Set((Array.isArray(saved.shinyUnlocked)?saved.shinyUnlocked:[]).filter(id=>speciesById(id)).map(baseSpeciesId))],traitUnlocks:saved.traitUnlocks&&typeof saved.traitUnlocks==='object'?saved.traitUnlocks:{},eggs:saved.eggs.filter(egg=>species[egg.id-1]&&Number.isFinite(egg.progress)),tickets:Math.max(0,Number(saved.tickets)||0)};
     }
   }catch{}
-  return {starter:null,unlocked:[],seen:[],shinyUnlocked:[],eggs:[],tickets:0};
+  return {starter:null,unlocked:[],seen:[],shinyUnlocked:[],traitUnlocks:{},eggs:[],tickets:0};
 }
 const profile=loadProfile();
 function saveProfile(){
@@ -2905,6 +3162,16 @@ function recordSeen(id){
   if(!speciesById(id)||profile.seen.includes(id)) return;
   profile.seen.push(id);
   saveProfile();
+}
+function unlockTraits(baseId,mon){
+  const entry=profile.traitUnlocks[baseId]??={natures:[],abilities:[]};
+  if(natures[mon.natureId]&&!entry.natures.includes(mon.natureId)) entry.natures.push(mon.natureId);
+  const source=speciesAbilities[mon.id],base=speciesAbilities[baseId];
+  if(!source||!base) return;
+  const commonSlot=source.common.indexOf(mon.abilityId);
+  const ability=mon.abilityId===source.hidden?base.hidden:
+    base.common.includes(mon.abilityId)?mon.abilityId:commonSlot>=0?base.common[commonSlot]??base.common[0]:null;
+  if(ability&&!entry.abilities.includes(ability)) entry.abilities.push(ability);
 }
 function unlock(id){
   id=baseSpeciesId(id);
@@ -3482,19 +3749,18 @@ function renderSetup(){
       });
     }
   }
+  const focused=mode==='formal'&&selectedTeam.includes(focusedTeamMember)?focusedTeamMember:null;
+  const memberOptions=focused?'<nav class="team-slot-options" aria-label="'+speciesById(focused).name+'設定">'+
+    teamMemberOptions.map(([key,label])=>'<button type="button" data-team-option="'+key+'">'+label+'</button>').join('')+'</nav>':'';
   $('teamSelection').innerHTML='<span>隊伍 '+selectedTeam.length+' / 6</span><span class="selected-sprites">'+Array.from({length:6},(_,i)=>{
     const mon=speciesById(selectedTeam[i]);
     if(!mon) return '<span class="selection-slot" title="空位"></span>';
     const canShine=mode==='formal'&&profile.shinyUnlocked.includes(mon.id);
     const shiny=canShine&&selectedShiny.has(mon.id);
     const art='<img src="'+sprite({...mon,shiny})+'" alt="'+mon.name+'">';
-    if(!canShine) return '<span class="selection-slot" title="'+mon.name+'">'+art+'</span>';
-    const label=mon.name+' · '+(shiny?'色違':'普通')+'，點擊切換版本';
-    return '<button type="button" class="selection-slot shiny-option" data-shiny="'+mon.id+'" aria-pressed="'+shiny+'" aria-label="'+label+'" title="'+label+'">'+art+'<span aria-hidden="true">★</span></button>';
-  }).join('')+'</span>';
-  if(mode==='formal'&&selectedTeam.some(id=>profile.shinyUnlocked.includes(id))){
-    $('teamSelection').insertAdjacentHTML('beforeend','<small class="shiny-hint">點擊有 ★ 的隊員切換普通／色違</small>');
-  }
+    if(mode==='trial') return '<span class="selection-slot" title="'+mon.name+'">'+art+'</span>';
+    return '<button type="button" class="selection-slot shiny-option" data-configure="'+mon.id+'" aria-pressed="'+(focused===mon.id)+'" aria-label="設定'+mon.name+'">'+art+(shiny?'<span aria-hidden="true">★</span>':'')+'</button>';
+  }).join('')+'</span>'+memberOptions;
   const count=Number($('typeCount').value);
   const choices=$('typeChoices');
   if(!choices.innerHTML){
@@ -3507,15 +3773,77 @@ function renderSetup(){
   $('startBattle').classList.toggle('tutorial-target',mode==='trial'&&!$('startBattle').disabled);
   choices.classList.toggle('tutorial-target',mode==='trial'&&selectedTypes.length<count);
 }
-$('teamSelection').onclick=event=>{
-  const button=event.target.closest('[data-shiny]');
-  if(!button) return;
-  const id=Number(button.dataset.shiny);
-  if(!selectedTeam.includes(id)||!profile.shinyUnlocked.includes(id)) return;
-  if(selectedShiny.has(id)) selectedShiny.delete(id);
-  else selectedShiny.add(id);
+let configuringMember;
+let focusedTeamMember;
+let memberTab='moves';
+const teamMemberOptions=[['moves','技能'],['nature','性格'],['ability','特性'],['shiny','色違']];
+function natureLabel(id){
+  const nature=natures[id];
+  if(!nature) return '隨機';
+  return nature.name+'（'+(nature.up===nature.down?'能力無變化':'+'+statNames[nature.up]+' −'+statNames[nature.down])+'）';
+}
+function showTeamMember(id,tab='moves'){
+  configuringMember=id;
+  memberTab=tab;
+  renderTeamMember();
+  $('teamMemberDialog').showModal();
+}
+function renderTeamMember(){
+  const id=configuringMember,mon=speciesById(id);
+  const traits=selectedTraits.get(id)??{};
+  const known=profile.traitUnlocks[id]??{natures:[],abilities:[]};
+  const shiny=selectedShiny.has(id);
+  $('teamMemberTitle').textContent=mon.name;
+  const details=$('teamMemberDetails');
+  if(memberTab==='moves'){
+    details.innerHTML='<ul>'+learnsets[id].map(([level,name])=>'<li>Lv. '+level+' · '+name+'</li>').join('')+'</ul>';
+  }else if(memberTab==='shiny'){
+    details.innerHTML=profile.shinyUnlocked.includes(id)?
+      '<label><input type="checkbox" id="memberShiny" '+(shiny?'checked':'')+'>以色違型態上場</label>':'<p>收服這一家族的色違寶可夢後可選。</p>';
+  }else{
+    const nature=memberTab==='nature';
+    const ids=nature?known.natures:known.abilities;
+    const current=nature?traits.natureId:traits.abilitySlot;
+    details.innerHTML='<label>'+ (nature?'選擇性格':'選擇特性')+' <select id="memberTrait"><option value="">隨機</option>'+
+      ids.map(value=>'<option value="'+value+'" '+(value===current?'selected':'')+'>'+(nature?natureLabel(value):abilityNames[value]+(speciesAbilities[id].hidden===value?'（隱藏）':''))+'</option>').join('')+'</select></label>'+
+      (nature?'': '<p>'+ (abilityDescriptions[current]??'開局從此寶可夢可出現的特性中抽選。')+'</p>')+
+      (ids.length?'':'<p>捕捉對應性格或特性的寶可夢後可指定。</p>');
+  }
+  $('teamMemberTitle').textContent=mon.name+' · '+teamMemberOptions.find(([key])=>key===memberTab)[1];
+  $('teamMemberToggle').textContent=selectedTeam.includes(id)?'移出隊伍':'加入隊伍';
+  $('teamMemberToggle').disabled=!selectedTeam.includes(id)&&selectedTeam.length>=6;
+}
+$('teamMemberDetails').onchange=event=>{
+  const id=configuringMember;
+  if(event.target.id==='memberShiny'){
+    if(event.target.checked) selectedShiny.add(id);
+    else selectedShiny.delete(id);
+  }else if(event.target.id==='memberTrait'){
+    const traits=selectedTraits.get(id)??{};
+    traits[memberTab==='nature'?'natureId':'abilitySlot']=Number(event.target.value)||undefined;
+    selectedTraits.set(id,traits);
+    renderTeamMember();
+  }
   renderSetup();
-  $('teamSelection').querySelector('[data-shiny="'+id+'"]')?.focus();
+};
+$('teamMemberToggle').onclick=()=>{
+  const id=configuringMember;
+  if(selectedTeam.includes(id)) selectedTeam=selectedTeam.filter(member=>member!==id);
+  else if(selectedTeam.length<6){selectedTeam.push(id);focusedTeamMember=id;}
+  renderSetup();
+  $('teamMemberDialog').close();
+};
+$('teamSelection').onclick=event=>{
+  const option=event.target.closest('[data-team-option]');
+  if(option&&selectedTeam.includes(focusedTeamMember)){
+    showTeamMember(focusedTeamMember,option.dataset.teamOption);
+    return;
+  }
+  const button=event.target.closest('[data-configure]');
+  if(!button) return;
+  focusedTeamMember=Number(button.dataset.configure);
+  renderSetup();
+  $('teamSelection').querySelector('[data-configure="'+focusedTeamMember+'"]')?.focus();
 };
 $('partyHelp').onclick=event=>{
   const button=event.target.closest('[data-dex-region]');
@@ -3527,6 +3855,8 @@ $('partyHelp').onclick=event=>{
 function openSetup(nextMode){
   dexRegion=0;
   selectedShiny.clear();
+  selectedTraits.clear();
+  focusedTeamMember=null;
   mode=nextMode;
   selectedTeam=mode==='trial'?[4,7]:profile.starter?[profile.starter]:[];
   selectedTypes=[];
@@ -3553,10 +3883,7 @@ $('starterCards').onclick=event=>{
 $('teamCards').onclick=event=>{
   const button=event.target.closest('[data-member]');
   if(mode==='trial'||!button||button.disabled) return;
-  const id=Number(button.dataset.member);
-  if(selectedTeam.includes(id)) selectedTeam=selectedTeam.filter(member=>member!==id);
-  else if(selectedTeam.length<6) selectedTeam.push(id);
-  renderSetup();
+  showTeamMember(Number(button.dataset.member));
 };
 $('typeCount').onchange=()=>{
   selectedTypes=selectedTypes.slice(0,Number($('typeCount').value));
@@ -3659,6 +3986,7 @@ async function openBattleStage(entering=false,playerEnters=entering){
       if(state.reels===reels&&!rolling) verticalGroups(reels);
     });
   }
+  if(entering){activateAbility(state,state.team[state.active],state.enemy);activateAbility(state,state.enemy,state.team[state.active]);}
   if(state.introSeen) recordSeen(state.enemy.id);
   if(entering){
     if(playerEnters&&!state.trainer) playPokemonCry(state.team[state.active]);
@@ -3915,7 +4243,7 @@ function stoneEvolution(id,mon){
 }
 function borrowEnemyItem(s,target,reason='銳利之爪'){
   const id=target.heldItem;
-  if(!id||!itemCatalog[id]) return;
+  if(!id||!itemCatalog[id]||activeAbility(target)===60) return;
   s.stolenItems??={};
   s.stolenItems[id]=(s.stolenItems[id]??0)+1;
   target.borrowedItem=id;
@@ -4162,6 +4490,8 @@ function migrateRun(run){
     if(p.transformOriginal) continue;
     const mon=speciesById(p.id);
     if(run.kind&&run.foes.includes(p)&&p.heldItem===undefined&&!p.borrowedItem) equipEnemy(p);
+    p.natureId??=1;
+    p.abilityId??=speciesAbilities[p.id]?.common[0];
     p.type=mon.type;p.base=mon.base;p.evol=mon.evol;p.yield=mon.yield;p.growth=mon.growth;
     p.stages??=neutralStages();
     while(p.stages.length<8) p.stages.push(0);
@@ -4248,6 +4578,7 @@ async function playCapture(caught,shakes){
 }
 async function acceptCapture(s){
   undoTransform(s.enemy);
+  leaveAbility(s.enemy,false);
   const mon={...s.enemy,moves:s.enemy.moves.slice(),stages:neutralStages(),seeded:false,burned:false,status:null,confusion:0};
   if(mon.enemyBoosterCount) delete mon.enemyBoosterCount;
   if(mode==='formal'||s.stage>=10) setBattleLevel(mon,mon.level,s);
@@ -4259,6 +4590,7 @@ async function acceptCapture(s){
   const baseId=baseSpeciesId(mon.id);
   if(mode==='formal'&&!profile.unlocked.includes(baseId)) s.newUnlocks.push(baseId);
   unlock(baseId);
+  unlockTraits(baseId,mon);
   if(mon.shiny&&!profile.shinyUnlocked.includes(baseId)){
     profile.shinyUnlocked.push(baseId);
     s.log.unshift(speciesById(baseId).name+'的色違版本已解鎖。');

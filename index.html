@@ -372,10 +372,6 @@ main{container-type:inline-size;min-width:0;margin:0;position:relative}
 #partyHelp button{min-width:0;padding:.28em .2em;font-size:inherit;white-space:nowrap}
 #partyHelp button[aria-pressed=true]{background:#ffe4a0;color:#402e46}
 #teamCards .empty-region{grid-column:1/-1;text-align:center;margin:1em}
-#styleScreen .style-options{display:grid;gap:1em;width:min(75%,24em);margin:1em auto}
-#styleScreen label{display:grid;gap:.4em;text-align:left}
-#styleScreen select{font:inherit;padding:.45em;background:#f4eaf3;color:#302540;border:2px solid #615571}
-#styleScreen>.home{align-self:center}
 #setup #teamCards{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-auto-rows:6.35cqw;align-content:start;align-items:stretch;min-height:0;max-height:none;width:100%;margin:0;padding:.35cqw;overflow-y:auto;scrollbar-gutter:stable;background:#bdb4c9;border:2px solid #5d526e}
 #setup #teamCards button,#setup #starterCards button{display:grid;grid-template-rows:minmax(0,1fr) auto auto;justify-items:center;align-items:center;gap:.05cqw;min-width:0;min-height:0;width:100%;padding:.15cqw;font-size:1.12cqw;line-height:1.03;overflow:hidden}
 #setup #starterCards{display:grid;grid-template-columns:repeat(3,8cqw);grid-auto-rows:8cqw}
@@ -536,7 +532,9 @@ button:not(:disabled):active{filter:brightness(.9)}
   #evolutionDialog.evolving .evolution-scene:before,#evolutionDialog.evolving img{animation:none}
 }
 
-#setup #teamSelection{display:grid;gap:.28cqw;justify-items:end}
+#setup #teamSelection{display:grid;grid-template-columns:minmax(0,1fr) auto;width:100%;gap:.28cqw .65cqw;align-items:stretch}
+#teamSelection .team-count{grid-column:1/-1;justify-self:end}
+#teamSelection .selected-sprites{grid-column:2;grid-row:2}
 .selected-sprites{display:grid;grid-template-columns:repeat(6,1fr);gap:.23cqw}
 .selection-slot{display:grid;place-items:center;width:4.5cqw;height:4.3cqw;background:#a99db6;border:2px solid #615571;box-shadow:inset 0 0 0 2px #c8bdcf}
 .selection-slot.shiny-option{position:relative;padding:0}
@@ -662,7 +660,14 @@ button:not(:disabled):active{filter:brightness(.9)}
 @keyframes berry-ring{from{opacity:1;transform:scale(.45)}to{opacity:0;transform:scale(1.65)}}
 
 #teamMemberDialog{width:min(42em,88vw)}
-#teamSelection .team-slot-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:min(100%,28cqw);gap:.28cqw;margin:0}
+#teamMemberTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.35em;margin:.65em 0}
+#teamMemberTabs button{min-width:0;display:grid;place-items:center;text-align:center;padding:.4em .12em}
+#teamMemberTabs button[aria-pressed=true]{background:#ffda78;outline:2px solid #835938}
+.member-evolutions{display:flex;flex-wrap:wrap;gap:.45em;margin:.5em 0 .75em}
+.member-evolutions button{display:flex;align-items:center;gap:.4em;text-align:left}
+.member-evolutions img{width:3.2em;height:3.2em;object-fit:contain;image-rendering:pixelated}
+.member-evolutions small{display:block;font-size:.85em}
+#teamSelection .team-slot-options{grid-column:1;grid-row:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,1fr);gap:.28cqw;margin:0;width:100%}
 #teamSelection .team-slot-options button{display:grid;place-items:center;text-align:center;min-width:0;white-space:nowrap;padding:.32em .15em}
 #teamSelection .selection-slot[aria-pressed=true]{background:#ffe3a5;outline:2px solid #8a5632}
 #teamMemberDetails{max-height:35vh;overflow:auto;min-height:5em;margin:.6em 0}
@@ -672,18 +677,77 @@ button:not(:disabled):active{filter:brightness(.9)}
 #log .effect-weak{color:#186b34}
 #log .effect-strong{color:#ac1024}
 #log .effect-immune,#log .effect-immune .damage-value{color:#131117}
+
+:is(#settingsDialog,#battlePause){
+  width:min(36em,90vw);box-sizing:border-box;padding:1em;
+  background:#e7dcc7;color:#292337;border:4px solid #332840;
+  box-shadow:inset 0 0 0 3px #aa9ab1,inset 0 0 0 6px #f7eed8,6px 6px 0 #171123;
+}
+:is(#settingsDialog,#battlePause)::backdrop{background:#171326a8}
+:is(#settingsDialog,#battlePause) h2{
+  margin:0;padding:.45em .65em;background:#453854;color:#fff1cb;
+  border:2px solid #2d223a;box-shadow:inset 0 0 0 2px #746482;font-size:1.35em;
+}
+#settingsDialog .settings-rows{display:grid;gap:.35em;margin:.8em 0}
+#settingsDialog .settings-row{
+  display:grid;grid-template-columns:minmax(5.5em,1fr) minmax(0,1.45fr);
+  align-items:center;gap:.65em;padding:.45em .6em;background:#fff6de;
+  border:2px solid #b1a393;box-shadow:inset 0 0 0 1px #fffaf0;
+}
+#settingsDialog .settings-value{display:flex;align-items:center;gap:.45em;min-width:0}
+#settingsDialog .settings-value output{min-width:3.2em;text-align:right;font-variant-numeric:tabular-nums}
+:is(#settingsDialog,#battlePause) select{
+  min-width:0;max-width:100%;font:inherit;color:#302641;background:#ede0f1;border:2px solid #6b597a;
+  box-shadow:inset 0 0 0 1px #fff7ff;padding:.3em .4em;
+}
+:is(#settingsDialog,#battlePause) input[type=range]{
+  appearance:none;flex:1;min-width:0;height:.65em;background:linear-gradient(90deg,#e1a248 var(--volume,100%),#b6a8bf 0);
+  border:2px solid #5c4a70;box-shadow:inset 0 1px 0 #fff6da;cursor:pointer;
+}
+:is(#settingsDialog,#battlePause) input[type=range]::-webkit-slider-thumb{
+  appearance:none;width:.85em;height:1.05em;background:#fff2b8;border:2px solid #5c4a70;
+  box-shadow:inset 0 0 0 1px #cb9e4b;
+}
+#settingsDialog .settings-actions{display:flex;justify-content:flex-end}
+:is(#settingsDialog,#battlePause) button{background:#f9e3aa;color:#342746;border:2px solid #57446a;box-shadow:inset 0 0 0 2px #fff3ca,2px 2px 0 #6a5577}
+:is(#settingsDialog,#battlePause) :focus-visible{outline:2px solid #9e3e62;outline-offset:2px}
+
+#teamMemberDetails:has(.ability-bag){max-height:none}
+.ability-bag{
+  position:relative;width:100%;aspect-ratio:3/2;container-type:inline-size;
+  background:#89a4b8 url("data:image/png;base64,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") center/100% 100% no-repeat;
+  image-rendering:pixelated;color:#303335;
+}
+.ability-bag-title{position:absolute;left:11%;top:5%;font-size:3.25cqw;line-height:1.05;color:#302c2f}
+.ability-bag-icon{position:absolute;left:12%;top:18%;width:23%;height:35%;object-fit:contain;image-rendering:pixelated}
+.ability-bag-marker{position:absolute;left:3%;top:46%;width:11%;height:14%;object-fit:contain;image-rendering:pixelated}
+.ability-bag-list{position:absolute;left:47%;right:3%;top:7%;bottom:6%;display:grid;align-content:start;gap:.16em;overflow:auto;font-size:3.45cqw}
+.ability-bag-list button{
+  display:grid;grid-template-columns:1em minmax(0,1fr) auto;gap:.12em;text-align:left;
+  align-items:center;background:transparent;color:#38363e;border:0;box-shadow:none;padding:.4em .14em;line-height:1.15;
+}
+.ability-bag-list button:is(:hover,:focus-visible,[aria-pressed=true]){background:#ffe58a;color:#352719}
+.ability-bag-list button[aria-disabled=true]{color:#675d57}
+.ability-bag-list small{font-size:.64em;white-space:nowrap}
+.ability-bag-desc{
+  position:absolute;left:2.5%;right:56%;top:65%;bottom:4%;overflow:auto;
+  font-size:3.15cqw;line-height:1.3;color:#33333c;
+}
+.ability-bag-desc p{margin:.25em 0}
+.shiny-collection{display:flex;flex-wrap:wrap;gap:.65em;margin:.6em 0}
+.shiny-collection button{
+  min-width:7.25em;display:grid;justify-items:center;gap:.25em;
+  padding:.5em .65em;background:#f9e8bd;color:#342d41;
+}
+.shiny-collection button[aria-pressed=true]{outline:3px solid #a65e32;background:#ffdfa1}
+.shiny-collection button:disabled{background:#b3a8bf;color:#3d3545;opacity:1}
+.shiny-collection img{width:4.6em;height:4.6em;object-fit:contain;image-rendering:pixelated}
+.shiny-collection .shiny-locked img{filter:brightness(0) opacity(.82)}
+.shiny-collection small{font-size:.82em}
 </style>
 <main>
 <section id="menu" class="screen" style="position:relative">
-  <div class="menu-scenery" aria-hidden="true"><img src="data:image/png;base64,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" alt=""></div><button id="settingsOpen" type="button" style="position:absolute;right:1.5%;bottom:2%;z-index:2">⚙ 設定</button><h1>POKÉMON SLOT</h1><p>寶可夢拉霸</p><nav><button id="trialMode">新手教學</button><button id="formalMode">正式遊戲</button><button id="continueMode">繼續遊戲</button><button id="shopMode">商店</button><button id="upgradeMode">增強</button><button id="styleMode">風格自訂</button></nav></section>
-<section id="styleScreen" class="screen" hidden>
-  <h1>風格自訂</h1>
-  <div class="style-options">
-    <label>音樂風格<select id="musicStyle" aria-label="音樂風格"><option value="kanto">火紅／葉綠</option><option value="johto">金／銀／水晶</option></select></label>
-    <label>角色選擇<select aria-label="角色選擇"><option>RED</option></select></label>
-  </div>
-  <button type="button" class="home">返回主畫面</button>
-</section>
+  <div class="menu-scenery" aria-hidden="true"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAACgCAIAAAC9uXYyAAAlzklEQVR42u19LZijSrvt2rNbIFogRpSIQLRAjEAcUWIEYgvEFogRiCsQV0R8AvGJiCMQR0RcgYw4AvEJxAjEFogtECMQW5QYgWiBiEC0QLRAtLjihUqF/HTS0+kmM9TD0w+prBA6LF5Wve+i+I0vLQAOtyxuLKOU1tG3rBAAFoEriorWqU34Cf9yfCFAGLmitu13OQ9wTvt9dltjXd8X4vMX+xba/bq+X9d3Myb3xuEWm+nxvyOsa7lM+An/cjwgV7R/2JO5oaOW4ul2C/ZgWkzTJcDSjbptdnks+3/jLsAtOqssboiiGkL7zqwQoJNswk/4H8ETd2sLgGmYZVW2bsdmegmgZR2SBzGApCo8g58SoT+oL+iSQTthcWPQudsm/IR/MV5S1jRMLe3YPHhLNmKzaKpnCX0DbqEQGUkWgOTL1nlWiIxkjSJuJvyE/xG8JG5ZdZwGMIjNtDVLNySPLd1QNcZefn+gr3G45QR+J+SjeLDiBL7DrW6fJvyE/wE854E6EGyZaJkoq7KsSlpX2cx5QKyVVE6qglYG/cqg0LfksPQeuP+aAbjjFoD7QtwXAtwijX83Y/cAZmzCT/gX42czPpvxNSrMWDfyA55u66fbWqUyZkzNb8iB4Cd9ptJ3d4D4W5DHReRLXd/lVpTLx6a/EKTQJ/yE/xH8RowU0V4dfDxVJ5pqNzDL/hs1jyiKqjvbtrODJPB3844TfsK/DH8KcQ+1vWyW/b+jSUn91OsmK8TdjNFf2gN6eQuNriN5FK6LCX9Z/OA4vTv+dfd/xt29+WPRVGflmw/hP/AgJvEuJfwg7SLfyqKYB/GEvzQ+KwThZUh7X/zr7v+uTlDj62DMt1dXHMd3hRU14w1uLQK3yyBu92+00YS/DN4J/CyKKebRyoZY74F/9f3f5fTpKvkU/O8z3+pKkf23Uq0SwC20e/WtGeuWCX8hPLf2Zgm6d98ef4H9//OTd1xLADhLewzwN1vn1o5sl/9SFsXYfnfCXwRPOQGKav3Qqotz74J/7f0XvNpbFpF5ZVqRte5B/7P4TdpODld3Rb0s+ahpmgn/uvittJdKlFPSZBfAX27/L9p+R5PS3nz5wr8V5e4o9X5dLwKXLjfrr6t1MeFfH0/9dzN2/zWjUsXdjN2vaxTijlsdS2bszfCX2/9BlmM3X/GD/R8GKcPBGTY84aiAOeFfF69mA/p4lvXjrc2gii7oA3xvlpBetmfwp2z/ovt/Zl757Dz05Ie+Gn8wUUfBO4F/x60vgfstSrCuF0l4OzPuaGSmblb54LP+47H5m8/NT09+6BHg6dgf8AcLq6SsWXfTRyEoj0Yv6S21LaN0c/9I7xyiLPIySi3xjP/41ff/B/3N0pM0+aGvDL/rD26ZEG2CQhCBLG44ijvC4oYkulwALAKXvkuC6aUoKhRCtEnLxLP+41fZ/1fxN5+L/40ve6MqXVB6E+CgLDT0s07418UrcU49/F2FohC72Ya94fPIW3Ijaglw8HWvsv846m+eO9FeXh7yN5/bP/mhR+cPXiThIgmdwKfMrgzMKjUpXg4q0mqPWnlW/UNZIWjL9C27/uOx+ZsnP/TV+4O/fc1vZwYRl7QyrX/5wskApOpmUVQWN9hMp0UUFVX1AHzmZvw1v5sxixu0Uq+bL1+4XI//HW0Cc+8/XqMalb/5XPzkh35/fPeRfjQmJa8aYrfGhdud6G952itz1RHhbudmoNkP1zAyf/O5/ZMfehT4XTarVTpCEvnUThm8qZPyG4MKH31WHSaqob3bk20djDH5m8/OQ09+6PfFU+Vsxt3119U98K0oqT5ncaNeN7I4960o79e1wy2pPShDTJ0Eo43fr2taJ6VBH/lWlNQpGVmvm/hrTpsdXCtG5W8+Fz/5od8Zr0qOQaJNftbhlsMtmY+TUdnh1mC8KDtl+KTsnqOEf3Wz8ks7zQOMzd98Ln7yQ78zngexDIrqxFmStSoLpYaWkkCVKHKd3lKRgy3ITLY6eRcRtHMmjcbffC5+8kO/M/7PT94/eXxfiPv+8JAMIOVAYuMzN1UufvnCKaFBV3+Z4pCYW2gWNz5z8xaaxNAZJTdLW5aShrIZfzrBP63Y7P8I/M3n4j+gH+Q6gb/XOwKZkiTkhH9VvGgqCnKOrGWQkOjXZS1QHd7JlzQ0lIvaqY7eZB3R6UshG7nSB2wexKKptva/tx9lUdwZj0ilbO//q+SPXws/+aFHgVev6VKkbkobhTh0tVXl8u7LXbAqgne/dIT+5nPbB7n3uzYXNd9JlaEi8if86+IHRO9i4fbYa+vDB6L4oei7W7VWt9/1KDB5NqoZ6MEGpTVU3f/dcdu79E9+6PfGS6pJO7LcApmJB0NMZQy3cRurZui+c3hxKMRmg+re0uSGu7fKjsPffHYeevJDvy/+wbT+y/Zn3F0XaTegVMpyXc+MoRDdX27df83uJZnoJhFubVb6znvpMeo/uLVB2tV+CMuDeMZd0VRPfyXdoHAc/ubJD31leOkPNtLVnuCtRsG964Mwubf/0AeVVrlzsmhKFTESf/O5+MkPPQq8Z/DhAEueHkf+7h3/nf9BHsS7dBmJv/lc/DQ/9Dvjyde7FaF3RPPWy10SH05rPPPB/ouKyKcIbelGoXz7JeZvvjR+8kO/M34hEsqhVu68W9gZ1+IfaRXj8kvpsr4Qydj8zZMf+srwzqcvn/TZJ332vVnLo6KX/xDFaUXKXPly8NYesh4Gy5eN+V/qNZ12A8Co/M3n4ic/9Pvjd2NS2WzYY6QriqCHXu5S+cTPmjo7bpkYg7/53P7JDz0K/EA1bh2wgG9JkJ2XQ7YdBZ+lZt7M32ymohAVt4y6rqu6NZgGwAaquvuJ9HBTpTIi0UBwyyhda3f7v3F3q8RKtVMZRdSXe0uyE/5Z/G7pW8UPgrQc6wzi0LNjpivFE5UB6ItjVXQzCwkmkc3SB7BL68kPfXH8dfmJ3wxvpqIJ00JUBtOOsxlA6YT6IqZF0tpgWiGqJkzNdHOtm/zQ7zzf89j8xG+Dp8BsMK3xVz+Yq9HjeVW3MlRPfuh3nu95bH7iS+O7/E9SvAqbAbTWn+w++37/oNkmJj/0ZfG4Pj/xpfEUngG8Cpup0aZos5Mf+lL4K/UTv0FrwvS1wvNAeOihO80P/c7zPV96vuSx9ZupWNcN/vW/r3uStNaf7bfUatrJD30B/DX7iS/dX4jq2ZzGC4P0Ii5E1Wlo1RK+yS4pN0R0DvR+mfDH8Ng42rR060fvXiqwQT7rWZZcO/7SbfJDXwBP3L1OP/Gl8U2YXihCN0tfD93JD30p/JX6id8Gf4nGLQOTH/pCeEncq/MTXxrPLaO8DKHrusbkh8bl53u+Lj/xpfGXbpMf+uLzPeOq/MSXxt8nhfbZvQSVW+tP/X+jyQ/9+viNGLlCP/Gl+y83KKRx4eSHvgj+FOIeaj93HvrS7YOch0qdGU3Ns8qJ0pzAp5mBfnH8oA3wP2v+OF748cJ/9e2/PqEnvzImf/Nz+Hjh+yGWfiY5/eLt66FL3vzLFlYmfzMmf/OBFi/8pZ/Jl4vYsRbhj2zfTEXphBfS0EMvB5RJ4Z0dJwP29fxCeNWJIWPzNuAUBXlofYR4kfm+wr1F7PjL+Ee2LxPGF6qtTH7oc/D4VfzNUjGLHGaVWZZBi/z4j/ihL9omP/Sp+J/M35zbCwB2vjyiMRaxA2CgNwD4y5f/m/oqe10n9DBtJ4+WfOLGbuselb7zOL1fBw95t3ZfOJQkhvQ3c6uI/L3jwpHkg4nEXciMPACevZCcJrzI/CzqitOS1qQ64hBLP7MswwlMAIeU9PH9qepWv2iWY/I3P49/J38zC1MWpq+V983tRRJ5SeTN/c1OWgrLCS9yCFEJUQEgjeGHiEOIHERrIaosKrOoFMvwBftDc25cqBlMm/zQ7+Nv3n/FVOjLwjSI/CDyWZiq/Yfwp/RTsy0TgBckyyBZCa0QWm4v1OBdGs4idojWpeEAsGyIvHuLOE20VjPTx9vmLGVMj+eXYLMezxljkx/6BDxx9zX8zcWy5AtzQD49dGUkLgF6O4h8AFEQA9Ato3QtQsq/BtMYYzThUDdXi9K/ixd5Mfct2zJzUa5iAaAQXbCcW+0i8rwgsfNlE6Zpm7qam7apVBq7Kxs1sozpK846by9R/Z780G/tby6WZZ6GxbKUQbS7XTRMAQShHYS2CbiukbaFPZ9Xed4dKlGxMOWWIfHE2rqu6QpuME2+yxijLcue3F6IvACwikUuhubNOrSFQjWDaa7mNiINYcZhR2KzyswqI+0Rh1jyYBE7FK3pi9SpXp4PpReorRCbAfzGl72RV01ODVKtsrigzg7/S+F34jQO+JvnTqTymOjbqdg0BGC7IQDfbOu6JvIRZV3XAGBYhr1Yxp4XpyJvy3y5gG6gqSpRpWmlW8cEDG3QMFhVbRK9qyihwAxAxmZqqevQiptmAOaBt/kR4mjhOgCcMqOBICmNRewk3pK2vyiiJQ/k9xaiUuP0IT+0rK0AeK3yipmFAGiimckPfUF/M4XkPA3jVRCvgqpuqrqh9bjUVDYDSNMKAHQDQCwD3gE2U21iUKGgDapsVkUzrcx9Sx0UumlGbCbqd0me3iQ4YHNSOUseyO0ve+sVfS9dEA7loQeNyEdEfEU2g+5YcQaPXTpQCXO4lQ1yt78GnvOgQKSG6qHGoAdXKt460VTE5n703aWqqroB4M8j32wlm4PQhm5EQWzYdhhE+Wplz+cA8tVKstl1DZXTxCF5SshgPwjP3ZVBlDJCk/AgTrtxRiub+B0lFa+JxEvHJDkv+lkSRQ6BiMaIXhsMhwfbEVql9RFON6HPLUOG6t1JGY9TuRBVuf2lkx/6efzmmJ3jb45sXzd4bRsAWF4BkOtNVayCzUeI05Wo4lSEUQAgDCLftQzLAFCJilaiMKcB4rkxjELv3LdIb6hDwyGhY0GELg0nDjGoqiSV4xmZrLAs+UmcfjY/ra+yqm6lvN7N1Qym2QVAeINpzdwZbG3yQ5+EP0LcvY3YDMAqtZVWpYYGoKjqeWsA0A0+jyKV05WoAIRREAYRgLwt86TMrQWpano3CG3i9J7kSZQA4IoI3vp3gJXQuCVS13HTjOhrWyb8LlpTCF/FgmR0VyDkQUdcPyM2W/ZGQiz9bC+nT8ncDcdzc0c/MHaUmR8AOtDIt+iDewsrv5pf+Y39zQDmrSGX44e8yvMwdGksaGumvVhKrlOEluHZMDYTODlVsxJa6DpFlOz6foooWQmNknRs3/mwisUqFl6QyEHhkgeJt1QDc1I5bm4aoblIzUVqJo25/0plGfoqo8j6Xn7uD7+aX/kN/M1aGLd51FRFnS7Eyh0sdbpoqqLNo0p0X6dbRppWpd5sQnV/taWXpd4MBoVSKDtVw8K8Dm0W5qHrVEm+d7woM3Sp6yyDxAsSL0hWsbCATk979tappYz8vDbQV+CmwU3DzU19hTjEofDMGKPI+l5+7s7LIZ+wm23Xb7cyAPLZziPGU2pCFMP03Ivxx/1GMt+8G1EWdkcR5i7rdKGuyLc2l1fLKOMKPgAs5s5ylQGIPY9YXsaNbhlqmk+O/8I0C+EQp1snRdrlp+VfHnjcStQMnQXQD8qVdIfED7Y/jMGmkZclEX2Ap7OoqltdmVL/yO9z7u95Iv7muD84287C7vEqjAp/KGshP3I+/iXzUYR+GMa+a1V5TuM5yC00VSUq37XCMDUsazAuJIls+vpi7gAo0bFZzWOoQZSks4zQdegCWRElPPAG+DDdjO2Ix6tYLJTUx97tS1o3c9A5BsDxA2cfvldBdfPs73PJ+UA+/Gp+5bfxN5tRSLnkSlRF/1yfIuAkIeJUqGymCC0HfGXcqAuAlmkD9nTiOF+QkNhEaGCVL4ooUfHzwBMALUnkybT0bg57j6zvg3RuwvEDy/F22U9Urqq6EJVMO7yXn/vn8UOf7ld+G39zZPukLnzlEhynYpnnACjFMWBGXCQ2NwGEflDlOaWfZc1lV3VQhPbBDNdqnbSeGzFqNd0xwK+ihFyjALxgk8ubH8DLOotM5A108wDfSY5zfB2v3j7Io0v31e1ti8ClyhllCUaIH2SUHSlU1DzJi/BHxiVH+iPbz21bN/iqas0gksuqanWD57Y9j6JBXJRs3pSm28JPEvRGpb1xdJUvWGRXqajnBotsitmH4u488Lx+REhKWmXzkTh9qA3wjLEj7tBTfrcf7//wy/mVL+9v1sK4zT0esqYqKOuc2zbxG0BTFTxkbe7JLAeACgJAXpS+YfmGBSCuROx5APwkCeNobz2FB97cXkbJKuFlwssoWc3t5aFsNEX0CMwCUtfxwQBEYEVf8f7xpkqOF/xur9L/++y2xrq+L8TnL/YttPt1TVPPQ/EHs5ke/zvCupbLuPCAXNH+YU9KmNNSPN3ugZ2OfzCts56RI5pqVlRgt9UDZo8f/1u/SZonWgCkhsYMg95d/PXwh9lNnNWgNmYfq/VD+v17+v27fXtr6YzCMwBj9lHH/tg545/Sr/d//sHZRyP9qwmioGkeD1FqXXy3cOu6nwE0ZW3hFoDA44x/OngxLCIqrHxs/s/M/c//+0/xx4wfYvMRsaH+Puf+nmfhfwo/NHHxNL/yufiXzd9MApo0tAO4VUtszgDS0LrBly5X1WfLagrS6nZIhBgYXijUxNwqSjhvABSFPj8QniW+SnIfLEZNETpGvTeiE16yGb21H8Cukj6R02q73PzTP48f+iy/Mi48f3OQd7plmecZMDe0ucJmAEuXq7UPxpgBy4Blc1NdDFi24RwSr1LCWqZtmfZuEXEXzwOPSByjppUjePI9y2I4sVktIkr2n8VmXHL+6d9nvoVCdPNqrmuaV7NeN/W6C+z3X7P7QtxLTTljo8Mrk3w265uH5sE0zI/6x7IqH5qHgcPzXLz6HMGzrn1FnC5s+1tVqQvF7G9V9VFj+Pef90lxg/b7/cMN2tvb27qubx5vZ7d3bY3Z7V0p2hu0T09d8JsxvRDVAP/4+Gj/wVerv/8RtWXzU/DmH7yua/MPvtZun8Vz/dP/5IvA8Fbpd5EjMLwBfl035t0MwOPc3vs7HPp9cJnnI3741fzKbzl/swMsbDvv64K5bZMCQe+80UOX8lxV3fn9yUdW1S0FPOonpOzZxVs2t2x+Ov6s7S95UNWtq7n+Mt7F08rggdt4v/lGfuPLTSku2y46yHs3tgBKbngMeHLAdcbOfWYjWSBUvXLn4n8kFS0VyODlbjt0c9619I+h/Qx+6CFNd/l5aBDzrvM3/2rtbeYh+Un80N3wLjMMpnFuFYWgQX03vknF7t1KhsEczSsKQVdhcpEfxwMoCmHUbQOxhQfquraB3rt7Ev7Q9vfszxXi6UAkaSH11dvkoX/j7uZGUZocqJsiaOelvOiPCk9B2hF1khZUplJvbdhULvrO3RsfsG/2kwn/g/jBUThUEpceo0HcfdaTdAh/9X5oAPMGFAlkbJA/ovyJ1Ze7x0n2T/jXwg/OAYNp+io7Usd+LT/01c8PzYOYwvPeY6D+oAXbRAgmEjWW7P5wI8SX8xiAqQFAtfBOxPfVeO+N939vUD9xKPkj81v/xpfW1ni/n8gQ8ialvWbi0eBjM0iSTP3Ra8t79wGQViWyUmgB86rbvZWhCaVYWGNz2AKe71YKZbEwM7bGrzIfW7awY9cPuk/FkVnPN4Wnsv9VzJ5d/nKuG0ZTVbrRfXVTVXNjvwHDdLyF1eV6Y7GZMrTGosxOcoDwOlUrNXVdG4v5s/7mH+m/2Zqbfm8ai1sOWXa23x0JvtLqsbE5NGpr4QEQSa2yGcC8aleGtrBty2MA5suKOD1gcxiE3UoUUqeDQOV009OamFoWvowEarFBRknqDJZz3TA0xhhjbT+q0w1jVWV7OV1myRI6cdq35kTr09kMoGAur1M5xUIhqqbPHw/oKLb7Za1bnIm/ej+0ehP8GNjcEXrOAHheQg67laFJQgNoqiJJPABiVYcVI0ITcTsqM56nAQCbe2EUUpweBGn0HB3c+lqHdrTYPwFz0IdnxjkRmkL1kSAt4zRF6LPYvPleowJQVbVhsMxiF/3xr35+6NiPq6qW2aJRELpimpckil/UU4KLbnDd4FjVXp63RncGRoVtobS5mRcJANvlNvcoQncsZ9xOsrirM6KsezYnIeqqjTpOa4HNEiPw5ns5HS1W5sqFDpSp03TESpoiNfw3+FkMg+31jbx2HnrHf6wGxT3+4514+b74PBc0147BtHorrjjvymrHW/mdhg62yjQiFcs89yoY862qUAsnz9yBxz+0Atg6ACQZAOmnb3otUXshqQj4CYB2iaaqALB9Yyp94fphdwdAHC77KhJHEZfeqXH3xB+2zJQZatLCc/leNmPyQw/wbdXPEPf49Mg2vt6Pd3fvG6fnt82/ApeZDMSvWx23Oh4bZrIvDr9rte8ft87eZZ3bjBtPd8bTHb7fo2pB4rtqUbW551Sf7p568EMLbz5nSfj4NddNE0GO1Z8Qn27+9dfjXzpLQsP/9/c//1SprP2dALDszwDKLF+v1wD8cPHxztDapzaLHj59OfCvLL6J8PH2fx7x94HZXfa0h/t7uX5bf7/VbgA0zeNX7WHyQx/DO5q3V0O/b4T2ytgivw4z5otktex2rFuvKwrVielLNsOzkAgApbFTAa0sAJnnACiVo+nN5wBY0iKyEeQAENl1UQBIViuVzVJgZHrNOQdQFAURmvhdFMWxIF2HXr5JvyQnhHM1QrsoqLLIuUUaevJDH8RzbnHLGM+IsGPz3BWpAOPo7jRh/QKAgXGRCmvuemWnOhbMRiJKQxCbkzSnxTRsSfGy2WLzhrXE5shGZJPwUNncpTs4pwWAnlV6VjkNcxpWZnmZ5c//R3lpcS4XL/GUzOHzjW6ehXIP+eX80DdUntjMd8EtyviqKeFMzsDS30k6HnxRCADcMgqRjIfTAJZ5nsznAFbLjYaW68s8T+auqjdKQxB9wyh0DVem7SjvUSIPMkQ7lx3GecfmLkJ7QAHA1KEBoiFlogNd/PZNty6KTO+HG0XtNKxxzqhiNBsXh36iAqHCIWPMti3twvN13Gwe69TfHzp4Uiqke1Mh2XjwzLDruqa57OtxUDkx/aXn6wafLyLGzH0Rq9QN7nkBjQuXdQ5bN2GjH81Zc1es+gsRM1BXpmHDQJBlA05Hvh9E6DgN1EVRJiurG2XCHITRII/njR9tnoxSZnlWFChqAGbi7VMdOuogsU1DTg5maDBMBtu35kuhn66qXzfffAh/9fNDG9oe89eoWqht/eLhkSkbGRerlWu4YU+5kJ4IyAyS3fCsXf5Evu95BQXmZLUigNVH6HK18rw5S9p43vimC+wReKSqTceOQ+K0rlRjsHBCAMssBMAYW9rdRaZpzsiTbiZjt5gqHgbK+FkLx7P4q/dDO6Im1VHV7XgGhaalZXNPN/jKNgDM8+53ly+bqpBpu25EWFciFdZ8DkCsVnJMCQB11a0kQkZoS4dour+HmqUjy1sz8Yi1NBDknJuOTdK5KArJZgrYsRFSGaXGAoAsfXe7moWLfnLy4+FZHRTSuJDSdruFlckPvYWvqlq6YUYSpU1LA8CdRdDPhrjaPrlWDqJY1CqbwZALaz4Xq5U1n6dVmkYpgHCZATVRuUtIb/NVcnrAbEsH0LGZGLwZgxTPP6U4sAMxzxNvxx/HoqWIAKAOwE4VG0wkxpvlodGkJEnrdZMV4m7G6C8xhl7eQgNwx608CtfFuPAjzEN/ZDdMx5PB8kTwA5VebrHv+fdH/ePft8YfRYHv9wDw8YHZbrhwXMM1ddPUzdXX/7b/mOP2Bh9b5I0anjuuaFucrlvULT5/7NgM4OP3r3/83//T/ybGw301m82Koliv1+v12jfdv8Tf6/Va5N9E/m29Xj98+udbrX9c/mNx/reef2YLXdc07aZtnwB8Ey1uM2CBW/tleeh7djtgYZqHn2ZtXqTrdTHrJ/04km8+jr96P/RFn0z6slaKFgDTobtWFAt16VRvLKJY1P2sCQtmA+gDcA3A2rrntAYYmAFbD7LM1KH3ZN2vPco2y1sVIBNzlG8eRGjfdH2zS6r0g8KOScsqXAqdtLKua7quLZxwO2F3UvKO7nYp9lnNurEdN8ghfKIf+gj+6v3Qob2keS8HObv3Ln3DtjdnWt30LK/KwLdUNm/J6F5akIUD5OLIN4Eq9xyVqaalGbo80gBQiz0DNdLQ6vhPctpf6ZTOi8vUDxdxuCROe4lnGMaSrwAwLMlqh95t15NeZ1jWmD+roXmdyszd4P5wGi+px5cH8RE/9LP4q58ferR56DxvJa3Lnme1Ye6yuc/2CYrWyzwPrQCePCGzTRTP2+GlwOpOm71UVuOuFNN7KilB7niqNNITr+MrgBoL+XDDGou+s7OVLsUL89CqEU09vl1/f/uzdSb+6v3QI8xD79J6Kwm9j80dX5X1ZZIBgOfAc8iZdETenDpadWz6KyN07WksaQFkeo0uPFPc7fgaixXDsq5rsIiiNTpv9Jx0CHCeyVGy87nj2z074Vz81fuhHVFXVd3NRqXcFPTukuN1yo11PqD7y3Mviac6N6Ttrg7iTK+VkkpHZV3XKNncyYw6oHQyyQ96d5FrhzJ3quRgIiF7AvmhL8qHq/dDO/aS2FzVLRh+siapbFray6KyKjzicI8k22YzUAdEVlk66WQG6yQHMNd1bZFr6vDxeKstD30e+qzj+wL81fuhR2XtfzY5/QLNID+4uUFQ9pzJbJW4ktzDcjcLF7nW62N9p7ZC5W6cW/GWj63Adh7zmeO7e/o9h/+N91fpRRLKR/epVbru5PDC4WkxDrzZuNuRYHSSY5eRXX/P8N1bWYdEPM7b8hLns2StvrAaGbOPy4wjksNzOd2CtTRaSzeKyH/2+EoNfRb+Z/BDo5+0YISEZpYG4MRLyC6hX8LV1+V3HUrd3Mn60wxJR/zQRRGdeHzlxIWn438GPzT2zQLxfgFZUxcq3Z1OxcGyOTG0F+3AK5yRYZ947iO01ZxlhoZiHRtUvy/Bh6v3Q0svx7uH4e7gtWAaXnePaIPq31Mx3SwHP7g3zVLoMmH3AsuoDD15LizfLc44vrB04yz81c8PTRnosbH59D0i5CE807YA8q+67LK5Q+7G+R/gdI1FjcXL2FzVLWPdc2lXoX368S0i/1z81fuhuWYVhRjMTPUubB4QCyeEyF0i7hcR+vDmq0OnhLoRZmm1eMUrRfPiT8qIYxgM7LJ8u3o/NE00Qz/Z2xdWmHXGxaHeyWacyBF540n5IlLVon1tcp8wHtj2csj5dmVh5UJ8uHo/NGOsqqu9U+iOis3YmZjrDHI0HacHt1SdyG9iMzvB9XGhVtUt51uzzFyOD5Mf+uXtlt28GSceWnzUtqj8UcNHDQ/tM7H5lt1INteifayf3miHD/ih/5P866J8mPzQV9NoGgNaZKg29ZNicy3atw/MG8mh+KEvzYfJD/1DksNS+CSat6PIXh7vKpB3Uc97NbR0kMZVdFE+/D6j+976R/eR+mYzHcAttHv1rRnrljHhtX+eHh8fzbtZI769seT4bN7spizeRYF0/7K2pUOIx2+mMY5Ijqd7If3QKd0DfzE+fID66LR9z2qHTAEScmT4zUzaI9Aelv6mCuRI/zsKjGfahfkw+aFf3hx7zyn0lsJjV36Mh83v5Yf+HU1KYfzLF/6tKGn8qLb7db0IXArv66+rdTEuvG38UZb3lBt6Y8lxXz3dGTe7ubk3rsQ/tJtFpl9u2c1j/cQsbQyS45F9MrGmtN1/kn9dlA8fdv3QR16CCs5jwpMf+ios0W+sSQbp5/dtGz/0hflw9fND3zzcqZHgLSP0kSB9xEL0ZiH8HVMcgwjNRPLJnJEfOv/2n4vyYfJDX0pM75XUMkJfVGqbOvL8PdmMw37oMF9clA+TH/oVWpa3p7B5wOxT5AfBzhIqcow4nkTH5Ie+Mj+05LQaqk+JwcTUI0iaEukUJJ6rGr57Iz/0pfk2+aFfs4lms5wes2UY3huM1a2dGLDzfFxDZNUPfWk+TH7oV5Su2qucEntnyD09No+NzZj80Ffkh1bZfPp14niIbdHNVf4C3TweNk9+6OvzQ28lOtgZuQupjF+FzQDKZsS17skPfX3zQ5va3W2XZj5xgLr3nivRYKahxTMu573tvSqCp+ShJz/0GfgxjAgddqqc2CuLaUX+fdl9ViOpCO7Pb0x+6OuaH3pQWDldMOw+U+L4M1OeifpjUh2TH/r6/NCyDarfp6fF1XkIBk+WeEEjQ9IIJcfkhz4DPwY/dFYfTGKcXuwYxOln0xp7MWMWHl2b/NDH8SOZH/qQnUM0x2bVOETcZ7UHPSh2r7wZifCY/NDX54fe2qtt251oNlriCQdvz25b6NrZbAbw0ELXcKPMoiRVykhUx+SHfiF+PH7oLG9boN37TOJ9TQdK0VbN/rD9rOooG4hm+DyI0WajJz/0dfihhxWE6okWU4nWN9gfpCvRAnion270m71x+pT2UcMTulAtihGxefJD/1TzQ6sPXNvL0d1Q+oLcn1TS2fj8G5Mf+oX40c0PTYdzn5Y4LgzoaZmSmsclRy1aa8RsHu7t5Ie+Oj/0Xk5j58GYp8jcLG8pWh+/vWX8PB6m1yY/9Cn4Ufmhdzmd5a00NL94Pq63vLX2IkOLyQ99On5EfuhzBMaJQVrl9OkxfnQpjskPfX1+6Mu0wT1dV0TlyQ993X7oy+W2f4L/YvJDn4EfhR96akfz0JMf+gz8rzM/9PW2yQ99ZX7oqT2roSc/9DX5oad2XHK8pR/6RnLcCfz9jw7nlkPpku13R4Jnhl3XNWWj64lH428X5tvkh57axSXHW/qhb2SSz+LGoTL6InBFUWW06f6cGAnesZfE5qpuwSYijbHVlgcUlLa7NN/+P+vpLvYzSXzfAAAAAElFTkSuQmCC" alt=""></div><button id="settingsOpen" type="button" style="position:absolute;right:1.5%;bottom:2%;z-index:2">⚙ 設定</button><h1>POKÉMON SLOT</h1><p>寶可夢拉霸</p><nav><button id="trialMode">新手教學</button><button id="formalMode">正式遊戲</button><button id="continueMode">繼續遊戲</button><button id="shopMode">商店</button><button id="upgradeMode">增強</button></nav></section>
 <section id="setup" class="screen" hidden><h1 id="setupTitle"></h1><div id="starterSetup" hidden><p>選擇你的第一隻寶可夢</p><div id="starterCards" class="mon-cards"></div></div><div id="partySetup"><div id="partyHelp"></div><div id="teamCards" class="mon-cards" aria-label="圖鑑隊員清單"></div><div class="setup-footer"><div class="energy-panel"><div class="energy-header"><label>攜帶屬性 <select id="typeCount"><option>3</option><option>5</option><option>6</option></select></label><span id="setupStatus" role="status"></span></div><div id="typeChoices"></div></div><div class="party-confirm"><div id="teamSelection"></div><button id="startBattle">確定開始</button></div></div></div><button class="home">返回主畫面</button></section>
 <section id="shop" class="screen" hidden><h1>商店</h1><div class="capsule-machine" aria-hidden="true"><i></i><b>◆</b></div><h2>扭蛋機</h2><p id="shopTickets"></p><button disabled>使用扭蛋券抽蛋</button><p>扭蛋功能尚未開放。開放後，每張券可抽一顆蛋。</p><div id="shopEggs"></div><button class="home">返回主畫面</button></section>
 <section id="upgradeScreen" class="screen" hidden><h1>永久增強</h1><p id="walletBalance" role="status"></p><div id="upgradeCards"></div><button class="home">返回主畫面</button></section>
@@ -726,10 +790,22 @@ button:not(:disabled):active{filter:brightness(.9)}
 </dialog>
 <dialog id="teamMemberDialog" aria-labelledby="teamMemberTitle">
   <h2 id="teamMemberTitle"></h2>
-
+  <nav id="teamMemberTabs" aria-label="寶可夢資料">
+    <button type="button" data-member-tab="moves">技能</button><button type="button" data-member-tab="nature">性格</button>
+    <button type="button" data-member-tab="ability">特性</button><button type="button" data-member-tab="shiny">色違</button>
+  </nav>
   <div id="teamMemberDetails"></div>
   <form method="dialog"><button type="button" id="teamMemberToggle"></button><button>關閉</button></form>
-</dialog><dialog id="settingsDialog" aria-labelledby="settingsTitle"><h2 id="settingsTitle">設定</h2><p><label><span id="musicVolumeLabel">音量</span> <input id="musicVolume" type="range" min="0" max="100" value="100"> <output id="musicVolumeValue" for="musicVolume">100%</output></label></p><p><label><span id="gameLanguageLabel">Language</span> <select id="gameLanguage"><option value="zh-Hant">繁體中文</option><option value="en">English</option></select></label></p><form method="dialog"><button id="settingsClose">關閉</button></form></dialog><dialog id="upgradeDialog" aria-labelledby="upgradeTitle"><h2 id="upgradeTitle"></h2><p id="upgradeInfo"></p><form method="dialog"><button value="cancel" autofocus>取消</button> <button id="buyUpgrade" value="buy">確認強化</button></form></dialog><dialog id="replacementDialog" aria-labelledby="replacementTitle"><h2 id="replacementTitle">派哪隻寶可夢上場？</h2><form id="replacementChoices" method="dialog"></form></dialog><dialog id="evolutionDialog" aria-labelledby="evolutionTitle"><div class="evolution-scene"><img id="evolutionBefore" alt=""><img id="evolutionAfter" alt="" hidden></div><p id="evolutionTitle" role="status"></p><form method="dialog"><button id="evolutionContinue" hidden>繼續</button></form></dialog><dialog id="trainerIntro" aria-labelledby="trainerIntroTitle"><div class="trainer-card"><img id="trainerIntroSprite" alt=""><div><h2 id="trainerIntroTitle"></h2><p id="trainerIntroText"></p><p id="tutorialRivalHelp" class="tutorial-dialog-next" hidden>特定關卡會出現不同的強勁對手 來挑戰看看吧!</p><div id="trainerIntroItem"></div><form method="dialog"><button autofocus>繼續</button></form></div></div></dialog><dialog id="regionDialog" aria-label="選擇地區"><h2>選擇地區</h2><form id="regionChoices" method="dialog"></form></dialog><dialog id="rewardDialog" aria-labelledby="rewardTitle"><h2 id="rewardTitle">選擇一項過關獎勵</h2><form id="rewardChoices" method="dialog"></form></dialog><dialog id="useItemDialog" aria-labelledby="useItemTitle"><h2 id="useItemTitle"></h2><form id="useItemChoices" method="dialog"></form></dialog><dialog id="combatStats" aria-labelledby="combatStatTitle"><h2 id="combatStatTitle"></h2><div id="combatStatBody"></div><form method="dialog"><button id="combatSwap" type="button" hidden>更換上場</button> <button>關閉</button></form></dialog><dialog id="reference" aria-label="圖鑑與試玩規則"><details id="dex"><summary>全國圖鑑 001–251</summary><p><label>寶可夢 <select id="dexSpecies"></select></label> <label>預覽等級 <input id="dexLevel" type="number" min="1" max="100" value="5"></label></p><div id="dexInfo"></div></details><details><summary>試玩規則與暫定數值</summary>
+</dialog><dialog id="settingsDialog" aria-labelledby="settingsTitle">
+  <h2 id="settingsTitle">設定</h2>
+  <div class="settings-rows">
+    <div class="settings-row"><label for="musicVolume" id="musicVolumeLabel">音量</label><div class="settings-value"><input id="musicVolume" type="range" min="0" max="100" value="100"><output id="musicVolumeValue" for="musicVolume">100%</output></div></div>
+    <div class="settings-row"><label for="musicStyle" id="musicStyleLabel">音樂風格</label><select id="musicStyle"><option value="kanto">火紅／葉綠</option><option value="johto">金／銀／水晶</option></select></div>
+    <div class="settings-row"><label for="playerStyle" id="playerStyleLabel">角色選擇</label><select id="playerStyle"><option>RED</option></select></div>
+    <div class="settings-row"><label for="gameLanguage" id="gameLanguageLabel">Language</label><select id="gameLanguage"><option value="zh-Hant">繁體中文</option><option value="en">English</option></select></div>
+  </div>
+  <form class="settings-actions" method="dialog"><button id="settingsClose" autofocus>關閉</button></form>
+</dialog><dialog id="upgradeDialog" aria-labelledby="upgradeTitle"><h2 id="upgradeTitle"></h2><p id="upgradeInfo"></p><form method="dialog"><button value="cancel" autofocus>取消</button> <button id="buyUpgrade" value="buy">確認強化</button></form></dialog><dialog id="replacementDialog" aria-labelledby="replacementTitle"><h2 id="replacementTitle">派哪隻寶可夢上場？</h2><form id="replacementChoices" method="dialog"></form></dialog><dialog id="evolutionDialog" aria-labelledby="evolutionTitle"><div class="evolution-scene"><img id="evolutionBefore" alt=""><img id="evolutionAfter" alt="" hidden></div><p id="evolutionTitle" role="status"></p><form method="dialog"><button id="evolutionContinue" hidden>繼續</button></form></dialog><dialog id="trainerIntro" aria-labelledby="trainerIntroTitle"><div class="trainer-card"><img id="trainerIntroSprite" alt=""><div><h2 id="trainerIntroTitle"></h2><p id="trainerIntroText"></p><p id="tutorialRivalHelp" class="tutorial-dialog-next" hidden>特定關卡會出現不同的強勁對手 來挑戰看看吧!</p><div id="trainerIntroItem"></div><form method="dialog"><button autofocus>繼續</button></form></div></div></dialog><dialog id="regionDialog" aria-label="選擇地區"><h2>選擇地區</h2><form id="regionChoices" method="dialog"></form></dialog><dialog id="rewardDialog" aria-labelledby="rewardTitle"><h2 id="rewardTitle">選擇一項過關獎勵</h2><form id="rewardChoices" method="dialog"></form></dialog><dialog id="useItemDialog" aria-labelledby="useItemTitle"><h2 id="useItemTitle"></h2><form id="useItemChoices" method="dialog"></form></dialog><dialog id="combatStats" aria-labelledby="combatStatTitle"><h2 id="combatStatTitle"></h2><div id="combatStatBody"></div><form method="dialog"><button id="combatSwap" type="button" hidden>更換上場</button> <button>關閉</button></form></dialog><dialog id="reference" aria-label="圖鑑與試玩規則"><details id="dex"><summary>全國圖鑑 001–251</summary><p><label>寶可夢 <select id="dexSpecies"></select></label> <label>預覽等級 <input id="dexLevel" type="number" min="1" max="100" value="5"></label></p><div id="dexInfo"></div></details><details><summary>試玩規則與暫定數值</summary>
 <p>試玩與正式模式皆由 Lv. 5 開始。永久增強會套用於新開的正式局。正式局通關可累積金幣，結算時入帳。開局會帶上截至該等級已能習得的招式。普通系能由任一屬性連線觸發，其他招式需要同屬性。同一招每次拉霸最多因連線發動一次，所有成線累加這次的傷害倍率。每條線必須由五個同屬性圖案構成。普通線可代替其他屬性的指定線型；只有靠普通線才能達標的招式，效果為 50%。五個輪盤各有六個固定格位，每次先依攜帶屬性數的試玩權重抽出中線數，再從輪盤可達成的停點組合中隨機選一組，畫面顯示每輪連續五格。三屬性各占兩格，五屬性各一格且每輪隨機重複一種，六屬性各占一格。盤面為 5×5。五條橫線、五條直線與兩條主對角線皆可中獎。部分中線結果使用同色堆疊輪帶，讓直線能實際停出。1／2／3／4 條線分別為 ×1.0／×1.2／×1.5／×3，之後每多一條加 1 倍。試玩可重複挑戰至 Lv. 13。正式關都挑戰共 100 關，等級上限為 100。野生寶可夢依原作的等級進化，進化道具與交換型態在野外採試玩門檻。訓練家關有備戰隊伍。對手倒下後會優先派出克制當前寶可夢的隊員。招式依原作升級習得。試玩個體設定為中性性格、個體值與努力值為 0。圖鑑可預覽等級與進化能力值。連線負責觸發招式，招式再判定命中率。灼傷與凍傷每次拉霸扣 5% 最大 HP，中毒扣 8%。睡眠與冰凍會暫停出招，受到傷害或對手完成下次行動後解除；對應的物理或特殊傷害增加 50%。麻痺有一半機率讓招式失效，混亂則可能使攻擊打向自己。</p>
 <p>試玩球不限數量，正式模式初始有 5 顆神奇寶貝球。訓練家關卡無法捕捉。</p>
 <p>每次拉霸先結算我方所有相符招式。若至少一招成功且對手仍在場，對手才隨機反擊一招。確認換人後，對手依序使用目前所有已學招式。換人不消耗拉霸次數，也不回復血量。場上寶可夢倒下時由存活隊友自動接替。對手倒下即過關，我方全倒即失敗。血量、攻擊、技能與連線都是本關測試設定。</p>
@@ -3134,10 +3210,10 @@ function loadProfile(){
   try{
     const saved=JSON.parse(localStorage.getItem(profileKey));
     if(saved&&Array.isArray(saved.unlocked)&&Array.isArray(saved.eggs)){
-      return {starter:saved.starter,unlocked:[...new Set(saved.unlocked.filter(id=>species[id-1]?.id===id).map(baseSpeciesId))],seen:[...new Set([...(Array.isArray(saved.seen)?saved.seen:[]),...saved.unlocked].filter(id=>speciesById(id)))],shinyUnlocked:[...new Set((Array.isArray(saved.shinyUnlocked)?saved.shinyUnlocked:[]).filter(id=>speciesById(id)).map(baseSpeciesId))],traitUnlocks:saved.traitUnlocks&&typeof saved.traitUnlocks==='object'?saved.traitUnlocks:{},eggs:saved.eggs.filter(egg=>species[egg.id-1]&&Number.isFinite(egg.progress)),tickets:Math.max(0,Number(saved.tickets)||0)};
+      return {starter:saved.starter,unlocked:[...new Set(saved.unlocked.filter(id=>species[id-1]?.id===id).map(baseSpeciesId))],seen:[...new Set([...(Array.isArray(saved.seen)?saved.seen:[]),...saved.unlocked].filter(id=>speciesById(id)))],shinyUnlocked:[...new Set((Array.isArray(saved.shinyUnlocked)?saved.shinyUnlocked:[]).filter(id=>speciesById(id)).map(baseSpeciesId))],traitUnlocks:saved.traitUnlocks&&typeof saved.traitUnlocks==='object'?saved.traitUnlocks:{},teamPreferences:saved.teamPreferences&&typeof saved.teamPreferences==='object'?saved.teamPreferences:{},eggs:saved.eggs.filter(egg=>species[egg.id-1]&&Number.isFinite(egg.progress)),tickets:Math.max(0,Number(saved.tickets)||0)};
     }
   }catch{}
-  return {starter:null,unlocked:[],seen:[],shinyUnlocked:[],traitUnlocks:{},eggs:[],tickets:0};
+  return {starter:null,unlocked:[],seen:[],shinyUnlocked:[],traitUnlocks:{},teamPreferences:{},eggs:[],tickets:0};
 }
 const profile=loadProfile();
 function saveProfile(){
@@ -3684,7 +3760,7 @@ const settingsLabels={
   surrenderTitle:['確定要投降嗎？','Surrender this run?'],surrenderCancel:['取消','Cancel'],surrenderConfirm:['投降','Surrender'],
   settingsClose:['關閉','Close'],trialMode:['新手教學','Tutorial'],
   formalMode:['正式遊戲','Formal Mode'],continueMode:['繼續遊戲','Continue'],
-  shopMode:['商店','Shop'],upgradeMode:['增強','Upgrades'],styleMode:['風格自訂','Customization']
+  shopMode:['商店','Shop'],upgradeMode:['增強','Upgrades'],musicStyleLabel:['音樂風格','Music style'],playerStyleLabel:['角色選擇','Character']
 };
 function musicLabel(zh,en){return settings.language==='en'?en:zh;}
 function applySettings(){
@@ -3694,6 +3770,7 @@ function applySettings(){
   $('gameLanguage').value=settings.language;
   $('pauseLanguage').value=settings.language;
   $('pauseVolume').value=settings.volume;
+  for(const id of ['musicVolume','pauseVolume']) $(id).style.setProperty('--volume',settings.volume+'%');
   $('pauseVolumeValue').textContent=settings.volume+'%';
   $('pauseMuteClick').checked=settings.muteClick;
   $('musicStyle').value=settings.musicStyle;
@@ -3729,7 +3806,7 @@ function screen(id){
   if(id!=='battleScreen') $('tutorialHint').hidden=true;
   musicScreen=id;
   if(id!=='battleScreen') syncKantoMusic();
-  for(const page of ['menu','setup','shop','upgradeScreen','settlementScreen','battleScreen','styleScreen']) $(page).hidden=page!==id;
+  for(const page of ['menu','setup','shop','upgradeScreen','settlementScreen','battleScreen']) $(page).hidden=page!==id;
 }
 function renderShop(){
   $('shopTickets').textContent='持有 '+(profile.tickets+(readWallet().championTickets??0))+' 張扭蛋券';
@@ -3783,17 +3860,17 @@ function renderSetup(){
     }
   }
   const focused=mode==='formal'&&selectedTeam.includes(focusedTeamMember)?focusedTeamMember:null;
-  const memberOptions=focused?'<nav class="team-slot-options" aria-label="'+speciesById(focused).name+'設定">'+
-    teamMemberOptions.map(([key,label])=>'<button type="button" data-team-option="'+key+'">'+label+'</button>').join('')+'</nav>':'';
-  $('teamSelection').innerHTML='<span>隊伍 '+selectedTeam.length+' / 6</span><span class="selected-sprites">'+Array.from({length:6},(_,i)=>{
+  const memberOptions=mode==='formal'?'<nav class="team-slot-options" aria-label="'+(focused?speciesById(focused).name+'設定':'隊員設定，請先點選隊員')+'">'+
+    teamMemberOptions.map(([key,label])=>'<button type="button" data-team-option="'+key+'" '+(focused?'':'disabled')+'>'+label+'</button>').join('')+'</nav>':'';
+  $('teamSelection').innerHTML='<span class="team-count">隊伍 '+selectedTeam.length+' / 6</span>'+memberOptions+'<span class="selected-sprites">'+Array.from({length:6},(_,i)=>{
     const mon=speciesById(selectedTeam[i]);
     if(!mon) return '<span class="selection-slot" title="空位"></span>';
     const canShine=mode==='formal'&&profile.shinyUnlocked.includes(mon.id);
     const shiny=canShine&&selectedShiny.has(mon.id);
     const art='<img src="'+sprite({...mon,shiny})+'" alt="'+mon.name+'">';
     if(mode==='trial') return '<span class="selection-slot" title="'+mon.name+'">'+art+'</span>';
-    return '<button type="button" class="selection-slot shiny-option" data-configure="'+mon.id+'" aria-pressed="'+(focused===mon.id)+'" aria-label="設定'+mon.name+'">'+art+(shiny?'<span aria-hidden="true">★</span>':'')+'</button>';
-  }).join('')+'</span>'+memberOptions;
+    return '<button type="button" class="selection-slot shiny-option" data-configure="'+mon.id+'" aria-pressed="'+(focused===mon.id)+'" aria-label="移出隊伍：'+mon.name+'" title="點擊移出隊伍">'+art+(shiny?'<span aria-hidden="true">★</span>':'')+'</button>';
+  }).join('')+'</span>';
   const count=Number($('typeCount').value);
   const choices=$('typeChoices');
   if(!choices.innerHTML){
@@ -3807,6 +3884,7 @@ function renderSetup(){
   choices.classList.toggle('tutorial-target',mode==='trial'&&selectedTypes.length<count);
 }
 let configuringMember;
+let memberEvolutionPath=[];
 let focusedTeamMember;
 let memberTab='moves';
 const teamMemberOptions=[['moves','技能'],['nature','性格'],['ability','特性'],['shiny','色違']];
@@ -3817,55 +3895,167 @@ function natureLabel(id){
 }
 function showTeamMember(id,tab='moves'){
   configuringMember=id;
+  memberEvolutionPath=[];
   memberTab=tab;
   renderTeamMember();
   $('teamMemberDialog').showModal();
 }
+function evolutionCondition(branch){
+  const [,kind,requirement]=branch;
+  const stone=stoneNames[String(requirement).replace(/^ITEM_/,'').replace(/_STONE$/,'').toLowerCase()];
+  const held={ITEM_KINGS_ROCK:'王者之證',ITEM_METAL_COAT:'金屬膜',ITEM_DRAGON_SCALE:'龍之鱗片',ITEM_UP_GRADE:'升級資料'};
+  if(kind==='LEVEL') return 'Lv. '+requirement+' 進化';
+  if(kind==='ITEM') return '使用'+(stone??held[requirement]??'指定道具')+'進化';
+  if(kind==='TRADE_ITEM') return '攜帶'+(held[requirement]??'指定道具')+'交換（目前未開放）';
+  if(kind==='TRADE') return '交換進化（目前未開放）';
+  const time=kind==='FRIENDSHIP_DAY'?'白天':kind==='FRIENDSHIP_NIGHT'?'夜晚':'';
+  if(kind.startsWith('FRIENDSHIP')) return '親密度足夠時'+time+'升級（目前未開放）';
+  const relation={LEVEL_ATK_LT_DEF:'攻擊低於防禦',LEVEL_ATK_GT_DEF:'攻擊高於防禦',LEVEL_ATK_EQ_DEF:'攻擊等於防禦'}[kind];
+  if(relation) return 'Lv. '+requirement+' 起，'+relation+'（目前未開放）';
+  return '特殊條件進化（目前未開放）';
+}
+function shinyCollection(mon,root,preview,shiny){
+  const unlocked=profile.shinyUnlocked.includes(root);
+  const versions=[{id:'normal',label:'普通',shiny:false,unlocked:true},{id:'shiny',label:'色違',shiny:true,unlocked}];
+  return '<p>色違收藏 '+Number(unlocked)+'／'+versions.filter(version=>version.shiny).length+'</p><div class="shiny-collection">'+
+    versions.map(version=>{
+      const locked=!version.unlocked;
+      return '<button type="button" data-shiny-version="'+version.id+'" class="'+(locked?'shiny-locked':'')+'" '+(locked||preview?'disabled':'')+' aria-pressed="'+(shiny===version.shiny&&!locked)+'">'+
+        '<img src="'+sprite({...mon,shiny:version.shiny&&!locked})+'" alt=""><strong>'+version.label+'</strong>'+
+        (locked?'<small>未解鎖</small>':'')+'</button>';
+    }).join('')+'</div>'+(unlocked?'<p>選擇上場時使用的配色。</p>':'<p>收服這一家族的色違寶可夢後解鎖。</p>');
+}
+function abilityBag(mon,root,preview){
+  const {common,hidden}=speciesAbilities[mon.id];
+  const unlocked=profile.traitUnlocks[root]?.abilities??[];
+  const chosen=preview?0:selectedTraits.get(root)?.abilitySlot??0;
+  const options=[...(!preview?[0]:[]),...common,...(hidden?[hidden]:[])];
+  const list=options.map(id=>{
+    const locked=preview||id!==0&&!unlocked.includes(id);
+    const caption=id===0?'隨機':abilityNames[id];
+    return '<button type="button" data-ability-option="'+id+'" aria-disabled="'+locked+'" aria-pressed="'+(!preview&&chosen===id)+'">'+
+      '<span aria-hidden="true">'+(!preview&&chosen===id?'▶':'')+'</span><span>'+caption+'</span>'+
+      '<small>'+(preview?(id===hidden?'隱藏':''):(locked?'未解鎖':id===hidden?'隱藏':''))+'</small></button>';
+  }).join('');
+  return '<div class="ability-bag"><strong class="ability-bag-title">特性</strong>'+
+    '<img class="ability-bag-icon" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAPvSURBVHhe7ZUxbttQEER9lLQ5Qq7g0mVKl2ldpkzpK6TMNVz6CG59FQVP4ACTwX6KtvjJL0ULDPj5/3J3ZriU7m5xi/Hi4fXHwTFtX3/c//l+FPz78OsfyAjOp9Tri0p44unwfDTh6oxYIl7AhMf3n9djAkIqoQmECzLgy8PXyzahJd7FJhDPxHx7vj9iKnWZgZBKZAuI19uXARc7BUvEI1ZXhwy42M8A4ikKpOiWCW7AxX0GLfHCKfHADQAXMQVJOkUtBZ9O1hreAAn2X3oJSYGnkOLB0AZA0IUnPmoEuWkA91O7sQJylegKS42QYIkXhjMBUpXQUzhlhMRKuDDUZwDBStxH0DKCvaENgEwl6LNII1gPawDE+N+uhJwLGSGkCbsbACFIYkAvE4CMGMoAEdIE9DKAujJ6KANExg1Y2wTVHM4AEXBSaxugetSWAWnCbgZAgl9nEQIivIYJXkv16UVP1rsaoOZO0O+FStgSZB1qu8G657qLASmYNW/H9xyVyArVs1Vt1rsZICJJSJ+C9ipUokGVK1CzMkCfwuYGSGQSyr21UNVmvbsBvBUR0jrf1LmgltfWPutdDKAhjUES0lU5OvssJNBr64y1eGxqAM3UOAlprfEUtL8E/hzwaWoZgEkTvf7hBkhoRS5NEDh/eXk9vL29H8GavSrXx191lev1N5sAH38n4eS0zlyBZxCuYN0yy8ffe3CWz2wyBf72gZNwoqASRY7evkJTwFnmU8Nreo7XR/wmUzBnQEU2TeC+ZUCVO2cqa4Rr0oYwgKsbIHKes9QAnnUD9LzOM7+7ASkezBGq9riXAY7WBPh97lXnXU2guH+D4BShnALuyXMTJN5r6+3rXpjrR/6QBuQ+94h2VDnDGVC9lTlCQssER55V4nVWrQHPwHGiu27grAxwcnOEHDLBP4cEZ+S0xINWP/GiRpcpoKgEOMHWuoJIqo5DwpfUaK1Vp6sBagTU3EnkXgXyKlS5iSpPfDjrZoDc9TeVRnDmxHrAe7hwiQfsTbTXCb19QQ3VtCLXC9kvuQirTkEaALypr51sD8z1dnQ3ACQJ8Pj4dPxf56oRJUfrpWg9472cQ2ITAxwi5QZoby24ARUHx6YGQExrhAtOfg14H19XWNUAYq7hHLFKyEfgtZYawNlEe72Ym4KlxM7F0j6rv33ivzeAWGLCFgbsIp7YcwqW1u9uQMuEEQzoKp6gAc11TQLaaxE8B3O12esunpBwIY1orc/FXI9NhHukCSLh+0m0gv7j87++QtbkurlwjxQs+L4TTqT4OTO8lupPNPYPEZJoR54hAoFLkILB1HLccLIVUtAcyJ3K3uIWXePu7i8rrDXcb+meFAAAAABJRU5ErkJggg==">'+
+    '<img class="ability-bag-marker" alt="" src="'+sprite(mon)+'">'+
+    '<div class="ability-bag-list" aria-label="特性清單">'+list+'</div>'+
+    '<div class="ability-bag-desc" id="abilityBagDesc">'+abilityBagDescription(chosen||options[0],preview,false)+'</div></div>';
+}
+function abilityBagDescription(id,preview,locked){
+  if(!id) return '<strong>隨機</strong><p>開局抽取此寶可夢的一種特性。</p>';
+  return '<strong>'+abilityNames[id]+'</strong><p>'+abilityDescriptions[id]+'</p>'+
+    (locked&&!preview?'<p>收服具有此特性的寶可夢後可選。</p>':'');
+}
 function renderTeamMember(){
-  const id=configuringMember,mon=speciesById(id);
-  const traits=selectedTraits.get(id)??{};
-  const known=profile.traitUnlocks[id]??{natures:[],abilities:[]};
-  const shiny=selectedShiny.has(id);
+  const root=configuringMember;
+  const id=memberEvolutionPath.at(-1)??root,mon=speciesById(id);
+  const preview=id!==root;
+  $('teamMemberTabs').querySelectorAll('[data-member-tab]').forEach(button=>{
+    button.setAttribute('aria-pressed',button.dataset.memberTab===memberTab);
+  });
+  const traits=selectedTraits.get(root)??{};
+  const known=profile.traitUnlocks[root]??{natures:[],abilities:[]};
+  const shiny=selectedShiny.has(root);
   $('teamMemberTitle').textContent=mon.name;
   const details=$('teamMemberDetails');
   if(memberTab==='moves'){
-    details.innerHTML='<ul>'+learnsets[id].map(([level,name])=>'<li>Lv. '+level+' · '+name+'</li>').join('')+'</ul>';
+    const evolutions=mon.evol.filter(([next])=>speciesById(next));
+    details.innerHTML='<h3>進化</h3>'+(evolutions.length?'<div class="member-evolutions">'+evolutions.map(branch=>{
+      const next=speciesById(branch[0]);
+      return '<button type="button" data-evolution="'+next.id+'"><img src="'+sprite({...next,shiny})+'" alt=""><span><strong>'+next.name+'</strong><small>'+evolutionCondition(branch)+'</small></span></button>';
+    }).join('')+'</div>':'<p>此型態沒有後續進化。</p>')+
+      '<h3>升等招式</h3><ul>'+learnsets[id].map(([level,name])=>'<li>Lv. '+level+' · '+name+'</li>').join('')+'</ul>';
+  }else if(memberTab==='ability'){
+    details.innerHTML=abilityBag(mon,root,preview);
   }else if(memberTab==='shiny'){
-    details.innerHTML=profile.shinyUnlocked.includes(id)?
-      '<label><input type="checkbox" id="memberShiny" '+(shiny?'checked':'')+'>以色違型態上場</label>':'<p>收服這一家族的色違寶可夢後可選。</p>';
+    details.innerHTML=shinyCollection(mon,root,preview,shiny);
+  }else if(preview){
+    details.innerHTML='<p>進化後保留性格。'+natureLabel(traits.natureId)+'</p>';
   }else{
-    const nature=memberTab==='nature';
-    const ids=nature?known.natures:known.abilities;
-    const current=nature?traits.natureId:traits.abilitySlot;
-    details.innerHTML='<label>'+ (nature?'選擇性格':'選擇特性')+' <select id="memberTrait"><option value="">隨機</option>'+
-      ids.map(value=>'<option value="'+value+'" '+(value===current?'selected':'')+'>'+(nature?natureLabel(value):abilityNames[value]+(speciesAbilities[id].hidden===value?'（隱藏）':''))+'</option>').join('')+'</select></label>'+
-      (nature?'': '<p>'+ (abilityDescriptions[current]??'開局從此寶可夢可出現的特性中抽選。')+'</p>')+
-      (ids.length?'':'<p>捕捉對應性格或特性的寶可夢後可指定。</p>');
+    details.innerHTML='<label>選擇性格 <select id="memberTrait"><option value="">隨機</option>'+
+      known.natures.map(value=>'<option value="'+value+'" '+(value===traits.natureId?'selected':'')+'>'+natureLabel(value)+'</option>').join('')+'</select></label>'+
+      (known.natures.length?'':'<p>捕捉對應性格的寶可夢後可指定。</p>');
   }
   $('teamMemberTitle').textContent=mon.name+' · '+teamMemberOptions.find(([key])=>key===memberTab)[1];
+  if(preview) details.insertAdjacentHTML('afterbegin','<button type="button" data-evolution-back>返回上一個型態</button>');
+  $('teamMemberToggle').hidden=preview;
   $('teamMemberToggle').textContent=selectedTeam.includes(id)?'移出隊伍':'加入隊伍';
   $('teamMemberToggle').disabled=!selectedTeam.includes(id)&&selectedTeam.length>=6;
 }
-$('teamMemberDetails').onchange=event=>{
-  const id=configuringMember;
-  if(event.target.id==='memberShiny'){
-    if(event.target.checked) selectedShiny.add(id);
+$('teamMemberTabs').onclick=event=>{
+  const button=event.target.closest('[data-member-tab]');
+  if(!button) return;
+  memberTab=button.dataset.memberTab;
+  renderTeamMember();
+};
+function rememberMemberSettings(id){
+  profile.teamPreferences[id]={...selectedTraits.get(id),shiny:selectedShiny.has(id)};
+  saveProfile();
+  renderSetup();
+}
+function previewAbilityOption(event){
+  const option=event.target.closest('[data-ability-option]');
+  if(!option) return;
+  $('abilityBagDesc').innerHTML=abilityBagDescription(Number(option.dataset.abilityOption),memberEvolutionPath.length>0,option.getAttribute('aria-disabled')==='true');
+}
+$('teamMemberDetails').onpointerover=previewAbilityOption;
+$('teamMemberDetails').onfocusin=previewAbilityOption;
+$('teamMemberDetails').onclick=event=>{
+  const ability=event.target.closest('[data-ability-option]');
+  if(ability){
+    previewAbilityOption(event);
+    if(ability.getAttribute('aria-disabled')==='true') return;
+    const id=configuringMember;
+    selectedTraits.set(id,{...selectedTraits.get(id),abilitySlot:Number(ability.dataset.abilityOption)||undefined});
+    rememberMemberSettings(id);
+    renderTeamMember();
+    $('teamMemberDetails').querySelector('[data-ability-option="'+ability.dataset.abilityOption+'"]')?.focus();
+    return;
+  }
+  const version=event.target.closest('[data-shiny-version]');
+  if(version){
+    if(version.disabled) return;
+    const id=configuringMember;
+    if(version.dataset.shinyVersion==='shiny') selectedShiny.add(id);
     else selectedShiny.delete(id);
-  }else if(event.target.id==='memberTrait'){
-    const traits=selectedTraits.get(id)??{};
-    traits[memberTab==='nature'?'natureId':'abilitySlot']=Number(event.target.value)||undefined;
-    selectedTraits.set(id,traits);
+    rememberMemberSettings(id);
+    renderTeamMember();
+    return;
+  }
+  if(event.target.closest('[data-evolution-back]')){
+    memberEvolutionPath.pop();
+    memberTab='moves';
+    renderTeamMember();
+    return;
+  }
+  const evolution=event.target.closest('[data-evolution]');
+  if(evolution){
+    memberEvolutionPath.push(Number(evolution.dataset.evolution));
+    memberTab='moves';
     renderTeamMember();
   }
-  renderSetup();
+};
+$('teamMemberDetails').onchange=event=>{
+  if(event.target.id!=='memberTrait') return;
+  const id=configuringMember;
+  selectedTraits.set(id,{...selectedTraits.get(id),natureId:Number(event.target.value)||undefined});
+  rememberMemberSettings(id);
 };
 $('teamMemberToggle').onclick=()=>{
   const id=configuringMember;
-  if(selectedTeam.includes(id)) selectedTeam=selectedTeam.filter(member=>member!==id);
-  else if(selectedTeam.length<6){selectedTeam.push(id);focusedTeamMember=id;}
-  renderSetup();
+  if(selectedTeam.includes(id)) removeTeamMember(id);
+  else if(selectedTeam.length<6){selectedTeam.push(id);focusedTeamMember=id;renderSetup();}
   $('teamMemberDialog').close();
 };
+function removeTeamMember(id){
+  const index=selectedTeam.indexOf(id);
+  if(index<0) return;
+  selectedTeam.splice(index,1);
+  if(focusedTeamMember===id) focusedTeamMember=selectedTeam[index]??selectedTeam[index-1]??null;
+  renderSetup();
+}
 $('teamSelection').onclick=event=>{
   const option=event.target.closest('[data-team-option]');
   if(option&&selectedTeam.includes(focusedTeamMember)){
@@ -3874,9 +4064,7 @@ $('teamSelection').onclick=event=>{
   }
   const button=event.target.closest('[data-configure]');
   if(!button) return;
-  focusedTeamMember=Number(button.dataset.configure);
-  renderSetup();
-  $('teamSelection').querySelector('[data-configure="'+focusedTeamMember+'"]')?.focus();
+  removeTeamMember(Number(button.dataset.configure));
 };
 $('partyHelp').onclick=event=>{
   const button=event.target.closest('[data-dex-region]');
@@ -3891,6 +4079,16 @@ function openSetup(nextMode){
   selectedTraits.clear();
   focusedTeamMember=null;
   mode=nextMode;
+  if(mode==='formal'){
+    for(const [key,pref] of Object.entries(profile.teamPreferences)){
+      const id=Number(key),known=profile.traitUnlocks[id];
+      if(!pref||!speciesById(id)) continue;
+      if(pref.shiny&&profile.shinyUnlocked.includes(id)) selectedShiny.add(id);
+      const natureId=known?.natures?.includes(pref.natureId)?pref.natureId:undefined;
+      const abilitySlot=known?.abilities?.includes(pref.abilitySlot)?pref.abilitySlot:undefined;
+      if(natureId||abilitySlot) selectedTraits.set(id,{natureId,abilitySlot});
+    }
+  }
   selectedTeam=mode==='trial'?[4,7]:profile.starter?[profile.starter]:[];
   selectedTypes=[];
   $('teamCards').scrollTop=0;
@@ -3902,7 +4100,7 @@ function openSetup(nextMode){
 $('trialMode').onclick=()=>openSetup('trial');
 $('formalMode').onclick=()=>openSetup('formal');
 $('shopMode').onclick=renderShop;
-$('styleMode').onclick=()=>screen('styleScreen');
+
 document.querySelectorAll('.home').forEach(button=>button.onclick=()=>{if(!rolling) screen('menu');});
 $('starterCards').onclick=event=>{
   const button=event.target.closest('[data-starter]');
@@ -3916,7 +4114,21 @@ $('starterCards').onclick=event=>{
 $('teamCards').onclick=event=>{
   const button=event.target.closest('[data-member]');
   if(mode==='trial'||!button||button.disabled) return;
-  showTeamMember(Number(button.dataset.member));
+  const id=Number(button.dataset.member);
+  if(!selectedTeam.includes(id)){
+    if(selectedTeam.length>=6) return;
+    selectedTeam.push(id);
+  }
+  focusedTeamMember=id;
+  renderSetup();
+};
+$('teamCards').oncontextmenu=event=>{
+  const card=event.target.closest('[data-member]');
+  if(mode!=='formal'||!card) return;
+  const id=Number(card.dataset.member);
+  if(!selectedTeam.includes(id)) return;
+  event.preventDefault();
+  removeTeamMember(id);
 };
 $('typeCount').onchange=()=>{
   selectedTypes=selectedTypes.slice(0,Number($('typeCount').value));

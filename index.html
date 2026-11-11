@@ -679,7 +679,7 @@ button:not(:disabled):active{filter:brightness(.9)}
 <section id="styleScreen" class="screen" hidden>
   <h1>風格自訂</h1>
   <div class="style-options">
-    <label>音樂風格<select aria-label="音樂風格"><option>火紅／葉綠</option></select></label>
+    <label>音樂風格<select id="musicStyle" aria-label="音樂風格"><option value="kanto">火紅／葉綠</option><option value="johto">金／銀／水晶</option></select></label>
     <label>角色選擇<select aria-label="角色選擇"><option>RED</option></select></label>
   </div>
   <button type="button" class="home">返回主畫面</button>
@@ -3184,8 +3184,14 @@ const kantoMusic={
 };
 let musicScreen='menu';
 let musicCue;
+let musicFallback;
 let musicPlayer;
 let musicPaused=false;
+const johtoMusic={
+  town:'new-bark-town',wild:'wild-battle',lavender:'wild-battle',rival:'rival-battle',
+  trainer:'trainer-battle',gym:'gym-battle',champion:'champion-battle',
+  legendary:'legendary-beasts',lugia:'lugia-battle','ho-oh':'ho-oh-battle'
+};
 function syncKantoMusic(intro=false){
   if(!musicPlayer) return;
   let cue='town';
@@ -3194,17 +3200,37 @@ function syncKantoMusic(intro=false){
     cue=intro&&[5,25,55,89,100].includes(state.stage)?'rival':
       state.stage===100?'champion':kind.includes('館主')?'gym':state.trainer?'trainer':state.kind==='神獸'&&[144,145,146,150].includes(state.enemy.id)?'legendary':!state.kind&&state.phaseType==='幽靈'?'lavender':'wild';
   }
-  if(cue===musicCue) return;
-  musicCue=cue;
+  const style=settings.musicStyle;
+  if(style==='johto'&&musicScreen==='battleScreen'){
+    if(state.stage===100) cue='champion';
+    else if(state.trainer?.[0]==='宿敵') cue='rival';
+    else if(state.kind==='神獸'){
+      cue=state.enemy.id===249?'lugia':state.enemy.id===250?'ho-oh':'legendary';
+    }
+  }
+  const file=(style==='johto'?johtoMusic:kantoMusic)[cue];
+  const source='./audio/'+style+'/'+file+'.mp3';
+  if(source===musicCue) return;
+  musicCue=source;
+  musicFallback=style==='johto'?(
+    cue==='lugia'||cue==='ho-oh'?'./audio/johto/legendary-beasts.mp3':
+    './audio/kanto/'+(kantoMusic[cue]??kantoMusic.wild)+'.mp3'
+  ):null;
   musicPlayer.pause();
-  musicPlayer.loop=cue!=='rival';
-  musicPlayer.src='./audio/kanto/'+kantoMusic[cue]+'.mp3';
+  musicPlayer.loop=style==='johto'||cue!=='rival';
+  musicPlayer.src=source;
   if(!musicPaused) playKantoMusic();
 }
 function playKantoMusic(){
   const source=musicPlayer.src;
   musicPlayer.play().catch(error=>{
     if(musicPlayer.src!==source||error.name==='AbortError'||error.name==='NotAllowedError') return;
+    if(musicFallback){
+      musicPlayer.src=musicFallback;
+      musicFallback=null;
+      if(!musicPaused) playKantoMusic();
+      return;
+    }
     musicToggle.textContent=musicLabel('重試音樂','Retry music');
     musicToggle.title=source;
     musicStatus.textContent=musicLabel('音樂無法播放','Music unavailable')+' · '+source;
@@ -3646,7 +3672,8 @@ try{savedSettings=JSON.parse(localStorage.getItem(settingsKey));}catch{}
 const settings={
   volume:Number.isFinite(savedSettings?.volume)?Math.max(0,Math.min(100,savedSettings.volume)):100,
   language:savedSettings?.language==='en'?'en':'zh-Hant',
-  muteClick:savedSettings?.muteClick===true
+  muteClick:savedSettings?.muteClick===true,
+  musicStyle:savedSettings?.musicStyle==='johto'?'johto':'kanto'
 };
 const settingsLabels={
   settingsOpen:['⚙ 設定','⚙ Settings'],settingsTitle:['設定','Settings'],
@@ -3669,6 +3696,7 @@ function applySettings(){
   $('pauseVolume').value=settings.volume;
   $('pauseVolumeValue').textContent=settings.volume+'%';
   $('pauseMuteClick').checked=settings.muteClick;
+  $('musicStyle').value=settings.musicStyle;
   if(clickAudio) clickAudio.volume=.22*settings.volume/100;
   $('exitBattle').title=musicLabel('暫停選單','Pause menu');
   $('exitBattle').setAttribute('aria-label',$('exitBattle').title);
@@ -3680,6 +3708,11 @@ function saveSettings(){
   applySettings();
   try{localStorage.setItem(settingsKey,JSON.stringify(settings));}catch{}
 }
+$('musicStyle').onchange=event=>{
+  settings.musicStyle=event.target.value==='johto'?'johto':'kanto';
+  saveSettings();
+  syncKantoMusic();
+};
 $('settingsOpen').onclick=()=>$('settingsDialog').showModal();
 $('musicVolume').oninput=event=>{settings.volume=Number(event.target.value);saveSettings();};
 $('gameLanguage').onchange=event=>{settings.language=event.target.value;saveSettings();};

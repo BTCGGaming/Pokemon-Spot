@@ -278,9 +278,23 @@ main{container-type:inline-size;min-width:0;margin:0;position:relative}
 #shop .capsule-machine{flex:none}
 #shopEggs p{margin:.25em 0}
 .battle-feed{display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
-.battle-feed:has(#tutorialHint:not([hidden])){grid-template-rows:auto auto minmax(0,1fr)}
-#tutorialHint{margin:0;padding:.35em .5em;background:#fff1bc;color:#382b42;font-size:1.27cqw;line-height:1.25}
-.desktop .tutorial-target{outline:3px solid #f6cc57;outline-offset:-3px}
+#tutorialHint{position:fixed;z-index:40;box-sizing:border-box;width:min(300px,44vw);margin:0;padding:.65em .8em;background:#fff1bc;color:#382b42;border:3px solid #483655;box-shadow:0 3px 0 #21192b;font-size:clamp(11px,1.25vw,17px);line-height:1.35;pointer-events:none}
+#tutorialHint::after{content:'';position:absolute;top:var(--arrow-y,50%);width:13px;height:13px;background:#fff1bc;border:solid #483655;transform:translateY(-50%) rotate(45deg)}
+#tutorialHint[data-arrow="left"]::after{left:-9px;border-width:0 0 3px 3px}
+#tutorialHint[data-arrow="right"]::after{right:-9px;border-width:3px 3px 0 0}
+.tutorial-dialog-next{flex-basis:100%;margin:.45em 0;color:#342445;background:#fff1bc;border:2px solid #544561;padding:.35em .55em}
+.fighter-status{position:absolute;left:7%;top:42%;z-index:3;display:flex;gap:.25em;pointer-events:none}
+.fighter-status span{display:inline-block;padding:.08em .3em;border:2px solid #382c42;box-shadow:inset 0 2px #ffffff4d,0 1px #382c42;background:#656780;color:#fff;font-size:1.02cqw;line-height:1.15;text-shadow:0 1px #352837}
+.fighter-status [data-status="burn"]{background:#b84932}
+.fighter-status :is([data-status="poison"],[data-status="toxic"]){background:#87529f}
+.fighter-status [data-status="paralysis"]{background:#8c670d}
+.fighter-status :is([data-status="freeze"],[data-status="frostbite"]){background:#267f9d}
+.fighter-status [data-status="confusion"]{background:#944574}
+
+.tutorial-target{outline:3px solid #ffe36a!important;outline-offset:1px;box-shadow:0 0 0 5px #583005,0 0 15px 7px #ffd94d!important}
+@media(prefers-reduced-motion:no-preference){.tutorial-target{animation:tutorial-glow 1.1s ease-in-out infinite alternate}}
+@keyframes tutorial-glow{to{box-shadow:0 0 0 5px #583005,0 0 21px 9px #ffb900}}
+#tutorialHint strong{display:block;font-size:1.08em;margin-bottom:.15em}
 .battle-feed-head{display:flex;align-items:stretch;min-width:0;background:#453853}
 .desktop #notice{flex:1;min-width:0;padding:.45cqw .6cqw;line-height:1.12;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .desktop #nextBattle{flex:none;font-size:1.27cqw;line-height:1;padding:.25cqw .55cqw;border:1px solid #252037;box-shadow:none;background:#fce7a4;color:#342946}
@@ -606,9 +620,18 @@ button:not(:disabled):active{filter:brightness(.9)}
 #pauseVolume{width:100%;min-width:0}
 #pauseMuteClick{justify-self:start}
 #surrenderDialog form{display:flex;justify-content:flex-end;gap:.55em}
+
+#menu{isolation:isolate;align-items:flex-start;text-align:left}
+#menu .menu-scenery{position:absolute;inset:0;z-index:-1;pointer-events:none}
+#menu .menu-scenery img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 62%;image-rendering:pixelated}
+#menu::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,#182333bd,#18233342 47%,transparent 66%)}
+#menu>h1{background:#362e49e8;color:#fff1c3}
+#menu>p{color:#fff4d6;text-shadow:1px 2px #27233c}
+#menu nav{width:40%;margin:1cqw 0}
 </style>
 <main>
-<section id="menu" class="screen" style="position:relative"><button id="settingsOpen" type="button" style="position:absolute;right:1.5%;bottom:2%;z-index:2">⚙ 設定</button><h1>POKÉMON SLOT</h1><p>寶可夢拉霸</p><nav><button id="trialMode">新手教學</button><button id="formalMode">正式遊戲</button><button id="continueMode">繼續遊戲</button><button id="shopMode">商店</button><button id="upgradeMode">增強</button><button id="styleMode">風格自訂</button></nav></section>
+<section id="menu" class="screen" style="position:relative">
+  <div class="menu-scenery" aria-hidden="true"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAACgCAIAAAC9uXYyAAAlzklEQVR42u19LZijSrvt2rNbIFogRpSIQLRAjEAcUWIEYgvEFogRiCsQV0R8AvGJiCMQR0RcgYw4AvEJxAjEFogtECMQW5QYgWiBiEC0QLRAtLjihUqF/HTS0+kmM9TD0w+prBA6LF5Wve+i+I0vLQAOtyxuLKOU1tG3rBAAFoEriorWqU34Cf9yfCFAGLmitu13OQ9wTvt9dltjXd8X4vMX+xba/bq+X9d3Myb3xuEWm+nxvyOsa7lM+An/cjwgV7R/2JO5oaOW4ul2C/ZgWkzTJcDSjbptdnks+3/jLsAtOqssboiiGkL7zqwQoJNswk/4H8ETd2sLgGmYZVW2bsdmegmgZR2SBzGApCo8g58SoT+oL+iSQTthcWPQudsm/IR/MV5S1jRMLe3YPHhLNmKzaKpnCX0DbqEQGUkWgOTL1nlWiIxkjSJuJvyE/xG8JG5ZdZwGMIjNtDVLNySPLd1QNcZefn+gr3G45QR+J+SjeLDiBL7DrW6fJvyE/wE854E6EGyZaJkoq7KsSlpX2cx5QKyVVE6qglYG/cqg0LfksPQeuP+aAbjjFoD7QtwXAtwijX83Y/cAZmzCT/gX42czPpvxNSrMWDfyA55u66fbWqUyZkzNb8iB4Cd9ptJ3d4D4W5DHReRLXd/lVpTLx6a/EKTQJ/yE/xH8RowU0V4dfDxVJ5pqNzDL/hs1jyiKqjvbtrODJPB3844TfsK/DH8KcQ+1vWyW/b+jSUn91OsmK8TdjNFf2gN6eQuNriN5FK6LCX9Z/OA4vTv+dfd/xt29+WPRVGflmw/hP/AgJvEuJfwg7SLfyqKYB/GEvzQ+KwThZUh7X/zr7v+uTlDj62DMt1dXHMd3hRU14w1uLQK3yyBu92+00YS/DN4J/CyKKebRyoZY74F/9f3f5fTpKvkU/O8z3+pKkf23Uq0SwC20e/WtGeuWCX8hPLf2Zgm6d98ef4H9//OTd1xLADhLewzwN1vn1o5sl/9SFsXYfnfCXwRPOQGKav3Qqotz74J/7f0XvNpbFpF5ZVqRte5B/7P4TdpODld3Rb0s+ahpmgn/uvittJdKlFPSZBfAX27/L9p+R5PS3nz5wr8V5e4o9X5dLwKXLjfrr6t1MeFfH0/9dzN2/zWjUsXdjN2vaxTijlsdS2bszfCX2/9BlmM3X/GD/R8GKcPBGTY84aiAOeFfF69mA/p4lvXjrc2gii7oA3xvlpBetmfwp2z/ovt/Zl757Dz05Ie+Gn8wUUfBO4F/x60vgfstSrCuF0l4OzPuaGSmblb54LP+47H5m8/NT09+6BHg6dgf8AcLq6SsWXfTRyEoj0Yv6S21LaN0c/9I7xyiLPIySi3xjP/41ff/B/3N0pM0+aGvDL/rD26ZEG2CQhCBLG44ijvC4oYkulwALAKXvkuC6aUoKhRCtEnLxLP+41fZ/1fxN5+L/40ve6MqXVB6E+CgLDT0s07418UrcU49/F2FohC72Ya94fPIW3Ijaglw8HWvsv846m+eO9FeXh7yN5/bP/mhR+cPXiThIgmdwKfMrgzMKjUpXg4q0mqPWnlW/UNZIWjL9C27/uOx+ZsnP/TV+4O/fc1vZwYRl7QyrX/5wskApOpmUVQWN9hMp0UUFVX1AHzmZvw1v5sxixu0Uq+bL1+4XI//HW0Cc+8/XqMalb/5XPzkh35/fPeRfjQmJa8aYrfGhdud6G952itz1RHhbudmoNkP1zAyf/O5/ZMfehT4XTarVTpCEvnUThm8qZPyG4MKH31WHSaqob3bk20djDH5m8/OQ09+6PfFU+Vsxt3119U98K0oqT5ncaNeN7I4960o79e1wy2pPShDTJ0Eo43fr2taJ6VBH/lWlNQpGVmvm/hrTpsdXCtG5W8+Fz/5od8Zr0qOQaJNftbhlsMtmY+TUdnh1mC8KDtl+KTsnqOEf3Wz8ks7zQOMzd98Ln7yQ78zngexDIrqxFmStSoLpYaWkkCVKHKd3lKRgy3ITLY6eRcRtHMmjcbffC5+8kO/M/7PT94/eXxfiPv+8JAMIOVAYuMzN1UufvnCKaFBV3+Z4pCYW2gWNz5z8xaaxNAZJTdLW5aShrIZfzrBP63Y7P8I/M3n4j+gH+Q6gb/XOwKZkiTkhH9VvGgqCnKOrGWQkOjXZS1QHd7JlzQ0lIvaqY7eZB3R6UshG7nSB2wexKKptva/tx9lUdwZj0ilbO//q+SPXws/+aFHgVev6VKkbkobhTh0tVXl8u7LXbAqgne/dIT+5nPbB7n3uzYXNd9JlaEi8if86+IHRO9i4fbYa+vDB6L4oei7W7VWt9/1KDB5NqoZ6MEGpTVU3f/dcdu79E9+6PfGS6pJO7LcApmJB0NMZQy3cRurZui+c3hxKMRmg+re0uSGu7fKjsPffHYeevJDvy/+wbT+y/Zn3F0XaTegVMpyXc+MoRDdX27df83uJZnoJhFubVb6znvpMeo/uLVB2tV+CMuDeMZd0VRPfyXdoHAc/ubJD31leOkPNtLVnuCtRsG964Mwubf/0AeVVrlzsmhKFTESf/O5+MkPPQq8Z/DhAEueHkf+7h3/nf9BHsS7dBmJv/lc/DQ/9Dvjyde7FaF3RPPWy10SH05rPPPB/ouKyKcIbelGoXz7JeZvvjR+8kO/M34hEsqhVu68W9gZ1+IfaRXj8kvpsr4Qydj8zZMf+srwzqcvn/TZJ332vVnLo6KX/xDFaUXKXPly8NYesh4Gy5eN+V/qNZ12A8Co/M3n4ic/9Pvjd2NS2WzYY6QriqCHXu5S+cTPmjo7bpkYg7/53P7JDz0K/EA1bh2wgG9JkJ2XQ7YdBZ+lZt7M32ymohAVt4y6rqu6NZgGwAaquvuJ9HBTpTIi0UBwyyhda3f7v3F3q8RKtVMZRdSXe0uyE/5Z/G7pW8UPgrQc6wzi0LNjpivFE5UB6ItjVXQzCwkmkc3SB7BL68kPfXH8dfmJ3wxvpqIJ00JUBtOOsxlA6YT6IqZF0tpgWiGqJkzNdHOtm/zQ7zzf89j8xG+Dp8BsMK3xVz+Yq9HjeVW3MlRPfuh3nu95bH7iS+O7/E9SvAqbAbTWn+w++37/oNkmJj/0ZfG4Pj/xpfEUngG8Cpup0aZos5Mf+lL4K/UTv0FrwvS1wvNAeOihO80P/c7zPV96vuSx9ZupWNcN/vW/r3uStNaf7bfUatrJD30B/DX7iS/dX4jq2ZzGC4P0Ii5E1Wlo1RK+yS4pN0R0DvR+mfDH8Ng42rR060fvXiqwQT7rWZZcO/7SbfJDXwBP3L1OP/Gl8U2YXihCN0tfD93JD30p/JX6id8Gf4nGLQOTH/pCeEncq/MTXxrPLaO8DKHrusbkh8bl53u+Lj/xpfGXbpMf+uLzPeOq/MSXxt8nhfbZvQSVW+tP/X+jyQ/9+viNGLlCP/Gl+y83KKRx4eSHvgj+FOIeaj93HvrS7YOch0qdGU3Ns8qJ0pzAp5mBfnH8oA3wP2v+OF748cJ/9e2/PqEnvzImf/Nz+Hjh+yGWfiY5/eLt66FL3vzLFlYmfzMmf/OBFi/8pZ/Jl4vYsRbhj2zfTEXphBfS0EMvB5RJ4Z0dJwP29fxCeNWJIWPzNuAUBXlofYR4kfm+wr1F7PjL+Ee2LxPGF6qtTH7oc/D4VfzNUjGLHGaVWZZBi/z4j/ihL9omP/Sp+J/M35zbCwB2vjyiMRaxA2CgNwD4y5f/m/oqe10n9DBtJ4+WfOLGbuselb7zOL1fBw95t3ZfOJQkhvQ3c6uI/L3jwpHkg4nEXciMPACevZCcJrzI/CzqitOS1qQ64hBLP7MswwlMAIeU9PH9qepWv2iWY/I3P49/J38zC1MWpq+V983tRRJ5SeTN/c1OWgrLCS9yCFEJUQEgjeGHiEOIHERrIaosKrOoFMvwBftDc25cqBlMm/zQ7+Nv3n/FVOjLwjSI/CDyWZiq/Yfwp/RTsy0TgBckyyBZCa0QWm4v1OBdGs4idojWpeEAsGyIvHuLOE20VjPTx9vmLGVMj+eXYLMezxljkx/6BDxx9zX8zcWy5AtzQD49dGUkLgF6O4h8AFEQA9Ato3QtQsq/BtMYYzThUDdXi9K/ixd5Mfct2zJzUa5iAaAQXbCcW+0i8rwgsfNlE6Zpm7qam7apVBq7Kxs1sozpK846by9R/Z780G/tby6WZZ6GxbKUQbS7XTRMAQShHYS2CbiukbaFPZ9Xed4dKlGxMOWWIfHE2rqu6QpuME2+yxijLcue3F6IvACwikUuhubNOrSFQjWDaa7mNiINYcZhR2KzyswqI+0Rh1jyYBE7FK3pi9SpXp4PpReorRCbAfzGl72RV01ODVKtsrigzg7/S+F34jQO+JvnTqTymOjbqdg0BGC7IQDfbOu6JvIRZV3XAGBYhr1Yxp4XpyJvy3y5gG6gqSpRpWmlW8cEDG3QMFhVbRK9qyihwAxAxmZqqevQiptmAOaBt/kR4mjhOgCcMqOBICmNRewk3pK2vyiiJQ/k9xaiUuP0IT+0rK0AeK3yipmFAGiimckPfUF/M4XkPA3jVRCvgqpuqrqh9bjUVDYDSNMKAHQDQCwD3gE2U21iUKGgDapsVkUzrcx9Sx0UumlGbCbqd0me3iQ4YHNSOUseyO0ve+sVfS9dEA7loQeNyEdEfEU2g+5YcQaPXTpQCXO4lQ1yt78GnvOgQKSG6qHGoAdXKt460VTE5n703aWqqroB4M8j32wlm4PQhm5EQWzYdhhE+Wplz+cA8tVKstl1DZXTxCF5SshgPwjP3ZVBlDJCk/AgTrtxRiub+B0lFa+JxEvHJDkv+lkSRQ6BiMaIXhsMhwfbEVql9RFON6HPLUOG6t1JGY9TuRBVuf2lkx/6efzmmJ3jb45sXzd4bRsAWF4BkOtNVayCzUeI05Wo4lSEUQAgDCLftQzLAFCJilaiMKcB4rkxjELv3LdIb6hDwyGhY0GELg0nDjGoqiSV4xmZrLAs+UmcfjY/ra+yqm6lvN7N1Qym2QVAeINpzdwZbG3yQ5+EP0LcvY3YDMAqtZVWpYYGoKjqeWsA0A0+jyKV05WoAIRREAYRgLwt86TMrQWpano3CG3i9J7kSZQA4IoI3vp3gJXQuCVS13HTjOhrWyb8LlpTCF/FgmR0VyDkQUdcPyM2W/ZGQiz9bC+nT8ncDcdzc0c/MHaUmR8AOtDIt+iDewsrv5pf+Y39zQDmrSGX44e8yvMwdGksaGumvVhKrlOEluHZMDYTODlVsxJa6DpFlOz6foooWQmNknRs3/mwisUqFl6QyEHhkgeJt1QDc1I5bm4aoblIzUVqJo25/0plGfoqo8j6Xn7uD7+aX/kN/M1aGLd51FRFnS7Eyh0sdbpoqqLNo0p0X6dbRppWpd5sQnV/taWXpd4MBoVSKDtVw8K8Dm0W5qHrVEm+d7woM3Sp6yyDxAsSL0hWsbCATk979tappYz8vDbQV+CmwU3DzU19hTjEofDMGKPI+l5+7s7LIZ+wm23Xb7cyAPLZziPGU2pCFMP03Ivxx/1GMt+8G1EWdkcR5i7rdKGuyLc2l1fLKOMKPgAs5s5ylQGIPY9YXsaNbhlqmk+O/8I0C+EQp1snRdrlp+VfHnjcStQMnQXQD8qVdIfED7Y/jMGmkZclEX2Ap7OoqltdmVL/yO9z7u95Iv7muD84287C7vEqjAp/KGshP3I+/iXzUYR+GMa+a1V5TuM5yC00VSUq37XCMDUsazAuJIls+vpi7gAo0bFZzWOoQZSks4zQdegCWRElPPAG+DDdjO2Ix6tYLJTUx97tS1o3c9A5BsDxA2cfvldBdfPs73PJ+UA+/Gp+5bfxN5tRSLnkSlRF/1yfIuAkIeJUqGymCC0HfGXcqAuAlmkD9nTiOF+QkNhEaGCVL4ooUfHzwBMALUnkybT0bg57j6zvg3RuwvEDy/F22U9Urqq6EJVMO7yXn/vn8UOf7ld+G39zZPukLnzlEhynYpnnACjFMWBGXCQ2NwGEflDlOaWfZc1lV3VQhPbBDNdqnbSeGzFqNd0xwK+ihFyjALxgk8ubH8DLOotM5A108wDfSY5zfB2v3j7Io0v31e1ti8ClyhllCUaIH2SUHSlU1DzJi/BHxiVH+iPbz21bN/iqas0gksuqanWD57Y9j6JBXJRs3pSm28JPEvRGpb1xdJUvWGRXqajnBotsitmH4u488Lx+REhKWmXzkTh9qA3wjLEj7tBTfrcf7//wy/mVL+9v1sK4zT0esqYqKOuc2zbxG0BTFTxkbe7JLAeACgJAXpS+YfmGBSCuROx5APwkCeNobz2FB97cXkbJKuFlwssoWc3t5aFsNEX0CMwCUtfxwQBEYEVf8f7xpkqOF/xur9L/++y2xrq+L8TnL/YttPt1TVPPQ/EHs5ke/zvCupbLuPCAXNH+YU9KmNNSPN3ugZ2OfzCts56RI5pqVlRgt9UDZo8f/1u/SZonWgCkhsYMg95d/PXwh9lNnNWgNmYfq/VD+v17+v27fXtr6YzCMwBj9lHH/tg545/Sr/d//sHZRyP9qwmioGkeD1FqXXy3cOu6nwE0ZW3hFoDA44x/OngxLCIqrHxs/s/M/c//+0/xx4wfYvMRsaH+Puf+nmfhfwo/NHHxNL/yufiXzd9MApo0tAO4VUtszgDS0LrBly5X1WfLagrS6nZIhBgYXijUxNwqSjhvABSFPj8QniW+SnIfLEZNETpGvTeiE16yGb21H8Cukj6R02q73PzTP48f+iy/Mi48f3OQd7plmecZMDe0ucJmAEuXq7UPxpgBy4Blc1NdDFi24RwSr1LCWqZtmfZuEXEXzwOPSByjppUjePI9y2I4sVktIkr2n8VmXHL+6d9nvoVCdPNqrmuaV7NeN/W6C+z3X7P7QtxLTTljo8Mrk3w265uH5sE0zI/6x7IqH5qHgcPzXLz6HMGzrn1FnC5s+1tVqQvF7G9V9VFj+Pef90lxg/b7/cMN2tvb27qubx5vZ7d3bY3Z7V0p2hu0T09d8JsxvRDVAP/4+Gj/wVerv/8RtWXzU/DmH7yua/MPvtZun8Vz/dP/5IvA8Fbpd5EjMLwBfl035t0MwOPc3vs7HPp9cJnnI3741fzKbzl/swMsbDvv64K5bZMCQe+80UOX8lxV3fn9yUdW1S0FPOonpOzZxVs2t2x+Ov6s7S95UNWtq7n+Mt7F08rggdt4v/lGfuPLTSku2y46yHs3tgBKbngMeHLAdcbOfWYjWSBUvXLn4n8kFS0VyODlbjt0c9619I+h/Qx+6CFNd/l5aBDzrvM3/2rtbeYh+Un80N3wLjMMpnFuFYWgQX03vknF7t1KhsEczSsKQVdhcpEfxwMoCmHUbQOxhQfquraB3rt7Ev7Q9vfszxXi6UAkaSH11dvkoX/j7uZGUZocqJsiaOelvOiPCk9B2hF1khZUplJvbdhULvrO3RsfsG/2kwn/g/jBUThUEpceo0HcfdaTdAh/9X5oAPMGFAlkbJA/ovyJ1Ze7x0n2T/jXwg/OAYNp+io7Usd+LT/01c8PzYOYwvPeY6D+oAXbRAgmEjWW7P5wI8SX8xiAqQFAtfBOxPfVeO+N939vUD9xKPkj81v/xpfW1ni/n8gQ8ialvWbi0eBjM0iSTP3Ra8t79wGQViWyUmgB86rbvZWhCaVYWGNz2AKe71YKZbEwM7bGrzIfW7awY9cPuk/FkVnPN4Wnsv9VzJ5d/nKuG0ZTVbrRfXVTVXNjvwHDdLyF1eV6Y7GZMrTGosxOcoDwOlUrNXVdG4v5s/7mH+m/2Zqbfm8ai1sOWXa23x0JvtLqsbE5NGpr4QEQSa2yGcC8aleGtrBty2MA5suKOD1gcxiE3UoUUqeDQOV009OamFoWvowEarFBRknqDJZz3TA0xhhjbT+q0w1jVWV7OV1myRI6cdq35kTr09kMoGAur1M5xUIhqqbPHw/oKLb7Za1bnIm/ej+0ehP8GNjcEXrOAHheQg67laFJQgNoqiJJPABiVYcVI0ITcTsqM56nAQCbe2EUUpweBGn0HB3c+lqHdrTYPwFz0IdnxjkRmkL1kSAt4zRF6LPYvPleowJQVbVhsMxiF/3xr35+6NiPq6qW2aJRELpimpckil/UU4KLbnDd4FjVXp63RncGRoVtobS5mRcJANvlNvcoQncsZ9xOsrirM6KsezYnIeqqjTpOa4HNEiPw5ns5HS1W5sqFDpSp03TESpoiNfw3+FkMg+31jbx2HnrHf6wGxT3+4514+b74PBc0147BtHorrjjvymrHW/mdhg62yjQiFcs89yoY862qUAsnz9yBxz+0Atg6ACQZAOmnb3otUXshqQj4CYB2iaaqALB9Yyp94fphdwdAHC77KhJHEZfeqXH3xB+2zJQZatLCc/leNmPyQw/wbdXPEPf49Mg2vt6Pd3fvG6fnt82/ApeZDMSvWx23Oh4bZrIvDr9rte8ft87eZZ3bjBtPd8bTHb7fo2pB4rtqUbW551Sf7p568EMLbz5nSfj4NddNE0GO1Z8Qn27+9dfjXzpLQsP/9/c//1SprP2dALDszwDKLF+v1wD8cPHxztDapzaLHj59OfCvLL6J8PH2fx7x94HZXfa0h/t7uX5bf7/VbgA0zeNX7WHyQx/DO5q3V0O/b4T2ytgivw4z5otktex2rFuvKwrVielLNsOzkAgApbFTAa0sAJnnACiVo+nN5wBY0iKyEeQAENl1UQBIViuVzVJgZHrNOQdQFAURmvhdFMWxIF2HXr5JvyQnhHM1QrsoqLLIuUUaevJDH8RzbnHLGM+IsGPz3BWpAOPo7jRh/QKAgXGRCmvuemWnOhbMRiJKQxCbkzSnxTRsSfGy2WLzhrXE5shGZJPwUNncpTs4pwWAnlV6VjkNcxpWZnmZ5c//R3lpcS4XL/GUzOHzjW6ehXIP+eX80DdUntjMd8EtyviqKeFMzsDS30k6HnxRCADcMgqRjIfTAJZ5nsznAFbLjYaW68s8T+auqjdKQxB9wyh0DVem7SjvUSIPMkQ7lx3GecfmLkJ7QAHA1KEBoiFlogNd/PZNty6KTO+HG0XtNKxxzqhiNBsXh36iAqHCIWPMti3twvN13Gwe69TfHzp4Uiqke1Mh2XjwzLDruqa57OtxUDkx/aXn6wafLyLGzH0Rq9QN7nkBjQuXdQ5bN2GjH81Zc1es+gsRM1BXpmHDQJBlA05Hvh9E6DgN1EVRJiurG2XCHITRII/njR9tnoxSZnlWFChqAGbi7VMdOuogsU1DTg5maDBMBtu35kuhn66qXzfffAh/9fNDG9oe89eoWqht/eLhkSkbGRerlWu4YU+5kJ4IyAyS3fCsXf5Evu95BQXmZLUigNVH6HK18rw5S9p43vimC+wReKSqTceOQ+K0rlRjsHBCAMssBMAYW9rdRaZpzsiTbiZjt5gqHgbK+FkLx7P4q/dDO6Im1VHV7XgGhaalZXNPN/jKNgDM8+53ly+bqpBpu25EWFciFdZ8DkCsVnJMCQB11a0kQkZoS4dour+HmqUjy1sz8Yi1NBDknJuOTdK5KArJZgrYsRFSGaXGAoAsfXe7moWLfnLy4+FZHRTSuJDSdruFlckPvYWvqlq6YUYSpU1LA8CdRdDPhrjaPrlWDqJY1CqbwZALaz4Xq5U1n6dVmkYpgHCZATVRuUtIb/NVcnrAbEsH0LGZGLwZgxTPP6U4sAMxzxNvxx/HoqWIAKAOwE4VG0wkxpvlodGkJEnrdZMV4m7G6C8xhl7eQgNwx608CtfFuPAjzEN/ZDdMx5PB8kTwA5VebrHv+fdH/ePft8YfRYHv9wDw8YHZbrhwXMM1ddPUzdXX/7b/mOP2Bh9b5I0anjuuaFucrlvULT5/7NgM4OP3r3/83//T/ybGw301m82Koliv1+v12jfdv8Tf6/Va5N9E/m29Xj98+udbrX9c/mNx/reef2YLXdc07aZtnwB8Ey1uM2CBW/tleeh7djtgYZqHn2ZtXqTrdTHrJ/04km8+jr96P/RFn0z6slaKFgDTobtWFAt16VRvLKJY1P2sCQtmA+gDcA3A2rrntAYYmAFbD7LM1KH3ZN2vPco2y1sVIBNzlG8eRGjfdH2zS6r0g8KOScsqXAqdtLKua7quLZxwO2F3UvKO7nYp9lnNurEdN8ghfKIf+gj+6v3Qob2keS8HObv3Ln3DtjdnWt30LK/KwLdUNm/J6F5akIUD5OLIN4Eq9xyVqaalGbo80gBQiz0DNdLQ6vhPctpf6ZTOi8vUDxdxuCROe4lnGMaSrwAwLMlqh95t15NeZ1jWmD+roXmdyszd4P5wGi+px5cH8RE/9LP4q58ferR56DxvJa3Lnme1Ye6yuc/2CYrWyzwPrQCePCGzTRTP2+GlwOpOm71UVuOuFNN7KilB7niqNNITr+MrgBoL+XDDGou+s7OVLsUL89CqEU09vl1/f/uzdSb+6v3QI8xD79J6Kwm9j80dX5X1ZZIBgOfAc8iZdETenDpadWz6KyN07WksaQFkeo0uPFPc7fgaixXDsq5rsIiiNTpv9Jx0CHCeyVGy87nj2z074Vz81fuhHVFXVd3NRqXcFPTukuN1yo11PqD7y3Mviac6N6Ttrg7iTK+VkkpHZV3XKNncyYw6oHQyyQ96d5FrhzJ3quRgIiF7AvmhL8qHq/dDO/aS2FzVLRh+siapbFray6KyKjzicI8k22YzUAdEVlk66WQG6yQHMNd1bZFr6vDxeKstD30e+qzj+wL81fuhR2XtfzY5/QLNID+4uUFQ9pzJbJW4ktzDcjcLF7nW62N9p7ZC5W6cW/GWj63Adh7zmeO7e/o9h/+N91fpRRLKR/epVbru5PDC4WkxDrzZuNuRYHSSY5eRXX/P8N1bWYdEPM7b8hLns2StvrAaGbOPy4wjksNzOd2CtTRaSzeKyH/2+EoNfRb+Z/BDo5+0YISEZpYG4MRLyC6hX8LV1+V3HUrd3Mn60wxJR/zQRRGdeHzlxIWn438GPzT2zQLxfgFZUxcq3Z1OxcGyOTG0F+3AK5yRYZ947iO01ZxlhoZiHRtUvy/Bh6v3Q0svx7uH4e7gtWAaXnePaIPq31Mx3SwHP7g3zVLoMmH3AsuoDD15LizfLc44vrB04yz81c8PTRnosbH59D0i5CE807YA8q+67LK5Q+7G+R/gdI1FjcXL2FzVLWPdc2lXoX368S0i/1z81fuhuWYVhRjMTPUubB4QCyeEyF0i7hcR+vDmq0OnhLoRZmm1eMUrRfPiT8qIYxgM7LJ8u3o/NE00Qz/Z2xdWmHXGxaHeyWacyBF540n5IlLVon1tcp8wHtj2csj5dmVh5UJ8uHo/NGOsqqu9U+iOis3YmZjrDHI0HacHt1SdyG9iMzvB9XGhVtUt51uzzFyOD5Mf+uXtlt28GSceWnzUtqj8UcNHDQ/tM7H5lt1INteifayf3miHD/ih/5P866J8mPzQV9NoGgNaZKg29ZNicy3atw/MG8mh+KEvzYfJD/1DksNS+CSat6PIXh7vKpB3Uc97NbR0kMZVdFE+/D6j+976R/eR+mYzHcAttHv1rRnrljHhtX+eHh8fzbtZI769seT4bN7spizeRYF0/7K2pUOIx2+mMY5Ijqd7If3QKd0DfzE+fID66LR9z2qHTAEScmT4zUzaI9Aelv6mCuRI/zsKjGfahfkw+aFf3hx7zyn0lsJjV36Mh83v5Yf+HU1KYfzLF/6tKGn8qLb7db0IXArv66+rdTEuvG38UZb3lBt6Y8lxXz3dGTe7ubk3rsQ/tJtFpl9u2c1j/cQsbQyS45F9MrGmtN1/kn9dlA8fdv3QR16CCs5jwpMf+ios0W+sSQbp5/dtGz/0hflw9fND3zzcqZHgLSP0kSB9xEL0ZiH8HVMcgwjNRPLJnJEfOv/2n4vyYfJDX0pM75XUMkJfVGqbOvL8PdmMw37oMF9clA+TH/oVWpa3p7B5wOxT5AfBzhIqcow4nkTH5Ie+Mj+05LQaqk+JwcTUI0iaEukUJJ6rGr57Iz/0pfk2+aFfs4lms5wes2UY3huM1a2dGLDzfFxDZNUPfWk+TH7oV5Su2qucEntnyD09No+NzZj80Ffkh1bZfPp14niIbdHNVf4C3TweNk9+6OvzQ28lOtgZuQupjF+FzQDKZsS17skPfX3zQ5va3W2XZj5xgLr3nivRYKahxTMu573tvSqCp+ShJz/0GfgxjAgddqqc2CuLaUX+fdl9ViOpCO7Pb0x+6OuaH3pQWDldMOw+U+L4M1OeifpjUh2TH/r6/NCyDarfp6fF1XkIBk+WeEEjQ9IIJcfkhz4DPwY/dFYfTGKcXuwYxOln0xp7MWMWHl2b/NDH8SOZH/qQnUM0x2bVOETcZ7UHPSh2r7wZifCY/NDX54fe2qtt251oNlriCQdvz25b6NrZbAbw0ELXcKPMoiRVykhUx+SHfiF+PH7oLG9boN37TOJ9TQdK0VbN/rD9rOooG4hm+DyI0WajJz/0dfihhxWE6okWU4nWN9gfpCvRAnion270m71x+pT2UcMTulAtihGxefJD/1TzQ6sPXNvL0d1Q+oLcn1TS2fj8G5Mf+oX40c0PTYdzn5Y4LgzoaZmSmsclRy1aa8RsHu7t5Ie+Oj/0Xk5j58GYp8jcLG8pWh+/vWX8PB6m1yY/9Cn4Ufmhdzmd5a00NL94Pq63vLX2IkOLyQ99On5EfuhzBMaJQVrl9OkxfnQpjskPfX1+6Mu0wT1dV0TlyQ993X7oy+W2f4L/YvJDn4EfhR96akfz0JMf+gz8rzM/9PW2yQ99ZX7oqT2roSc/9DX5oad2XHK8pR/6RnLcCfz9jw7nlkPpku13R4Jnhl3XNWWj64lH428X5tvkh57axSXHW/qhb2SSz+LGoTL6InBFUWW06f6cGAnesZfE5qpuwSYijbHVlgcUlLa7NN/+P+vpLvYzSXzfAAAAAElFTkSuQmCC" alt=""></div><button id="settingsOpen" type="button" style="position:absolute;right:1.5%;bottom:2%;z-index:2">⚙ 設定</button><h1>POKÉMON SLOT</h1><p>寶可夢拉霸</p><nav><button id="trialMode">新手教學</button><button id="formalMode">正式遊戲</button><button id="continueMode">繼續遊戲</button><button id="shopMode">商店</button><button id="upgradeMode">增強</button><button id="styleMode">風格自訂</button></nav></section>
 <section id="styleScreen" class="screen" hidden>
   <h1>風格自訂</h1>
   <div class="style-options">
@@ -638,7 +661,7 @@ button:not(:disabled):active{filter:brightness(.9)}
 <div id="playerParty" aria-label="我方隊伍"></div>
 <div id="enemyParty" aria-label="對手隊伍"></div>
 <div id="enemyAlert" role="status" class="enemy-alert" hidden></div>
-<button id="itemBox" class="slot-control" title="道具">道具</button><button id="ballBox" class="slot-control" title="收服">收服</button><button id="exitBattle" aria-label="暫停選單" title="暫停選單">X</button><img id="redOnField" class="trainer-on-field" alt="RED" hidden><img id="trainerOnField" class="trainer-on-field" alt="" hidden><div id="playerSendBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="trainerBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="captureBall" class="catch-ball" aria-hidden="true" hidden></div><button id="reelInfo" type="button">輪盤圖案</button><div class="battle-feed"><p id="tutorialHint" role="status" hidden></p><div class="battle-feed-head"><p id="notice" role="status"></p><button id="nextBattle" hidden>前往下一關</button></div><ol id="log" aria-label="對戰回顧" tabindex="0"></ol></div>
+<button id="itemBox" class="slot-control" title="道具">道具</button><button id="ballBox" class="slot-control" title="收服">收服</button><button id="exitBattle" aria-label="暫停選單" title="暫停選單">X</button><img id="redOnField" class="trainer-on-field" alt="RED" hidden><img id="trainerOnField" class="trainer-on-field" alt="" hidden><div id="playerSendBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="trainerBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="captureBall" class="catch-ball" aria-hidden="true" hidden></div><button id="reelInfo" type="button">輪盤圖案</button><div class="battle-feed"><div class="battle-feed-head"><p id="notice" role="status"></p><button id="nextBattle" hidden>前往下一關</button></div><ol id="log" aria-label="對戰回顧" tabindex="0"></ol></div>
 </div>
 </div><dialog id="battlePause" aria-labelledby="pauseTitle">
   <header><h2 id="pauseTitle">暫停</h2><form method="dialog"><button id="pauseClose" autofocus>繼續對戰</button></form></header>
@@ -664,6 +687,7 @@ button:not(:disabled):active{filter:brightness(.9)}
 <small>道具圖案參考 <a href="https://wiki.52poke.com/zh-hant/%E9%81%93%E5%85%B7%E5%88%97%E8%A1%A8">神奇寶貝百科</a> · 寶可夢像素圖來源 <a href="https://github.com/PokeAPI/sprites/tree/master/sprites/pokemon/versions/generation-iii/emerald">PokeAPI · Emerald</a></small></details>
 <form method="dialog"><button>關閉</button></form></dialog><dialog id="saveDialog" aria-labelledby="saveTitle"><header><h2 id="saveTitle"></h2><button id="closeSave" aria-label="關閉">X</button></header><div id="saveBody"></div><p id="saveStatus" role="status"></p></dialog><dialog id="items" aria-labelledby="itemTitle"><h2 id="itemTitle">道具</h2><div id="itemInfo"></div><div class="item-actions"><button id="showReference">圖鑑與規則</button><button id="reset">重新開始本局</button></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="catchDialog" aria-labelledby="catchTitle"><h2 id="catchTitle"></h2><p id="catchInfo"></p><form method="dialog"><span id="ballChoices"></span> <button value="cancel" autofocus>關閉</button></form></dialog><dialog id="reelInfoDialog" aria-labelledby="reelInfoTitle"><h2 id="reelInfoTitle">輪盤圖案</h2><div id="reelInfoCounts"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="tutorialComplete" aria-labelledby="tutorialCompleteTitle"><h2 id="tutorialCompleteTitle">⑥ 教學完成！</h2><p>你打贏了小茂！正式遊戲中，連線能發動招式，過關可選道具，野生寶可夢也能收進隊伍。</p><form method="dialog"><button autofocus>返回主畫面</button></form></dialog><dialog id="partyPicker" aria-labelledby="partyPickerTitle"><h2 id="partyPickerTitle"></h2><form id="partyPickerChoices" method="dialog"></form></dialog><dialog id="learn" aria-labelledby="learnTitle"><h2 id="learnTitle"></h2><form id="learnChoices" method="dialog"></form></dialog><dialog id="skill" aria-labelledby="skillTitle"><h2 id="skillTitle">技能詳情</h2><div id="skillBody" class="skill-card"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="swapDialog" aria-labelledby="swapTitle"><h2 id="swapTitle"></h2><p>換人後，對手會依序使用目前所有已學招式。</p><form method="dialog"><button value="cancel" autofocus>取消</button> <button value="confirm">確認換人</button></form></dialog></main>
 <div style="position:fixed;bottom:8px;left:8px;z-index:20;max-width:75vw;color:white;font-size:12px;overflow-wrap:anywhere"><button id="musicToggle" type="button">播放音樂</button> <span id="musicStatus" role="status"></span></div>
+<aside id="tutorialHint" role="status" hidden></aside>
 <script>
 'use strict';
 const typeColors={毒:'#d69afb'};
@@ -1018,7 +1042,9 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false){
   const active=party[prior?.active]?.left>0?prior.active:Math.max(0,party.findIndex(mon=>mon.left>0));
   const fluteUntil=prior?.fluteUntil??0;
   const foes=(foe.trainer?.[4]??[foe.id]).map(id=>battleMon(id,Math.max(1,level-Number(stage<=fluteUntil))));
-  if(tutorial) foes[0].left=stage===2?Math.max(1,Math.floor(foes[0].hp/5)):1;
+  if(tutorial&&stage===1) foes[0].moves=['叫聲','搖尾巴','撞擊','躍起'];
+  if(tutorial&&stage===2) foes[0].left=Math.max(1,Math.floor(foes[0].hp/5));
+  if(tutorial&&stage===3) foes[0].left=1;
   if(!tutorial&&!foe.trainer&&Math.random()<.01) foes[0].shiny=true;
   if(foe.kind) for(const mon of foes) equipEnemy(mon);
   const run={tutorial,team:party,enemy:foes[0],foes,foeIndex:0,rivalStarter,trainer:foe.trainer??null,introSeen:!foe.kind,stage,kind:foe.kind,phase:foe.phase,phaseType:foe.phaseType,
@@ -1313,6 +1339,7 @@ function giveStatus(s,p,status){
      (['poison','toxic'].includes(status)&&p.type.some(type=>['毒','鋼'].includes(type)))) return false;
   p.status=status;
   p.burned=status==='burn';
+  refreshFighterStatus(s,p);
   if(status==='sleep'||status==='freeze') p.statusUntil=(s.enemyTurns??0)+1;
   s.log.unshift(p.name+'陷入'+statusNames[status]+'。');
   return true;
@@ -1396,6 +1423,7 @@ function confuseTarget(s,target,potency){
   if(!target.left||target.confusion||s.safeguard?.[side]||(potency<1&&Math.random()>=potency)) return false;
   target.confusion=1;
   target.confusionUntil=(s.enemyTurns??0)+1;
+  refreshFighterStatus(s,target);
   return noteEffect(s,target,'陷入混亂。');
 }
 function hiddenPowerFor(mon){
@@ -1969,7 +1997,8 @@ async function resolveSpin(s,board,settledTracks=null){
   delete s.enemy.tempDefense;delete s.enemy.counterGuard;
   if(!p.left){await replaceFainted(s);return;}
   const beforeCounter=s.weather?.kind;
-  if(shouldCounter(s,landed)) await enemyAct(s,true);
+  if(s.counterSpins>=counterTarget(s)) await enemyAct(s);
+  else if(shouldCounter(s,landed)) await enemyAct(s,true);
   else delete s.team[s.active].counterGuard;
   await playWeather(s.weather?.kind??beforeCounter);
   if(!s.enemy.left){await winBattle(s,s.team[s.active]);return;}
@@ -2071,11 +2100,10 @@ function renderBattleProgress(state){
   $('stageBadge').textContent='關卡 '+state.stage+(mode==='formal'?'/100':'')+' · '+progress+'/'+target+' 對手行動';
 }
 function counterTarget(s){
-  return (itemCount(s,'quick-claw')?6:1)+upgradeEffect(s,'delay');
+  return (itemCount(s,'quick-claw')?6:5)+upgradeEffect(s,'delay');
 }
 function shouldCounter(s,landed){
-  const claw=Boolean(itemCount(s,'quick-claw'));
-  return (claw||landed)&&s.counterSpins>=counterTarget(s);
+  return landed&&!itemCount(s,'quick-claw');
 }
 async function checkPerish(s,mon,side){
   if(!mon.perishAfterAction||!mon.left) return;
@@ -2102,7 +2130,7 @@ async function enemyAct(s,random=false){
   }
 }
 async function enemyActCore(s,random){
-  s.counterSpins=0;
+  if(!random) s.counterSpins=0;
   if(!random&&s.trainer&&s.stage>50&&!s.enemy.noSwitch){
     const active=s.team[s.active];
     const next=bestEnemyReserve(s,true);
@@ -2158,9 +2186,21 @@ function moveButtons(p, isPlayer){
     return '<button data-move="'+i+'">'+typeIcon(skillDetails[name].type)+'<span class="move-name">'+name+'</span></button>';
   }).join('');
 }
+function refreshFighterStatus(run,mon){
+  const side=run.team[run.active]===mon?'player':run.enemy===mon?'enemy':null;
+  if(!side) return;
+  const badges=$(side).querySelector('.fighter-status');
+  if(badges) badges.innerHTML=fighterStatus(mon);
+}
+function fighterStatus(p){
+  if(!p.left) return '';
+  const status=p.status||(p.burned?'burn':null);
+  const shown=[status,p.confusion?'confusion':null].filter(Boolean);
+  return shown.map(key=>'<span data-status="'+key+'" title="'+(statusNames[key]??'混亂')+'">'+(statusNames[key]??'混亂')+'</span>').join('');
+}
 function panel(p, isPlayer){
   const badges=[...p.type].map(type=>'<span class="type-badge" title="'+(fullType[type]||type)+'屬性" aria-label="'+(fullType[type]||type)+'屬性">'+typeIcon(type)+'</span>').join('');
-  return '<div class="fighter-title"><h2>'+p.name+'</h2><div class="type-badges">'+badges+'</div></div>'+portrait(p)+
+  return '<div class="fighter-title"><h2>'+p.name+'</h2><div class="type-badges">'+badges+'</div></div>'+portrait(p)+'<div class="fighter-status" aria-live="polite">'+fighterStatus(p)+'</div>'+
     '<div class="moves">'+moveButtons(p,isPlayer)+'</div>';
 }
 function partyIcon(p){
@@ -2255,6 +2295,8 @@ function healthBand(p){
 }
 let warnedLowHp;
 function updateHp(id,p){
+  const fighter=$(id==='playerHp'?'player':'enemy').querySelector('.fighter-status');
+  if(fighter) fighter.innerHTML=fighterStatus(p);
   if(id==='playerHp'){
     const low=p.left>0&&healthBand(p)==='red';
     if(low&&warnedLowHp!==p) playGameSound('005A');
@@ -2282,19 +2324,40 @@ function renderLog(){
 }
 function renderTutorialHint(){
   const hint=$('tutorialHint');
-  hint.hidden=!state.tutorial||Boolean(state.finished);
+  hint.hidden=true;
   const reading=state.stage===1&&!state.tutorialSkillSeen;
   const messages={
-    1:reading?'② 技能發動：點左側小火龍的「抓擊」，查看可觸發的線型。':'② 拉霸練習：點寶可夢球把手。5 個相同圖案連成一線時，符合條件的招式會自動發動。',
-    2:'④ 捕捉練習：野生寶可夢已是紅血。點右下方「收服」，再點寶可夢球。',
-    3:'⑤ 挑戰小茂：確認台詞後點把手，觸發招式擊敗傑尼龜。'
+    1:reading?['② 查看招式','點左側小火龍的「抓擊」。普通系招式可用任意屬性的有效連線觸發。']:
+      state.spins===0?['② 按把手試拉一次','五個相同圖案連成指定線型才會發動招式。其他屬性招式可用全普通系連線代替，但傷害或效果只有 50%。我方招式發動後，對手會還擊一次。']:
+      state.spins<5?['② 觀察對手行動計數','再按把手。對手還擊不會歸零計數。累積到 5 次時，對手會依序用出 4 個已學招式，各用一次。']:
+      ['② 結束練習戰','對手已完成一輪行動。再按一次把手，擊敗練習對手。'],
+    2:['④ 捕捉野生寶可夢','點右下方「收服」，再點寶可夢球。目標血量越低，通常越容易捕捉。'],
+    3:['⑤ 挑戰小茂','確認台詞後，按發光的把手，用抓擊擊敗傑尼龜。']
   };
-  hint.textContent=state.tutorial?messages[state.stage]??'':'';
-  $('spin').classList.toggle('tutorial-target',Boolean(state.tutorial&&!state.result&&!reading&&state.stage!==2));
-  $('ballBox').classList.toggle('tutorial-target',Boolean(state.tutorial&&!state.result&&state.stage===2));
-  $('player').querySelectorAll('[data-move]').forEach(button=>button.classList.toggle('tutorial-target',
-    Boolean(state.tutorial&&reading&&state.team[state.active].moves[Number(button.dataset.move)]==='抓擊')));
+  const message=state.tutorial?messages[state.stage]:null;
+  hint.innerHTML=message?'<strong>'+message[0]+'</strong>'+message[1]:'';
+  const skillButtons=Array.from($('player').querySelectorAll('[data-move]'));
+  const skillButton=reading?skillButtons.find(button=>state.team[state.active].moves[Number(button.dataset.move)]==='抓擊'):null;
+  const target=!state.tutorial||rolling||state.result?null:reading?skillButton:state.stage===2?$('ballBox'):$('spin');
+  for(const button of [$('spin'),$('ballBox'),...skillButtons]) button.classList.toggle('tutorial-target',button===target);
+  if(!target) return;
+  hint.hidden=false;
+  const rect=target.getBoundingClientRect();
+  const gap=18;
+  const margin=8;
+  const width=hint.offsetWidth;
+  const height=hint.offsetHeight;
+  const right=rect.right+gap+width<=window.innerWidth-margin;
+  const center=rect.top+rect.height/2;
+  const top=Math.max(margin,Math.min(center-height/2,window.innerHeight-height-margin));
+  hint.dataset.arrow=right?'left':'right';
+  hint.style.left=(right?rect.right+gap:Math.max(margin,rect.left-gap-width))+'px';
+  hint.style.top=top+'px';
+  hint.style.setProperty('--arrow-y',Math.max(12,Math.min(height-12,center-top))+'px');
 }
+if(typeof window!=='undefined') window.addEventListener('resize',()=>{
+  if(state?.tutorial&&!$('battleScreen').hidden) renderTutorialHint();
+});
 function render(refreshBoard=true){
   const p=state.team[state.active];
   $('player').innerHTML=panel(p,true);
@@ -2540,10 +2603,17 @@ $('spin').onclick=async()=>{
   $('playerParty').querySelectorAll('button').forEach(button=>button.disabled=true);
   $('reelInfo').disabled=true;
   $('battleSpeed').disabled=true;
+  if(state.tutorial) renderTutorialHint();
   $('notice').textContent='轉動中…';
   pullLever();
   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-  const guided=state.tutorial&&state.stage!==2?stopGroups(state.reels).slice(1).find(group=>group.length)?.[0]:null;
+  let guided=null;
+  if(state.tutorial&&state.stage!==2){
+    const groups=stopGroups(state.reels);
+    const demonstratingTurns=state.stage===1&&state.spins>0&&state.spins<5;
+    guided=demonstratingTurns?groups[0][0]:groups.slice(1).find(group=>group.length)?.[0];
+    if(state.stage===1&&state.spins>=5) state.enemy.left=1;
+  }
   const {mask:layoutMask,positions}=guided?{mask:0,positions:guided.positions}:state.reelsCustomized
     ?{mask:0,positions:state.reels.map(reel=>randomIndex(reel.length))}
     :weightedStops(state.reels,selectedTypes.length);
@@ -2670,7 +2740,7 @@ function unlock(id){
 }
 
 const kantoMusic={
-  town:'pallet-town',wild:'wild-battle',lavender:'lavender-town',rival:'rival-appears',
+  town:'pallet-town',wild:'wild-battle',legendary:'wild-battle',lavender:'lavender-town',rival:'rival-appears',
   trainer:'trainer-battle',gym:'gym-battle',champion:'champion-battle'
 };
 let musicScreen='menu';
@@ -2683,7 +2753,7 @@ function syncKantoMusic(intro=false){
   if(musicScreen==='battleScreen'){
     const kind=state.trainer?.[0]??'';
     cue=intro&&[5,25,55,89,100].includes(state.stage)?'rival':
-      state.stage===100?'champion':kind.includes('館主')?'gym':state.trainer?'trainer':!state.kind&&state.phaseType==='幽靈'?'lavender':'wild';
+      state.stage===100?'champion':kind.includes('館主')?'gym':state.trainer?'trainer':state.kind==='神獸'&&[144,145,146,150].includes(state.enemy.id)?'legendary':!state.kind&&state.phaseType==='幽靈'?'lavender':'wild';
   }
   if(cue===musicCue) return;
   musicCue=cue;
@@ -3184,6 +3254,7 @@ $('pauseSpeed').onchange=event=>{
 applySettings();
 startKantoMusic();
 function screen(id){
+  if(id!=='battleScreen') $('tutorialHint').hidden=true;
   musicScreen=id;
   if(id!=='battleScreen') syncKantoMusic();
   for(const page of ['menu','setup','shop','upgradeScreen','settlementScreen','battleScreen','styleScreen']) $(page).hidden=page!==id;
@@ -3214,7 +3285,7 @@ function renderSetup(){
   }
   const help=$('partyHelp');
   if(!help.querySelector('.dex-regions')){
-    help.innerHTML='<p id="tutorialSetupHelp" hidden>① 組隊與圖案　小火龍先上場，傑尼龜備戰。選下方 3 個不同屬性，再按右下角「開始教學」。</p>'+
+    help.innerHTML='<p id="tutorialSetupHelp" hidden>① 隊伍與攜帶能量　小火龍是火系，傑尼龜是水系。優先選能觸發隊伍招式的能量，教學推薦「普通、水、火」。可攜帶 3、5 或 6 種不同屬性。選滿後按右下角「開始教學」。</p>'+
       '<nav class="dex-regions" aria-label="地區圖鑑">'+regions.map((region,i)=>'<button type="button" data-dex-region="'+i+'">'+region+'</button>').join('')+'</nav>';
   }
   $('tutorialSetupHelp').hidden=mode!=='trial';
@@ -3261,6 +3332,8 @@ function renderSetup(){
   $('setupStatus').textContent=selectedTypes.length+' / '+count;
   $('startBattle').textContent=mode==='formal'?'選擇地區':'開始教學';
   $('startBattle').disabled=selectedTypes.length!==count||!selectedTeam.length;
+  $('startBattle').classList.toggle('tutorial-target',mode==='trial'&&!$('startBattle').disabled);
+  choices.classList.toggle('tutorial-target',mode==='trial'&&selectedTypes.length<count);
 }
 $('teamSelection').onclick=event=>{
   const button=event.target.closest('[data-shiny]');
@@ -3287,7 +3360,7 @@ function openSetup(nextMode){
   selectedTypes=[];
   $('teamCards').scrollTop=0;
   $('typeCount').value='3';
-  $('typeCount').disabled=mode==='trial';
+  $('typeCount').disabled=false;
   screen('setup');
   renderSetup();
 }
@@ -3742,7 +3815,7 @@ async function chooseReward(s){
   const options=rewardOptions(s);
   if(s.tutorial&&!options.includes('potion')) options[0]='potion';
   $('rewardTitle').textContent=s.tutorial?'③ 選道具 · 點一件領取，接著練習捕捉':'第 '+s.stage+' 關獎勵 · 四選一或領取金幣';
-  $('rewardChoices').innerHTML=options.map((id,i)=>itemButton(rewards[id],'value="'+i+'"',rewards[id].name+' · '+rarityNames[rewards[id].tier])).join('')+(s.tutorial?'':'<button value="coins" style="grid-column:1/-1">跳過道具 · +20 金幣</button>');
+  $('rewardChoices').innerHTML=(s.tutorial?'<p class="tutorial-dialog-next">↓ 點任一件道具，接著練習捕捉。</p>':'')+options.map((id,i)=>itemButton(rewards[id],'value="'+i+'"',rewards[id].name+' · '+rarityNames[rewards[id].tier])).join('')+(s.tutorial?'':'<button value="coins" style="grid-column:1/-1">跳過道具 · +20 金幣</button>');
   dialog.returnValue='';
   dialog.oncancel=event=>event.preventDefault();
   const selected=await new Promise(resolve=>{
@@ -3843,7 +3916,8 @@ function showBallSelection(){
   if(rolling||state.result) return;
   const blocked=Boolean(trainerStage(state));
   $('catchTitle').textContent=state.tutorial?'④ 捕捉練習 · 點選寶可夢球投出':'選擇寶可夢球';
-  $('catchInfo').textContent=blocked?'訓練家對戰嘗試捕捉是不道德的!':'目標 '+state.enemy.name;
+  $('catchInfo').classList.toggle('tutorial-dialog-next',Boolean(state.tutorial));
+  $('catchInfo').textContent=state.tutorial?'↓ 點下方的試用版寶可夢球投出。':blocked?'訓練家對戰嘗試捕捉是不道德的!':'目標 '+state.enemy.name;
   $('ballChoices').innerHTML=blocked?'':Object.entries(ballCatalog).map(([id,def])=>{
     const stock=ballStock(state,id);
     const label=(mode==='trial'&&id==='poke'?'試用版寶可夢球':def.name)+' ×'+(stock===Infinity?'∞':stock);

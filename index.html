@@ -588,6 +588,9 @@ button:not(:disabled):active{filter:brightness(.9)}
 @keyframes emerald-ball-sparks{0%{opacity:0;transform:translate(0,0) scale(.45)}18%,65%{opacity:1}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(.72)}}
 @media(prefers-reduced-motion:reduce){.move-impact,.move-projectile,.desktop .portrait.attacking.casting :is(img,svg),.desktop .portrait.buffing :is(img,svg){animation-duration:.23s}.move-impact.after-projectile{animation-delay:.06s}}
 
+.item-stack-art{position:relative;display:inline-grid;place-items:center;flex:none}
+.item-stack-count{position:absolute;right:-.15em;bottom:-.1em;z-index:1;background:#2b223c;color:#fff1bd;padding:0 .15em;font-size:.7em;line-height:1.05;white-space:nowrap}
+#enemyHeld,#trainerIntroItem{display:flex;gap:.22em}
 #enemyHeld{position:absolute;top:.68%;right:5%;height:6.35%;z-index:5}
 #enemyHeld .item-card{padding:0;width:3.65cqw;height:100%;display:grid;place-items:center;background:#d6cfd9;border:2px solid #302a43;box-shadow:inset 0 0 0 2px #8d839a}
 #enemyHeld .item-card img{width:2.6cqw;height:2.6cqw}
@@ -629,6 +632,18 @@ button:not(:disabled):active{filter:brightness(.9)}
 #menu>h1{background:#362e49e8;color:#fff1c3}
 #menu>p{color:#fff4d6;text-shadow:1px 2px #27233c}
 #menu nav{width:40%;margin:1cqw 0}
+
+.berry-effect{position:absolute;inset:0;z-index:5;pointer-events:none;display:grid;place-items:center}
+.berry-effect .berry-food{position:absolute;left:67%;top:51%;width:2.7cqw;height:2.7cqw}
+.desktop .portrait .berry-effect img{position:static;width:100%;height:100%;object-fit:contain}
+.desktop .portrait.berry-chew>img{animation:berry-chew .135s ease-in-out both}
+@keyframes berry-chew{50%{transform:rotate(8deg) translateY(-.3cqw)}}
+.berry-sparkles,.berry-ring{opacity:0}
+.berry-healed .berry-food{display:none}
+.berry-healed .berry-sparkles{color:#fff7b2;font-size:2.4cqw;text-shadow:-1em -.45em #fff,.95em .3em #ffdc69,.8em -.8em #bafbf0;animation:berry-spark .4s ease-out both}
+.berry-healed .berry-ring{position:absolute;width:42%;aspect-ratio:1;border:3px solid #a2f5d3;border-radius:50%;animation:berry-ring .43s ease-out both}
+@keyframes berry-spark{25%{opacity:1}to{opacity:0;transform:translateY(-.7cqw) scale(1.3)}}
+@keyframes berry-ring{from{opacity:1;transform:scale(.45)}to{opacity:0;transform:scale(1.65)}}
 </style>
 <main>
 <section id="menu" class="screen" style="position:relative">
@@ -934,6 +949,7 @@ let selectedTeam=[];
 const selectedShiny=new Set();
 const neutralStages=()=>Array(8).fill(0);
 const startingLevel=5;
+const enemyStartingLevel=3;
 function battleMon(entry,level=startingLevel){
   const id=typeof entry==='number'?entry:entry.id;
   const mon=speciesById(id);
@@ -1012,7 +1028,7 @@ function wildForm(id,level){
 const wildPoolCache=new Map();
 function wildPool(stage){
   if(wildPoolCache.has(stage)) return wildPoolCache.get(stage);
-  const level=Math.min(100,stage+startingLevel-1);
+  const level=Math.min(100,stage+enemyStartingLevel-1);
   const limit=stage<=10?26:251;
   const pool=[...new Set(species.slice(0,limit).filter(mon=>!legendaryIds.includes(mon.id)&&!johtoLegendaryIds.includes(mon.id))
     .map(mon=>wildForm(mon.id,level).id).filter(id=>id<=limit))].map(speciesById);
@@ -1037,7 +1053,7 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false){
   const rivalStarter=mode==='formal'?(prior?.rivalStarter??pick([7,4,1])):null;
   const foe=mode==='formal'?formalEncounter(stage,prior,rivalStarter):tutorial&&stage===3
     ?{id:7,kind:'宿敵',trainer:trainerFor(5,7)}:{id:tutorial&&stage===2?16:1,kind:''};
-  const level=mode==='formal'?Math.min(100,startingLevel+stage-1):Math.max(...party.map(mon=>mon.level));
+  const level=mode==='formal'?Math.min(100,enemyStartingLevel+stage-1):Math.max(...party.map(mon=>mon.level));
   const reels=oldReels??buildReels(selectedTypes);
   const positions=reels.map(()=>randomIndex(6));
   const active=party[prior?.active]?.left>0?prior.active:Math.max(0,party.findIndex(mon=>mon.left>0));
@@ -1048,6 +1064,7 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false){
   if(tutorial&&stage===3) foes[0].left=1;
   if(!tutorial&&!foe.trainer&&Math.random()<.01) foes[0].shiny=true;
   if(foe.kind) for(const mon of foes) equipEnemy(mon);
+  for(const mon of foes) applyEnemyBoosters(mon,stage);
   const run={tutorial,team:party,enemy:foes[0],foes,foeIndex:0,rivalStarter,trainer:foe.trainer??null,introSeen:!foe.kind,stage,kind:foe.kind,phase:foe.phase,phaseType:foe.phaseType,
     region:mode==='formal'?regions[0]:null,items:prior?.items??{},balls:prior?.balls??{poke:5,great:0,ultra:0,master:0},used:{},
     reels,positions,active,spins:0,result:'',won:false,board:boardAt(reels,positions),matches:[],log:['第 '+stage+' 關開始。'],
@@ -1334,6 +1351,86 @@ function changeStage(p,index,amount){
   return p.stages[index]!==before;
 }
 const statusNames={burn:'灼傷',poison:'中毒',toxic:'劇毒',paralysis:'麻痺',freeze:'冰凍',frostbite:'凍傷',sleep:'睡眠',confusion:'混亂'};
+const berryAnimations=new WeakMap();
+const activeBerrySpins=new WeakSet();
+const checkedBerrySpins=new WeakMap();
+function queueBerryAnimation(run,mon,id){
+  if(!berryAnimations.has(run)) berryAnimations.set(run,[]);
+  berryAnimations.get(run).push({mon,id});
+}
+async function checkHealingBerry(run){
+  if(!activeBerrySpins.has(run)||checkedBerrySpins.get(run)===run.spins) return;
+  checkedBerrySpins.set(run,run.spins);
+  const mon=run.team[run.active];
+  if(!mon?.left||mon.left*2>=mon.hp) return;
+  const id=Object.keys(healingBerries).find(key=>itemCount(run,key)>0);
+  if(!id) return;
+  consumeItem(run,id);
+  const recovered=Math.min(mon.hp-mon.left,Math.max(1,Math.floor(mon.hp*healingBerries[id][2])));
+  mon.left+=recovered;
+  updateHp('playerHp',mon);
+  run.log.unshift(mon.name+'吃下'+itemCatalog[id].name+'，恢復 '+recovered+' HP。');
+  queueBerryAnimation(run,mon,id);
+  await playBerryAnimations(run);
+}
+function resistanceBerryFactor(run,type){
+  const id=resistanceBerryByType[type];
+  return id?1-.1*Math.min(5,itemCount(run,id)):1;
+}
+function consumeStatusBerry(run,mon,status){
+  if(!run.team.includes(mon)||!mon.left) return false;
+  const specific=Object.keys(statusBerries).find(id=>statusBerries[id][1]?.includes(status)&&itemCount(run,id)>0);
+  const id=specific??(itemCount(run,'lum-berry')>0?'lum-berry':null);
+  if(!id) return false;
+  consumeItem(run,id);
+  if(status==='confusion'||id==='lum-berry'){
+    mon.confusion=0;
+    delete mon.confusionUntil;
+  }
+  if(status!=='confusion'||id==='lum-berry'){
+    mon.status=null;
+    mon.burned=false;
+    mon.sleep=0;
+    mon.toxicTurns=0;
+    delete mon.statusUntil;
+  }
+  run.log.unshift(mon.name+'吃下'+itemCatalog[id].name+'，解除'+statusNames[status]+'。');
+  queueBerryAnimation(run,mon,id);
+  refreshFighterStatus(run,mon);
+  return true;
+}
+async function playBerryAnimations(run){
+  const queue=berryAnimations.get(run);
+  if(!queue?.length) return;
+  berryAnimations.delete(run);
+  for(const {mon,id} of queue){
+    if(run.team[run.active]!==mon) continue;
+    const portrait=$('player').querySelector('.portrait');
+    const layer=document.createElement('div');
+    layer.className='berry-effect';
+    layer.innerHTML='<span class="berry-food">'+itemArt(id)+'</span><span class="berry-sparkles">✦</span><span class="berry-ring"></span>';
+    portrait.append(layer);
+    $('notice').textContent=mon.name+'吃下了'+itemCatalog[id].name+'！';
+    try{
+      for(let bite=0;bite<3;bite++){
+        portrait.classList.remove('berry-chew');
+        void portrait.offsetWidth;
+        portrait.classList.add('berry-chew');
+        playGameSound('0098');
+        await wait(reducedMotion.matches?70:135);
+      }
+      portrait.classList.remove('berry-chew');
+      layer.classList.add('berry-healed');
+      playGameSound('00E4');
+      await wait(reducedMotion.matches?90:175);
+      playGameSound('0066');
+      await wait(reducedMotion.matches?110:250);
+    }finally{
+      portrait.classList.remove('berry-chew');
+      layer.remove();
+    }
+  }
+}
 function giveStatus(s,p,status){
   if(p.status||p.burned||!p.left||s.safeguard?.[s.team.includes(p)?'player':'enemy']) return false;
   if((status==='burn'&&p.type.includes('火'))||(['freeze','frostbite'].includes(status)&&p.type.includes('冰'))||
@@ -1343,6 +1440,7 @@ function giveStatus(s,p,status){
   refreshFighterStatus(s,p);
   if(status==='sleep'||status==='freeze') p.statusUntil=(s.enemyTurns??0)+1;
   s.log.unshift(p.name+'陷入'+statusNames[status]+'。');
+  consumeStatusBerry(s,p,status);
   return true;
 }
 function healMon(s,p,side,amount){
@@ -1352,6 +1450,24 @@ function healMon(s,p,side,amount){
   p.left+=healed;
   updateHp(side+'Hp',p);
   s.log.unshift(p.name+'恢復 '+healed+' HP。');
+}
+const universalBooster={name:'萬能增強劑',sprite:'hp-up',tier:1,description:'每件使 HP／攻擊／特攻／防禦／特防額外增加 10%。'};
+function applyEnemyBoosters(mon,stage){
+  const count=Math.floor(stage/10);
+  if(!count||mon.enemyBoosterCount===count) return;
+  const before=mon.hp;
+  const stats=statsAt(mon,mon.level).map((value,index)=>index<5?Math.floor(value*(100+10*count)/100):value);
+  mon.enemyBoosterCount=count;
+  mon.hp=stats[0];
+  mon.stats=mon.transformOriginal?[mon.hp,...mon.stats.slice(1)]:stats;
+  if(mon.transformOriginal) mon.transformOriginal.stats=stats;
+  if(mon.left>0) mon.left=Math.max(1,Math.min(mon.hp,mon.left+mon.hp-before));
+}
+function enemyItemCards(mon,iconOnly=false){
+  const held=itemCatalog[mon.heldItem];
+  const card=(def,count=1)=>itemButton(def,'type="button" aria-label="'+def.name+'"',iconOnly?'':def.name,count);
+  return (mon.enemyBoosterCount?card(universalBooster,mon.enemyBoosterCount):'')+
+    (held?card({...held,description:held.description.replace('我方','對手的').replace('在場隊員','持有者')}):'');
 }
 function equipEnemy(mon){
   mon.heldItem=Object.keys(typeItems).find(id=>mon.type.includes(typeItems[id][1]))??'leftovers';
@@ -1425,7 +1541,9 @@ function confuseTarget(s,target,potency){
   target.confusion=1;
   target.confusionUntil=(s.enemyTurns??0)+1;
   refreshFighterStatus(s,target);
-  return noteEffect(s,target,'陷入混亂。');
+  noteEffect(s,target,'陷入混亂。');
+  consumeStatusBerry(s,target,'confusion');
+  return true;
 }
 function hiddenPowerFor(mon){
   const ivs=[0,1,2,5,3,4].map(index=>mon.iv?.[index]??0);
@@ -1520,7 +1638,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
       if(Math.random()<Number(effect.slice(4))/100*potency) giveStatus(s,target,'burn');
       break;
     case 'burnAlways':return Math.random()<potency&&giveStatus(s,target,'burn');
-    case 'petal':source.confusion=1;source.confusionUntil=(s.enemyTurns??0)+1;return noteEffect(s,source,'陷入混亂。');
+    case 'petal':return confuseTarget(s,source,1);
     case 'seed3':
       if(target.type.includes('草')||target.seeded) return false;
       target.seeded=true;target.seedRate=.03*potency;target.seedStart=s.spins+1;target.seedSide=side;
@@ -1639,7 +1757,14 @@ function scaledStages(delta,potency){
   const whole=Math.floor(magnitude);
   return Math.sign(delta)*(whole+(magnitude>whole&&Math.random()<magnitude-whole?1:0));
 }
-async function executeMove(s,source,target,name,side,counter=false,sequence='',scale=1,support=[],depth=0,potency=1){
+async function executeMove(s,...args){
+  try{
+    return await executeMoveCore(s,...args);
+  }finally{
+    await playBerryAnimations(s);
+  }
+}
+async function executeMoveCore(s,source,target,name,side,counter=false,sequence='',scale=1,support=[],depth=0,potency=1){
   const original=skillDetails[name];
   const custom=moveRules[name]?.effect;
   if(custom==='camouflage') return false;
@@ -1723,7 +1848,7 @@ async function executeMove(s,source,target,name,side,counter=false,sequence='',s
       if(charge) source.nextDamage=false;
       const factor=potency*(fixed?1:scale*bonus*extraHit*wakeFactor*weatherDamage(s,skill.type,side)*(charge?1.5:1)*(camouflage?0.5:1)*electricBonus*(1-.5*(s.fieldEffects?.[(physical?'physicalScreen:':'specialScreen:')+other]?.potency??0)));
       const lens=side==='player'&&raw>0&&!target.counterGuard&&itemCount(s,'scope-lens')&&Math.random()<.1;
-      let damage=target.counterGuard?0:Math.min(target.left,raw&&factor>0?Math.max(1,Math.floor(raw*factor*(lens?1.5:1))):0);
+      let damage=target.counterGuard?0:Math.min(target.left,raw&&factor>0?Math.max(1,Math.floor(raw*factor*(lens?1.5:1)*(other==='player'?resistanceBerryFactor(s,skill.type):1))):0);
       if(lens&&damage) s.log.unshift('焦點鏡提高了本次傷害。');
       if(skill.effect==='FALSE_SWIPE') damage=Math.min(damage,Math.max(0,target.left-1));
       if(other==='player'&&damage>0&&damage===target.left&&itemCount(s,'focus-band')&&!s.used['focus-band']){
@@ -1782,7 +1907,7 @@ async function executeMove(s,source,target,name,side,counter=false,sequence='',s
   }
   if(directStatuses[skill.effect]&&!giveStatus(s,target,directStatuses[skill.effect])) return false;
   if(skill.effect==='CONFUSE'||(skill.effect==='CONFUSE_HIT'&&Math.random()*100<skill.secondaryChance*potency)){
-    if(!target.confusion&&target.left&&!s.safeguard?.[s.team.includes(target)?'player':'enemy']){target.confusion=1;target.confusionUntil=(s.enemyTurns??0)+1;s.log.unshift(target.name+'陷入混亂。');}
+    confuseTarget(s,target,1);
   }
   if(skill.stat!==undefined&&(!skill.chance||Math.random()<skill.chance*(skill.power?potency:1))){
     const affected=skill.self||skill.delta>0?source:target;
@@ -1801,7 +1926,7 @@ async function executeMove(s,source,target,name,side,counter=false,sequence='',s
     }
   }
   if(['RESTORE_HP','SOFTBOILED','SYNTHESIS','MOONLIGHT','SWALLOW'].includes(skill.effect)) healMon(s,source,side,Math.max(1,Math.floor(source.hp/2*potency)));
-  if(skill.effect==='REST'){source.status='sleep';source.statusUntil=(s.enemyTurns??0)+1;source.burned=false;healMon(s,source,side,Math.floor(source.hp*potency));}
+  if(skill.effect==='REST'){source.status='sleep';source.statusUntil=(s.enemyTurns??0)+1;source.burned=false;healMon(s,source,side,Math.floor(source.hp*potency));consumeStatusBerry(s,source,'sleep');}
   if(skill.effect==='PROTECT') source.protected=true;
   if(skill.effect==='ENDURE') source.enduring=true;
   if(skill.effect==='HAZE'){source.stages=neutralStages();target.stages=neutralStages();}
@@ -1828,6 +1953,7 @@ function undoTransform(p){
 async function finishStage(s,message){
   if(s.won) return;
   s.rewardPending=true;
+  if(activeBerrySpins.has(s)) await checkHealingBerry(s);
   completeStage(s,message);
   if(s.tutorial){
     if(s.stage===1) await chooseReward(s);
@@ -1856,14 +1982,6 @@ async function finishStage(s,message){
       const finalLevel=Math.min(mode==='formal'?100:trialLevelCap,member.level+Number(mode==='formal')+bonus+extra);
       while(member.level<finalLevel) await levelUp(member,member.level+1,s);
     }
-  }
-  if(s.stage%10===0){
-    for(let i=0;i<s.stage/10;i++){
-      const id=pick(statBoosterIds);
-      s.items[id]=(s.items[id]??0)+1;
-      s.log.unshift('里程碑獎勵：取得'+itemCatalog[id].name+'。');
-    }
-    for(const member of s.team) setBattleLevel(member,member.level,s);
   }
   await chooseReward(s);
   delete s.rewardPending;
@@ -1935,6 +2053,16 @@ function healLeftovers(s){
   updateHp('playerHp',mon);
 }
 async function resolveSpin(s,board,settledTracks=null){
+  if(s.result) return;
+  activeBerrySpins.add(s);
+  try{
+    await resolveSpinCore(s,board,settledTracks);
+    await checkHealingBerry(s);
+  }finally{
+    activeBerrySpins.delete(s);
+  }
+}
+async function resolveSpinCore(s,board,settledTracks=null){
   if(s.result) return;
   s.board=board;
   s.spins++;
@@ -2313,15 +2441,25 @@ function updateHp(id,p){
   meter.dataset.health=healthBand(p);
   $(id+'Text').textContent=p.left+' / '+p.hp;
 }
-let logOwner;
-let logCount=-1;
+let renderedLog;
+let renderedLogCount=0;
 function renderLog(){
-  if(logOwner===state&&logCount===state.log.length) return;
+  const entries=state.log;
+  const sameLog=renderedLog===entries&&renderedLogCount<=entries.length;
+  if(sameLog&&renderedLogCount===entries.length) return;
   const log=$('log');
-  const follow=logOwner!==state||log.scrollHeight-log.clientHeight-log.scrollTop<12;
+  const follow=!sameLog||log.scrollHeight-log.clientHeight-log.scrollTop<12;
   const previous=log.scrollTop;
-  logOwner=state;logCount=state.log.length;
-  log.innerHTML=state.log.slice().reverse().map(msg=>'<li title="'+msg+'">'+msg+'</li>').join('');
+  const first=sameLog?entries.length-renderedLogCount:entries.length;
+  const escape=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+  const rows=entries.slice(0,first).reverse().map(message=>{
+    const safe=escape(message);
+    return '<li title="'+safe+'">'+safe+'</li>';
+  }).join('');
+  if(sameLog) log.insertAdjacentHTML('beforeend',rows);
+  else log.innerHTML=rows;
+  renderedLog=entries;
+  renderedLogCount=entries.length;
   log.scrollTop=follow?log.scrollHeight:previous;
 }
 function renderTutorialHint(){
@@ -2367,8 +2505,7 @@ function render(refreshBoard=true){
   updateHp('playerHp',p);
   updateHp('enemyHp',state.enemy);
   $('playerParty').innerHTML=party(state.team,state.active);
-  const held=itemCatalog[state.enemy.heldItem];
-  $('enemyHeld').innerHTML=held?itemButton({...held,description:held.description.replace('我方','對手的').replace('在場隊員','持有者')},'type="button" aria-label="'+held.name+'"',''):'';
+  $('enemyHeld').innerHTML=enemyItemCards(state.enemy,true);
   $('enemyParty').innerHTML=party(state.foes??[state.enemy],state.foeIndex??0);
   for(const [id,mon] of [['player',p],['enemy',state.enemy]]){
     const display=$(id).querySelector('.portrait');
@@ -2470,19 +2607,27 @@ function buildReels(picks){
   return fallbackReels[picks.length].map(pattern=>rotate([...pattern].map(i=>order[i])));
 }
 function boardAt(reels,positions){
-  return Array.from({length:cellCount},(_,i)=>{
-    const column=i%boardSize;
-    return reels[column][(positions[column]+Math.floor(i/boardSize))%6];
-  });
+  const board=new Array(cellCount);
+  for(let column=0;column<boardSize;column++){
+    const reel=reels[column];
+    const stop=positions[column];
+    for(let row=0;row<boardSize;row++) board[row*boardSize+column]=reel[(stop+row)%6];
+  }
+  return board;
 }
 function matchingMoves(moves,type){
   return moves.filter(name=>type==='普通'||skillDetails[name].type==='普通'||skillDetails[name].type===type);
 }
 function matchingLines(board){
-  return lines.flatMap(cells=>{
+  const matched=[];
+  for(const cells of lines){
     const type=board[cells[0]];
-    return Object.hasOwn(types,type)&&cells.every(i=>board[i]===type)?[{cells,type}]:[];
-  });
+    if(!Object.hasOwn(types,type)) continue;
+    let index=1;
+    while(index<cells.length&&board[cells[index]]===type) index++;
+    if(index===cells.length) matched.push({cells,type});
+  }
+  return matched;
 }
 function winningLines(board,moves){
   return [...new Set(moveQueue(moves,matchingLines(board)).flatMap(move=>move.supports.map(line=>line.cells)))];
@@ -2661,12 +2806,12 @@ $('spin').onclick=async()=>{
       const progress=i/24;
       return {offset:leadOffset+(1-leadOffset)*progress,transform:transform(progress)};
     })];
-    return track.animate(frames,{duration:duration/(fastForward?Math.max(2.5,battleSpeed):battleSpeed),fill:'forwards'});
+    return track.animate?.(frames,{duration:duration/(fastForward?Math.max(2.5,battleSpeed):battleSpeed),fill:'forwards'});
   });
-  await Promise.all(animations.map(animation=>animation.finished));
+  await Promise.allSettled(animations.map(animation=>animation?.finished));
   tracks.forEach((track,column)=>{
     track.style.transform='translate3d(0,0,0)';
-    animations[column].cancel();
+    animations[column]?.cancel();
   });
   grid.classList.remove('spinning');
   state.positions=positions;
@@ -2677,10 +2822,13 @@ $('spin').onclick=async()=>{
     state.counterSpins=4;
     state.log.unshift('教學快轉：跳到第 5 次拉霸，示範對手完整行動。');
   }
-  await resolveSpin(state,finalBoard,tracks);
-  rolling=false;
+  try{
+    await resolveSpin(state,finalBoard,tracks);
+  }finally{
+    rolling=false;
+    render(false);
+  }
   if(state.won&&!state.finished){advanceStage();return;}
-  render(false);
   if(!$('skill').open) $(state.won&&!state.finished?'nextBattle':state.result?'exitBattle':'spin').focus();
 };
 function healAtStageEntry(run){
@@ -2712,7 +2860,8 @@ function advanceStage(){
   }
   const previousLog=state.log;
   state=fresh(stage,state.team,state.reels,state);
-  state.log=['第 '+stage+' 關開始。',...previousLog];
+  state.log=previousLog;
+  state.log.unshift('第 '+stage+' 關開始。');
   if(heal&&mode==='formal') state.log.unshift('階段補給：全隊 HP 已恢復。');
   if(mode==='formal') healAtStageEntry(state);
   openBattleStage(true,false);
@@ -3530,9 +3679,8 @@ async function openBattleStage(entering=false,playerEnters=entering){
   if(run.trainer){run.playerSending=true;render(false);}
   const dialog=$('trainerIntro');
   const img=$('trainerIntroSprite');
-  const held=itemCatalog[run.enemy.heldItem];
   $('tutorialRivalHelp').hidden=!(run.tutorial&&run.stage===3);
-  $('trainerIntroItem').innerHTML=held?itemButton(held,'type="button"',held.name):'';
+  $('trainerIntroItem').innerHTML=enemyItemCards(run.enemy);
   if(run.trainer){
     const [kind,name,art,line]=run.trainer;
     img.src='data:image/png;base64,'+trainerArt[art];
@@ -3678,7 +3826,7 @@ async function openSettlement(run){
   $('settlementStage').textContent=run.finished?'通過第 '+run.stage+' 關 · 地區冠軍':(run.surrendered?'投降於第 ':'倒在第 ')+run.stage+' 關'+(run.kind?' · '+run.kind:'');
   $('settlementTeam').innerHTML=run.team.map(p=>settlementMon(p,p.level)).join('');
   const held=Object.entries(run.items).filter(([id,count])=>itemCatalog[id]&&count);
-  $('settlementItems').innerHTML=held.length?held.map(([id,count])=>'<span class="item-card">'+itemArt(itemCatalog[id].sprite)+itemCatalog[id].name+' ×'+count+'</span>').join(''):'<p>無</p>';
+  $('settlementItems').innerHTML=held.length?held.map(([id,count])=>'<span class="item-card">'+itemStackArt(itemCatalog[id].sprite,count)+itemCatalog[id].name+'</span>').join(''):'<p>無</p>';
   $('settlementUnlocks').innerHTML=run.newUnlocks.length?run.newUnlocks.map(id=>settlementMon(speciesById(id))).join(''):'<p>本局沒有新解鎖</p>';
   const totalCoins=run.coins+(itemCount(run,'amulet-coin')?200:0);
   $('settlementGold').textContent='本局獲得 '+totalCoins+' 金幣 · 結算中…';
@@ -3718,7 +3866,22 @@ const statBoosterIds=['hp-up','protein','iron','calcium','zinc'];
 const stoneNames={fire:'火之石',thunder:'雷之石',water:'水之石',leaf:'葉之石',sun:'日之石',moon:'月之石',shiny:'光之石',dusk:'暗之石',dawn:'覺醒之石',ice:'冰之石'};
 const stoneIds=Object.keys(stoneNames).map(id=>id+'-stone');
 const gemNames={火:'火之寶石',水:'水之寶石',電:'電之寶石',草:'草之寶石',冰:'冰之寶石',格鬥:'格鬥寶石',毒:'毒之寶石',地面:'地面寶石',飛行:'飛行寶石',超能力:'超能力寶石',蟲:'蟲之寶石',岩石:'岩石寶石',幽靈:'幽靈寶石',龍:'龍之寶石',惡:'惡之寶石',鋼:'鋼之寶石',普通:'一般寶石',妖精:'妖精寶石'};
+const healingBerries={"sitrus-berry":["文柚果",2,0.5],"oran-berry":["橙橙果",1,0.25],"leppa-berry":["蘋野果",0,0.1]};
+const resistanceBerries={"occa-berry":["巧可果","火"],"passho-berry":["千香果","水"],"wacan-berry":["燭木果","電"],"rindo-berry":["羅子果","草"],"yache-berry":["番荔果","冰"],"chople-berry":["蓮蒲果","格鬥"],"kebia-berry":["通通果","毒"],"shuca-berry":["腰木果","地面"],"coba-berry":["棱瓜果","飛行"],"payapa-berry":["福祿果","超能力"],"tanga-berry":["扁櫻果","蟲"],"charti-berry":["草蠶果","岩石"],"kasib-berry":["佛柑果","幽靈"],"haban-berry":["莓榴果","龍"],"colbur-berry":["刺耳果","惡"],"babiri-berry":["霹靂果","鋼"],"chilan-berry":["燈漿果","普通"]};
+const resistanceBerryByType=Object.fromEntries(Object.entries(resistanceBerries).map(([id,[,type]])=>[type,id]));
+Object.assign(itemSprites,{"sitrus-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTFr1lpShEr/72vmtUKMczrWtUrv1lqtczGIbhkpAAAAAXRSTlMAQObYZgAAAJNJREFUeNq1zrENwjAUBFB7AzuBUCMmACaIdJYzgD0ATVIjIU70kVKnQtmW3+Q7DJD71dOdZJvdYt0/6+uWvrpd3IZo63uxRUZ1LmzErVc3EZK30zVeSKA6JACd+iCOiLo/AgGxHx5rD+QETE/dI8txLr0sOq69HSGZiocxCL/6/xPJhfKeDvhZ6I2aPYUlXmJ2yQ/3HCWdbKPR7QAAAABJRU5ErkJggg==","oran-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTFSUoTm7/9ra71Spfda1v+cpb29xf9Se87riGYFAAAAAXRSTlMAQObYZgAAAJRJREFUeNq9z0EKwkAMBdDODTLFXmCooEvpCSzBvWX+QLdCcwBX3aoL3Sr2vo4yYewF+ncvnxBSLBVLM5bN7k/Gnm8NZVbddXPProKMzl2UxoucxseW1EFkcG56Jq+ChAHAUddxEGDtQalHCmkPeAB97jvEvJPNhB9rNb+Annlf6EH+JtvUzC23lJ8v48DOHraRC+QDsO0jsl0rIfMAAAAASUVORK5CYII=","leppa-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAJFBMVEX///8xMTFa1lJCnEIxc0L/lDHv5mPmczHOSjG1pWP/3jGcUjpF8pr2AAAAAXRSTlMAQObYZgAAAI1JREFUeNq10LENwkAMhWHfBnZIkFLGsADxBCcmSGGxwSkMgERLdxKbZMpccUQv1PB3X2Nbpj8miCByQTZq6LaQwY0pMpw0EnoceGfjIAyOZcGwSUI82Khc2XkbTfUzslums8lV64HBl8mERIir3Qu2ju63/AI//LlzLoH7Oc8Zb0tpfoOpT/fvV9GvWgHfeBfWGGegYQAAAABJRU5ErkJggg==","occa-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTHvczG9YyH/lGPee0L/vZR71pwxa0o6pWODVbXPAAAAAXRSTlMAQObYZgAAAH1JREFUeNrFz7ENw0AIBdDcBnd2kdofLwCXCSzY4JQJLM+QNVJm26AU4CyQUPH0v5C4/G/aeW+1PGpyNb6+wuVmY+NnxLPed+1Zn+zYDVnHOHSAw6Rqmp7cY6MlLKvHZ0MA4TQBlPfnT0xpj7ufDwt1LDVcuoDr17fN+ZN5A45CE8GhjORzAAAAAElFTkSuQmCC","passho-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///8xMTExY6XOpTrv5mspa9ZChO97rf+Ec0KC0+6lAAAAAXRSTlMAQObYZgAAAJRJREFUeNq90EEKgzAQBVC9QdIiuLZJ9zJduI35QtaBeACh4w10XdKDt4sYcwL/7jF8mJnqmkgpStYPGFGw4Q796du6LbAij5/7rkrzur07yoWGmReF0zOzQnatw8y+8BT+UbaXyaP2wTsaSCRPKijEePg1QgNDHA4Do4ORqV/dLeC+Jq/fEiz1p+uW6CPKe9M7LsgPbp4e2HYpp1wAAAAASUVORK5CYII=","wacan-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///8xMTH/9zHWzhCU94w6c0pS3ntCrWP///+3Ze6sAAAAAXRSTlMAQObYZgAAAI9JREFUeNq1z8sJwzAMBmBrAysO+O5M0IhsoHSB4vhcaNJzoY1WyNg1oZbb3vMfBB96gMxhAfx109k/nyoQDDTVMLbWAOlCe2ZE/DKzX2c13OU2LstFLTFxnB56LtLw5FQMLhBNnMq4C6GjNL8+hn7breNh92rVIe8nuRb3mYOg9inHS/3WESH4akDMRX1o3j80GeCsCM9IAAAAAElFTkSuQmCC","rindo-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///8xMTH/9zEhrTFS3mM6c0p7czHWzhC9/6XCE9nbAAAAAXRSTlMAQObYZgAAAHhJREFUGNNjYKAZEETlMioJoMgKKaLIugQVoupOEkFRz1gm7IjCL2REsUA0ENU2F2e4dhBDpMPFECZliMY3BhokGuoM55sYCwK1ByP4Ji5A5aYCcL5HiytCO4TvguAzCLu4uLo4o/ANjY0RvmEEcgSRHS8oSLNIAACbLxMqZX125QAAAABJRU5ErkJggg==","yache-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTEh3lI6rVopWjF73uYhpcUZhK1Cxd7F9/+/4xWpAAAAAXRSTlMAQObYZgAAAJxJREFUeNq10DEOwjAMBdDmBvWAutMToPYEpVdwVMYO/GRlqU9ACAfo0NsSIeKoAxPC25O//+DqX0N7mpbqvYfTdxuivu1J2cCN7XDMDYfIVsau+9jwc2WRM+X1dNms4FaV+BZ8mHMb4p0RH07PpxiSRc0B8MUpfWXr1IhgZqf9zZI8YVYLAEGdbcSn9hQvB/HdpoEFQrvnkfLHeQElty0Ruo6ZYQAAAABJRU5ErkJggg==","chople-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTGtMTHeQkL/UlL/vaX/jHu9eyHvrTr33lJJzFdpAAAAAXRSTlMAQObYZgAAAJZJREFUeNq1kLEZwiAQhZMNAim0xXMBeUzgnRv4uYHprYJtKjNBZFux4EgGyHU//4P7Hs1OY7otklsftCRwK7QysK8BS7cHo6vp8/POcMoIgwD6omWRzFQC/VWE4XFRDn+NsqH3QNaCwifKOijbT6SsufBhfk8E0fvHNH4JgGuKX0aC18rtnBI5U+vFNG3qm/hS1N/aZ34OOh8EuZYTwQAAAABJRU5ErkJggg==","kebia-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAJFBMVEX///8xMTEpnCkxxTpS72MpaymErTG195yUxTqEc2NrWlLW/8VaRG+cAAAAAXRSTlMAQObYZgAAAKFJREFUeNq9z7ENwjAQBdB4A9uZIDFSavtA1IFbALECckOXApPUKYyYICwQ45oBQZbOYQH43bvvO8nFnyIEF/yLCvVRL1wh4iabKbT2tD+QJVjvR+S5NtdbGFGToeljuL9aem5cnMI5u9z2MXrEltabYZoviBWtu0d0Cuk+M+45d7DeLf7UALrIdh0AVOQ6EfL3yhpSTZGJPJtJIg2ESPxB3qYyKOUcXYuHAAAAAElFTkSuQmCC","shuca-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAIVBMVEX///8xMTGt72Pe97VjvSHexRn/72MpYymljCH///9SjCFJwExPAAAAAXRSTlMAQObYZgAAAI1JREFUGNNjYKAVEBRA4TIqG6LynVSQFTAKurg4IvGF1JcsQfAFBUuUykvgfMGw1HYnJZWFML1tmdNSS1xcYOYxps2cmRbu4gXji4L4EVUw5QxiaZnT0kIb4crb0oAgNBDulDA0fiiQm4rMByoIDW2E81tDQQDhG1EQNwLBZwRxBZE8J4HKBXpekFaxAAB3nyUl/7jt/AAAAABJRU5ErkJggg==","coba-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAGFBMVEX///8xMTExWnsxc60pzt6E9/9SpdZzve8S3wowAAAAAXRSTlMAQObYZgAAAIVJREFUeNq90NENwjAMBFCyQVImiDoBOYsFfExA3QlougGsT/pRewLw35Psk+3Lv6qUkkOpzEANThDqzT2BtsKdBq2/3Fd5WO/L6TSP7s8WFto+XM804bq/7ZnPcfLeN9OwotvSsscBYow4BUitYQiJ7D6osS0w2HJYiFbi2ON0p7/mN/UFGf8eV8l+ctcAAAAASUVORK5CYII=","payapa-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAJFBMVEX///8xMTG172tzrSFKYymMKXPFKZz3Qt5jY2P/hOb/re97OmspJ+zHAAAAAXRSTlMAQObYZgAAAJtJREFUeNqtj70NwjAQheMNbJDTUHkEwBOwAUUQbYq8K9L7RMkUiBVoYUAuwhc7tPC6T34/5+ZfMnbJq/DF0dmFPx5qx3Xz2lVsOoyx8ntiPLdWX13LnMZ9yOgBEl6H2cxg9Pkkc+I7J+Coabo8bgyctfvDg7a3JH6GawqLYGeGYCrsQVzi0o9JvaLsA3ldA1C73j/kNf2f4s96A4t2LD7tJAliAAAAAElFTkSuQmCC","tanga-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAIVBMVEX///8xMTExjDE6rTpKe0L37zrFtSk6UjFCzkKM74ytpSFA07ywAAAAAXRSTlMAQObYZgAAALFJREFUeNq10bEKwjAQBuDkDXoVO3TzOvQBLpCuUsHZIRXcXBScbAr2AbLkEdqxg/qaptAL+AC96b7jPzgSsV5BElsJIMCcIlNSYEzDgcDD0VyzxbJQtXevJJrqahx0dKrIj4OD2+KNJu+920+83s2mnk0dVd6RfS7WBc1lEzbOVMgu+xDAsuTz8sYiot3x+dnljthjy96+z4ExLmTzDYSJLSANzD/w9x4ye/AGD1f4hB/R8iZCUmTs4gAAAABJRU5ErkJggg==","charti-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAFVBMVEX///8xMTGtnDHWvQjOrSH/7yn//714WiYlAAAAAXRSTlMAQObYZgAAAHpJREFUeNrFz9ENwzAIBNB4g9hRB4jJAuXUCVovEPmyQbz/CHE/Cp6g4e8hccB0V8UYZ1eIeYM7pI18uxPbh9UccLSz7OaUSzure2EtVP05CFmJ1cbzq6cPRm+IOxECxRDXpTqs+/pp1z12gejshiBH47RAVqO9/p+6AO+1FTFqcFZlAAAAAElFTkSuQmCC","kasib-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///8xMTHmQr3/a861MZT//72tezH/peZrOmPnmMGZAAAAAXRSTlMAQObYZgAAAKtJREFUeNqtkD0OwjAMRtMbJOFHXXE9ZLaROrf1kLVHYIALdGCPItRjEwkTygzeXt7n2LL5YzX2mw/zRzlnmutc0fPZHW817/uF5HGpuruTcNhoxo7BVr3A1FNlz4TlAxyUdwTTnQFPGgeM3UIwKntc175oUG5XSUyQYNC8xDIsAFj1EgsmQOX9kCjk8R03zvqQ80vrS5asWlviuNGmyRGc2bC0uouy01P+Xk+VVh77qjEV1wAAAABJRU5ErkJggg==","haban-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTHvQkL/e3v/nJzWISGlKSljMTFSMUprOmP++lWeAAAAAXRSTlMAQObYZgAAAKRJREFUeNq1kEEKwjAQRc0NJhG7zxSj646Ie3MBCyndGugFLOIBRCQ3aG5rKk4C7vtX83gfZpjVchESypjmtQVGRaQlStaK7Jm0zu36YC01wLypZ99cch0pBTXXW48JcQs/NrNNYR7pROSLp3140q3wI8Tp6NAxDzHGt3Md8P7w5by/6mN8De7KLLCf2ruDcp/xaJJm1lWHO8gsQUil/56V9BL5AIsAIT1/K5hJAAAAAElFTkSuQmCC","colbur-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAElBMVEX///8xMTH/vff3a+bFKbX/lO+OXoeZAAAAAXRSTlMAQObYZgAAAItJREFUeNq1ztsNgzAMBdBkAzuFAQplAOTLAE3iAarU+69SpEISBuD+Hfnp7gk7R70D+fXidchMzSMkTZ0HTVtp9hoheFc/NBbkdDQwZy3S6uFlm5mAzmlTMTS7AYssST91HSbEpOcD/os5ITMfDpYhUq/7RfJepmpmw39ZPbiOz94z+Yt3cG9yd+UHXlMWUtaJJDAAAAAASUVORK5CYII=","babiri-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTFrrTGl5krO95xaezpCUilKaymlhDHv1nsQF4vaAAAAAXRSTlMAQObYZgAAAJ1JREFUeNq90LEKAjEMBuC7N0gFwdWc4nyk0FkacJajtyvc7bZD8BEc3Xxc69DUewDN1C+0f5s2/6jWLL2yxkAL1TtP/eZZ3Z1E7g8oxwUTk3sVr0kSe7o1aofM6nYaHFr2CdQUO2b1GCii/TYeEClp/jxHQWHQwHAlifZYjNk5oi/eh3yFw60+aJzC4AzU+XPj/FnVHRdY/lDmL+oN6N8h799Yue0AAAAASUVORK5CYII=","chilan-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///8xMTGl5krWrUL/77WtjELv1ntaezprrTGSntoWAAAAAXRSTlMAQObYZgAAAItJREFUeNq1zTsOwjAQBNDkBhs+Ci1HiFb2DUhvmT1B8PSpqOk4Nh7ExuIAme55ZuVuv/Ty78O1VYPQG8+YpLu83EcAqX+vXscZZuNT3A+Y6rhu87moahL3CVn54PM7HRHkZ3AOLG6ex+rkzqxRpuZYHZpZL9nvb99rC81k+79EhEpxm1kmPQND7pAPaOclqfzT0BAAAAAASUVORK5CYII="});
+const statusBerries={"cheri-berry":["櫻子果",["paralysis"]],"chesto-berry":["零餘果",["sleep"]],"pecha-berry":["桃桃果",["poison","toxic"]],"rawst-berry":["莓莓果",["burn"]],"aspear-berry":["利木果",["freeze","frostbite"]],"persim-berry":["柿仔果",["confusion"]],"lum-berry":["木子果",null]};
+Object.assign(itemSprites,{"cheri-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAJ1BMVEX///8pawjW93ul5nN7vUoxMTGEQjHOWkLvY1L/nIz/3r3ea1K9SjG4vlwkAAAAAXRSTlMAQObYZgAAAL1JREFUGNNjYKACYBQUReELKZkEIEsrGxu7IkubhAYhKxByBSpB5YMxTj5QM5gvADPfUVTIVYCBURWmwNhFyNVQAKaHLTRUUDnE2TQYakd4R6OSSWiIswqEz9o5sxHoPtYQKD991soOYUcGuHGRq1Z2NAI9yGgK48/o2H6UAW585MyOjvKjjIpBUOMjOjq6y4+yGsO8lL6ju7zmGEOoMZTPWl5efgbIDoGaxxBz5sxRkLhLANy9CSA6lApRAwDkky6ojWSXKAAAAABJRU5ErkJggg==","chesto-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAIVBMVEX///8xMTHOlP+Uc+Z7Wkrv1ms6QntjWq2EWs7FtWutrWsxIshiAAAAAXRSTlMAQObYZgAAAJhJREFUeNq90CEOwzAMBdD1BonU9gAOGI+lpXRgZLygZUskB08DPkJvMFBWKRrIKRfSJD3A9tnTlyzbp/9FHiWVKGokXlAUOg2GRGavQSFn9wYAixsHWuHAz902tWiyWwvn2p1V6HEp9qkl5sfuN9FrIMqeY3CGy/x5nPxS+TauH+ayXzfFQETZ7RruMW7VtYlXcfiGTPxBvvETKCH75nO8AAAAAElFTkSuQmCC","pecha-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTH/xZz/5pzvlHP/tXNjzlKtWkIxc0JavUI+qcfLAAAAAXRSTlMAQObYZgAAAIpJREFUGNNjYKANYBQUROYKChkrCSBxlZSNjRQRipWUlIyVEHygYhCAaWAEKlY2QucrGzlC+SJKIPXIfDBQdYFqEAkC80PgfFeINJTPmO7iAubC+IkuJS5gAFUvJgjhw8yXyBQE8wsRfgUJCCI8KCnRKCg4QwApNDpmzpwpgBwgnTNRAogBNbyoBgAOZRwUFboypQAAAABJRU5ErkJggg==","rawst-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTFa1lJCnEIxa0KElK1jWnuU1taU5uaMtdYOPb1dAAAAAXRSTlMAQObYZgAAAKZJREFUeNq1z8ENgzAMBdBkAzsRba8NE6BkASoW4GDUK0IMwKFyJ2joAIiOWyolIR2Af3v298HikCD+05T5QBrTlAjJqmyMuV2za7W5hlgHqYxrbBxIUQwOtXVVPDgPBaF1Nhbuw8VPmZ+v2fe2tlXye9uDTv7MrF3yiWfPGlsZXDA/JqReQvDKzAu1UgSPKy8dAUTTL+3+L3VEPeweiTAwPIzioHwB8xskJcOD4QAAAAAASUVORK5CYII=","aspear-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTH35lL//2uEc0LOtUqtxbW13s7m1lqElIRsW6RjAAAAAXRSTlMAQObYZgAAAKdJREFUeNq10EEKwjAQBdDmBk1RwaU/OLhuhK4VPEChA2ZpFjmBxb1Q6AWyyG2NMG31AP279/mbmWKlaF3+EdffQht7q9qZyjRPrsI8qMzr3C1WsE2vQY/FOcBBvAvG2josJm9rgj+WMg+gQN4Pk4FAuWTxG/AEnKL4DpAHBhZzHmQmcbGP4zgyp262y4o8HaQynIt8KSTbGF3itpysNomFUujvv9bIB6mfKBdDaRC5AAAAAElFTkSuQmCC","persim-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAIVBMVEX///8xMTFz3lJKrUIxY0L/zpz/76Vja0LmnHP/vYS9c1IBcm6GAAAAAXRSTlMAQObYZgAAAJ9JREFUeNq1kDEOwjAMRckNMFI7MLa9AA0Sc4ErmDbs8Y7aqqwMICsHQVFPSRac9AD19qz/v+y/WWcULHlXbJdcNpBulD5eDqm9P1cNCGftUBdXyVA32+qqLoWJ7NTr059zIsJpEH+Ogc0rxnUfwo7lgP2XrHEJhzwfWb3J3tmJXyEGtRfO0LBnL/LRsGMHImfmmSE+9+T5kfYDELpYaX6i4CjO73RvXAAAAABJRU5ErkJggg==","lum-berry":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAFVBMVEX///8xMTFSpUqU3kql/0pKY0pzxUoKzJbwAAAAAXRSTlMAQObYZgAAAH1JREFUeNrFz9ENgzAMBFDYIKZiAB9igRxlAbIAQTAA7L9DTaXETNBa+Xmxz5Kb/5RIkCcJTaGyJRjpfsUpEeLtISVSq629cF9LoIvTwvcwV2fSItTijbQR92Emz+p8cZuBtezPgD0E9wi3Bb7Wwqa/rY97+j3f9A8R4y/qAyy9FO3FeN8jAAAAAElFTkSuQmCC"});
 const itemCatalog=Object.fromEntries([
+  ...Object.entries(healingBerries).map(([id,[name,tier,fraction]])=>[
+    id,name,tier,'拉霸結算後，若我方場上寶可夢低於 50% HP，自動消耗並恢復 '+Math.round(fraction*100)+'% 最大 HP。每次拉霸最多觸發一種補血樹果，優先使用恢復量最高的樹果。'
+  ]),
+  ...Object.entries(resistanceBerries).map(([id,[name,type]])=>[
+    id,name,1,'每件使我方受到的'+type+'系招式傷害減少 10%。同種最多 5 件。'
+  ]),
+  ...Object.entries(statusBerries).map(([id,[name,statuses]])=>[
+    id,name,0,statuses?'我方下次陷入'+statuses.map(status=>statusNames[status]).join('或')+'時，自動吃下並解除該狀態。':'我方下次陷入異常狀態或混亂時，自動吃下並解除異常狀態與混亂。'
+  ]),
   ['potion','傷藥',0,'恢復一名存活寶可夢 20% 最大 HP。使用後消耗。',true],
   ['super-potion','好傷藥',1,'恢復一名存活寶可夢 50% 最大 HP。使用後消耗。',true],
   ['hyper-potion','厲害傷藥',2,'恢復一名存活寶可夢 75% 最大 HP。使用後消耗。',true],
@@ -3761,7 +3924,7 @@ function borrowEnemyItem(s,target,reason='銳利之爪'){
 }
 const rewards={
   ...itemCatalog,...Object.fromEntries(Object.entries(ballCatalog).map(([key,ball])=>['ball:'+key,{
-    ...ball,name:ball.name+(ball.quantity>1?' ×'+ball.quantity:''),description:'加入球袋，可用來收服野生寶可夢。'
+    ...ball,description:'加入球袋，可用來收服野生寶可夢。'
   }]))
 };
 const itemCount=(s,id)=>(s.items?.[id]??0)+(s.stolenItems?.[id]??0);
@@ -3771,8 +3934,11 @@ function itemArt(key){
   if(!data&&stoneIds.includes(key)) return '<span aria-hidden="true">◈</span>';
   return data?'<img src="data:image/png;base64,'+data+'" alt="">':'<span aria-hidden="true">◆</span>';
 }
-function itemButton(def,attrs,label=def.name){
-  return '<button class="item-card" style="--rarity:'+rarityColors[def.tier]+'" data-effect="'+def.description+'" '+attrs+'>'+itemArt(def.sprite)+'<span>'+label+'</span></button>';
+function itemStackArt(key,count){
+  return '<span class="item-stack-art">'+itemArt(key)+(count>1?'<small class="item-stack-count">X'+count+'</small>':'')+'</span>';
+}
+function itemButton(def,attrs,label=def.name,count=1){
+  return '<button class="item-card" style="--rarity:'+rarityColors[def.tier]+'" data-effect="'+def.description+'" '+attrs+'>'+itemStackArt(def.sprite,count)+'<span>'+label+'</span></button>';
 }
 let itemTip;
 let tipOwner;
@@ -3790,7 +3956,8 @@ function showItemTip(button){
   itemTip.className='item-tooltip';
   itemTip.id='itemTooltip';
   itemTip.setAttribute('role','tooltip');
-  itemTip.textContent=button.dataset.effect;
+  const itemName=button.closest('#enemyHeld')?button.getAttribute('aria-label'):null;
+  itemTip.textContent=(itemName?itemName+' · ':'')+button.dataset.effect;
   (dialog??document.body).append(itemTip);
   tipOwner=button;
   button.setAttribute('aria-describedby',itemTip.id);
@@ -3823,11 +3990,12 @@ function rewardOptions(s){
   const all=Object.keys(rewards).filter(id=>(!rewards[id].type||typesInTeam.has(rewards[id].type))&&
     (!immediateReward(id)||canApplyItem(s,id))&&
     !stoneIds.includes(id)&&!(id==='razor-fang'&&s.items[id])&&
+    (!resistanceBerries[id]||(s.items[id]??0)<5)&&
     (!id.startsWith('gem:')||id==='gem:普通'||moveTypes.has(id.slice(4))));
   const results=[];
   for(let i=0;i<4;i++){
     const draw=Math.random();
-    const tier=draw<.6?0:draw<.85?1:draw<.95?2:3;
+    const tier=draw<.70?0:draw<.90?1:draw<.98?2:3;
     const pool=all.filter(id=>rewards[id].tier===tier&&!results.includes(id));
     results.push(pick(pool.length?pool:all.filter(id=>rewards[id].tier===tier)));
   }
@@ -3840,7 +4008,7 @@ async function chooseReward(s){
   const options=rewardOptions(s);
   if(s.tutorial&&canApplyItem(s,'potion')&&!options.includes('potion')) options[0]='potion';
   $('rewardTitle').textContent=s.tutorial?'③ 選道具 · 點一件領取，接著練習捕捉':'第 '+s.stage+' 關獎勵 · 四選一或領取金幣';
-  $('rewardChoices').innerHTML=(s.tutorial?'<p class="tutorial-dialog-next">↓ 點任一件道具。一次性道具會立刻使用，再進入捕捉練習。</p>':'')+options.map((id,i)=>itemButton(rewards[id],'value="'+i+'"',rewards[id].name+' · '+rarityNames[rewards[id].tier]+(immediateReward(id)?' · 立即使用':''))).join('')+(s.tutorial?'':'<button value="coins" style="grid-column:1/-1">跳過道具 · +20 金幣</button>');
+  $('rewardChoices').innerHTML=(s.tutorial?'<p class="tutorial-dialog-next">↓ 點任一件道具。一次性道具會立刻使用，再進入捕捉練習。</p>':'')+options.map((id,i)=>itemButton(rewards[id],'value="'+i+'"',rewards[id].name+' · '+rarityNames[rewards[id].tier]+(immediateReward(id)?' · 立即使用':''),rewards[id].quantity??1)).join('')+(s.tutorial?'':'<button value="coins" style="grid-column:1/-1">跳過道具 · +20 金幣</button>');
   dialog.oncancel=event=>event.preventDefault();
   let selected;
   while(true){
@@ -3958,8 +4126,8 @@ function showBallSelection(){
   $('catchInfo').textContent=state.tutorial?'↓ 點下方的試用版寶可夢球投出。':blocked?'訓練家對戰嘗試捕捉是不道德的!':'目標 '+state.enemy.name;
   $('ballChoices').innerHTML=blocked?'':Object.entries(ballCatalog).map(([id,def])=>{
     const stock=ballStock(state,id);
-    const label=(mode==='trial'&&id==='poke'?'試用版寶可夢球':def.name)+' ×'+(stock===Infinity?'∞':stock);
-    return itemButton({...def,description:'可用來收服野生寶可夢。'},'value="'+id+'" '+(stock?'':'disabled'),label);
+    const label=(mode==='trial'&&id==='poke'?'試用版寶可夢球':def.name)+(stock===Infinity?' · ∞':'');
+    return itemButton({...def,description:'可用來收服野生寶可夢。'},'value="'+id+'" '+(stock?'':'disabled'),label,Number.isFinite(stock)?stock:1);
   }).join('');
   $('catchDialog').returnValue='cancel';
   $('catchDialog').showModal();
@@ -3988,6 +4156,7 @@ function migrateRun(run){
   run.foes??=[run.enemy];
   run.foeIndex??=0;
   run.enemy=run.foes[run.foeIndex];
+  for(const mon of run.foes) applyEnemyBoosters(mon,run.stage);
   run.introSeen??=Boolean(!run.kind||run.spins||run.result);
   for(const p of [...run.team,...run.foes]){
     if(p.transformOriginal) continue;
@@ -4006,7 +4175,7 @@ $('itemBox').onclick=()=>{
   const cards=inventory.map(([id,count])=>{
     const def=itemCatalog[id];
     const used=state.used[id];
-    return itemButton(def,'data-item="'+id+'" '+(def.usable&&!used&&!state.result?'':'aria-disabled="true"'),def.name+' ×'+count+(state.stolenItems?.[id]?' · 暫借':'')+(used?' · 本關已用':''));
+    return itemButton(def,'data-item="'+id+'" '+(def.usable&&!used&&!state.result?'':'aria-disabled="true"'),def.name+(state.stolenItems?.[id]?' · 暫借':'')+(used?' · 本關已用':''),count);
   }).join('');
   $('itemInfo').innerHTML='<h3>持有道具</h3>'+(cards?'<div id="itemInventory">'+cards+'</div>':'<p>目前沒有道具。</p>');
   $('items').showModal();
@@ -4080,7 +4249,8 @@ async function playCapture(caught,shakes){
 async function acceptCapture(s){
   undoTransform(s.enemy);
   const mon={...s.enemy,moves:s.enemy.moves.slice(),stages:neutralStages(),seeded:false,burned:false,status:null,confusion:0};
-  if(mode==='formal') setBattleLevel(mon,mon.level,s);
+  if(mon.enemyBoosterCount) delete mon.enemyBoosterCount;
+  if(mode==='formal'||s.stage>=10) setBattleLevel(mon,mon.level,s);
   const slot=s.team.length<6?s.team.length:await choosePartyMember(s,'隊伍已滿。要用'+mon.name+'替換誰？',()=>true,'保留目前隊伍');
   if(slot>=0){
     s.team[slot]=mon;

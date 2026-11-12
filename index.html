@@ -946,6 +946,7 @@ button:not(:disabled):active{filter:brightness(.9)}
 .nds #lowerPanel #closeLower{position:absolute;right:3%;top:.65cqw;z-index:2}
 .nds #lowerPanel[data-pocket] #closeLower{top:auto;right:4.5%}
 .nds #lowerPanel[data-pocket]>header,.nds #lowerPanel[data-pocket]>header h3{background:none;border:0;box-shadow:none;color:#25352f}
+.nds:has(#trainerIntroAdvance:not([hidden])) :disabled{pointer-events:none}
 .nds #trainerIntroAdvance:focus-visible{outline:0;filter:brightness(.97)}
 
 .nds .healthbox strong{top:10%;line-height:1.35;max-width:61%;padding:0 0 .16em}
@@ -977,6 +978,9 @@ button:not(:disabled):active{filter:brightness(.9)}
 .nds #levelStatsRows div{display:grid;grid-template-columns:1fr auto;align-items:center}
 .nds #levelStatsRows dt,.nds #levelStatsRows dd{margin:0;line-height:1.25}
 .nds #levelStatsNext{display:block;margin:.27cqw 0 0 auto;background:none;color:#513d48;border:0;box-shadow:none;padding:.1cqw .24cqw;font-size:.97cqw;line-height:1}
+.nds:has(#levelStatsBox:not([hidden])) :disabled{pointer-events:none}
+.nds #levelStatsHint{margin:.5cqw 0 .35cqw;color:#513d48;font-size:clamp(8px,1.04cqw,18px);line-height:1.25}
+.nds #levelStatsNext.tutorial-target{margin:.55cqw .25cqw .2cqw auto;padding:.38cqw .6cqw;background:#ffdf72;color:#302941;font-size:clamp(9px,1.1cqw,20px)}
 
 .nds .healthbox #enemyHp{top:44%}
 .nds #playerHealthbox #playerHp{top:42%}
@@ -1056,6 +1060,12 @@ button:not(:disabled):active{filter:brightness(.9)}
 #shop .shop-incubator header{display:flex;justify-content:space-between;gap:.55em;margin:0;color:#233a30;background:transparent}
 #shop .shop-incubator h2{margin:0;font-size:1em}
 #shop #shopStatus{margin:0;color:#344c42;font-size:.85em}
+#developerActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5em}
+#developerPasswordForm{display:flex;align-items:center;gap:.4em;flex-wrap:wrap}
+#developerPassword{width:7em}
+#shop #shopEggs .shop-egg{min-width:0}
+#shop #shopEggs button.shop-egg{width:100%;margin:0;color:#233a30;text-align:left}
+#shop #shopEggs button.shop-egg:hover{background:#ffed9b}
 #shop #shopEggs{display:grid;grid-template-columns:repeat(auto-fill,minmax(7em,1fr));gap:.35em}
 #shop .shop-egg{display:flex;align-items:center;gap:.22em;padding:.12em .35em;background:#f8f5de;border:1px solid #9daa79}
 #shop .shop-egg img{width:2.7em;height:2.7em;image-rendering:pixelated}
@@ -1069,7 +1079,7 @@ button:not(:disabled):active{filter:brightness(.9)}
 <section id="shop" class="screen shop-layout" hidden>
 <header class="shop-header"><h1 id="shopTitle">扭蛋商店</h1><img id="shopTicketArt" alt=""><p id="shopTickets"></p><button id="buyShopTickets" type="button">買扭蛋券</button><button id="shopHome" class="home">返回主畫面</button></header>
 <div id="shopMachines"></div>
-<section class="shop-incubator"><header><h2 id="shopEggTitle">孵蛋器</h2><p id="shopStatus" role="status"></p></header><div id="shopEggs"></div></section>
+<section class="shop-incubator"><header><h2 id="shopEggTitle">孵蛋器</h2><span id="shopSpecialIncubators"></span><p id="shopStatus" role="status"></p></header><div id="shopEggs"></div></section>
 </section>
 <section id="upgradeScreen" class="screen" hidden><h1>永久增強</h1><p id="walletBalance" role="status"></p><div id="upgradeCards"></div><button class="home">返回主畫面</button></section>
 <section id="settlementScreen" class="screen" hidden><h1 id="settlementTitle">正式模式結算</h1><div class="settlement-grid">
@@ -1089,24 +1099,37 @@ button:not(:disabled):active{filter:brightness(.9)}
 
 <div id="playerParty" aria-label="我方隊伍"></div>
 <div id="enemyParty" aria-label="對手隊伍"></div>
-<section id="levelStatsBox" hidden aria-labelledby="levelStatsTitle"><h2 id="levelStatsTitle"></h2><dl id="levelStatsRows"></dl><button id="levelStatsNext" type="button">確認 ▼</button></section><button id="trainerIntroAdvance" type="button" hidden></button><div id="enemyAlert" role="status" class="enemy-alert" hidden></div>
+<section id="levelStatsBox" hidden aria-labelledby="levelStatsTitle"><h2 id="levelStatsTitle"></h2><dl id="levelStatsRows"></dl><p id="levelStatsHint" aria-live="polite" hidden></p><button id="levelStatsNext" type="button">確認 ▼</button></section><button id="trainerIntroAdvance" type="button" hidden></button><div id="enemyAlert" role="status" class="enemy-alert" hidden></div>
 <button id="itemBox" class="slot-control" title="道具">道具</button><button id="ballBox" class="slot-control" title="收服">收服</button><button id="exitBattle" aria-label="設定" title="設定">設定</button><button id="homeBattle" aria-label="回到主畫面" title="回到主畫面">主畫面</button><button id="partyControl" aria-label="隊伍" title="隊伍">隊伍</button><button id="logControl" aria-controls="log" aria-expanded="false">對戰回顧</button><div id="trainerStageLayer"><img id="redOnField" class="trainer-on-field" alt="RED" hidden><img id="trainerOnField" class="trainer-on-field" alt="" hidden></div><div id="playerSendBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="trainerBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="captureBall" class="catch-ball" aria-hidden="true" hidden></div><button id="reelInfo" type="button">圖庫</button><div class="battle-feed"><div class="battle-feed-head"><p id="notice" role="status"></p><span id="actionProgress"></span><button id="nextBattle" hidden>前往下一關</button></div><ol id="log" hidden aria-label="對戰回顧" tabindex="0"></ol></div>
 </div>
 </div><dialog id="battlePause" aria-labelledby="pauseTitle">
   <header><h2 id="pauseTitle">暫停</h2><form method="dialog"><button id="pauseClose" autofocus>繼續對戰</button></form></header>
   <div class="pause-options">
-    <label for="pauseVolume" id="pauseVolumeLabel">主音量（背景音樂）</label><div class="settings-value"><input id="pauseVolume" type="range" min="0" max="100" value="100"><output id="pauseVolumeValue" for="pauseVolume">100%</output></div>
-    <label for="pauseClickVolume" id="pauseClickVolumeLabel">按鍵音量</label><div class="settings-value"><input id="pauseClickVolume" type="range" min="0" max="100" value="100"><output id="pauseClickVolumeValue" for="pauseClickVolume">100%</output></div>
-    <label for="pauseEffectsVolume" id="pauseEffectsVolumeLabel">特效音量</label><div class="settings-value"><input id="pauseEffectsVolume" type="range" min="0" max="100" value="100"><output id="pauseEffectsVolumeValue" for="pauseEffectsVolume">100%</output></div>
+    <label for="pauseVolume" id="pauseVolumeLabel">主音量（背景音樂）</label><div class="settings-value"><input id="pauseVolume" type="range" min="0" max="200" value="100"><output id="pauseVolumeValue" for="pauseVolume">100%</output></div>
+    <label for="pauseClickVolume" id="pauseClickVolumeLabel">按鍵音量</label><div class="settings-value"><input id="pauseClickVolume" type="range" min="0" max="200" value="100"><output id="pauseClickVolumeValue" for="pauseClickVolume">100%</output></div>
+    <label for="pauseEffectsVolume" id="pauseEffectsVolumeLabel">特效音量</label><div class="settings-value"><input id="pauseEffectsVolume" type="range" min="0" max="200" value="100"><output id="pauseEffectsVolumeValue" for="pauseEffectsVolume">100%</output></div>
     <label for="pauseSpeed" id="pauseSpeedLabel">戰鬥速度</label>
     <select id="pauseSpeed"><option value="1">1X</option><option value="2">2X</option><option value="3">3X</option></select>
     <label for="pauseMuteClick" id="pauseMuteLabel">關閉點擊音效</label>
     <input id="pauseMuteClick" type="checkbox">
-    <button id="pauseHotkeys" type="button">快捷鍵</button><span></span>
+    <button id="pauseHotkeys" type="button">快捷鍵</button><button id="pauseDeveloper" type="button">開發工具</button>
     <label for="pauseLanguage">Language</label>
     <select id="pauseLanguage"><option value="zh-Hant">繁體中文</option><option value="en">English</option></select>
   </div>
   <footer><button type="button" id="pauseSurrender">投降</button><button type="button" id="pauseHome">主畫面</button></footer>
+</dialog>
+<dialog id="developerAuth" aria-labelledby="developerAuthTitle">
+  <h2 id="developerAuthTitle">開發工具</h2>
+  <form id="developerPasswordForm"><label for="developerPassword" id="developerPasswordLabel">密碼</label>
+    <input id="developerPassword" type="password" inputmode="numeric" autocomplete="off" autofocus>
+    <button id="developerLogin" type="submit">進入</button>
+    <button id="developerAuthClose" type="button">取消</button>
+  </form><p id="developerAuthStatus" role="status"></p>
+</dialog>
+<dialog id="developerTools" aria-labelledby="developerTitle">
+  <h2 id="developerTitle">開發工具</h2><div id="developerActions"></div>
+  <p id="developerStatus" role="status"></p>
+  <form method="dialog"><button id="developerClose" autofocus>關閉</button></form>
 </dialog>
 <dialog id="hotkeyDialog" aria-labelledby="hotkeyTitle">
 <h2 id="hotkeyTitle">快捷鍵</h2><div id="hotkeyRows"></div><p id="hotkeyStatus" role="status"></p>
@@ -1126,14 +1149,14 @@ button:not(:disabled):active{filter:brightness(.9)}
 </dialog><dialog id="settingsDialog" aria-labelledby="settingsTitle">
   <h2 id="settingsTitle">設定</h2>
   <div class="settings-rows">
-    <div class="settings-row"><label for="musicVolume" id="musicVolumeLabel">主音量（背景音樂）</label><div class="settings-value"><input id="musicVolume" type="range" min="0" max="100" value="100"><output id="musicVolumeValue" for="musicVolume">100%</output></div></div>
-    <div class="settings-row"><label for="clickVolume" id="clickVolumeLabel">按鍵音量</label><div class="settings-value"><input id="clickVolume" type="range" min="0" max="100" value="100"><output id="clickVolumeValue" for="clickVolume">100%</output></div></div>
-    <div class="settings-row"><label for="effectsVolume" id="effectsVolumeLabel">特效音量</label><div class="settings-value"><input id="effectsVolume" type="range" min="0" max="100" value="100"><output id="effectsVolumeValue" for="effectsVolume">100%</output></div></div>
+    <div class="settings-row"><label for="musicVolume" id="musicVolumeLabel">主音量（背景音樂）</label><div class="settings-value"><input id="musicVolume" type="range" min="0" max="200" value="100"><output id="musicVolumeValue" for="musicVolume">100%</output></div></div>
+    <div class="settings-row"><label for="clickVolume" id="clickVolumeLabel">按鍵音量</label><div class="settings-value"><input id="clickVolume" type="range" min="0" max="200" value="100"><output id="clickVolumeValue" for="clickVolume">100%</output></div></div>
+    <div class="settings-row"><label for="effectsVolume" id="effectsVolumeLabel">特效音量</label><div class="settings-value"><input id="effectsVolume" type="range" min="0" max="200" value="100"><output id="effectsVolumeValue" for="effectsVolume">100%</output></div></div>
     <div class="settings-row"><label for="musicStyle" id="musicStyleLabel">音樂風格</label><select id="musicStyle"><option value="kanto">火紅／葉綠</option><option value="johto">金／銀／水晶</option><option value="hoenn">綠寶石</option></select></div>
     <div class="settings-row"><label for="playerStyle" id="playerStyleLabel">角色選擇</label><select id="playerStyle"><option>RED</option></select></div>
     <div class="settings-row"><label for="gameLanguage" id="gameLanguageLabel">Language</label><select id="gameLanguage"><option value="zh-Hant">繁體中文</option><option value="en">English</option></select></div>
   </div>
-  <p id="musicStyleStatus" role="status"></p><button id="settingsHotkeys" type="button">快捷鍵</button><form class="settings-actions" method="dialog"><button id="settingsClose" autofocus>關閉</button></form>
+  <p id="musicStyleStatus" role="status"></p><button id="settingsHotkeys" type="button">快捷鍵</button> <button id="settingsDeveloper" type="button">開發工具</button><form class="settings-actions" method="dialog"><button id="settingsClose" autofocus>關閉</button></form>
 </dialog><dialog id="upgradeDialog" aria-labelledby="upgradeTitle"><h2 id="upgradeTitle"></h2><p id="upgradeInfo"></p><form method="dialog"><button value="cancel" autofocus>取消</button> <button id="buyUpgrade" value="buy">確認強化</button></form></dialog><dialog id="replacementDialog" aria-labelledby="replacementTitle"><h2 id="replacementTitle">派哪隻寶可夢上場？</h2><form id="replacementChoices" method="dialog"></form></dialog><dialog id="evolutionDialog" aria-labelledby="evolutionTitle"><div class="evolution-scene"><img id="evolutionBefore" alt=""><img id="evolutionAfter" alt="" hidden></div><p id="evolutionTitle" role="status"></p><form method="dialog"><button id="evolutionContinue" hidden>繼續</button></form></dialog><dialog id="trainerIntro" aria-labelledby="trainerIntroTitle"><div class="trainer-card"><img id="trainerIntroSprite" alt=""><div><h2 id="trainerIntroTitle"></h2><p id="trainerIntroText"></p><p id="tutorialRivalHelp" class="tutorial-dialog-next" hidden>特定關卡會出現不同的強勁對手 來挑戰看看吧!</p><div id="trainerIntroItem"></div><form method="dialog"><button autofocus>繼續</button></form></div></div></dialog><dialog id="rewardDialog" aria-labelledby="rewardTitle"><h2 id="rewardTitle">選擇一項過關獎勵</h2><form id="rewardChoices" method="dialog"></form></dialog><dialog id="useItemDialog" aria-labelledby="useItemTitle"><h2 id="useItemTitle"></h2><form id="useItemChoices" method="dialog"></form></dialog><dialog id="combatStats" aria-labelledby="combatStatTitle"><div id="combatStatBody" data-page="info">
 <nav class="summary-tabs" role="tablist" aria-label="寶可夢資料"><button type="button" data-summary-page="info" role="tab">資料</button><button type="button" data-summary-page="skills" role="tab">能力</button><button type="button" data-summary-page="moves" role="tab">招式</button></nav>
 <div class="summary-mon"><h2 id="combatStatTitle"></h2><img id="combatStatSprite" alt=""><div id="combatStatTypes" class="summary-types"></div><span id="combatStatHp"></span></div>
@@ -1996,7 +2019,10 @@ function setExperienceMeter(percent,animate=false){
   meter.setAttribute('aria-valuenow',Math.floor(percent));
 }
 async function showLevelStats(p,previous){
-  const box=$('levelStatsBox'),rows=$('levelStatsRows'),next=$('levelStatsNext');
+  const box=$('levelStatsBox'),rows=$('levelStatsRows'),next=$('levelStatsNext'),hint=$('levelStatsHint');
+  const tutorial=Boolean(state?.tutorial);
+  hint.hidden=!tutorial;
+  next.classList.toggle('tutorial-target',tutorial);
   const labels=settings.language==='en'?['HP','Attack','Defense','Sp. Atk','Sp. Def','Speed']:['HP','攻擊','防禦','特攻','特防','速度'];
   $('levelStatsTitle').textContent=displayPokemon(p)+'　Lv.'+p.level;
   box.hidden=false;
@@ -2008,11 +2034,29 @@ async function showLevelStats(p,previous){
         return '<div><dt>'+label+'</dt><dd>'+value+'</dd></div>';
       }).join('');
       next.textContent=gains?musicLabel('能力值 ▼','Stats ▼'):musicLabel('確認 ▼','Confirm ▼');
+      if(tutorial){
+        hint.textContent=gains
+          ?musicLabel('點任意處或按空白鍵查看新能力值。','Tap anywhere or press Space to see the new totals.')
+          :musicLabel('點任意處或按空白鍵繼續教學。','Tap anywhere or press Space to continue the tutorial.');
+      }
       if(gains) next.focus({preventScroll:true});
-      await new Promise(resolve=>{next.onclick=resolve;});
+      await new Promise(resolve=>{
+        const timer=setTimeout(advance,10000);
+        function advance(event){
+          if(event){
+            event.preventDefault();
+            event.stopImmediatePropagation();
+          }
+          clearTimeout(timer);
+          document.removeEventListener('click',advance,true);
+          resolve();
+        }
+        document.addEventListener('click',advance,true);
+      });
     }
   }finally{
-    next.onclick=null;
+    next.classList.remove('tutorial-target');
+    hint.hidden=true;
     box.hidden=true;
   }
 }
@@ -2143,7 +2187,7 @@ async function showEvolution(before,after){
   dialog.oncancel=event=>event.preventDefault();
   dialog.showModal();
   const theme=musicPlayer;
-  if(theme) theme.volume=.035*settings.effectsVolume/100;
+  if(theme) theme.volume=.035*settings.musicVolume/100;
   let audio=playGameSound('evolution-start');
   try{
   await wait(reducedMotion.matches?330:850);
@@ -2164,10 +2208,11 @@ async function showEvolution(before,after){
   audio=playGameSound('evolution-done');
   button.hidden=false;
   button.focus();
-  await new Promise(resolve=>{dialog.onclose=resolve;});
+  await advanceNarrative();
+  dialog.close();
   }finally{
     audio?.pause();
-    if(theme) theme.volume=.14*settings.effectsVolume/100;
+    if(theme) theme.volume=.14*settings.musicVolume/100;
   }
 }
 
@@ -3094,7 +3139,9 @@ async function finishStage(s,message){
       s.finished=true;
       s.result='教學完成！';
       const dialog=$('tutorialComplete');
-      await new Promise(resolve=>{dialog.onclose=resolve;dialog.showModal();});
+      dialog.showModal();
+      await advanceNarrative(dialog);
+      if(dialog.open) dialog.close();
       screen('menu');
     }
     return;
@@ -4668,7 +4715,7 @@ let savedSettings;
 try{savedSettings=JSON.parse(localStorage.getItem(settingsKey));}catch{}
 function savedVolume(value){
   const previous=Number.isFinite(value)?value:savedSettings?.volume;
-  return Number.isFinite(previous)?Math.max(0,Math.min(100,previous)):100;
+  return Number.isFinite(previous)?Math.max(0,Math.min(200,previous)):100;
 }
 const settings={
   musicVolume:savedVolume(savedSettings?.musicVolume),
@@ -4699,6 +4746,58 @@ function showHotkeys(){
   $('hotkeyDialog').showModal();
 }
 $('pauseHotkeys').onclick=$('settingsHotkeys').onclick=showHotkeys;
+const developerActions={
+  dex:['全國圖鑑解鎖','Unlock National Pokédex'],
+  gold:['金幣 +50,000','Gold +50,000'],
+  tickets:['扭蛋券 ×100','Gacha Tickets ×100'],
+  incubators:['特殊孵蛋器 ×50','Special Incubators ×50']
+};
+function openDeveloperAuth(){
+  $('developerAuthTitle').textContent=musicLabel('開發工具','Developer Tools');
+  $('developerPasswordLabel').textContent=musicLabel('密碼','Password');
+  $('developerLogin').textContent=musicLabel('進入','Enter');
+  $('developerAuthClose').textContent=musicLabel('取消','Cancel');
+  $('developerPassword').value='';
+  $('developerAuthStatus').textContent='';
+  $('developerAuth').showModal();
+}
+$('settingsDeveloper').onclick=$('pauseDeveloper').onclick=openDeveloperAuth;
+$('developerAuthClose').onclick=()=>$('developerAuth').close();
+$('developerPasswordForm').onsubmit=event=>{
+  event.preventDefault();
+  if($('developerPassword').value!=='00827'){
+    $('developerAuthStatus').textContent=musicLabel('密碼錯誤。','Incorrect password.');
+    return;
+  }
+  $('developerAuth').close();
+  $('developerTitle').textContent=musicLabel('開發工具','Developer Tools');
+  $('developerClose').textContent=musicLabel('關閉','Close');
+  $('developerStatus').textContent='';
+  $('developerActions').innerHTML=Object.entries(developerActions).map(([id,label])=>
+    '<button type="button" data-dev-action="'+id+'">'+musicLabel(...label)+'</button>').join('');
+  $('developerTools').showModal();
+};
+let developerBusy=false;
+$('developerActions').onclick=async event=>{
+  const action=event.target.closest('[data-dev-action]')?.dataset.devAction;
+  if(!action||!$('developerTools').open||developerBusy) return;
+  developerBusy=true;
+  try{
+    if(action==='dex'){
+      profile.seen=[...new Set([...profile.seen,...species.map(mon=>mon.id)])];
+      profile.unlocked=[...new Set([...profile.unlocked,...species.map(mon=>baseSpeciesId(mon.id))])];
+      saveProfile();
+    }else await changeWallet(wallet=>{
+      ensureShopWallet(wallet);
+      if(action==='gold') wallet.gold+=50000;
+      if(action==='tickets') wallet.gachaTickets+=100;
+      if(action==='incubators') wallet.specialIncubators+=50;
+    });
+    $('developerStatus').textContent=musicLabel(...developerActions[action])+' ✓';
+  }catch{
+    $('developerStatus').textContent=musicLabel('更新失敗，請重試。','Update failed. Try again.');
+  }finally{developerBusy=false;}
+};
 $('hotkeyRows').onclick=event=>{
   const action=event.target.closest('[data-hotkey]')?.dataset.hotkey;
   if(action){editingHotkey=action;$('hotkeyStatus').textContent='按下要指定的鍵。Esc 取消。';}
@@ -4749,6 +4848,7 @@ document.addEventListener('keydown',event=>{
   }
 });
 const settingsLabels={
+  settingsDeveloper:['開發工具','Developer Tools'],pauseDeveloper:['開發工具','Developer Tools'],
   settingsOpen:['⚙ 設定','⚙ Settings'],settingsTitle:['設定','Settings'],
   gameLanguageLabel:['Language','Language'],
   pauseTitle:['暫停','Paused'],pauseClose:['繼續對戰','Resume'],
@@ -4771,7 +4871,7 @@ function applySettings(){
     const value=settings[key];
     for(const id of inputs){
       $(id).value=value;
-      $(id).style.setProperty('--volume',value+'%');
+      $(id).style.setProperty('--volume',(value/2)+'%');
       $(id+'Label').textContent=musicLabel(...label);
       $(id+'Value').textContent=value+'%';
     }
@@ -4867,6 +4967,7 @@ function ensureShopWallet(wallet){
   });
   wallet.gachaTickets??=Math.max(0,Math.trunc(profile.tickets));
   wallet.championTickets??=0;
+  wallet.specialIncubators??=0;
   return wallet;
 }
 function shopTicketCount(wallet){return wallet.gachaTickets+wallet.championTickets;}
@@ -4911,14 +5012,20 @@ function renderShop(message=''){
   $('buyShopTickets').textContent=musicLabel('買扭蛋券 · 200 金幣','Buy Ticket · 200 Gold');
   $('buyShopTickets').disabled=shopBusy||wallet.gold<200;
   $('shopEggTitle').textContent=musicLabel('孵蛋器','Incubator');
+  $('shopSpecialIncubators').textContent=musicLabel('特殊孵蛋器 ×','Special Incubators ×')+wallet.specialIncubators;
   $('shopStatus').textContent=message||musicLabel('結算時依通關數累積進度。','Cleared stages count at settlement.');
   $('shopMachines').innerHTML=Object.entries(gachaMachines).map(([id,machine])=>
     '<article class="shop-machine" data-model="'+id+'"><h2>'+musicLabel(...machine.name)+'</h2><div class="machine-sprite" aria-hidden="true"><img src="'+shopArt.machine+'" alt=""><img class="'+(id==='hidden'?'machine-egg':'machine-pokemon')+'" src="'+machineDisplay(id)+'" alt=""></div><p>'+musicLabel('一般蛋 95% · 神獸蛋 5%','Regular 95% · Legendary 5%')+'<br>'+musicLabel(...machine.note)+'</p><div class="shop-actions">'+[1,10,50].map(n=>
     '<button type="button" data-machine="'+id+'" data-draw="'+n+'" '+(shopBusy||tickets<n?'disabled':'')+'>'+musicLabel('扭 ','Draw ')+n+musicLabel(' 次','')+'</button>'
   ).join('')+'</div></article>').join('');
-  $('shopEggs').innerHTML=wallet.shopEggs.length?wallet.shopEggs.map(egg=>
-    '<div class="shop-egg"><img src="'+shopArt[egg.legendary?'legendary':'egg']+'" alt=""><span>'+musicLabel(...(egg.legendary?['神獸蛋','Legendary Egg']:['一般蛋','Regular Egg']))+'<br>'+egg.progress+' / '+eggTarget(egg)+'</span></div>'
-  ).join(''):'<p>'+musicLabel('目前沒有蛋。','No eggs yet.')+'</p>';
+  $('shopEggs').innerHTML=wallet.shopEggs.length?wallet.shopEggs.map((egg,index)=>{
+    const canHatch=wallet.specialIncubators>0;
+    const tag=canHatch?'button':'div';
+    const attrs=canHatch?' type="button" data-hatch-egg="'+index+'" '+(shopBusy?'disabled':''):'';
+    return '<'+tag+' class="shop-egg"'+attrs+'><img src="'+shopArt[egg.legendary?'legendary':'egg']+'" alt=""><span>'+
+      musicLabel(...(egg.legendary?['神獸蛋','Legendary Egg']:['一般蛋','Regular Egg']))+' #'+(index+1)+'<br>'+egg.progress+' / '+eggTarget(egg)+
+      (canHatch?'<br>'+musicLabel('立即孵化','Hatch now'):'')+'</span></'+tag+'>';
+  }).join(''):'<p>'+musicLabel('目前沒有蛋。','No eggs yet.')+'</p>';
   screen('shop');
 }
 async function shopAction(change){
@@ -4931,6 +5038,24 @@ async function shopAction(change){
   finally{shopBusy=false;}
   if(musicScreen==='shop') renderShop(message);
 }
+$('shopEggs').onclick=event=>{
+  const button=event.target.closest('[data-hatch-egg]');
+  if(!button||button.disabled||shopBusy) return;
+  const index=Number(button.dataset.hatchEgg);
+  const selected=ensureShopWallet(readWallet()).shopEggs[index];
+  if(!selected) return;
+  shopAction(wallet=>{
+    const egg=wallet.shopEggs[index];
+    if(!wallet.specialIncubators||JSON.stringify(egg)!==JSON.stringify(selected)){
+      return musicLabel('蛋或孵蛋器數量已變更，請重新選擇。','Eggs or incubators changed. Select again.');
+    }
+    applyHatchedEggs([egg]);
+    wallet.shopEggs.splice(index,1);
+    wallet.specialIncubators--;
+    const name=displayPokemon(speciesById(egg.id));
+    return musicLabel('孵化成功！'+name+'已加入圖鑑。',name+' hatched and was registered in the Pokédex.');
+  });
+};
 $('buyShopTickets').onclick=()=>shopAction(wallet=>{
   if(wallet.gold<200) return musicLabel('金幣不足。','Not enough gold.');
   wallet.gold-=200;
@@ -5328,13 +5453,29 @@ async function animateTrainerOpening(run){
   for(const [id] of balls){$(id).hidden=true;$(id).innerHTML='';}
   await sparkleShiny('player',run.team[run.active]);
 }
+function advanceNarrative(dialog){
+  return new Promise(resolve=>{
+    const finish=()=>{
+      document.removeEventListener('click',advance,true);
+      dialog?.removeEventListener('close',finish);
+      resolve();
+    };
+    const advance=event=>{
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      finish();
+    };
+    document.addEventListener('click',advance,true);
+    dialog?.addEventListener('close',finish,{once:true});
+  });
+}
 async function showBattleDialogue(text){
   const advance=$('trainerIntroAdvance');
   advance.textContent=text;
   advance.hidden=false;
   advance.focus();
-  try{await new Promise(resolve=>{advance.onclick=resolve;});}
-  finally{advance.hidden=true;advance.onclick=null;}
+  try{await advanceNarrative();}
+  finally{advance.hidden=true;}
 }
 async function openFormalTrainerIntro(run){
   const player=$('redOnField'),enemy=$('trainerOnField');
@@ -5459,7 +5600,9 @@ async function openBattleStage(entering=false,playerEnters=entering){
     $('trainerIntroText').textContent='野生的'+run.enemy.name+'出現了！';
   }
   dialog.oncancel=event=>event.preventDefault();
-  await new Promise(resolve=>{dialog.onclose=resolve;dialog.showModal();});
+  dialog.showModal();
+  await advanceNarrative(dialog);
+  if(dialog.open) dialog.close();
   syncKantoMusic();
   if(run.trainer) await animateTrainerOpening(run);
   else {run.introSeen=true;render(false);await animateWildEntrance(run);}

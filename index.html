@@ -4658,7 +4658,7 @@ function displayMove(name){
   return settings.language==='en'?englishNames.moves[move?.id]??name:name;
 }
 const gachaLegendary=[...legendaryIds,...johtoLegendaryIds,...hoennLegendaryIds];
-const gachaLegendarySet=new Set(gachaLegendary);
+const legendarySpeciesIds=new Set(gachaLegendary);
 const gachaMachines={
   legendary:{name:['固拉多扭蛋機','Groudon Machine'],note:['神獸蛋中有 25% 是固拉多。','25% of Legendary Eggs contain Groudon.']},
   shiny:{name:['色違扭蛋機','Shiny Machine'],note:['所有蛋的色違機率提升至 5%。','All Eggs have a 5% Shiny chance.']},
@@ -4674,7 +4674,7 @@ function drawGachaEgg(machine){
     if(machine==='legendary') id=Math.random()<.25?383:pick(nonFeaturedLegends);
     else id=pick(gachaLegendary);
   }else{
-    regularEggPool??=species.filter(mon=>!gachaLegendarySet.has(mon.id)&&baseSpeciesId(mon.id)===mon.id).map(mon=>mon.id);
+    regularEggPool??=species.filter(mon=>!legendarySpeciesIds.has(mon.id)&&baseSpeciesId(mon.id)===mon.id).map(mon=>mon.id);
     id=pick(regularEggPool);
   }
   const shiny=Math.random()<(machine==='shiny'?.05:.01);
@@ -4687,7 +4687,7 @@ function drawGachaEgg(machine){
 function ensureShopWallet(wallet){
   if(!Array.isArray(wallet.shopEggs)) wallet.shopEggs=profile.eggs.map(egg=>{
     const mon=speciesById(egg.id);
-    return {...egg,legendary:egg.legendary??gachaLegendarySet.has(egg.id),natureId:egg.natureId??1,abilityId:egg.abilityId??speciesAbilities[mon.id].common[0]};
+    return {...egg,legendary:egg.legendary??legendarySpeciesIds.has(egg.id),natureId:egg.natureId??1,abilityId:egg.abilityId??speciesAbilities[mon.id].common[0]};
   });
   wallet.gachaTickets??=Math.max(0,Math.trunc(profile.tickets));
   wallet.championTickets??=0;
@@ -5993,7 +5993,11 @@ function captureShakeThreshold(mon,id='poke'){
   if(odds>=255) return 65536;
   if(odds<=0) return 0;
   const root=Math.floor(Math.sqrt(Math.floor(Math.sqrt(Math.floor(16711680/odds)))));
-  return Math.min(65536,Math.floor(1048560/root));
+  const threshold=Math.min(65536,Math.floor(1048560/root));
+  // Capture requires four checks, so scale each threshold by the fourth root of two.
+  return legendarySpeciesIds.has(mon.id)&&healthBand(mon)==='red'
+    ?Math.min(65536,Math.round(threshold*2**.25))
+    :threshold;
 }
 function captureChance(mon,id='poke'){
   return (captureShakeThreshold(mon,id)/65536)**4;

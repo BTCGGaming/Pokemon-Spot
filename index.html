@@ -1527,10 +1527,14 @@ function lineShape(cells){
   const first=cells[0],last=cells.at(-1);
   return first%boardSize===last%boardSize?'V':Math.floor(first/boardSize)===Math.floor(last/boardSize)?'H':'D';
 }
+function lineSupportsType(line,moveType){
+  if(line.type===wildReelType||moveType==='普通'||line.type===moveType) return 1;
+  return line.type==='普通'?.5:0;
+}
 function supportedLines(name,matched){
   const skill=skillDetails[name],rule=moveRules[name];
   if(rule?.shapes==='P') return [];
-  return matched.filter(line=>(skill.type==='普通'||line.type==='普通'||line.type===wildReelType||line.type===skill.type)&&
+  return matched.filter(line=>lineSupportsType(line,skill.type)>0&&
     (!rule||rule.shapes.includes(lineShape(line.cells))));
 }
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -3395,7 +3399,14 @@ async function resolveSpinCore(s,board,settledTracks=null){
   if(s.matches.length){
     $('notice').textContent=s.matches.length+' 條連線';
     await playWinningLines(s.matches);
-    s.log.unshift(s.matches.length+' 條連線 · 最終傷害 '+multiplierLabel(multiplier));
+    const substitutedNormal=matched.filter(line=>line.type==='普通'&&line.cells.some(index=>board[index]===wildReelType)).length;
+    const universal=matched.filter(line=>line.type===wildReelType).length;
+    const details=[
+      substitutedNormal?musicLabel('普通＋萬能 '+substitutedNormal+' 條','Normal + Wild: '+substitutedNormal):'',
+      universal?musicLabel('全萬能 '+universal+' 條（適用所有屬性）','All-Wild: '+universal+' (any type)'):''
+    ].filter(Boolean);
+    const summary=musicLabel(s.matches.length+' 條連線 · 最終傷害 ',s.matches.length+' lines · Damage ')+multiplierLabel(multiplier);
+    s.log.unshift([summary,...details].join(' · '));
   }
   let attacks=moveQueue(p.moves,matched);
   if(p.disable&&attacks.length){const blocked=pick(attacks);attacks=attacks.filter(attack=>attack!==blocked);p.disable=false;}
@@ -4089,8 +4100,9 @@ function moveQueue(moves,matched){
     const skill=skillDetails[name],rule=moveRules[name];
     const supports=supportedLines(name,matched);
     const minimum=rule?.min||1;
-    const half=skill.type!=='普通'&&supports.filter(line=>line.type===skill.type||line.type===wildReelType).length<minimum;
-    return supports.length>=minimum?[{name,supports,half}]:[];
+    if(supports.length<minimum) return [];
+    const full=supports.filter(line=>lineSupportsType(line,skill.type)===1);
+    return [{name,supports,half:full.length<minimum}];
   });
 }
 function stopGroups(reels){

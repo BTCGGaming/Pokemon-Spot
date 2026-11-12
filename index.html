@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-Hant">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>寶可夢拉霸 POKEMON SPOT</title>
 <meta name="description" content="拉一下，讓連線變成招式！收服色違、湊齊全國圖鑑、挑戰冠軍、組出你的隊伍!">
 <meta property="og:type" content="website">
@@ -275,7 +275,16 @@ dialog button{font-size:inherit}
 #replaceCatch{background:#d6cfd9;color:#302941;border:4px solid #302a43;box-shadow:inset 0 0 0 3px #706880,6px 6px #181424}#replaceCatchChoices{display:flex;flex-wrap:wrap;gap:8px}
 
 html,body{height:100%;margin:0;overflow:hidden}
-body{display:grid;place-items:center}
+body{display:grid;place-items:center;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+@supports(height:100dvh){
+  html,body{height:100dvh}
+  main{width:min(100%,calc((100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * 16 / 9))}
+}
+@media(orientation:landscape) and (pointer:coarse){
+  #battleScreen :is(button,[role="button"]){touch-action:manipulation}
+  :is(#settingsDialog,#battlePause){max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 16px);overflow:auto}
+  #battlePause .pause-options{gap:.4em .75em;margin:.55em 0}
+}
 main{container-type:inline-size;min-width:0;margin:0;position:relative}
 .screen,.desktop{width:100%;height:auto;aspect-ratio:16/9;min-height:0;margin:0}
 .screen{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:.6cqw;padding:2.4cqw 4cqw;font-size:1.65cqw;overflow:hidden}
@@ -457,6 +466,7 @@ main{container-type:inline-size;min-width:0;margin:0;position:relative}
 #reelInfoCounts{display:flex;flex-wrap:wrap;gap:.7em;margin:1em 0}
 #reelInfoCounts span{display:inline-flex;align-items:center;gap:.25em}
 #reelInfoCounts .type-icon{width:1.45em;height:1.45em}
+img.wild-reel-icon{object-fit:contain;image-rendering:pixelated;background:none}
 #battleProgress{position:absolute;left:3.1%;top:.9%;display:flex;align-items:center;gap:.35cqw;z-index:6}
 button,select,summary,[role="button"]{touch-action:manipulation}
 button:not(:disabled):active{filter:brightness(.9)}
@@ -648,7 +658,8 @@ button:not(:disabled):active{filter:brightness(.9)}
 #battlePause footer{justify-content:flex-end;margin-top:1em}
 #battlePause .pause-options{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.65em .9em;align-items:center;margin:1em 0}
 #battlePause .pause-options div{display:flex;align-items:center;gap:.3em}
-#pauseVolume{width:100%;min-width:0}
+#battlePause input[type=range]{width:100%;min-width:0}
+#battlePause output{min-width:3.2em;text-align:right;font-variant-numeric:tabular-nums}
 #pauseMuteClick{justify-self:start}
 #surrenderDialog form{display:flex;justify-content:flex-end;gap:.55em}
 
@@ -945,6 +956,14 @@ button:not(:disabled):active{filter:brightness(.9)}
 .nds .healthbox .pixel-number .number-gap{width:.24cqw}
 .nds .moves-panel .moves>*{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.38cqw;padding:.2cqw .32cqw}
 .nds .moves-panel .move-name{font-size:1.42cqw;line-height:1.18;text-align:center;padding:.08em .1em;max-width:100%}
+.nds .moves-panel .move-name[data-effect="normal"]{color:#000}
+.nds .moves-panel .move-name[data-effect="immune"]{color:#66636d}
+.nds .moves-panel .move-name[data-effect="strong"]{color:#a92124}
+.nds .moves-panel .move-name[data-effect="weak"]{color:#226229}
+.nds .healthbox :is(#playerBattleName,#enemyBattleName){display:flex;align-items:center;gap:.32cqw;overflow:visible}
+.nds .battle-name-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.nds .battle-name-types{display:inline-flex;flex:none;align-items:center;gap:.18cqw}
+.nds .battle-name-types .type-icon{display:block;flex:none;width:1.15cqw;height:1.15cqw}
 .nds .moves-panel .emerald-type{width:auto;height:1.84cqw;max-height:none;max-width:88%;object-fit:contain;flex:none}
 .nds .growl-wave{position:absolute;width:3.8cqw;height:3.8cqw;left:var(--growl-x);top:var(--growl-y);translate:-50% -50%;image-rendering:pixelated;animation:emerald-growl-wave .25s steps(8,end) var(--growl-delay) both}
 @keyframes emerald-growl-wave{from{transform:translate(0,var(--growl-offset));opacity:1}to{transform:translate(var(--growl-travel),var(--growl-offset));opacity:0}}
@@ -1046,7 +1065,7 @@ button:not(:disabled):active{filter:brightness(.9)}
 <main>
 <section id="menu" class="screen" style="position:relative">
   <div class="menu-scenery" aria-hidden="true"><img src="data:image/png;base64,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" alt=""></div><button id="settingsOpen" type="button" style="position:absolute;right:1.5%;bottom:2%;z-index:2">⚙ 設定</button><h1>POKÉMON SLOT</h1><p>寶可夢拉霸</p><nav><button id="trialMode">新手教學</button><button id="formalMode">正式遊戲</button><button id="continueMode">繼續遊戲</button><button id="shopMode">商店</button><button id="upgradeMode">增強</button></nav></section>
-<section id="setup" class="screen" hidden><h1 id="setupTitle"></h1><div id="starterSetup" hidden><p>選擇你的第一隻寶可夢</p><div id="starterCards" class="mon-cards"></div></div><div id="partySetup"><div id="partyHelp"></div><div id="teamCards" class="mon-cards" aria-label="圖鑑隊員清單"></div><div class="setup-footer"><div class="energy-panel"><div class="energy-header"><label>攜帶屬性 <select id="typeCount"><option>3</option><option>5</option><option>6</option></select></label><span id="setupStatus" role="status"></span></div><div id="typeChoices"></div></div><div class="party-confirm"><div id="teamSelection"></div><button id="startBattle">確定開始</button></div></div></div><button class="home">返回主畫面</button></section>
+<section id="setup" class="screen" hidden><h1 id="setupTitle"></h1><div id="starterSetup" hidden><p>選擇你的第一隻寶可夢</p><div id="starterCards" class="mon-cards"></div></div><div id="partySetup"><div id="partyHelp"></div><div id="teamCards" class="mon-cards" aria-label="圖鑑隊員清單"></div><div class="setup-footer"><div class="energy-panel"><div class="energy-header"><label>攜帶屬性 <select id="typeCount"><option>2</option><option>4</option><option>5</option></select></label><span id="setupStatus" role="status"></span></div><div id="typeChoices"></div></div><div class="party-confirm"><div id="teamSelection"></div><button id="startBattle">確定開始</button></div></div></div><button class="home">返回主畫面</button></section>
 <section id="shop" class="screen shop-layout" hidden>
 <header class="shop-header"><h1 id="shopTitle">扭蛋商店</h1><img id="shopTicketArt" alt=""><p id="shopTickets"></p><button id="buyShopTickets" type="button">買扭蛋券</button><button id="shopHome" class="home">返回主畫面</button></header>
 <div id="shopMachines"></div>
@@ -1063,21 +1082,22 @@ button:not(:disabled):active{filter:brightness(.9)}
 <div class="desktop nds" role="group" aria-label="寶可夢拉霸單打"><div id="arena" aria-hidden="true"></div><div id="enemyHeld" aria-label="對手持有道具"></div><div id="battleProgress"><div id="stageBadge" aria-label="關卡進度"></div><select id="battleSpeed" aria-label="遊戲速度"><option value="1">1X</option><option value="2">2X</option><option value="3">3X</option></select></div>
 <section id="player" aria-label="我方"></section>
 <section id="enemy" aria-label="對手"></section><section id="playerMoves" class="moves-panel" aria-label="我方招式與異常狀態"></section><section id="enemyMoves" class="moves-panel" aria-label="對手招式與異常狀態"></section>
-<div id="playerHealthbox" class="healthbox"><strong id="playerBattleName"></strong><span id="playerLevel" class="level-one"></span><div class="fighter-status" aria-live="polite"></div><div id="playerHp" class="art-hp" role="meter"><span></span></div><span id="playerHpText" class="hp-text"></span><div id="playerExp" role="meter" aria-label="經驗值" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></div>
-<div id="enemyHealthbox" class="healthbox"><strong id="enemyBattleName"></strong><span id="enemyLevel" class="level-one"></span><div class="fighter-status" aria-live="polite"></div><div id="enemyHp" class="art-hp" role="meter"><span></span></div><span id="enemyHpText" hidden></span></div>
+<div id="playerHealthbox" class="healthbox"><strong id="playerBattleName"><span class="battle-name-text"></span><span class="battle-name-types" role="img"></span></strong><span id="playerLevel" class="level-one"></span><div class="fighter-status" aria-live="polite"></div><div id="playerHp" class="art-hp" role="meter"><span></span></div><span id="playerHpText" class="hp-text"></span><div id="playerExp" role="meter" aria-label="經驗值" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></div>
+<div id="enemyHealthbox" class="healthbox"><strong id="enemyBattleName"><span class="battle-name-text"></span><span class="battle-name-types" role="img"></span></strong><span id="enemyLevel" class="level-one"></span><div class="fighter-status" aria-live="polite"></div><div id="enemyHp" class="art-hp" role="meter"><span></span></div><span id="enemyHpText" hidden></span></div>
 <div id="grid" class="grid" aria-label="拉霸結果"></div><section id="lowerPanel" hidden><header><h3 id="lowerTitle"></h3></header><button type="button" id="closeLower">返回拉霸</button><div id="lowerContent"></div></section><div id="lineFx" aria-hidden="true" hidden></div><div id="moveFx" aria-hidden="true"></div>
 <button id="spin" aria-label="拉霸" title="拉霸"><span class="lever-ball" aria-hidden="true"></span></button>
 
 <div id="playerParty" aria-label="我方隊伍"></div>
 <div id="enemyParty" aria-label="對手隊伍"></div>
 <section id="levelStatsBox" hidden aria-labelledby="levelStatsTitle"><h2 id="levelStatsTitle"></h2><dl id="levelStatsRows"></dl><button id="levelStatsNext" type="button">確認 ▼</button></section><button id="trainerIntroAdvance" type="button" hidden></button><div id="enemyAlert" role="status" class="enemy-alert" hidden></div>
-<button id="itemBox" class="slot-control" title="道具">道具</button><button id="ballBox" class="slot-control" title="收服">收服</button><button id="exitBattle" aria-label="設定" title="設定">設定</button><button id="homeBattle" aria-label="回到主畫面" title="回到主畫面">主畫面</button><button id="partyControl" aria-label="隊伍" title="隊伍">隊伍</button><button id="logControl" aria-controls="log" aria-expanded="false">對戰回顧</button><div id="trainerStageLayer"><img id="redOnField" class="trainer-on-field" alt="RED" hidden><img id="trainerOnField" class="trainer-on-field" alt="" hidden></div><div id="playerSendBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="trainerBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="captureBall" class="catch-ball" aria-hidden="true" hidden></div><button id="reelInfo" type="button">輪盤圖案</button><div class="battle-feed"><div class="battle-feed-head"><p id="notice" role="status"></p><span id="actionProgress"></span><button id="nextBattle" hidden>前往下一關</button></div><ol id="log" hidden aria-label="對戰回顧" tabindex="0"></ol></div>
+<button id="itemBox" class="slot-control" title="道具">道具</button><button id="ballBox" class="slot-control" title="收服">收服</button><button id="exitBattle" aria-label="設定" title="設定">設定</button><button id="homeBattle" aria-label="回到主畫面" title="回到主畫面">主畫面</button><button id="partyControl" aria-label="隊伍" title="隊伍">隊伍</button><button id="logControl" aria-controls="log" aria-expanded="false">對戰回顧</button><div id="trainerStageLayer"><img id="redOnField" class="trainer-on-field" alt="RED" hidden><img id="trainerOnField" class="trainer-on-field" alt="" hidden></div><div id="playerSendBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="trainerBall" class="trainer-ball" aria-hidden="true" hidden></div><div id="captureBall" class="catch-ball" aria-hidden="true" hidden></div><button id="reelInfo" type="button">圖庫</button><div class="battle-feed"><div class="battle-feed-head"><p id="notice" role="status"></p><span id="actionProgress"></span><button id="nextBattle" hidden>前往下一關</button></div><ol id="log" hidden aria-label="對戰回顧" tabindex="0"></ol></div>
 </div>
 </div><dialog id="battlePause" aria-labelledby="pauseTitle">
   <header><h2 id="pauseTitle">暫停</h2><form method="dialog"><button id="pauseClose" autofocus>繼續對戰</button></form></header>
   <div class="pause-options">
-    <label for="pauseVolume" id="pauseVolumeLabel">音量</label>
-    <div><input id="pauseVolume" type="range" min="0" max="100"><output id="pauseVolumeValue" for="pauseVolume">100%</output></div>
+    <label for="pauseVolume" id="pauseVolumeLabel">主音量（背景音樂）</label><div class="settings-value"><input id="pauseVolume" type="range" min="0" max="100" value="100"><output id="pauseVolumeValue" for="pauseVolume">100%</output></div>
+    <label for="pauseClickVolume" id="pauseClickVolumeLabel">按鍵音量</label><div class="settings-value"><input id="pauseClickVolume" type="range" min="0" max="100" value="100"><output id="pauseClickVolumeValue" for="pauseClickVolume">100%</output></div>
+    <label for="pauseEffectsVolume" id="pauseEffectsVolumeLabel">特效音量</label><div class="settings-value"><input id="pauseEffectsVolume" type="range" min="0" max="100" value="100"><output id="pauseEffectsVolumeValue" for="pauseEffectsVolume">100%</output></div>
     <label for="pauseSpeed" id="pauseSpeedLabel">戰鬥速度</label>
     <select id="pauseSpeed"><option value="1">1X</option><option value="2">2X</option><option value="3">3X</option></select>
     <label for="pauseMuteClick" id="pauseMuteLabel">關閉點擊音效</label>
@@ -1106,7 +1126,9 @@ button:not(:disabled):active{filter:brightness(.9)}
 </dialog><dialog id="settingsDialog" aria-labelledby="settingsTitle">
   <h2 id="settingsTitle">設定</h2>
   <div class="settings-rows">
-    <div class="settings-row"><label for="musicVolume" id="musicVolumeLabel">音量</label><div class="settings-value"><input id="musicVolume" type="range" min="0" max="100" value="100"><output id="musicVolumeValue" for="musicVolume">100%</output></div></div>
+    <div class="settings-row"><label for="musicVolume" id="musicVolumeLabel">主音量（背景音樂）</label><div class="settings-value"><input id="musicVolume" type="range" min="0" max="100" value="100"><output id="musicVolumeValue" for="musicVolume">100%</output></div></div>
+    <div class="settings-row"><label for="clickVolume" id="clickVolumeLabel">按鍵音量</label><div class="settings-value"><input id="clickVolume" type="range" min="0" max="100" value="100"><output id="clickVolumeValue" for="clickVolume">100%</output></div></div>
+    <div class="settings-row"><label for="effectsVolume" id="effectsVolumeLabel">特效音量</label><div class="settings-value"><input id="effectsVolume" type="range" min="0" max="100" value="100"><output id="effectsVolumeValue" for="effectsVolume">100%</output></div></div>
     <div class="settings-row"><label for="musicStyle" id="musicStyleLabel">音樂風格</label><select id="musicStyle"><option value="kanto">火紅／葉綠</option><option value="johto">金／銀／水晶</option><option value="hoenn">綠寶石</option></select></div>
     <div class="settings-row"><label for="playerStyle" id="playerStyleLabel">角色選擇</label><select id="playerStyle"><option>RED</option></select></div>
     <div class="settings-row"><label for="gameLanguage" id="gameLanguageLabel">Language</label><select id="gameLanguage"><option value="zh-Hant">繁體中文</option><option value="en">English</option></select></div>
@@ -1122,7 +1144,7 @@ button:not(:disabled):active{filter:brightness(.9)}
 <p>每次拉霸先結算我方所有相符招式。若至少一招成功且對手仍在場，對手才隨機反擊一招。確認換人後，對手依序使用目前所有已學招式。換人不消耗拉霸次數，也不回復血量。場上寶可夢倒下時由存活隊友自動接替。對手倒下即過關，我方全倒即失敗。血量、攻擊、技能與連線都是本關測試設定。</p>
 <small>道具圖案參考 <a href="https://wiki.52poke.com/zh-hant/%E9%81%93%E5%85%B7%E5%88%97%E8%A1%A8">神奇寶貝百科</a> · 寶可夢像素圖來源 <a href="https://github.com/PokeAPI/sprites/tree/master/sprites/pokemon/versions/generation-iii/emerald">PokeAPI · Emerald</a></small></details>
 <form method="dialog"><button>關閉</button></form></dialog><dialog id="regionDialog" aria-labelledby="regionTitle"><header><h2 id="regionTitle">選擇冒險地區</h2><form method="dialog"><button id="regionBack" autofocus>返回組隊</button></form></header><div id="regionChoices"></div></dialog>
-<dialog id="saveDialog" aria-labelledby="saveTitle"><header><h2 id="saveTitle"></h2><button id="closeSave" aria-label="關閉">X</button></header><div id="saveBody"></div><p id="saveStatus" role="status"></p></dialog><dialog id="items" aria-labelledby="itemTitle"><h2 id="itemTitle">道具</h2><div id="itemInfo"></div><div class="item-actions"><button id="showReference">圖鑑與規則</button><button id="reset">重新開始本局</button></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="catchDialog" aria-labelledby="catchTitle"><h2 id="catchTitle"></h2><p id="catchInfo"></p><form method="dialog"><span id="ballChoices"></span> <button value="cancel" autofocus>關閉</button></form></dialog><dialog id="reelInfoDialog" aria-labelledby="reelInfoTitle"><h2 id="reelInfoTitle">輪盤圖案</h2><div id="reelInfoCounts"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="tutorialComplete" aria-labelledby="tutorialCompleteTitle"><h2 id="tutorialCompleteTitle">⑥ 教學完成！</h2><p>這遊戲就是如此簡單,帶上你的金幣<br>成為拉霸大...不是,成為寶可夢大師吧!</p><form method="dialog"><button autofocus>返回主畫面</button></form></dialog><dialog id="partyPicker" aria-labelledby="partyPickerTitle"><h2 id="partyPickerTitle"></h2><form id="partyPickerChoices" method="dialog"></form></dialog><dialog id="learn" aria-labelledby="learnTitle"><h2 id="learnTitle"></h2><form id="learnChoices" method="dialog"></form></dialog><dialog id="skill" aria-labelledby="skillTitle"><h2 id="skillTitle">技能詳情</h2><div id="skillBody" class="skill-card"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="swapDialog" aria-labelledby="swapTitle"><h2 id="swapTitle"></h2><p>換人後，對手會依序使用目前所有已學招式。</p><form method="dialog"><button value="cancel" autofocus>取消</button> <button value="confirm">確認換人</button></form></dialog></main>
+<dialog id="saveDialog" aria-labelledby="saveTitle"><header><h2 id="saveTitle"></h2><button id="closeSave" aria-label="關閉">X</button></header><div id="saveBody"></div><p id="saveStatus" role="status"></p></dialog><dialog id="items" aria-labelledby="itemTitle"><h2 id="itemTitle">道具</h2><div id="itemInfo"></div><div class="item-actions"><button id="showReference">圖鑑與規則</button><button id="reset">重新開始本局</button></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="catchDialog" aria-labelledby="catchTitle"><h2 id="catchTitle"></h2><p id="catchInfo"></p><form method="dialog"><span id="ballChoices"></span> <button value="cancel" autofocus>關閉</button></form></dialog><dialog id="reelInfoDialog" aria-labelledby="reelInfoTitle"><h2 id="reelInfoTitle">圖庫</h2><p id="reelInfoTotal"></p><div id="reelInfoCounts"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="tutorialComplete" aria-labelledby="tutorialCompleteTitle"><h2 id="tutorialCompleteTitle">⑥ 教學完成！</h2><p>這遊戲就是如此簡單,帶上你的金幣<br>成為拉霸大...不是,成為寶可夢大師吧!</p><form method="dialog"><button autofocus>返回主畫面</button></form></dialog><dialog id="partyPicker" aria-labelledby="partyPickerTitle"><h2 id="partyPickerTitle"></h2><form id="partyPickerChoices" method="dialog"></form></dialog><dialog id="learn" aria-labelledby="learnTitle"><h2 id="learnTitle"></h2><form id="learnChoices" method="dialog"></form></dialog><dialog id="skill" aria-labelledby="skillTitle"><h2 id="skillTitle">技能詳情</h2><div id="skillBody" class="skill-card"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="swapDialog" aria-labelledby="swapTitle"><h2 id="swapTitle"></h2><p>換人後，對手會依序使用目前所有已學招式。</p><form method="dialog"><button value="cancel" autofocus>取消</button> <button value="confirm">確認換人</button></form></dialog></main>
 <div style="position:fixed;bottom:8px;left:8px;z-index:20;max-width:75vw;color:white;font-size:12px;overflow-wrap:anywhere"><button id="musicToggle" type="button">播放音樂</button> <span id="musicStatus" role="status"></span></div>
 <aside id="tutorialHint" role="status" hidden></aside>
 <script src="./assets/emerald-sprites.js"></script>
@@ -1353,7 +1375,10 @@ function sprite(p,alternate=false){
 }
 const typeAtlas=['水','草','火','電','蟲','惡','毒','龍','冰','鋼','格鬥','地面','幽靈','超能力','妖精','飛行','岩石','普通'];
 const fullType={普:'普通',飛:'飛行'};
+const wildReelType='萬能';
+const selectableEnergyCounts=[2,4,5];
 function typeIcon(type){
+  if(type===wildReelType) return '<img class="type-icon wild-reel-icon" src="data:image/png;base64,'+itemSprites['poke-ball']+'" alt="" aria-hidden="true">';
   const index=typeAtlas.indexOf(fullType[type]||type);
   if(index<0) return '';
   const x=index%3*50;
@@ -1446,7 +1471,7 @@ function lineShape(cells){
 function supportedLines(name,matched){
   const skill=skillDetails[name],rule=moveRules[name];
   if(rule?.shapes==='P') return [];
-  return matched.filter(line=>(skill.type==='普通'||line.type==='普通'||line.type===skill.type)&&
+  return matched.filter(line=>(skill.type==='普通'||line.type==='普通'||line.type===wildReelType||line.type===skill.type)&&
     (!rule||rule.shapes.includes(lineShape(line.cells))));
 }
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -1484,7 +1509,7 @@ function showSkill(p, name, trigger){
 const $ = id => document.getElementById(id);
 let state;
 let mode='trial';
-let selectedTypes=['火','水','草'];
+let selectedTypes=['火','水'];
 let selectedTeam=[];
 const selectedShiny=new Set();
 const selectedTraits=new Map();
@@ -1769,6 +1794,9 @@ function wildPool(stage,region){
   wildPoolCache.set(key,pool);
   return pool;
 }
+function legendaryPool(adventure){
+  return adventure.national?gachaLegendary:regionalDex[adventure.region]?.legends??legendaryIds;
+}
 function formalEncounter(stage,prior,rivalStarter,adventure=legacyAdventure){
   const phase=Math.floor((stage-1)/10);
   const region=adventure.national?undefined:adventure.region;
@@ -1779,8 +1807,9 @@ function formalEncounter(stage,prior,rivalStarter,adventure=legacyAdventure){
   const trainer=regionalTrainer(stage,rivalStarter,adventure);
   if(trainer) return {id:trainer[4][0],kind:trainer[0],phase,phaseType:type,trainer};
   if(stage===90||(stage<90&&Math.random()<.01*(1+itemCount(prior??{},'lure')))){
-    const legends=adventure.national?gachaLegendary:regionalDex[region]?.legends??legendaryIds;
-    return {id:pick(legends),kind:'神獸',phase,phaseType:type};
+    const legends=legendaryPool(adventure);
+    const preview=prior?.stage===89&&stage===90?prior.stage90Legendary:undefined;
+    return {id:legends.includes(preview)?preview:pick(legends),kind:'神獸',phase,phaseType:type};
   }
   return {id:pick(type?pool.filter(mon=>mon.type.includes(type)):pool).id,kind:'',phase,phaseType:type};
 }
@@ -1795,7 +1824,8 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false,start
   const foe=mode==='formal'?formalEncounter(stage,prior,rivalStarter,adventure):tutorial&&stage===3
     ?{id:7,kind:'宿敵',trainer:[...trainerFor(5,7).slice(0,4),[7]]}:{id:tutorial&&stage===2?16:1,kind:''};
   const level=mode==='formal'?Math.min(100,enemyStartingLevel+stage-1):Math.max(...party.map(mon=>mon.level));
-  const reels=oldReels??buildReels(selectedTypes);
+  const universalRules=prior?.universalRules??(oldReels?false:selectableEnergyCounts.includes(selectedTypes.length));
+  const reels=oldReels??(universalRules?buildWildReels(selectedTypes):buildReels(selectedTypes));
   const positions=reels.map(reel=>randomIndex(reel.length));
   const active=party[prior?.active]?.left>0?prior.active:Math.max(0,party.findIndex(mon=>mon.left>0));
   const fluteUntil=prior?.fluteUntil??0;
@@ -1810,7 +1840,7 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false,start
   const run={tutorial,team:party,enemy:foes[0],foes,foeIndex:0,rivalStarter,adventure,enemyItems,trainer:foe.trainer??null,introSeen:!foe.kind,stage,kind:foe.kind,phase:foe.phase,phaseType:foe.phaseType,
     region:mode==='formal'?(adventure.region?adventureLabel(adventure.region):adventure.national?'全國冒險':regions[0]):null,items:prior?.items??{},balls,used:{},
     reels,positions,active,spins:0,result:'',won:false,board:boardAt(reels,positions),matches:[],log:['第 '+stage+' 關開始。'],
-    runId:prior?.runId??newRunId(),coins:prior?.coins??0,newUnlocks:prior?.newUnlocks??[],upgrades,counterSpins:0,fluteUntil,reelsCustomized:prior?.reelsCustomized??false,reelsPhysical:Boolean(prior?.reelsPhysical),reelGemCount:prior?.reelGemCount??(prior?.reelsCustomized?1:0)};
+    runId:prior?.runId??newRunId(),coins:prior?.coins??0,newUnlocks:prior?.newUnlocks??[],upgrades,counterSpins:0,fluteUntil,reelsCustomized:prior?.reelsCustomized??false,universalRules,reelsPhysical:universalRules||Boolean(prior?.reelsPhysical),reelGemCount:prior?.reelGemCount??(prior?.reelsCustomized?1:0)};
   if(mode==='formal'&&!team){
     for(const mon of party){setBattleLevel(mon,mon.level,run);mon.left=mon.hp;}
   }
@@ -2113,7 +2143,7 @@ async function showEvolution(before,after){
   dialog.oncancel=event=>event.preventDefault();
   dialog.showModal();
   const theme=musicPlayer;
-  if(theme) theme.volume=.035*settings.volume/100;
+  if(theme) theme.volume=.035*settings.effectsVolume/100;
   let audio=playGameSound('evolution-start');
   try{
   await wait(reducedMotion.matches?330:850);
@@ -2137,7 +2167,7 @@ async function showEvolution(before,after){
   await new Promise(resolve=>{dialog.onclose=resolve;});
   }finally{
     audio?.pause();
-    if(theme) theme.volume=.14*settings.volume/100;
+    if(theme) theme.volume=.14*settings.effectsVolume/100;
   }
 }
 
@@ -2817,12 +2847,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   }
   let inflicted=0;
   if(skill.power){
-    const effectiveness=typeMultiplier(skill.type,target);
-    const defenseAbility=activeAbility(target);
-    const absorb=(skill.type==='電'&&defenseAbility===10)||(skill.type==='水'&&defenseAbility===11);
-    const boost=(skill.type==='火'&&defenseAbility===18)||(skill.type==='電'&&defenseAbility===31);
-    const immune=absorb||boost||!effectiveness||(defenseAbility===25&&effectiveness<=1)||
-      (defenseAbility===26&&skill.type==='地面')||(defenseAbility===43&&specialTypes.includes(skill.type));
+    const {effectiveness,defenseAbility,absorb,boost,immune}=moveTypeImpact(skill.type,target);
     if(immune){
       s.log.unshift(action+'。'+target.name+'免疫這次傷害。');
       if(absorb) healMon(s,target,other,Math.max(1,Math.floor(target.hp/4)));
@@ -3115,6 +3140,15 @@ async function finishStage(s,message){
 function typeMultiplier(type,target){
   return target.type.reduce((value,t)=>value*(matchup[type]?.[t]??1),1);
 }
+function moveTypeImpact(type,target){
+  const effectiveness=typeMultiplier(type,target);
+  const defenseAbility=activeAbility(target);
+  const absorb=(type==='電'&&defenseAbility===10)||(type==='水'&&defenseAbility===11);
+  const boost=(type==='火'&&defenseAbility===18)||(type==='電'&&defenseAbility===31);
+  const immune=absorb||boost||!effectiveness||(defenseAbility===25&&effectiveness<=1)||
+    (defenseAbility===26&&type==='地面')||(defenseAbility===43&&specialTypes.includes(type));
+  return {effectiveness,defenseAbility,absorb,boost,immune};
+}
 function threat(attacker,defender){
   const attackTypes=attacker.moves.map(name=>skillDetails[name]).filter(move=>move?.power).map(move=>move.type);
   return Math.max(...[...new Set([...attacker.type,...attackTypes])].map(type=>typeMultiplier(type,defender)));
@@ -3211,13 +3245,13 @@ function abilityBoard(run,original){
     if(board===original) board=original.slice();
     board[index]=type;
   }
-  for(let i=0;i<board.length;i++) if(damp[position(i)]) change(i,'水');
+  for(let i=0;i<board.length;i++) if(board[i]!==wildReelType&&damp[position(i)]) change(i,'水');
 
   const mon=run.team[run.active];
   if(!mon?.left) return board;
   const ability=activeAbility(mon);
   if(ability===6){
-    const candidates=board.flatMap((type,i)=>type!=='水'?[i]:[]);
+    const candidates=board.flatMap((type,i)=>type!=='水'&&type!==wildReelType?[i]:[]);
     if(candidates.length){
       const index=pick(candidates);
       damp[position(index)]=true;
@@ -3231,7 +3265,7 @@ function abilityBoard(run,original){
   const low=[65,66,67,68].includes(ability);
   if(!type||low&&mon.left*2>=mon.hp) return board;
   const linked=new Set(matchingLines(board).flatMap(line=>line.cells));
-  const available=board.flatMap((symbol,i)=>symbol!==type&&!linked.has(i)?[i]:[]);
+  const available=board.flatMap((symbol,i)=>symbol!==type&&symbol!==wildReelType&&!linked.has(i)?[i]:[]);
   for(const index of shuffle(available).slice(0,low?8:5)) change(index,type);
   return board;
 }
@@ -3268,7 +3302,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
   renderBattleProgress(s);
   const p=s.team[s.active];
   const matched=matchingLines(board);
-  const waterLines=matched.filter(line=>line.type==='水').length;
+  const waterLines=matched.filter(line=>line.type==='水'||line.type===wildReelType).length;
   if(waterLines){
     if(activeAbility(p)===44) healMon(s,p,'player',Math.max(1,Math.floor(p.hp*.05*waterLines)));
   }
@@ -3328,7 +3362,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
     if(!s.team[s.active].left){await replaceFainted(s);return;}
   }
   if(s.counterSpins>=counterTarget(s)) await enemyAct(s);
-  else if(shouldCounter(s,landed)&&!(activeAbility(p)===8&&matched.some(line=>line.type==='地面'))) await enemyAct(s,true);
+  else if(shouldCounter(s,landed)&&!(activeAbility(p)===8&&matched.some(line=>line.type==='地面'||line.type===wildReelType))) await enemyAct(s,true);
   else delete s.team[s.active].counterGuard;
   await playWeather(s.weather?.kind??beforeCounter);
   if(!s.enemy.left){await winBattle(s,s.team[s.active]);return;}
@@ -3566,14 +3600,23 @@ function portrait(p,back=false){
   const art=(back&&ndsBattleArt.backs[p.displayId??p.id]?.[p.shiny?1:0])||sprite(p);
   return '<div class="portrait" style="--ink:'+(p.color||'#514962')+'">'+fallback+'<img data-mon-id="'+p.id+'" src="'+art+'" alt="" onerror="this.hidden=true"></div>';
 }
-function moveButtons(p, isPlayer){
-  const entries=p.moves.map(name=>[isPlayer?skillDetails[name].type:null,name]);
+const moveEffectLabels={
+  immune:['無效','No effect'],strong:['效果絕佳','Super effective'],
+  weak:['效果微弱','Not very effective'],normal:['一般效果','Normal effectiveness']
+};
+function moveButtons(mon,target){
   return Array.from({length:4},(_,i)=>{
-    if(!entries[i]) return '<span class="empty-move">'+musicLabel('空白','Empty')+'</span>';
-    const [trigger,name]=entries[i];
-    const type=skillDetails[name].type;
+    const name=mon.moves[i],skill=skillDetails[name];
+    if(!skill) return '<span class="empty-move">'+musicLabel('空白','Empty')+'</span>';
+    const type=skill.type;
     const icon=ndsBattleArt.types[type]??ndsBattleArt.types['未知'];
-    return '<button data-move="'+i+'"><img class="emerald-type" src="'+icon+'" alt="'+type+'"><span class="move-name">'+displayMove(name)+'</span></button>';
+    let tag='normal';
+    if(skill.power){
+      const {effectiveness,immune}=moveTypeImpact(type,target);
+      tag=immune?'immune':effectiveness>1?'strong':effectiveness<1?'weak':'normal';
+    }else if(skill.effect==='PARALYZE'&&type==='電'&&target.type.includes('地面')) tag='immune';
+    const hint=skill.power||tag==='immune'?' title="'+musicLabel(...moveEffectLabels[tag])+'"':'';
+    return '<button data-move="'+i+'"'+hint+'><img class="emerald-type" src="'+icon+'" alt="'+type+'"><span class="move-name" data-effect="'+tag+'">'+displayMove(name)+'</span></button>';
   }).join('');
 }
 function refreshFighterStatus(run,mon){
@@ -3595,8 +3638,8 @@ function fighterStatus(p){
 function panel(p,isPlayer){
   return portrait(p,isPlayer);
 }
-function movePanel(p,isPlayer){
-  return '<div class="moves">'+moveButtons(p,isPlayer)+'</div>';
+function movePanel(mon,target){
+  return '<div class="moves">'+moveButtons(mon,target)+'</div>';
 }
 function partyIcon(p){
   return portrait(p).replace(/^<div[^>]*>|<\/div>$/g,'').replace('fill="currentColor"','fill="'+p.color+'"');
@@ -3626,7 +3669,11 @@ function reelTravel(progress){
 $('reelInfo').onclick=()=>{
   const counts={};
   for(const type of state.reels.flat()) counts[type]=(counts[type]??0)+1;
-  $('reelInfoCounts').innerHTML=Object.entries(counts).map(([type,count])=>'<span>'+typeIcon(type)+type+' × '+count+'</span>').join('');
+  const total=state.reels.reduce((sum,reel)=>sum+reel.length,0);
+  $('reelInfoTitle').textContent=musicLabel('圖庫','Symbol Library');
+  $('reelInfoTotal').textContent=musicLabel('圖案總數 ','Total symbols ')+total;
+  $('reelInfoCounts').innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([type,count])=>
+    '<span>'+typeIcon(type)+(type===wildReelType?musicLabel('萬能','Wild'):type)+' × '+count+'（'+(100*count/total).toFixed(1)+'%）</span>').join('');
   $('reelInfoDialog').showModal();
 };
 function renderBoard(board,matches=[],settledTracks=null){
@@ -3710,6 +3757,13 @@ function paintBattleLevel(side,mon){
     level.setAttribute('aria-label',label+'，等級 '+mon.level);
   }
 }
+function paintBattleName(side,mon){
+  const name=$(side+'BattleName');
+  name.querySelector('.battle-name-text').textContent=displayPokemon(mon);
+  const types=name.querySelector('.battle-name-types');
+  types.innerHTML=mon.type.map(typeIcon).join('');
+  types.setAttribute('aria-label',mon.type.join('／'));
+}
 function updateHp(id,p){
   const fighter=$(id==='playerHp'?'playerHealthbox':'enemyHealthbox').querySelector('.fighter-status');
   if(fighter) fighter.innerHTML=fighterStatus(p);
@@ -3760,7 +3814,7 @@ function renderTutorialHint(){
   const reading=state.stage===1&&!state.tutorialSkillSeen;
   const messages={
     1:reading?['② 查看招式','點左側小火龍的「抓擊」。普通系招式可用任意屬性的有效連線觸發。']:
-      state.spins===0?['② 按把手試拉一次','五個相同圖案連成指定線型才會發動招式。其他屬性招式可用全普通系連線代替，但傷害或效果只有 50%。我方招式發動後，對手會還擊一次。']:
+      state.spins===0?['② 按把手試拉一次','五格同屬性可成線，寶可夢球是萬能，可補任何屬性的空位。全萬能線可觸發任意屬性招式。普通線代替其他屬性時，效果只有 50%。我方發動招式後，對手會還擊一次。']:
       state.spins<5?['② 快轉看對手行動','看戰報右上角的行動計數。再按一次把手，教學會快轉到第 5 次，示範對手把 4 招各用一次。']:
       ['② 結束練習戰','對手已完成一輪行動。再按一次把手，擊敗練習對手。'],
     2:['④ 捕捉野生寶可夢','點右下方「收服」，再點寶可夢球。目標血量越低，通常越容易捕捉。'],
@@ -3794,8 +3848,8 @@ function render(refreshBoard=true){
   const p=state.team[state.active];
   $('player').innerHTML=panel(p,true);
   $('enemy').innerHTML=panel(state.enemy,false);
-  $('playerMoves').innerHTML=movePanel(p,true);
-  $('enemyMoves').innerHTML=movePanel(state.enemy,false);
+  $('playerMoves').innerHTML=movePanel(p,state.enemy);
+  $('enemyMoves').innerHTML=movePanel(state.enemy,p);
   updateHp('playerHp',p);
   updateHp('enemyHp',state.enemy);
   $('playerParty').innerHTML=party(state.team,state.active);
@@ -3821,6 +3875,7 @@ function render(refreshBoard=true){
   $('notice').textContent=state.result||('第 '+state.stage+' 關'+(state.kind?' · '+state.kind:state.phaseType?' · '+state.phaseType+'系野生區':''));
   if(state.matches.length) $('notice').textContent+=' ◆ '+state.matches.length+' 條連線 '+multiplierLabel(lineMultiplier(state.matches.length));
   renderLog();
+  $('reelInfo').textContent=musicLabel('圖庫','Library');
   $('reelInfo').disabled=rolling;
   $('battleSpeed').disabled=rolling;
   $('spin').disabled=rolling||Boolean(state.result)||Boolean(state.tutorial&&(state.stage===2||state.stage===1&&!state.tutorialSkillSeen));
@@ -3839,8 +3894,8 @@ function render(refreshBoard=true){
   $('player').classList.toggle('pre-intro',Boolean(state.playerSending));
   document.querySelectorAll('.home').forEach(button=>button.disabled=rolling);
   renderBattleProgress(state);
-  $('playerBattleName').textContent=displayPokemon(p);
-  $('enemyBattleName').textContent=displayPokemon(state.enemy);
+  paintBattleName('player',p);
+  paintBattleName('enemy',state.enemy);
   paintBattleLevel('player',p);
   setExperienceMeter(experienceProgress(p));
   paintBattleLevel('enemy',state.enemy);
@@ -3909,6 +3964,13 @@ function buildReels(picks){
   }
   return fallbackReels[picks.length].map(pattern=>rotate([...pattern].map(i=>order[i])));
 }
+function buildWildReels(picks){
+  const order=shuffle(picks.slice());
+  return Array.from({length:boardSize},(_,column)=>{
+    const regular=Array.from({length:4},(_,index)=>order[(4*column+index)%order.length]);
+    return shuffle([...regular,wildReelType,wildReelType]);
+  });
+}
 function boardAt(reels,positions){
   const board=new Array(cellCount);
   for(let column=0;column<boardSize;column++){
@@ -3919,16 +3981,20 @@ function boardAt(reels,positions){
   return board;
 }
 function matchingMoves(moves,type){
-  return moves.filter(name=>type==='普通'||skillDetails[name].type==='普通'||skillDetails[name].type===type);
+  return moves.filter(name=>type===wildReelType||type==='普通'||skillDetails[name].type==='普通'||skillDetails[name].type===type);
 }
 function matchingLines(board){
   const matched=[];
   for(const cells of lines){
-    const type=board[cells[0]];
-    if(!Object.hasOwn(types,type)) continue;
-    let index=1;
-    while(index<cells.length&&board[cells[index]]===type) index++;
-    if(index===cells.length) matched.push({cells,type});
+    let type=wildReelType;
+    let valid=true;
+    for(const cell of cells){
+      const symbol=board[cell];
+      if(symbol===wildReelType) continue;
+      if(!Object.hasOwn(types,symbol)||type!==wildReelType&&symbol!==type){valid=false;break;}
+      type=symbol;
+    }
+    if(valid) matched.push({cells,type});
   }
   return matched;
 }
@@ -3940,7 +4006,7 @@ function moveQueue(moves,matched){
     const skill=skillDetails[name],rule=moveRules[name];
     const supports=supportedLines(name,matched);
     const minimum=rule?.min||1;
-    const half=skill.type!=='普通'&&supports.filter(line=>line.type===skill.type).length<minimum;
+    const half=skill.type!=='普通'&&supports.filter(line=>line.type===skill.type||line.type===wildReelType).length<minimum;
     return supports.length>=minimum?[{name,supports,half}]:[];
   });
 }
@@ -4000,7 +4066,7 @@ function preloadVerticalGroups(reels){
   if(typeof Worker!=='function'||verticalCache.has(reels)||pendingVerticalReels===reels) return;
   const code=[
     'const boardSize='+boardSize+',cellCount='+cellCount+';',
-    'const lines='+JSON.stringify(lines)+',types='+JSON.stringify(types)+';',
+    'const lines='+JSON.stringify(lines)+',types='+JSON.stringify(types)+',wildReelType='+JSON.stringify(wildReelType)+';',
     'const verticalCache=new WeakMap();',
     boardAt.toString(),matchingLines.toString(),stackLayout.toString(),verticalGroups.toString(),
     'self.onmessage=event=>self.postMessage(verticalGroups(event.data));'
@@ -4019,7 +4085,8 @@ function preloadVerticalGroups(reels){
   worker.postMessage(reels);
 }
 function changeReelSymbols(run,type){
-  const cells=run.reels.flatMap((reel,col)=>reel.flatMap((symbol,row)=>symbol===type?[]:[[col,row]]));
+  if(!Object.hasOwn(types,type)) return false;
+  const cells=run.reels.flatMap((reel,col)=>reel.flatMap((symbol,row)=>symbol===type||symbol===wildReelType?[]:[[col,row]]));
   if(cells.length<3) return false;
   const reels=run.reels.map(reel=>reel.slice());
   for(const [col,row] of shuffle(cells).slice(0,3)) reels[col][row]=type;
@@ -4046,7 +4113,7 @@ function weightedStops(reels,count,gems=0,physical=false){
   const vertical=stacks?.[index]??[];
   let pool=vertical.length&&(!normal.length||Math.random()<verticalShare)?vertical:normal;
   if(!pool.length){
-    const alternates=[3,2,1,0].filter(value=>value!==index);
+    const alternates=(physical?[0,1,2,3].sort((a,b)=>Math.abs(a-index)-Math.abs(b-index)):[3,2,1,0]).filter(value=>value!==index);
     for(const alternative of alternates){
       pool=groups[alternative].length?groups[alternative]:physical?[]:verticalGroups(reels)[alternative];
       if(pool.length) break;
@@ -4119,7 +4186,7 @@ $('spin').onclick=async()=>{
     if(state.stage===1&&state.spins>=5) state.enemy.left=1;
   }
   const gems=state.reelGemCount??(state.reelsCustomized?1:0);
-  const {mask:layoutMask,positions}=guided?{mask:0,positions:guided.positions}:weightedStops(state.reels,selectedTypes.length,gems,state.reelsPhysical);
+  const {mask:layoutMask,positions}=guided?{mask:0,positions:guided.positions}:weightedStops(state.reels,selectedTypes.length+Number(Boolean(state.universalRules)),gems,state.reelsPhysical);
   const layout=stackLayout(state.reels,layoutMask);
   const finalBoard=boardAt(layout,positions);
   const stops=Array.from({length:boardSize},(_,column)=>2000+column*1000/(boardSize-1));
@@ -4262,6 +4329,8 @@ let musicScreen='menu';
 let musicCue;
 let musicFailed=false;
 let musicPlayer;
+let defaultMusicPlayer;
+const preparedBattleMusic=new Map();
 let musicPaused=false;
 const johtoMusic={
   town:'new-bark-town',wild:'wild-battle',lavender:'wild-battle',rival:'rival-battle',
@@ -4297,37 +4366,83 @@ function legendaryMusic(id){
   if([377,378,379].includes(id)) return ['hoenn','regi'];
   return [hoennLegendaryIds.includes(id)?'hoenn':'kanto','legendary'];
 }
-function syncKantoMusic(intro=false,retry=false){
-  if(!musicPlayer) return;
+function resolveMusicTrack(screenId,run,intro=false){
   let cue='town';
-  if(musicScreen==='battleScreen'){
-    const kind=state.trainer?.[0]??'';
-    cue=intro&&[5,25,55,85,100].includes(state.stage)?'rival':
-      state.stage===100?'champion':kind.includes('館主')?'gym':state.trainer?'trainer':state.kind==='神獸'&&[144,145,146,150].includes(state.enemy.id)?'legendary':!state.kind&&state.phaseType==='幽靈'?'lavender':'wild';
+  if(screenId==='battleScreen'){
+    const kind=run.trainer?.[0]??'';
+    cue=intro&&[5,25,55,85,100].includes(run.stage)?'rival':
+      run.stage===100?'champion':kind.includes('館主')?'gym':run.trainer?'trainer':run.kind==='神獸'&&[144,145,146,150].includes(run.enemy.id)?'legendary':!run.kind&&run.phaseType==='幽靈'?'lavender':'wild';
   }
-  const trainerRegion=musicScreen==='battleScreen'?encounterRegion(state):null;
-  const specialLegend=musicScreen==='battleScreen'&&state.kind==='神獸'?legendaryMusic(state.enemy.id):null;
+  const trainerRegion=screenId==='battleScreen'?encounterRegion(run):null;
+  const specialLegend=screenId==='battleScreen'&&run.kind==='神獸'?legendaryMusic(run.enemy.id):null;
   const style=specialLegend?.[0]??trainerRegion??settings.musicStyle;
-  if(style==='johto'&&musicScreen==='battleScreen'){
-    if(state.stage===100) cue='champion';
-    else if(state.trainer?.[0]==='宿敵') cue='rival';
-    else if(state.trainer?.[0]==='四大天王') cue='elite';
-    else if(state.trainer?.[0]?.startsWith('反派組織')) cue='grunt';
-    else if(state.kind==='神獸'){
-      cue=state.enemy.id===249?'lugia':state.enemy.id===250?'ho-oh':'legendary';
+  if(style==='johto'&&screenId==='battleScreen'){
+    if(run.stage===100) cue='champion';
+    else if(run.trainer?.[0]==='宿敵') cue='rival';
+    else if(run.trainer?.[0]==='四大天王') cue='elite';
+    else if(run.trainer?.[0]?.startsWith('反派組織')) cue='grunt';
+    else if(run.kind==='神獸'){
+      cue=run.enemy.id===249?'lugia':run.enemy.id===250?'ho-oh':'legendary';
     }
   }
-  if(style==='hoenn') cue=hoennMusicCue(musicScreen,state);
+  if(style==='hoenn') cue=hoennMusicCue(screenId,run);
   if(specialLegend) cue=specialLegend[1];
   const file=(style==='hoenn'?hoennMusic:style==='johto'?johtoMusic:kantoMusic)[cue];
   const source='./audio/'+style+'/'+file+'.mp3';
+  return {source,loop:style!=='kanto'||cue!=='rival'};
+}
+function prepareBattleTrack(track){
+  if(preparedBattleMusic.has(track.source)) return;
+  if(preparedBattleMusic.size>=5){
+    const oldest=[...preparedBattleMusic].find(([,player])=>player!==musicPlayer);
+    if(oldest){
+      const [source,player]=oldest;
+      preparedBattleMusic.delete(source);
+      player.removeAttribute('src');
+      player.load();
+    }
+  }
+  const player=createMusicPlayer();
+  player.preload='auto';
+  player.src=track.source;
+  preparedBattleMusic.set(track.source,player);
+}
+function prepareSpecialStageMusic(run){
+  if(typeof Audio==='undefined') return;
+  if(run.trainer||run.kind==='神獸'){
+    prepareBattleTrack(resolveMusicTrack('battleScreen',run,true));
+    prepareBattleTrack(resolveMusicTrack('battleScreen',run));
+  }
+  if(run.tutorial||!run.adventure||run.stage>=100) return;
+  const stage=run.stage+1;
+  const trainer=regionalTrainer(stage,run.rivalStarter,run.adventure);
+  if(trainer){
+    const upcoming={...run,stage,trainer,kind:trainer[0]};
+    prepareBattleTrack(resolveMusicTrack('battleScreen',upcoming,true));
+    prepareBattleTrack(resolveMusicTrack('battleScreen',upcoming));
+  }else if(stage===90){
+    const legends=legendaryPool(run.adventure);
+    if(!legends.includes(run.stage90Legendary)) run.stage90Legendary=pick(legends);
+    const upcoming={...run,stage,trainer:null,kind:'神獸',enemy:{id:run.stage90Legendary}};
+    prepareBattleTrack(resolveMusicTrack('battleScreen',upcoming,true));
+  }
+}
+function syncKantoMusic(intro=false,retry=false){
+  if(!musicPlayer) return;
+  const {source,loop}=resolveMusicTrack(musicScreen,state,intro);
   if(source===musicCue&&!retry) return;
   musicCue=source;
   musicFailed=false;
   showMusicStatus('');
   musicPlayer.pause();
-  musicPlayer.loop=style!=='kanto'||cue!=='rival';
-  musicPlayer.src=source;
+  const prepared=musicScreen==='battleScreen'&&preparedBattleMusic.get(source);
+  musicPlayer=prepared||defaultMusicPlayer||musicPlayer;
+  musicPlayer.volume=.14*settings.musicVolume/100;
+  musicPlayer.muted=settings.musicVolume===0;
+  musicPlayer.loop=loop;
+  if(!prepared) musicPlayer.src=source;
+  else if(retry||musicPlayer.error) musicPlayer.load();
+  else if(musicPlayer.currentTime>0) musicPlayer.currentTime=0;
   if(!musicPaused) playKantoMusic();
 }
 function showMusicStatus(message){
@@ -4335,9 +4450,9 @@ function showMusicStatus(message){
   $('musicStyleStatus').textContent=message;
 }
 function playKantoMusic(){
-  const source=musicPlayer.src;
-  musicPlayer.play().catch(error=>{
-    if(musicPlayer.src!==source||error.name==='AbortError'||error.name==='NotAllowedError') return;
+  const player=musicPlayer,source=player.src;
+  player.play().catch(error=>{
+    if(musicPlayer!==player||player.src!==source||error.name==='AbortError'||error.name==='NotAllowedError') return;
     musicFailed=true;
     musicToggle.textContent=musicLabel('重試音樂','Retry music');
     musicToggle.title=musicCue;
@@ -4489,11 +4604,11 @@ function playPokemonCry(mon,fainted=false){
   return playSpeciesCry(mon,.161,fainted?.76:1);
 }
 function playSpeciesCry(mon,volume,rate=1){
-  if(typeof Audio==='undefined'||!mon?.id) return;
+  if(typeof Audio==='undefined'||settings.effectsVolume===0||!mon?.id) return;
   const clip=pokemonCries[mon.displayId??mon.id];
   if(!clip) return;
   const audio=new Audio(clip);
-  audio.volume=volume*settings.volume/100;
+  audio.volume=volume*settings.effectsVolume/100;
   audio.playbackRate=rate;
   if(rate!==1) audio.preservesPitch=false;
   audio.play().catch(()=>{});
@@ -4501,31 +4616,35 @@ function playSpeciesCry(mon,volume,rate=1){
 }
 const progressionSounds={"exp-fill":"./assets/sfx/exp-fill.wav","exp-full":"./assets/sfx/exp-full.wav","level-up":"./assets/sfx/level-up.wav","evolution-start":"./assets/sfx/evolution-start.wav","evolution-loop":"./assets/sfx/evolution-loop.wav","evolution-done":"./assets/sfx/evolution-done.wav","stat-up":"./assets/sfx/stat-up.wav","stat-down":"./assets/sfx/stat-down.wav"};
 function playGameSound(cue){
-  if(typeof Audio==='undefined') return;
+  if(typeof Audio==='undefined'||settings.effectsVolume===0) return;
   const clip=progressionSounds[cue]??gameSounds[cue];
   if(!clip) return;
   const audio=new Audio(clip);
-  audio.volume=(cue==='caught'?.14:cue.startsWith('stat-')?.105:.22)*settings.volume/100;
+  audio.volume=(cue==='caught'?.14:cue.startsWith('stat-')?.105:.22)*settings.effectsVolume/100;
   audio.play().catch(()=>{});
   return audio;
 }
 const clickAudio=typeof Audio==='undefined'?null:new Audio(gameSounds['0005']);
 if(clickAudio){clickAudio.preload='auto';clickAudio.volume=.22;}
 document.addEventListener('click',event=>{
-  if(!clickAudio||settings.muteClick||!event.target.closest?.('button:not(:disabled), select, summary, [role="button"]')) return;
+  if(!clickAudio||settings.muteClick||settings.clickVolume===0||!event.target.closest?.('button:not(:disabled), select, summary, [role="button"]')) return;
   clickAudio.currentTime=0;
   clickAudio.play().catch(()=>{});
 });
 const musicStatus=$('musicStatus');
-function startKantoMusic(){
-  if(musicPlayer||typeof Audio==='undefined') return;
-  musicPlayer=new Audio();
-  musicPlayer.volume=0.14*settings.volume/100;
-  musicPlayer.addEventListener('playing',()=>{
+function createMusicPlayer(){
+  const player=new Audio();
+  player.addEventListener('playing',()=>{
+    if(player!==musicPlayer) return;
     musicToggle.textContent=musicLabel('暫停音樂','Pause music');
     musicFailed=false;
     showMusicStatus('');
   });
+  return player;
+}
+function startKantoMusic(){
+  if(musicPlayer||typeof Audio==='undefined') return;
+  musicPlayer=defaultMusicPlayer=createMusicPlayer();
   syncKantoMusic();
 }
 document.addEventListener('click',event=>{
@@ -4547,8 +4666,14 @@ musicToggle.onclick=()=>{
 const settingsKey='poke-slot-settings-v1';
 let savedSettings;
 try{savedSettings=JSON.parse(localStorage.getItem(settingsKey));}catch{}
+function savedVolume(value){
+  const previous=Number.isFinite(value)?value:savedSettings?.volume;
+  return Number.isFinite(previous)?Math.max(0,Math.min(100,previous)):100;
+}
 const settings={
-  volume:Number.isFinite(savedSettings?.volume)?Math.max(0,Math.min(100,savedSettings.volume)):100,
+  musicVolume:savedVolume(savedSettings?.musicVolume),
+  clickVolume:savedVolume(savedSettings?.clickVolume),
+  effectsVolume:savedVolume(savedSettings?.effectsVolume),
   language:savedSettings?.language==='en'?'en':'zh-Hant',
   muteClick:savedSettings?.muteClick===true,
   hotkeys:{...savedSettings?.hotkeys},
@@ -4625,8 +4750,8 @@ document.addEventListener('keydown',event=>{
 });
 const settingsLabels={
   settingsOpen:['⚙ 設定','⚙ Settings'],settingsTitle:['設定','Settings'],
-  musicVolumeLabel:['音量','Volume'],gameLanguageLabel:['Language','Language'],
-  pauseTitle:['暫停','Paused'],pauseClose:['繼續對戰','Resume'],pauseVolumeLabel:['音量','Volume'],
+  gameLanguageLabel:['Language','Language'],
+  pauseTitle:['暫停','Paused'],pauseClose:['繼續對戰','Resume'],
   pauseSpeedLabel:['戰鬥速度','Battle speed'],pauseMuteLabel:['關閉點擊音效','Mute click sounds'],
   pauseSurrender:['投降','Surrender'],pauseHome:['主畫面','Main menu'],
   surrenderTitle:['確定要投降嗎？','Surrender this run?'],surrenderCancel:['取消','Cancel'],surrenderConfirm:['投降','Surrender'],
@@ -4635,25 +4760,37 @@ const settingsLabels={
   shopMode:['商店','Shop'],upgradeMode:['增強','Upgrades'],musicStyleLabel:['音樂風格','Music style'],playerStyleLabel:['角色選擇','Character']
 };
 function musicLabel(zh,en){return settings.language==='en'?en:zh;}
+const audioControls=[
+  {key:'musicVolume',inputs:['musicVolume','pauseVolume'],label:['主音量（背景音樂）','Main Volume (Music)']},
+  {key:'clickVolume',inputs:['clickVolume','pauseClickVolume'],label:['按鍵音量','Button Volume']},
+  {key:'effectsVolume',inputs:['effectsVolume','pauseEffectsVolume'],label:['特效音量','Sound Effects']}
+];
 function applySettings(){
   for(const [id,labels] of Object.entries(settingsLabels)) $(id).textContent=musicLabel(...labels);
-  $('musicVolume').value=settings.volume;
-  $('musicVolumeValue').textContent=settings.volume+'%';
+  for(const {key,inputs,label} of audioControls){
+    const value=settings[key];
+    for(const id of inputs){
+      $(id).value=value;
+      $(id).style.setProperty('--volume',value+'%');
+      $(id+'Label').textContent=musicLabel(...label);
+      $(id+'Value').textContent=value+'%';
+    }
+  }
   $('gameLanguage').value=settings.language;
   $('pauseLanguage').value=settings.language;
-  $('pauseVolume').value=settings.volume;
-  for(const id of ['musicVolume','pauseVolume']) $(id).style.setProperty('--volume',settings.volume+'%');
-  $('pauseVolumeValue').textContent=settings.volume+'%';
   $('pauseMuteClick').checked=settings.muteClick;
   $('musicStyle').value=settings.musicStyle;
   $('musicStyle').querySelector('[value=hoenn]').textContent=musicLabel('綠寶石','Emerald');
-  if(clickAudio) clickAudio.volume=.22*settings.volume/100;
+  if(clickAudio) clickAudio.volume=.22*settings.clickVolume/100;
   $('exitBattle').title=musicLabel('設定','Settings');
   refreshHotkeyTitles();
   $('exitBattle').setAttribute('aria-label',$('exitBattle').title);
   musicToggle.textContent=musicStatus.textContent?musicLabel('重試音樂','Retry music'):
     musicPlayer&&!musicPlayer.paused?musicLabel('暫停音樂','Pause music'):musicLabel('播放音樂','Play music');
-  if(musicPlayer) musicPlayer.volume=0.14*settings.volume/100;
+  if(musicPlayer){
+    musicPlayer.volume=0.14*settings.musicVolume/100;
+    musicPlayer.muted=settings.musicVolume===0;
+  }
 }
 function saveSettings(){
   applySettings();
@@ -4665,9 +4802,10 @@ $('musicStyle').onchange=event=>{
   syncKantoMusic(false,true);
 };
 $('settingsOpen').onclick=()=>$('settingsDialog').showModal();
-$('musicVolume').oninput=event=>{settings.volume=Number(event.target.value);saveSettings();};
+for(const {key,inputs} of audioControls){
+  for(const id of inputs) $(id).oninput=event=>{settings[key]=Number(event.target.value);saveSettings();};
+}
 $('gameLanguage').onchange=event=>{settings.language=event.target.value;saveSettings();};
-$('pauseVolume').oninput=$('musicVolume').oninput;
 $('pauseLanguage').onchange=$('gameLanguage').onchange;
 $('pauseMuteClick').onchange=event=>{settings.muteClick=event.target.checked;saveSettings();};
 $('pauseSpeed').onchange=event=>{
@@ -4836,11 +4974,11 @@ function renderSetup(){
   const help=$('partyHelp');
   if(help.dataset.language!==settings.language){
     help.dataset.language=settings.language;
-    help.innerHTML='<p id="tutorialSetupHelp" hidden>① 隊伍與攜帶能量　小火龍是火系，傑尼龜是水系。優先選能觸發隊伍招式的能量，教學推薦「普通、水、火」。可攜帶 3、5 或 6 種不同屬性。選滿後按右下角「開始教學」。</p>'+
+    help.innerHTML='<p id="tutorialSetupHelp" hidden>① 隊伍與攜帶能量　小火龍是火系，傑尼龜是水系。優先選能觸發隊伍招式的能量，教學推薦「水、火」。可攜帶 2、4 或 5 種不同屬性，圖庫另有 10 個萬能圖案。選滿後按右下角「開始教學」。</p>'+
       '<nav class="dex-regions" aria-label="地區圖鑑">'+regions.map((region,i)=>'<button type="button" data-dex-region="'+i+'">'+musicLabel(region,['Kanto','Johto','Hoenn','Sinnoh','Unova','Kalos','Alola'][i])+'</button>').join('')+'</nav>';
   }
   $('tutorialSetupHelp').hidden=mode!=='trial';
-  if(settings.language==='en') $('tutorialSetupHelp').textContent='Charmander leads and Squirtle is in reserve. Choose energy that matches your team. For the tutorial, select Normal, Water, and Fire, then choose Start Tutorial. Formal runs support 3, 5, or 6 types.';
+  if(settings.language==='en') $('tutorialSetupHelp').textContent='Charmander leads and Squirtle is in reserve. Choose energy that matches your team. For the tutorial, select Water and Fire, then choose Start Tutorial. Choose 2, 4, or 5 types. Every new run includes 10 Wild symbols.';
   help.querySelectorAll('[data-dex-region]').forEach(button=>button.setAttribute('aria-pressed',Number(button.dataset.dexRegion)===dexRegion));
   const teamCards=$('teamCards');
   teamCards.hidden=false;
@@ -5099,7 +5237,7 @@ function openSetup(nextMode){
   selectedTeam=mode==='trial'?[4,7]:profile.starter?[profile.starter]:[];
   selectedTypes=[];
   $('teamCards').scrollTop=0;
-  $('typeCount').value='3';
+  $('typeCount').value='2';
   $('typeCount').disabled=false;
   screen('setup');
   renderSetup();
@@ -5277,6 +5415,7 @@ async function animateWildEntrance(run){
   await sparkleShiny('enemy',run.enemy);
 }
 async function openBattleStage(entering=false,playerEnters=entering){
+  prepareSpecialStageMusic(state);
   if(!state.tutorial&&!state.reelsPhysical) preloadVerticalGroups(state.reels);
   if(entering){activateAbility(state,state.team[state.active],state.enemy);activateAbility(state,state.enemy,state.team[state.active]);}
   if(state.introSeen) recordSeen(state.enemy.id);
@@ -5537,6 +5676,8 @@ const technicalMachines=Object.fromEntries(tmData.map((entry,index)=>{
 const reelTools=new Set(['silver-crown','gold-crown','eject-button']);
 Object.assign(itemSprites,{"up-grade":"iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABpklEQVR4nOWVL1DCUBzHv3gUGzSJsy1iE9tos2GUtubZRnOkjSRrVExIg8QR19Q2msTRRtPmmt7vPd9uw7c5UO6883v37m2P9z7f931/Rmk2m2GfOtgrHf/OoNvtvlPZZky5KLher8F/mOAlCtFsXjMT27ZLPzJIgoWi8Rn8CRDOgfPPNHlGJdkxFeDhYBC3hXfHqOlyyMlFHVlG5e9mLCTgBPMni7idktAYktifpFFsQD/KwEKGo2NozWM4gS2fuxrGDVSV9/O8BWMJk1QCx+2z2jI7rH5chKxWGxX0h7cwjGRvQFFOoWlaDO90esU2mYyCYMWgSdF79e0Qm3LcewTBE7a6B86lichbs5IlSkiFUmRJmoBmjwZ/9o5C4JkvVTANoKpVNKoqb6+kl0uW4kuCVotvHAGoKK9KXGimBCdpa35yktJ1Pd9AwE3zCp47ZtA8CRPqS8lkJqmLJs7xaGSz9+mUH8nkGitRFD9b924K2usNsXkPMm+yzIiUXOc8cK5BlhFpuVxBKA9c6GMnBrbbaaMi4EIJNiX71vyqAXbQ3/rL3EUfY+fU/kpkw34AAAAASUVORK5CYII="});
 const itemCatalog=Object.fromEntries([
+  ['color-screw','彩色螺絲',2,'永久加入 10 個萬能圖案，每個輪盤加入 2 個。',true],
+  ['super-shard','超級碎片',3,'指定一種屬性，永久將該屬性的所有圖案轉換為萬能圖案。',true],
   ['silver-crown','銀色王冠',1,'選擇目標屬性，隨機選一種其他屬性，將該屬性的所有輪盤圖案永久轉換。',true],
   ['gold-crown','金色王冠',2,'指定來源與目標屬性，將來源屬性的所有輪盤圖案永久轉換。',true],
   ['eject-button','逃脫按鍵',1,'移除指定屬性的 10 個輪盤圖案，合計至少保留 30 格。',true],
@@ -5606,7 +5747,10 @@ const rewards={
   }]))
 };
 const itemCount=(s,id)=>Math.max(0,(s.items?.[id]??0)+(s.stolenItems?.[id]??0)-(s.enemyStolenItems?.[id]??0));
+Object.assign(itemSprites,{"shiny-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTHF5qX//4zm99b///+txZz/5nP/3gictXt+iUiRAAAAAXRSTlMAQObYZgAAAKNJREFUGNNjYKAPYBQUROEKGZsgCwi5hoYaCSCkjVJDQ4MV4XxhJSA/0hEh7QJUP9MQLq1ibBoalAnjMzo5m5eGKsH5QkrO5aXuRnC+iJJ7uUe7USbUfEZVJ3eTjnajJBjfNdTZo6O4bBLUPYymoSHl5eZqSkj8YuMihHVuadOUlNSS4c4XSps5LS0J7joGEbWZM5OUkXwnomysJIgaOII0CncAusEjLg0LwygAAAAASUVORK5CYII=","silver-crown":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAIVBMVEUxMTExMTFKWntSY3tac5xre5SUnLW1vcXW1t7e5ub39/cDqBo9AAAAAXRSTlMAQObYZgAAAHJJREFUGNNjYBgUgFFQEIUr3taOLCCekZWRLoCQLlu2ctqyQjhfuG36zOnTmuEKRNsqp88sa0XiT89Kn4bEX545fWb6VAQ/qywtrTIVzhdyW9HRMc0JzmdUc3N1VVVEuEfUzVVVVQDJvaJOKoJ4/DNwAADLNByKb0gfcAAAAABJRU5ErkJggg==","dusk-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTG9lL2te63vreaUa6VzUntSQlKMWpRjSmOfXHzpAAAAAXRSTlMAQObYZgAAAJBJREFUeNq9z8EJwzAMQNF2Aysj2F3AOIHeK3IvjTOC6k5geg4BTRDItlEgkb1Aq9vjC4Eu/5krANRsrHVQ3NwQH8Foti1imL3m0GKf+Fk8IBFP5lh33dAvteOYV+KXOdfjO38rd2PeLfdrz8WU85Imo/7s5ySrV5JcTJQkq+/MLLn0GIOvvg/Weck6ACD8yWwaxChDup0UJgAAAABJRU5ErkJggg==","super-shard":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAGFBMVEX///9COnsxMTGErebF3ubv//djjN5KUrXCERtnAAAAAXRSTlMAQObYZgAAAGlJREFUGNNjYBggIITKZQpC4TKqGqEoVg1F4jMqmYSGpgkg9Ka4uAanKSAUqCW7hCHzGdPS3JINkSxLSzMzRrZAzDhdPBlJg7JxoaBgERLfrFxQSAnJQPNyJQVk16crofqmCM13CgMVzABN1g9BTtwTXgAAAABJRU5ErkJggg==","up-grade":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAALVBMVEX///8xMTFjY0r/996EhGvv78XmlAD/3gDFxcXmvb3v/9aEhIStrZTW1rWl1qXbECeKAAAAAXRSTlMAQObYZgAAAIpJREFUGNNjYBgYIIjKFTJFERAyNisTROGWl5cLIrjG5oXlZUpQAUZjY2MjILc1RgDCdzHuWKWktCNUCcZ3WrVqsbHxJjjfcyaQ39EE52vOe7dn3rvXML6v3ouOzpnvXh+C8u9e6gDy5+mcEYC6/e5uIF/pDNxBQIFNSFyQwJ0zKB4SvCOI1/80AwAH6i9DYI5u1wAAAABJRU5ErkJggg==","color-screw":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9SUlK97/+Ezu8xMTGtrd7OjM7va73/nNZtyEHMAAAAAXRSTlMAQObYZgAAAF1JREFUGNNjYBgUgFFQAIUvpKSILMCoZKykiCxtbGyshKRAODTU2AjBZzENDQ02UkHip6WGGiPxw8rLUPjhFWWhyOoz2oF8B2R+arAKkv1uqcEmDkh8FhcXB4ZBCQDM/RCQTzHyUgAAAABJRU5ErkJggg==","dawn-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAGFBMVEX///8xMTGU/+8QzsUI3rUZ/97///8ZtaVl6PHsAAAAAXRSTlMAQObYZgAAAI5JREFUeNq90DEOwjAMBVC4QRqpB6gLHKBuxE6MMqep1Z0rNMjXp5MdsYO3p29Ltk//qXPXuZYeYHBmDwWnweJxGhHBaRxvL8SHuRwO96ztYbmGIo2ZeVP7HRlYzPJc4EJRPRPDGjXvRYhJ3k5diSiZU01UU9Z1tySzVHMRqTZ+DKyyc27O75mz+37PT+oDgZ4ipC2MvN0AAAAASUVORK5CYII=","gold-crown":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAIVBMVEUxMTExMTGca0Kla0Kte0q1hErOpVLevVL35kr3763////1RHMzAAAAAXRSTlMAQObYZgAAAHJJREFUGNNjYBgUgFFQEIUr3taOLCCekZWRLoCQLlu2ctqyQjhfuG36zOnTmuEKRNsqp88sa0XiT89Kn4bEX545fWb6VAQ/qywtrTIVzhdyW9HRMc0JzmdUc3N1VVVEuEfUzVVVVQDJvaJOKoJ4/DNwAADLNByKb0gfcAAAAABJRU5ErkJggg==","eject-button":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAIVBMVEX///8xMTH/3hnWtRmMjIxrhJTF1t7/cyH/Qhm1KSGMpbXrxxWxAAAAAXRSTlMAQObYZgAAAIFJREFUeNq9zsEJhDAQhWHtIJaQMAS8bwWjFQRswMPsfS+xg2UbWLSFVOlb8EncApzb9xN4aW667o/BXTiLr2km6mrarJ5sH9Ge+aWOFrV3XkZPJ42wcKKdgq75gwk6jf325QQ8SfhNDKeTRIRC44GClTFRSsf/IYSDDCQDyQDecjtimCTNknKDrgAAAABJRU5ErkJggg==","ice-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAIVBMVEUxMTEZa5QxMTE6nLVjvc6U1t697/fW7/fe9//v///3//+CGYlEAAAAAXRSTlMAQObYZgAAAL9JREFUGFe1zsEJwjAUBuCQDQIOUIKt54oVetSkRY/SJMQBis0AXUCI1LO0NB2gYKb0YNJ2AP1v33s/jwfAfwIxDpaMeHVfDMKh5GQ7r5XVjCRTYTPYTpO9NzzbkcvZ69RWWpLcGZJ0fPaCJrOrdy8Ic16zVJpGJTvnkCvZP17F6muYC8MbVVzcP1Apw0UdH47OnTHiViDiz7f0VGYx8udgTSVjCLk6gHXWUkZpMPnKaMkx8Ik0F3omgBjjBX+aD8/fMg4vRnLsAAAAAElFTkSuQmCC","lure":"iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB7UlEQVR4nO2XLZTaQBCAP/oqkOBSGdziDsfJWBy4nry6SOIambogcXcSGVyQKzmXc6zLSuJAxqWCR3ppuDab9krFzXsxM8nOt/OzO+nYts015cNVvb8D/A8AH//g2+KCrvOvAIqHKGZofyoVq41k6XuFKUSnRRsW2yTB6vUAyI7H0rDTe77MJphAmNZA8RDFpfNL4gYhXE7PXwGohP3l7s9yI4TResY1sNN75tESgIXnVvRtxBjgMVqXjqeeT+C6NfubAsBpt+dU/OxQZ2aRaNUF48/3jIaiku9npYikJJMbMOiCVhEYDQXJTpHsVKnT2Z6Z47A8ATQW0wgU43iMXvRZh0HlLFhtJJGU2PMDT5MnaBgFE4AiTVOW2QKAla+xrR8tqbM9d8FpLdeaMxgMGkE0Bag4dywHmUm2h6R84bY/KvUmEMY1cHbiWA6uNQdA8QxQ6s8QTaT1bRiosKa77Y+M12k1D2wPCb7w0CqvPC9T8iYA20OCzCRa5dyvAwAepz626AKgVV6rjd+JURfEaUSgQrTKX33JFl184TEZzKBBFxjXgFY5tuii1lnNJqbWCc7gQjQ+iOI04u6bR1f0asZcHVl9DRvvvg1ACSG4qSjPrWjivC0A/HriMZoJ254DxtPva3L1/4J3gKsDfAdsJc+xV9RPYgAAAABJRU5ErkJggg==","bright-powder":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTGErYSc1pxKc0o6Yzqt5q3W/9b3//eEvYRmqGLvAAAAAXRSTlMAQObYZgAAAJRJREFUGNNjYBggICgogMJ1cXFEEmBUNjZycUTwhYyNjZVc4AoYnYyBClRc4fzQIGdjJRW4BlElV2UlJbgBgkDDgpxUYHzGtFAl5RAVF5h5YmlpQcamLnDlYpnlqcGqCPcwTi8vT1VFuFe8oqO8UhHh1vKOjvaSAGTpjvaUAEYBOL+iolw0AKEeaFwhst8Z0cKCmgAADGsfQQkiCFYAAAAASUVORK5CYII=","white-flute":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTHm5ub///+lpaXvve/ejN7FxcXeY961Y7XItIAXAAAAAXRSTlMAQObYZgAAAIdJREFUeNq1kMENgzAMRROpAyRRF+CbYq6UBVBGCBPACFYn4NQV2LY3bB96qvpvT09f/nL4Y7LHiOS4TJ3TKzkuT0lW02P7pm/5HomvdqytVaMLzU1Uhzq3XUybsA/80kssAw5eLhbIMZ7KAI/gpFMAeZ+OASzBFtDb7WB0hmORPrlfZG3/lg/5OBV4ZD+c/AAAAABJRU5ErkJggg==","max-potion":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAIVBMVEX///8xMTHm5vdzc4TOzt61tcWUlKUxWnuUrf8he8VCnOYkoIefAAAAAXRSTlMAQObYZgAAAKlJREFUeNqtz8EKwjAMBmBF8Lwq6M4Bd55se4HR7V5Ke9/qskcY+gR9AmE+gHtNC6NNPWtuX/ITks2fqmB5TAZKRNwCNyohHwCyKo/GAHiSX2M8Cs9d3QMa0YU4rzOsOnLJW6ONCJZlWxl9pbwspNRD4n3jyuVNOOjMGxwncjo142OJbKf7a0HvfWrtPL/7sA+dn/0lGNA6itxbATrS/0zBSmqspAbxt/oA41kol4weruQAAAAASUVORK5CYII=","shell-bell":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAJ1BMVEX///97jIxKSkoxMTHm5ub//97///+ltbWczsXOzsXW9+/v1talpaX4/VzSAAAAAXRSTlMAQObYZgAAALZJREFUGNNjYBgwIGSMxGFSZmRgMIDxlI0tXIQYGBhhXNe0JaXqBgxMULWu6ZW7IzSKGZghfJXw6tCokJZwAyjftDo0bYn7jnYon8mtJCzNvTpEwwBiPlP41rSU6jCvYiGocSu3prlvDVtSDHNKWRhQepePM5TPbBUWUprlZBIM4ysv3b5tibLqJJj6IuOlLo7GanDXmygbGxsrxcD5zKFKSkphhxGeNQ4NSztkgOR7oAYD2gQyAA6WKnTChnvXAAAAAElFTkSuQmCC","macho-brace":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAALVBMVEX///8xazo6UkK1773//94xMTGcnDGMxZRrpXNKhFJKWmOcpa3FztbW3ubv7/fJMECYAAAAAXRSTlMAQObYZgAAAMBJREFUGNNjYKA+YFRSReErG2sEIHGZTNI1WpH4wmYZoRFRoQjl5a1Mgnv2wAXUKwI0Jda+PQ0zQ6OJaeYsrlVvtkL5ka2aM5YyMKx9CuWzThWcdTaAgesOTEOoxNJ9Wxm4XsP4TFsZ1p6NVFJdANNwZwHXvskIR4JUrkByJMikZpAjYQrWbWWYXN66SRDGX3s6VL0iRlMSbsDbNxpNmzpnwH29ai/QkTORPL1q6VTBGciBwhAq2YoSaEyhAdSICwCnZzxR7LVVzAAAAABJRU5ErkJggg==","lucky-egg":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAElBMVEX///8xMTHe7/fO1t7///+lrbXKGaJ8AAAAAXRSTlMAQObYZgAAAGJJREFUeNq90MsNgCAQRVHoADQ2cIkFIKEDC9CY6b8ViRtmSNzydid5yXzcpMRoSQqKHsjKC+iC5wRGX6YO95/9xzR4H1ytk3QfQO12KxSRPn8rVeRR+0lL1uc2BvuOxhl5AWjiEdl1GaVxAAAAAElFTkSuQmCC","scope-lens":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAALVBMVEX///8xMTGUcynv9/9zUgjvxUr371Jre4xCUmOUpbWltcXF1uZSc617nNbWWkq/VPdFAAAAAXRSTlMAQObYZgAAANtJREFUGNNjYKAFEBJA4TKaFKLwhcM8yicgSZuqenUuLy+vhPJZ01JDdqxcvXt3AYQvlhYaUt0558ypnVB+amhI1Y6OjprlYC5TGoi/ePdmixkQ49LUQoM6V63oWA2xlTGjIzRIYlbz3VPmYL5as7VokMSMu3fvLATzBW1PGAL5tm+hfKEdHZvEBWfsvXtnIphfLWwttVyo8/TekxUQ/g7B1csFxOecmQ7xpfSuVbsqBRjLy6GeZLfevX1iA0OjYAPUe4uNV0k2IHlfatWKFSjBM3Mmang1SlAtJgBiGEpJekly+gAAAABJRU5ErkJggg==","leaf-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAJ1BMVEX///8xMTFaazrF1qWcrXt7jFo6Yzp7pXtahFJKc0JrlGtKWimMtYyZ8cmwAAAAAXRSTlMAQObYZgAAAMRJREFUGNNjYKANYBIUQ+YyCps4CSBzXZNMHBF8YdeM5YsRfEbT9FmdraZwDcJunSu6ZrnA+Gwm6Z0rVq4IDoIrn1kxa1ZHsCOS8srOWc5wfljF9BXLq0w2Qp3mEtneNXPmEpNAqHZjt86qjo7FrjB+sEnnyuWrjJH4mR1dxiahYTC+8TEXY2fv3VD3MLr6tBgbm27ShvLZXD2cgaqVFGHOFw1VDQkNVYJ7hzEodPfWUEWE9wWVlLQ3IgUPQ6KgYAJ14gEACug1tWOICa4AAAAASUVORK5CYII=","moon-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9KY1IxMTFrhHOEnIzO5tZac2OtxbXe9+YjyYtyAAAAAXRSTlMAQObYZgAAAJ1JREFUeNq90MEKwjAMBuBuT6AiPZdtUK8lxRdYtryC11GJZ4e0veqT28Ma0Lvm9pG/Can6WzVd96F+0kbY9h4dGqF9BnecxEPKzOyr2wfmfcCl2iLddYAoBnDBj3G3xSNzieNa247y7JE2N+MVU3EyNe6RGSiLA8N5pNf2XC8aAG9r3TaUXQhCZWdAJKE6lXmXVVhupXQwXz/zq3oDN4Uj4YLLZ7AAAAAASUVORK5CYII=","sun-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAGFBMVEX///8xMTH/787mczqESin/rXPFYyn3hEpRGevHAAAAAXRSTlMAQObYZgAAALdJREFUeNqtkMEOgjAMhiXxATaC3B3gXeu4jyy7wyyeYWE8AERfXwybzDvNDv3yf2mzHvYq+o8RI1u/tLEOOCMSVLKxFjcGl4Q65ZgzwKYVvHZCVZQWx9l2jmPsGccp9X7RMkTdCD9v6osCOZCNG41w95wMvQZtfB7lmVlSMwo3/fEsAZR5V6twAjVaaW0J59UX8WCtnWV79QvwZZSk9PdFaSYlgmNoKWUdcpdimGck4iQ85vftUh8MRSWlwDNeKQAAAABJRU5ErkJggg==","fire-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAJ1BMVEX///8xMTF7eyHm5nvFxWv//+///4z/75ylpUr3lDH37zHecxDezhCJQDF6AAAAAXRSTlMAQObYZgAAAMJJREFUeNq1zrEKgkAYB3DtCbwkaFUKgrZUaC1vcowunZvCPUSaBId7guJsDYnDN8gHcLiH6pPuzvbov/348338jT/FQWj8ReSFAUGapo9D77C1lG2CZ36kbQZk70bcV7bjc0L5AyzrjOQVD7XjLOsdSs/BrOJP5QmQ8XRw39ZpqQ3k1xN2PhwlYFYf3UK+X8M1a6hrSa9uObsLsRjmsEaIrlDryaUFlpb2shUd3RjKO/dFMYZaZkopdpASDEBI6ve8Ab+lP9QjkbpoAAAAAElFTkSuQmCC","razor-claw":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///8xMTH////W3t61xc6EjJScpa1rc3tSUlLkaNMaAAAAAXRSTlMAQObYZgAAAIFJREFUeNrFzzEOwjAMBVB8A6etos4g1J0OXCCicwa8ozY5grk+v1XF7wngD1aeLCv26S+REMLRzfn6DKRcblaLsj0OtdZ8aDtc9DuNNkIbxIF29M2v3V3y8nY6Js9xoiVZL8npxVRm4wIdvmrvKHviYzUXFrgZMg+KipOVFrx/kw+x7h1SJ0LMBwAAAABJRU5ErkJggg==","thunder-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8pcykxMTH3//drtWtKlEqt962M1ozW73u1zloTF89lAAAAAXRSTlMAQObYZgAAAKtJREFUeNq1kMENgjAYRsEJ0IvpraIJA1QHMPlquZr0T+8qDEAqnYDIAhy6rRyKvwvwbi+v+dI2W4m8LA9/ujkBt4L9qIjMg7NSZGEKzoo8jOSsXKi15Hwx/qMlZ5h66JPnSnlgtItXz/M449q0v2/0rEPo0vG+ETHGCdc015KYrCZa5pt7dB5ki59PwUN32eLCBfBt8xe9yWLOiSoQIUh+LYCwzZhd+qwV+AJTFy23qaKafgAAAABJRU5ErkJggg==","water-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAJFBMVEX///8xMTFKSrXFxf/e3v9jUs6chP/v7/9ra96tzvdzlL2Utd6LtWuPAAAAAXRSTlMAQObYZgAAALBJREFUeNq10LEKwjAQBuDWJ2go7jWlVbpGirOcCG4KeYA6HGYvZBeE8wWE1M3RURAEX0475NIX6G0fPz/HXTTSTIQQSaDIldZ7ZqyWAFBm3ilsW1gvEh/PwQI8BrYWdsHp3LabpyzY9cm5jh2rGq/uVRWZt0Fzl7w/XSEiXfSR63gjkmUSTHSWjT9FoSFXcRznhqj7x96l+/RtdvF99+1gfZDN4BlTpCGjmRBZNNL8AMwDKvG9c4WOAAAAAElFTkSuQmCC","razor-fang":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTGllFrWxYTv5r2cpa21xc7///9rc3uEjJS4yfAZAAAAAXRSTlMAQObYZgAAAG1JREFUGNNjYKAHYBRE5QoZCSDzhVyMFJGlVVw0UPguqaFNSBoYVctLI5D54eVloY0o/PLQiUgGiJeXpwYi8cXKy0uR+Yzl5WWRyAamAw0QQDNAAE0DsgUgExNRfChWXiqAKlAWiBYkggJ0CHkA9RIXHO8bpXIAAAAASUVORK5CYII=","gem:草":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlpj/3u9/7VCzlLv/+YxMTE6vVoAlDEP1BUBAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:冰":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlpr7++t//8x1v/v//8xMTEZtf8AnM692s/+AAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:火":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlr/lEr/zmv3QjH//+8xMTHmSiG1GQBvVNV3AAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:地面":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlq9hDrOpVKlayHmxYQxMTFzQhBrOhAD3qpRAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:電":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlr/5gD//6XmzgD///8xMTHFrQC9pQBabxnUAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:毒":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlqca63Ftc5rY4zv/+YxMTE6a2spSkoEgpkEAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:格鬥":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlq9c3vmnIyUSnv/3tYxMTF7OlpjKTqoTKlqAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:水":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlpCpf97zv8xlP/W//8xMTEAe9YAUs64EG0AAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:超能力":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlr/a7X/pcXWOoz/3tYxMTGlIYxzAGtsOW8GAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:惡":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlpKSkp7e3s6OjqlpaUxMTEpKSkhISFG1wVjAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:鋼":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAGFBMVEX///9aWlqMjJy9vc5jY2Pv7/8xMTEhISFmQTziAAAAAXRSTlMAQObYZgAAAHhJREFUeNrNjTsSQEAQREnEficYS25GucAuB6AmV6UcQLTXN4HmCLys63V1J78gLYz8zWUjwt2rWQy/IVcSjGaEFl6t72W7s29VhNyAPKiuTPQM7JMqkZuxl/VFiLE2jUId4mn/IFtCLE0/HO7WKDA0FjCOgukvuADEaxUflc9EKwAAAABJRU5ErkJggg==","gem:龍":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlqlhM6tve+EY+be/94xMTFKQpxjOnN0q94rAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:幽靈":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlprUr1ra95SQpyMjOYxMTE6MXMhKVIJUzLrAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:蟲":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlq93mvm77WcvSH///8xMTGMpRBzlABH4cKUAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:岩石":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlq9lHvezrWMc1rv5s4xMTFzWkpSQjGAQGiWAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:飛行":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlq9zv/e5v+crffv//8xMTFrhMVCUpTSfdUaAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:妖精":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAA3NCSVQFBQUYJt5DAAAAQlBMVEX///9aWlr/3u/vY70xMTGEhIT/5vf3jMX/pdbve8X////va73OUqXvnN7/tdbejL3/rdb/tdbOOpz37//Wc7Xve8WoSun8AAAAFnRSTlMA/////////////////////wD///8As+elogAAAH1JREFUeNrtzEkSwjAMRFFbCGN5Dknuf1UklyuLDjeAv9QrtfuB/NVXfUWaxch3fQYJK6GbezuvGqF7Uk1hVnUG3D9UU5paq7QMTDlZpuYD1nn51Jx5c+ilFJGidVVl9LdMPgafJ6D53oz74G0p+hD7vZbRqXVQcFB003/uAwInBo7AWTj3AAAAAElFTkSuQmCC","gem:普通":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlrmvb331tbFtbX///8xMTGtpaWUlJRU664PAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg=="});
 function itemArt(key){
+  const data=itemSprites[key];
+  if(data) return '<img src="data:image/png;base64,'+data+'" alt="">';
   if(key.startsWith('gem:')) return typeIcon(key.slice(4));
   if(key.startsWith('reel-stone:')) return typeIcon(key.slice(11));
   if(technicalMachines[key]) return '<span class="tm-disc">'+typeIcon(technicalMachines[key].type)+'</span>';
@@ -5614,9 +5758,8 @@ function itemArt(key){
     const symbol={'silver-crown':'♛','gold-crown':'♛','eject-button':'▣'}[key];
     return '<span aria-hidden="true" class="reel-item-symbol '+key+'">'+symbol+'</span>';
   }
-  const data=itemSprites[key];
-  if(!data&&stoneIds.includes(key)) return '<span aria-hidden="true">◈</span>';
-  return data?'<img src="data:image/png;base64,'+data+'" alt="">':'<span aria-hidden="true">◆</span>';
+  if(stoneIds.includes(key)) return '<span aria-hidden="true">◈</span>';
+  return '<span aria-hidden="true">◆</span>';
 }
 function itemStackArt(key,count){
   return '<span class="item-stack-art">'+itemArt(key)+(count>1?'<small class="item-stack-count">X'+count+'</small>':'')+'</span>';
@@ -5682,7 +5825,11 @@ function rewardOptions(s){
     const draw=Math.random();
     const tier=draw<.70?0:draw<.90?1:draw<.98?2:3;
     const pool=all.filter(id=>rewards[id].tier===tier&&!results.includes(id));
-    results.push(pick(pool.length?pool:all.filter(id=>rewards[id].tier===tier)));
+    const available=pool.length?pool:all.filter(id=>rewards[id].tier===tier);
+    // The super shard has half the weight of other eligible legendary rewards.
+    const weight=available.reduce((sum,id)=>sum+(id==='super-shard'?.5:1),0);
+    let selection=Math.random()*weight;
+    results.push(available.find(id=>(selection-=id==='super-shard'?.5:1)<0)??available.at(-1));
   }
   const stones=stoneIds.filter(id=>s.team.some(mon=>stoneEvolution(id,mon)));
   if(stones.length&&Math.random()<.2) results[randomIndex(results.length)]=pick(stones);
@@ -5725,15 +5872,16 @@ function immediateReward(id){
   return Boolean(itemCatalog[id]?.usable&&id!=='max-potion');
 }
 function isNewReward(id){
-  return reelTools.has(id)||id==='up-grade'||id.startsWith('reel-stone:')||Boolean(technicalMachines[id]);
+  return reelTools.has(id)||id==='color-screw'||id==='super-shard'||id==='up-grade'||id.startsWith('reel-stone:')||Boolean(technicalMachines[id]);
 }
 function canApplyItem(run,id){
   if(id.startsWith('reel-stone:')) return run.team.length>0&&run.team.every(mon=>mon.moves.some(name=>skillDetails[name]?.type===id.slice(11)));
   if(id==='eject-button') return Object.keys(types).some(type=>removableReelCount(run,type)>=10);
-  if(reelTools.has(id)) return new Set(run.reels.flat()).size>0;
+  if(id==='color-screw') return true;
+  if(id==='super-shard'||reelTools.has(id)) return run.reels.some(reel=>reel.some(type=>Object.hasOwn(types,type)));
   if(id==='up-grade'||technicalMachines[id]) return run.team.some(mon=>teachableMoves(mon,id).length);
   if(id==='white-flute') return true;
-  if(id.startsWith('gem:')) return run.reels.flat().filter(type=>type!==id.slice(4)).length>=3;
+  if(id.startsWith('gem:')) return run.reels.flat().filter(type=>type!==wildReelType&&type!==id.slice(4)).length>=3;
   return run.team.some(mon=>usableTarget(id,mon));
 }
 function usableTarget(id,p){
@@ -5778,6 +5926,7 @@ function teachableMoves(mon,id){
   return tm?.species.has(mon.id)&&!mon.moves.includes(tm.name)?[tm.name]:[];
 }
 function removableReelCount(run,type){
+  if(!Object.hasOwn(types,type)) return 0;
   const spare=run.reels.reduce((count,reel)=>count+reel.length,0)-30;
   const matching=run.reels.reduce((count,reel)=>count+Math.min(reel.length-boardSize,reel.filter(value=>value===type).length),0);
   return Math.min(spare,matching);
@@ -5814,7 +5963,7 @@ function removeReelSymbols(run,type){
   return true;
 }
 function convertReelType(run,from,to){
-  if(from===to||!run.reels.some(reel=>reel.includes(from))||!Object.hasOwn(types,to)) return false;
+  if(from===to||!Object.hasOwn(types,from)||!run.reels.some(reel=>reel.includes(from))||!Object.hasOwn(types,to)) return false;
   commitReels(run,run.reels.map(reel=>reel.map(value=>value===from?to:value)));
   return true;
 }
@@ -5822,7 +5971,7 @@ function pickReelType(title,options){
   return itemPrompt(title,options.map(type=>'<button value="'+type+'">'+typeIcon(type)+type+'</button>').join(''));
 }
 async function useReelTool(run,id){
-  const present=[...new Set(run.reels.flat())];
+  const present=[...new Set(run.reels.flat().filter(type=>Object.hasOwn(types,type)))];
   if(id==='eject-button'){
     const type=await pickReelType('移除哪個屬性的 10 個圖案？',present.filter(type=>removableReelCount(run,type)>=10));
     if(!removeReelSymbols(run,type)) return false;
@@ -5866,6 +6015,19 @@ async function applyUsableItem(run,id,fromReward=false){
     const type=id.slice(11);
     addReelStone(run,type);
     run.log.unshift(def.name+'加入了 5 個'+type+'屬性圖案。');
+  }else if(id==='color-screw'){
+    commitReels(run,run.reels.map(reel=>{
+      const copy=reel.slice();
+      for(let i=0;i<2;i++) copy.splice(randomIndex(copy.length+1),0,wildReelType);
+      return copy;
+    }));
+    run.log.unshift('彩色螺絲加入了 10 個萬能圖案。');
+  }else if(id==='super-shard'){
+    const options=[...new Set(run.reels.flat().filter(type=>Object.hasOwn(types,type)))];
+    const source=await pickReelType('將哪種屬性的圖案全部轉為萬能？',options);
+    if(!options.includes(source)) return false;
+    commitReels(run,run.reels.map(reel=>reel.map(type=>type===source?wildReelType:type)));
+    run.log.unshift('超級碎片將所有'+source+'屬性圖案轉為萬能。');
   }else if(reelTools.has(id)){
     if(!await useReelTool(run,id)) return false;
   }else if(id==='up-grade'||technicalMachines[id]){
@@ -5894,7 +6056,7 @@ async function useInventoryItem(id){
   if(confirmed==='yes'){
     rolling=true;
     try{
-      if(await applyUsableItem(state,id)) render(id.startsWith('gem:')||id.startsWith('reel-stone:')||reelTools.has(id));
+      if(await applyUsableItem(state,id)) render(id.startsWith('gem:')||id.startsWith('reel-stone:')||reelTools.has(id)||id==='color-screw'||id==='super-shard');
     }finally{
       rolling=false;
       render(false);
@@ -6177,7 +6339,7 @@ function readRun(slot){
   try{
     const save=JSON.parse(localStorage.getItem(savePrefix+slot));
     if(save?.version===1&&['formal','trial'].includes(save.mode)&&
-      [3,5,6].includes(save.types?.length)&&save.run?.team?.length&&
+      (save.run?.universalRules?selectableEnergyCounts:[3,5,6]).includes(save.types?.length)&&save.run?.team?.length&&
       save.run.reels?.length===boardSize&&save.run.positions?.length===boardSize) return save;
   }catch{}
   return null;
@@ -6303,7 +6465,7 @@ $('saveBody').onclick=event=>{
   selectedTypes=save.types;
   state=save.run;
   migrateRun(state);
-  if(!state.reelsCustomized&&stopGroups(state.reels).some(group=>!group.length)){
+  if(!state.universalRules&&!state.reelsCustomized&&stopGroups(state.reels).some(group=>!group.length)){
     state.reels=buildReels(selectedTypes);
     state.positions=state.reels.map(reel=>randomIndex(reel.length));
     state.board=boardAt(state.reels,state.positions);

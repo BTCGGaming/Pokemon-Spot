@@ -568,8 +568,8 @@ button:not(:disabled):active{filter:brightness(.9)}
 .desktop .tile.line-pulse .type-icon{animation:line-icon .24s ease-out both}
 @keyframes line-icon{0%{filter:brightness(2);transform:scale(1.18)}100%{filter:brightness(1);transform:none}}
 #lineFx{position:absolute;inset:10.75% 35.42% 38.5% 26.04%;z-index:4;display:grid;place-items:center;pointer-events:none}
-#lineFx svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;fill:none;stroke:#ffe17a;stroke-width:6;filter:drop-shadow(0 0 5px #fa8a3a);animation:line-frame .33s both}
-#lineFx strong{position:relative;font-size:6.4cqw;line-height:1;color:#fff5a0;-webkit-text-stroke:.16cqw #7c3b2b;text-shadow:.22cqw .22cqw #2f1c39,0 0 .65cqw #ffa74d;animation:line-frame .33s both}
+#lineFx svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;fill:none;stroke:#ffe17a;stroke-width:6}
+#lineFx strong{position:relative;font-size:6.4cqw;line-height:1;color:#fff5a0;-webkit-text-stroke:.16cqw #7c3b2b;text-shadow:.22cqw .22cqw #2f1c39}
 @keyframes line-frame{0%{opacity:0}23%,78%{opacity:1}100%{opacity:.15}}
 
 .desktop .slot-control{display:grid;place-items:center;place-content:center;text-align:center;line-height:1;width:7.9%;padding:0}
@@ -2172,8 +2172,15 @@ function syncBattleAnimationSpeed(){
     }
   }
 }
+let battleAnimationSyncPending=false;
 const wait=ms=>{
-  if(battleSpeed!==1) syncBattleAnimationSpeed();
+  if(battleSpeed!==1&&!battleAnimationSyncPending){
+    battleAnimationSyncPending=true;
+    requestAnimationFrame(()=>{
+      battleAnimationSyncPending=false;
+      syncBattleAnimationSpeed();
+    });
+  }
   return new Promise(resolve=>setTimeout(resolve,ms/battleSpeed));
 };
 const battleBallArt={"ultra":"iVBORw0KGgoAAAANSUhEUgAAABAAAAAwCAYAAAAYX/pXAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEGSURBVEhL7ZTLDcIwEERTAsccaYESXB/XlMGRNtIGR1owetIOWRt/COKAhJ80IvHOTAzImX6XEEL0suU+CqyXY6K3ijBcz4d4W09xWZY4z/NTlDBrljAkHO8hgi/xOzF7CgOMFNR2gLgulrCoHSAZVby7gGt9Da5VIJ/FNhSQARFWgV/j02IpDDw+5MvM/orMHh/uFkDpqQp2wx4FdgcHX+Tjf0GB/P+XzFYGg14onDovDtLbL5TWca4WyKijjHQWdE+Bii22waKGbFXbze+rBSCzgrk0M3sKg9Kvnksei22wCN5cUrUAGAgf0nozDAwxebj3ahaAnlgKdsMeBXYHB4PBnzJND+tB+uG17XbiAAAAAElFTkSuQmCC","master":"iVBORw0KGgoAAAANSUhEUgAAABAAAAAwCAYAAAAYX/pXAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEMSURBVEhL7ZSxDcIwFEQzAmswRtagZAXGoHVJSZkVUlJSMo/Ri3xwCXYcEAUSOemE8n3vHIQ+ze+qbdvoTuO6BBy33ciLigjE0MW4P8Z+d43nth9MATM8WzLA+HKLyEtUgFN8rOH2FABwGB82p8d59i0Y6vsKYuZzTFGxADuMQgiPEsE4YU8JUAADq8BnfCZsLA5cDnlZir9KYZfD1QKUu1VgFXYJeBtc9UV9/CsIYBt9IxcVEeD/YLrKmGUqrrLEoQO6lS3UOhcLBDuoXdAzRbP/BxRMg9PnYgHyQM5V2F+3ZGUS9hRD5OGciwWIA8khzWdhxCEhF8/u2QKkG3NgFXYJeBtctWrVn6pp7oeZG3DaX9K5AAAAAElFTkSuQmCC","poke":"iVBORw0KGgoAAAANSUhEUgAAABAAAAAwCAYAAAAYX/pXAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADrSURBVEhL7ZTBDYMwEATdDmVQV55pgWdKSDuph2iRBxawOYjyiBSPdALbN3tIkZN+l77vR6+8HYPwTGlVp4IQX103jo/b9FQRcs9BuX2PDpEnCiHVAJ9OCO8eUP0Kpntpj+BTAR6idzEMwxyCrMraAgINKskE+J6eWVujA8clD8vte2h2XA4DRGkqYig7CJfFxhf5+FdAmK603chTQSWR4jYehujQBabqFoYByC5yF1grKPxD2TZu19UA4Q2lCmX/3FrRk7UFbQpvLlU1QOgAXGL/UBY6VJOjtddhgGBiSQxlB+Gy2Gg0/pSU3nEW7hYagCu0AAAAAElFTkSuQmCC","great":"iVBORw0KGgoAAAANSUhEUgAAABAAAAAwCAYAAAAYX/pXAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEASURBVEhL7ZTBDYIwGIVZxzFYwyMreHQErhwdg6sjuAJH16j5SJ88tLRgPJjIl/xR2ve9kpha/S51XQefuFxGwvkyzGZVEYGhPo3T3+6h64dxKGDtejjmSwgQDE0bwEtUTCbG5+i1FXTZC5q2T78Fiy4wrKlYky3wEr5D13XPEslM1CYkKMAgq8DX+IzaHDYcl7wsxt9R2HG5WACpUyUWZUfCZnHni3z8K0jgNvqNXFWUEjW6jdkSNl3QqdzCYoFkF3UX9ExR8Q/lNfj6vFgAHkhNUfbXXRplojbBIng4NYsFwIZwSetZGdgk5PDsky0AnZgSi7IjYbO4s7Pzp1TVAw5iMvhL0wZ5AAAAAElFTkSuQmCC","open":"iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACbSURBVDhPjZDRDYAgEENZxzGYy09X4NMRXMd50CZXU7CgTfpz11dO00h1X6s6xt86l6XCOefGnEfMS8HtPkKtRRF/y4G9kYl4KzQ7wNlewdePLqzmzl6hBa5E58PPYIkCCk5hCgEtUvAXXEp5wr25i3grLCAFnIclGP4pYCawVgxACvXziL+FJU50wnz6Dyi+SEDBT1hFYA6mdAHFXyw4gK62DQAAAABJRU5ErkJggg=="};
@@ -3717,7 +3724,7 @@ function refreshFighterStatus(run,mon){
   const side=run.team[run.active]===mon?'player':run.enemy===mon?'enemy':null;
   if(!side) return;
   const badges=$(side+'Healthbox').querySelector('.fighter-status');
-  if(badges) badges.innerHTML=fighterStatus(mon);
+  if(badges) updateMarkup(badges,fighterStatus(mon));
 }
 function fighterStatus(p){
   if(!p.left) return '';
@@ -3800,25 +3807,53 @@ function lineOutline(line){
   return '<polygon points="'+[[x1-dx+dy,y1-dy-dx],[x2+dx+dy,y2+dy-dx],[x2+dx-dy,y2+dy+dx],[x1-dx-dy,y1-dy+dx]].map(p=>p.join(',')).join(' ')+'"/>';
 }
 async function playWinningLines(matches){
-  const grid=$('grid');
-  const tracks=grid.querySelectorAll('.reel-strip');
-  const fx=$('lineFx');
+  if(!matches.length) return;
+  const tracks=$('grid').querySelectorAll('.reel-strip'),fx=$('lineFx');
   const short=reducedMotion.matches;
-  for(const [i,line] of matches.entries()){
+  const duration=Math.min(short?240:520,(short?1200:2500)/matches.length)/battleSpeed;
+  const prepared=matches.map(line=>{
     const ordered=line.slice().sort((a,b)=>a%boardSize-b%boardSize||a-b);
-    const cells=ordered.map(cell=>tracks[cell%boardSize]?.children[Math.floor(cell/boardSize)]);
-    for(const tile of cells){
-      tile?.classList.add('line-pulse');
-      await wait(short?30:65);
-      tile?.classList.remove('line-pulse');
-    }
-    fx.innerHTML='<svg viewBox="0 0 500 500" preserveAspectRatio="none">'+lineOutline(ordered)+'</svg>'+
-      (i?'<strong>'+multiplierLabel(lineMultiplier(i+1))+'</strong>':'');
-    fx.hidden=false;
-    await wait(short?140:250);
-    fx.hidden=true;
-    for(const tile of cells) tile?.classList.add('hit');
+    return {ordered,tiles:ordered.map(cell=>tracks[cell%boardSize]?.children[Math.floor(cell/boardSize)])};
+  });
+  fx.innerHTML='<svg viewBox="0 0 500 500" preserveAspectRatio="none">'+
+    prepared.map(({ordered})=>'<g style="display:none">'+lineOutline(ordered)+'</g>').join('')+'</svg><strong></strong>';
+  const outlines=fx.querySelectorAll('g'),label=fx.querySelector('strong');
+  fx.hidden=false;
+  let lineIndex=-1,pulse;
+  function finishLine(index){
+    for(const tile of prepared[index].tiles) tile?.classList.add('hit');
+    outlines[index].style.display='none';
   }
+  await new Promise(resolve=>{
+    let startTime;
+    function tick(now){
+      startTime??=now;
+      const elapsed=now-startTime;
+      const index=Math.min(prepared.length,Math.floor(elapsed/duration));
+      while(lineIndex<index){
+        if(lineIndex>=0) finishLine(lineIndex);
+        lineIndex++;
+      }
+      if(index===prepared.length){resolve();return;}
+      const progress=(elapsed-index*duration)/duration;
+      const tiles=prepared[index].tiles;
+      const sweeping=progress<.62;
+      const active=sweeping?tiles[Math.floor(progress/.62*tiles.length)]:null;
+      if(pulse!==active){
+        pulse?.classList.remove('line-pulse');
+        active?.classList.add('line-pulse');
+        pulse=active;
+      }
+      if(!sweeping&&outlines[index].style.display==='none'){
+        outlines[index].style.display='';
+        label.textContent=index?multiplierLabel(lineMultiplier(index+1)):'';
+      }else if(sweeping&&label.textContent) label.textContent='';
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+  pulse?.classList.remove('line-pulse');
+  fx.hidden=true;
 }
 function bindMoves(root,p,entries){
   root.querySelectorAll('[data-move]').forEach(button=>{
@@ -3835,8 +3870,8 @@ function paintBattleNumber(id,value,level=false){
   const symbols=(level?['Lv']:[]).concat([...String(value)]);
   box.classList.add('pixel-number');
   box.setAttribute('aria-label',(level?'等級 ':'')+value);
-  box.innerHTML=symbols.map(symbol=>symbol===' '?'<span class="number-gap" aria-hidden="true"></span>':
-    '<img src="'+emeraldBattleDetails.digits[symbol]+'" alt="" aria-hidden="true">').join('');
+  updateMarkup(box,symbols.map(symbol=>symbol===' '?'<span class="number-gap" aria-hidden="true"></span>':
+    '<img src="'+emeraldBattleDetails.digits[symbol]+'" alt="" aria-hidden="true">').join(''));
 }
 const ownershipBalls={"party": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAWElEQVR4nGNkgAIvx6j/MPa2/csYYWy4JAh8m1L8/15W1H9kxYwgzppgSbjiF9eeg+mc6xCTWECc3vcScAXHr0MUYBgPAlfP7oVjZGvAinBJwl2L1xf4AABj2UY+Y/fWOwAAAABJRU5ErkJggg==", "unlocked": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAXElEQVR4nIVPMQoAMQhTuL/5FJ/nWsGte8dufUuPlkZuKRcQgolRmQ5EZIK7O4M/EEspZGY0xlitCRMvUVUxAANFxE7aCb33NNRak+duoLWW9b1pm25iXnv74hcvFGRGYPdghC8AAAAASUVORK5CYII="};
 function paintBattleLevel(side,mon){
@@ -3855,12 +3890,12 @@ function paintBattleName(side,mon){
   const name=$(side+'BattleName');
   name.querySelector('.battle-name-text').textContent=displayPokemon(mon);
   const types=name.querySelector('.battle-name-types');
-  types.innerHTML=mon.type.map(typeIcon).join('');
+  updateMarkup(types,mon.type.map(typeIcon).join(''));
   types.setAttribute('aria-label',mon.type.join('／'));
 }
 function updateHp(id,p){
   const fighter=$(id==='playerHp'?'playerHealthbox':'enemyHealthbox').querySelector('.fighter-status');
-  if(fighter) fighter.innerHTML=fighterStatus(p);
+  if(fighter) updateMarkup(fighter,fighterStatus(p));
   if(id==='playerHp'){
     const low=p.left>0&&healthBand(p)==='red';
     if(low&&warnedLowHp!==p) playGameSound('005A');
@@ -3938,17 +3973,24 @@ function renderTutorialHint(){
 if(typeof window!=='undefined') window.addEventListener('resize',()=>{
   if(state?.tutorial&&!$('battleScreen').hidden) renderTutorialHint();
 });
+const renderedMarkup=new WeakMap();
+function updateMarkup(element,html,identity){
+  const previous=renderedMarkup.get(element);
+  if(previous?.html===html&&previous.identity===identity) return;
+  element.innerHTML=html;
+  renderedMarkup.set(element,{html,identity});
+}
 function render(refreshBoard=true){
   const p=state.team[state.active];
-  $('player').innerHTML=panel(p,true);
-  $('enemy').innerHTML=panel(state.enemy,false);
-  $('playerMoves').innerHTML=movePanel(p,state.enemy);
-  $('enemyMoves').innerHTML=movePanel(state.enemy,p);
+  updateMarkup($('player'),panel(p,true),p);
+  updateMarkup($('enemy'),panel(state.enemy,false),state.enemy);
+  updateMarkup($('playerMoves'),movePanel(p,state.enemy));
+  updateMarkup($('enemyMoves'),movePanel(state.enemy,p));
   updateHp('playerHp',p);
   updateHp('enemyHp',state.enemy);
-  $('playerParty').innerHTML=party(state.team,state.active);
-  $('enemyHeld').innerHTML=enemyItemCards(state,true);
-  $('enemyParty').innerHTML=party(state.foes??[state.enemy],state.foeIndex??0);
+  updateMarkup($('playerParty'),party(state.team,state.active));
+  updateMarkup($('enemyHeld'),enemyItemCards(state,true));
+  updateMarkup($('enemyParty'),party(state.foes??[state.enemy],state.foeIndex??0));
   for(const [id,mon] of [['player',p],['enemy',state.enemy]]){
     const display=$(id).querySelector('.portrait');
     if(mon.left) mon.faintShown=false;
@@ -4156,28 +4198,53 @@ function verticalGroups(reels){
   verticalCache.set(reels,groups);
   return groups;
 }
-let pendingVerticalReels;
-function preloadVerticalGroups(reels){
-  if(typeof Worker!=='function'||verticalCache.has(reels)||pendingVerticalReels===reels) return;
+const pendingReelGroups=new WeakMap();
+function preloadReelGroups(reels,includeVertical=false){
+  if(typeof Worker!=='function'||stopCache.has(reels)&&(!includeVertical||verticalCache.has(reels))) return;
+  const pending=pendingReelGroups.get(reels);
+  if(pending) return pending;
   const code=[
     'const boardSize='+boardSize+',cellCount='+cellCount+';',
     'const lines='+JSON.stringify(lines)+',types='+JSON.stringify(types)+',wildReelType='+JSON.stringify(wildReelType)+';',
-    'const verticalCache=new WeakMap();',
-    boardAt.toString(),matchingLines.toString(),stackLayout.toString(),verticalGroups.toString(),
-    'self.onmessage=event=>self.postMessage(verticalGroups(event.data));'
+    'const stopCache=new WeakMap(),verticalCache=new WeakMap();',
+    boardAt.toString(),matchingLines.toString(),stopGroups.toString(),stackLayout.toString(),verticalGroups.toString(),
+    'self.onmessage=({data})=>{',
+    'const groups=stopGroups(data.reels),stacks=data.vertical?verticalGroups(data.reels):null;',
+    'const pack=(list,stacked)=>list.map(group=>Uint32Array.from(group.flatMap(row=>stacked?[row.mask,...row.positions]:row.positions)));',
+    'const normal=pack(groups,false),vertical=stacks?pack(stacks,true):null;',
+    'self.postMessage({normal,vertical},[...normal,...(vertical??[])].map(group=>group.buffer));',
+    '};'
   ].join('\n');
   const url=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
   let worker;
   try{worker=new Worker(url);}catch{return;}
   finally{URL.revokeObjectURL(url);}
-  pendingVerticalReels=reels;
-  const finish=()=>{
-    worker.terminate();
-    if(pendingVerticalReels===reels) pendingVerticalReels=null;
-  };
-  worker.onmessage=event=>{verticalCache.set(reels,event.data);finish();};
-  worker.onerror=finish;
-  worker.postMessage(reels);
+  const task=new Promise(resolve=>{
+    const finish=()=>{
+      clearTimeout(timeout);
+      worker.terminate();
+      pendingReelGroups.delete(reels);
+      resolve();
+    };
+    const unpack=(lists,stacked)=>lists.map(list=>{
+      const stride=boardSize+Number(stacked);
+      return Array.from({length:list.length/stride},(_,i)=>{
+        const offset=i*stride;
+        const positions=list.subarray(offset+Number(stacked),offset+stride);
+        return stacked?{mask:list[offset],positions}:{positions};
+      });
+    });
+    const timeout=setTimeout(finish,5000);
+    worker.onmessage=({data})=>{
+      if(!stopCache.has(reels)) stopCache.set(reels,unpack(data.normal,false));
+      if(data.vertical&&!verticalCache.has(reels)) verticalCache.set(reels,unpack(data.vertical,true));
+      finish();
+    };
+    worker.onerror=finish;
+    worker.postMessage({reels,vertical:includeVertical});
+  });
+  pendingReelGroups.set(reels,task);
+  return task;
 }
 function changeReelSymbols(run,type){
   if(!Object.hasOwn(types,type)) return false;
@@ -4186,6 +4253,7 @@ function changeReelSymbols(run,type){
   const reels=run.reels.map(reel=>reel.slice());
   for(const [col,row] of shuffle(cells).slice(0,3)) reels[col][row]=type;
   run.reels=reels;
+  if(run===state) preloadReelGroups(reels,!run.tutorial&&!run.reelsPhysical);
   run.reelGemCount=(run.reelGemCount??(run.reelsCustomized?1:0))+1;
   run.reelsCustomized=true;
   run.layoutMask=0;
@@ -4225,7 +4293,8 @@ function lineOdds(reels,moves,count){
     const stackShare=stacks[i].length?verticalShare:0;
     for(const [options,mass] of [[group,weight*(1-stackShare)],[stacks[i],weight*stackShare]]){
       for(const result of options){
-        const hits=new Set(moveQueue(moves,result.hits).flatMap(attack=>attack.supports)).size;
+        const matched=result.hits??matchingLines(boardAt(stackLayout(reels,result.mask),result.positions));
+        const hits=new Set(moveQueue(moves,matched).flatMap(attack=>attack.supports)).size;
         odds[hits]+=mass/options.length;
       }
     }
@@ -4271,7 +4340,9 @@ $('spin').onclick=async()=>{
   setLowerPanel(null);
   $('notice').textContent='轉動中…';
   pullLever();
-  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+  const ready=preloadReelGroups(state.reels,!state.tutorial&&!state.reelsPhysical);
+  await new Promise(resolve=>requestAnimationFrame(resolve));
+  if(ready) await ready;
   let guided=null;
   const fastForward=state.tutorial&&state.stage===1&&state.spins>0&&state.spins<5;
   if(state.tutorial&&state.stage!==2){
@@ -4291,9 +4362,11 @@ $('spin').onclick=async()=>{
     const cycles=(reducedMotion.matches?1:3+Math.floor((column+1)/2))*reel.length;
     const priorMask=state.layoutMask??(state.layoutColumn>=0?1<<state.layoutColumn:0);
     const same=priorMask===layoutMask;
-    const distance=same?cycles+(state.positions[column]-positions[column]+reel.length)%reel.length:cycles;
-    const strip=Array.from({length:distance+(same?boardSize:0)},(_,i)=>reel[(positions[column]+i)%reel.length]);
-    if(!same) for(let row=0;row<boardSize;row++) strip.push(state.board[row*boardSize+column]);
+    const travel=same?cycles+(state.positions[column]-positions[column]+reel.length)%reel.length:cycles;
+    const distance=Math.min(travel,40);
+    const contiguous=same&&distance===travel;
+    const strip=Array.from({length:distance+(contiguous?boardSize:0)},(_,i)=>reel[(positions[column]+i)%reel.length]);
+    if(!contiguous) for(let row=0;row<boardSize;row++) strip.push(state.board[row*boardSize+column]);
     return strip;
   });
   grid.innerHTML=strips.map(strip=>reelMarkup(strip)).join('');
@@ -4314,9 +4387,11 @@ $('spin').onclick=async()=>{
   tracks.forEach((track,column)=>{
     track.style.transform='translate3d(0,0,0)';
     animations[column]?.cancel();
+    track.style.height='100%';
+    while(track.children.length>boardSize) track.lastElementChild.remove();
   });
   grid.classList.remove('spinning');
-  state.positions=positions;
+  state.positions=Array.from(positions);
   state.layoutMask=layoutMask;
   delete state.layoutColumn;
   if(fastForward){
@@ -4833,7 +4908,9 @@ $('developerActions').onclick=async event=>{
   try{
     if(action==='dex'){
       profile.seen=[...new Set([...profile.seen,...species.map(mon=>mon.id)])];
-      profile.unlocked=[...new Set([...profile.unlocked,...species.map(mon=>baseSpeciesId(mon.id))])];
+      const baseIds=species.map(mon=>baseSpeciesId(mon.id));
+      profile.unlocked=[...new Set([...profile.unlocked,...baseIds])];
+      profile.shinyUnlocked=[...new Set([...profile.shinyUnlocked,...baseIds])];
       saveProfile();
     }else await changeWallet(wallet=>{
       ensureShopWallet(wallet);
@@ -5730,7 +5807,7 @@ async function animateWildEntrance(run){
 }
 async function openBattleStage(entering=false,playerEnters=entering){
   prepareSpecialStageMusic(state);
-  if(!state.tutorial&&!state.reelsPhysical) preloadVerticalGroups(state.reels);
+  preloadReelGroups(state.reels,!state.tutorial&&!state.reelsPhysical);
   if(entering){activateAbility(state,state.team[state.active],state.enemy);activateAbility(state,state.enemy,state.team[state.active]);}
   if(state.introSeen) recordSeen(state.enemy.id);
   if(entering){
@@ -6252,6 +6329,7 @@ function commitReels(run,reels){
   run.reels=reels;
   run.reelsCustomized=true;
   run.reelsPhysical=true;
+  if(run===state) preloadReelGroups(reels);
   run.layoutMask=0;
   delete run.layoutColumn;
   delete run.playerDampSymbols;

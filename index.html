@@ -905,6 +905,9 @@ button:not(:disabled):active{filter:brightness(.9)}
   width:var(--sprite-width);height:auto;aspect-ratio:var(--sprite-ratio);left:50%;translate:-50% 0
 }
 .nds #player .portrait[data-sized] img[data-mon-id]{bottom:calc(var(--sprite-growth) * 1.72cqw + var(--player-stance))}
+.nds #player .portrait[data-crop-feet] img[data-mon-id]{
+  bottom:calc(1.72cqw - var(--sprite-width) / var(--sprite-ratio) * .12)
+}
 .nds .portrait[data-sized]{
   --sprite-width:min(var(--sprite-max-width),calc(var(--sprite-pixels) * var(--sprite-scale) * (1 + var(--sprite-growth) * .4)),calc(var(--sprite-ratio) * var(--sprite-max-height)))
 }
@@ -3805,9 +3808,10 @@ function portrait(p,back=false){
   const art=sprite(p,false,back);
   const size=globalThis.pokerogueArt?.size(art);
   const growth=size?Math.min(1,Math.max(0,(Math.max(...size)-55)/35)):0;
-  const stance=growth>=.7?-.5:growth>0?-.35:.85;
+  const stance=.85;
   const sizing=size?' data-sized style="--sprite-pixels:'+size[0]+';--sprite-ratio:'+(size[0]/size[1])+';--sprite-growth:'+growth+';--player-stance:'+stance+'cqw;--ink:':' style="--ink:';
-  return '<div class="portrait"'+sizing+(p.color||'#514962')+'">'+fallback+'<img data-mon-id="'+p.id+'" src="'+art+'" alt="" onerror="this.hidden=true"></div>';
+  const crop=back&&growth>0?' data-crop-feet':'';
+  return '<div class="portrait"'+crop+sizing+(p.color||'#514962')+'">'+fallback+'<img data-mon-id="'+p.id+'" src="'+art+'" alt="" onerror="this.hidden=true"></div>';
 }
 const moveEffectLabels={
   immune:['無效','No effect'],strong:['效果絕佳','Super effective'],

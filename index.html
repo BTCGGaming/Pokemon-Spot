@@ -884,8 +884,14 @@ button:not(:disabled):active{filter:brightness(.9)}
 .nds #enemy .portrait.fainting{overflow:hidden}
 .nds :is(#player,#enemy) .portrait{--sprite-max-height:19cqw;--sprite-max-width:20cqw;--sprite-scale:.19cqw}
 .nds #enemy .portrait{--sprite-max-height:13cqw;--sprite-max-width:17cqw;--sprite-scale:.16cqw}
+.nds #enemy .portrait[data-medium]{--sprite-scale:.176cqw}
+.nds #enemy .portrait[data-sprite-species="380"]{--eon-width:19.6cqw;--eon-foot-offset:-.03cqw}
+.nds #enemy .portrait[data-sprite-species="381"]{--eon-width:16cqw;--eon-foot-offset:-.03cqw}
 .nds :is(#player,#enemy) .portrait[data-sized] img[data-mon-id]{
   width:var(--sprite-width);height:auto;aspect-ratio:var(--sprite-ratio);left:50%;translate:-50% 0
+}
+.nds #enemy .portrait[data-sized]:is([data-sprite-species="380"],[data-sprite-species="381"]) img[data-mon-id]{
+  width:var(--eon-width);bottom:var(--eon-foot-offset)
 }
 .nds #player .portrait[data-sized] img[data-mon-id]{bottom:calc(var(--sprite-growth) * 1.72cqw + var(--player-stance))}
 .nds #player .portrait[data-crop-feet] img[data-mon-id]{
@@ -3899,7 +3905,8 @@ function portrait(p,back=false){
   const stance=.85;
   const sizing=size?' data-sized style="--sprite-pixels:'+size[0]+';--sprite-ratio:'+(size[0]/size[1])+';--sprite-growth:'+growth+';--player-stance:'+stance+'cqw;--ink:':' style="--ink:';
   const crop=back&&growth>0?' data-crop-feet':'';
-  return '<div class="portrait"'+crop+sizing+(p.color||'#514962')+'">'+fallback+'<img data-mon-id="'+p.id+'" src="'+art+'" alt="" onerror="this.hidden=true"></div>';
+  const medium=growth>0&&growth<.7?' data-medium':'';
+  return '<div class="portrait" data-sprite-species="'+(p.displayId||p.id)+'"'+crop+medium+sizing+(p.color||'#514962')+'">'+fallback+'<img data-mon-id="'+p.id+'" src="'+art+'" alt="" onerror="this.hidden=true"></div>';
 }
 const moveEffectLabels={
   immune:['無效','No effect'],strong:['效果絕佳','Super effective'],

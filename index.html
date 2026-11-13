@@ -477,14 +477,7 @@ button:not(:disabled):active{filter:brightness(.9)}
 .desktop .moves{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}
 .desktop .moves>button,.desktop .moves>.empty-move{display:flex;align-items:center;justify-content:flex-start;gap:.24cqw;margin:0;padding:.2cqw .43cqw;border:1px solid #756985;min-height:0;min-width:0;font-size:1.4cqw;font-weight:700;line-height:1.1}
 .desktop .moves .move-name{padding:0;background:none;color:inherit;border:0;min-width:0;font:inherit;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
-#learn .learn-grid{display:grid;grid-template-columns:2fr 1fr;gap:.65em;text-align:left}
-#learn .learn-grid section{padding:.45em;background:#e9e0ed;border:2px solid #706481;box-shadow:none}
-#learn h3{margin:0 0 .3em;font-size:1em}
-#learn .learn-current{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.3em}
-#learn .learn-move{display:flex;align-items:center;gap:.3em;min-height:2.45em;padding:.24em .42em;text-align:left;background:#f5eef6;color:#372847;border:2px solid #746682;box-shadow:none;font-size:.92em}
-#learn .learn-move[data-new]{background:#fff0ba}
 #learnChoices{display:block}
-#learn .learn-actions{display:flex;justify-content:flex-end;gap:.45em;margin-top:.55em}
 
 .desktop .portrait{overflow:hidden}
 .desktop .portrait.fainting>*{animation:mon-faint .7s both}
@@ -642,16 +635,6 @@ button:not(:disabled):active{filter:brightness(.9)}
 
 #partyPicker{width:min(760px,86vw);background:#24524b;color:#fff6d7;border:5px solid #25333a;box-shadow:inset 0 0 0 3px #83ac8d}
 #partyPickerChoices{display:grid;grid-template-columns:1fr 1.25fr;gap:.7em;align-items:start}
-#partyPickerChoices section{min-width:0;display:grid;gap:.28em}
-#partyPickerChoices h3{margin:0 0 .22em;font-size:1em}
-#partyPickerChoices .party-member{display:grid;grid-template-columns:3em minmax(0,1fr);align-items:center;gap:.15em .5em;text-align:left;width:100%;min-height:3em;padding:.25em .45em;background:#e5f0cb;color:#263c38}
-#partyPickerChoices .party-member img{grid-row:span 2;width:3em;height:3em;object-fit:contain;image-rendering:pixelated}
-#partyPickerChoices .party-member small{grid-column:2}
-#partyPickerChoices .party-active .party-member{min-height:9em;grid-template-columns:1fr;justify-items:center;text-align:center}
-#partyPickerChoices .party-active .party-member img{grid-row:auto;width:5em;height:5em}
-#partyPickerChoices .party-active .party-member small{grid-column:auto}
-#partyPickerChoices .party-member:disabled{opacity:.58}
-#partyPickerChoices .party-cancel{grid-column:1/-1;justify-self:end}
 
 #battlePause{width:min(35em,85vw)}
 #battlePause header,#battlePause footer{display:flex;align-items:center;gap:.55em}
@@ -924,6 +907,17 @@ button:not(:disabled):active{filter:brightness(.9)}
 .nds :is(#itemBox,#ballBox,#spin,#exitBattle,#homeBattle,#partyControl):focus-visible{filter:brightness(.8)}
 
 .nds #arena{z-index:0}
+.nds #moveFxRear,.nds #moveFxBetween,.nds #moveFx{
+  position:absolute;inset:2.8% 23.7% 55.1% 23.7%;overflow:hidden;
+  border-radius:.48cqw;pointer-events:none
+}
+.nds #moveFxRear{z-index:1}
+.nds #enemy{z-index:3}
+.nds #enemy:has(.wild-entering){clip-path:inset(-.49% -1.73% -3.45% -12%)}
+.nds #moveFxBetween{z-index:4}
+.nds #player{z-index:5}
+.nds #moveFx{inset:0;overflow:visible;border-radius:0;z-index:6;clip-path:inset(2.8% 23.7% 55.1% 23.7% round .48cqw)}
+.nds :is(#playerHealthbox,#enemyHealthbox){z-index:10}
 .nds .healthbox .art-hp{overflow:hidden}
 .nds .healthbox .art-hp>span{z-index:1}
 .nds #playerExp{position:absolute;left:30%;right:8%;bottom:4%;height:5.5%;background:none;overflow:hidden}
@@ -975,7 +969,7 @@ button:not(:disabled):active{filter:brightness(.9)}
 @media(prefers-reduced-motion:reduce){
  .nds #redOnField.arriving,.nds #trainerOnField.arriving,.nds #redOnField.retreat,.nds #trainerOnField.retreat{animation-duration:.2s}
 }
-.nds #trainerStageLayer{position:absolute;inset:0;z-index:3;clip-path:inset(2.8% 23.7% 55.1% 23.7% round .45cqw);pointer-events:none}
+.nds #trainerStageLayer{position:absolute;inset:0;z-index:2;clip-path:inset(2.8% 23.7% 55.1% 23.7% round .45cqw);pointer-events:none}
 .nds #lowerPanel #closeLower{position:absolute;right:3%;top:.65cqw;z-index:2}
 .nds #lowerPanel[data-pocket] #closeLower{top:auto;right:4.5%}
 .nds #lowerPanel[data-pocket]>header,.nds #lowerPanel[data-pocket]>header h3{background:none;border:0;box-shadow:none;color:#25352f}
@@ -1069,6 +1063,28 @@ button:not(:disabled):active{filter:brightness(.9)}
 #partyPicker .machine-status{justify-self:end;color:#39532c;font-size:.9em}
 #partyPicker .machine-status[data-teach="known"]{color:#4f5077}
 #partyPicker .machine-status[data-teach="blocked"]{color:#8f3434}
+:is(#partyPicker,#learn){width:min(820px,92vw);max-height:88dvh;overflow:auto;border-radius:0;background:#27534b;color:#fff6d7;border:4px solid #202b34;box-shadow:inset 0 0 0 3px #8caa87,4px 4px #152426}
+:is(#partyPicker,#learn) h2{margin:0 0 .55em;font-size:1.2em}
+.battle-choice-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:.6em}
+#partyPickerChoices{display:block}
+.battle-choice-list,.battle-choice-side{display:grid;gap:.25em;align-content:start;min-width:0}
+.battle-choice-list h3,.battle-choice-side h3{font-size:1em;margin:0 0 .25em}
+:is(#partyPicker,#learn) .battle-choice-row{position:relative;display:grid;grid-template-columns:2.7em minmax(0,1fr);align-items:center;gap:.35em;text-align:left;margin:0;padding:.22em .35em .22em 1.2em;min-height:2.7em;border:2px solid #273b37;border-radius:0;background:#e7efd2;color:#243b35;box-shadow:inset 0 -2px #a3b28d}
+:is(#partyPicker,#learn) .battle-choice-row:is(:hover,:focus-visible,[aria-pressed="true"]):not(:disabled){background:#fff2ac;outline:2px solid #f6d66a;outline-offset:-2px}
+.battle-choice-row:is(:hover,:focus-visible,[aria-pressed="true"]):not(:disabled)::before{content:'▶';position:absolute;left:.22em;color:#263e39}
+.battle-choice-row:disabled{opacity:.58}
+.battle-choice-row img:not(.type-icon){width:2.6em;height:2.6em;object-fit:contain;image-rendering:pixelated}
+.battle-choice-row strong,.battle-choice-row small{display:block}
+.battle-choice-hp{display:block;width:100%;height:.4em;background:#263b35;border:1px solid #263b35;margin:.15em 0}
+.battle-choice-hp i{display:block;height:100%;background:#53bb67}.battle-choice-hp[data-band="yellow"] i{background:#edc94f}.battle-choice-hp[data-band="red"] i{background:#d96057}
+.battle-choice-note{margin:.55em 0 0;padding:.45em .6em;border:2px solid #263b35;background:#f4efd0;color:#243b35}
+.battle-choice-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:.4em;margin-top:.5em}
+.battle-choice-preview{padding:.55em;background:#e7efd2;color:#243b35;border:2px solid #263b35}
+.battle-choice-preview p{margin:.28em 0}
+.battle-choice-preview .trigger-diagrams{grid-template-columns:repeat(2,minmax(0,1fr))}
+.battle-choice-preview strong img{width:auto;height:1em;vertical-align:middle;image-rendering:pixelated}
+.battle-choice-status img:not(.type-icon){width:auto;height:1em}
+@media(max-width:540px){.battle-choice-layout{grid-template-columns:minmax(0,1fr)}}
 #musicStyleStatus:empty{display:none}
 #musicStyleStatus{font-size:.85em;overflow-wrap:anywhere}
 
@@ -1173,7 +1189,7 @@ button.egg-card:not(:disabled):hover{background:#fff8c9;border-color:#675937}
 <section id="enemy" aria-label="對手"></section><section id="playerMoves" class="moves-panel" aria-label="我方招式與異常狀態"></section><section id="enemyMoves" class="moves-panel" aria-label="對手招式與異常狀態"></section>
 <div id="playerHealthbox" class="healthbox"><strong id="playerBattleName"><span class="battle-name-text"></span><span class="battle-name-types" role="img"></span></strong><span id="playerLevel" class="level-one"></span><div class="fighter-status" aria-live="polite"></div><div id="playerHp" class="art-hp" role="meter"><span></span></div><span id="playerHpText" class="hp-text"></span><div id="playerExp" role="meter" aria-label="經驗值" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div></div>
 <div id="enemyHealthbox" class="healthbox"><strong id="enemyBattleName"><span class="battle-name-text"></span><span class="battle-name-types" role="img"></span></strong><span id="enemyLevel" class="level-one"></span><div class="fighter-status" aria-live="polite"></div><div id="enemyHp" class="art-hp" role="meter"><span></span></div><span id="enemyHpText" hidden></span></div>
-<div id="grid" class="grid" aria-label="拉霸結果"></div><section id="lowerPanel" hidden><header><h3 id="lowerTitle"></h3></header><button type="button" id="closeLower">返回拉霸</button><div id="lowerContent"></div></section><div id="lineFx" aria-hidden="true" hidden></div><div id="moveFx" aria-hidden="true"></div>
+<div id="grid" class="grid" aria-label="拉霸結果"></div><section id="lowerPanel" hidden><header><h3 id="lowerTitle"></h3></header><button type="button" id="closeLower">返回拉霸</button><div id="lowerContent"></div></section><div id="lineFx" aria-hidden="true" hidden></div><div id="moveFxRear" aria-hidden="true"></div><div id="moveFxBetween" aria-hidden="true"></div><div id="moveFx" aria-hidden="true"></div>
 <button id="spin" aria-label="拉霸" title="拉霸"><span class="lever-ball" aria-hidden="true"></span></button>
 
 <div id="playerParty" aria-label="我方隊伍"></div>
@@ -1242,22 +1258,22 @@ button.egg-card:not(:disabled):hover{background:#fff8c9;border-color:#675937}
     <div class="settings-row"><label for="gameLanguage" id="gameLanguageLabel">Language</label><select id="gameLanguage"><option value="zh-Hant">繁體中文</option><option value="en">English</option></select></div>
   </div>
   <p id="musicStyleStatus" role="status"></p><button id="settingsHotkeys" type="button">快捷鍵</button> <button id="settingsDeveloper" type="button">開發工具</button><form class="settings-actions" method="dialog"><button id="settingsClose" autofocus>關閉</button></form>
-</dialog><dialog id="upgradeDialog" aria-labelledby="upgradeTitle"><h2 id="upgradeTitle"></h2><p id="upgradeInfo"></p><form method="dialog"><button value="cancel" autofocus>取消</button> <button id="buyUpgrade" value="buy">確認強化</button></form></dialog><dialog id="replacementDialog" aria-labelledby="replacementTitle"><h2 id="replacementTitle">派哪隻寶可夢上場？</h2><form id="replacementChoices" method="dialog"></form></dialog><dialog id="evolutionDialog" aria-labelledby="evolutionTitle"><div class="evolution-scene"><img id="evolutionBefore" alt=""><img id="evolutionAfter" alt="" hidden></div><p id="evolutionTitle" role="status"></p><form method="dialog"><button id="evolutionContinue" hidden>繼續</button></form></dialog><dialog id="trainerIntro" aria-labelledby="trainerIntroTitle"><div class="trainer-card"><img id="trainerIntroSprite" alt=""><div><h2 id="trainerIntroTitle"></h2><p id="trainerIntroText"></p><p id="tutorialRivalHelp" class="tutorial-dialog-next" hidden>特定關卡會出現不同的強勁對手 來挑戰看看吧!</p><div id="trainerIntroItem"></div><form method="dialog"><button autofocus>繼續</button></form></div></div></dialog><dialog id="rewardDialog" aria-labelledby="rewardTitle"><h2 id="rewardTitle">選擇一項過關獎勵</h2><form id="rewardChoices" method="dialog"></form></dialog><dialog id="useItemDialog" aria-labelledby="useItemTitle"><h2 id="useItemTitle"></h2><form id="useItemChoices" method="dialog"></form></dialog><dialog id="combatStats" aria-labelledby="combatStatTitle"><div id="combatStatBody" data-page="info">
+</dialog><dialog id="upgradeDialog" aria-labelledby="upgradeTitle"><h2 id="upgradeTitle"></h2><p id="upgradeInfo"></p><form method="dialog"><button value="cancel" autofocus>取消</button> <button id="buyUpgrade" value="buy">確認強化</button></form></dialog><dialog id="evolutionDialog" aria-labelledby="evolutionTitle"><div class="evolution-scene"><img id="evolutionBefore" alt=""><img id="evolutionAfter" alt="" hidden></div><p id="evolutionTitle" role="status"></p><form method="dialog"><button id="evolutionContinue" hidden>繼續</button></form></dialog><dialog id="trainerIntro" aria-labelledby="trainerIntroTitle"><div class="trainer-card"><img id="trainerIntroSprite" alt=""><div><h2 id="trainerIntroTitle"></h2><p id="trainerIntroText"></p><p id="tutorialRivalHelp" class="tutorial-dialog-next" hidden>特定關卡會出現不同的強勁對手 來挑戰看看吧!</p><div id="trainerIntroItem"></div><form method="dialog"><button autofocus>繼續</button></form></div></div></dialog><dialog id="rewardDialog" aria-labelledby="rewardTitle"><h2 id="rewardTitle">選擇一項過關獎勵</h2><form id="rewardChoices" method="dialog"></form></dialog><dialog id="useItemDialog" aria-labelledby="useItemTitle"><h2 id="useItemTitle"></h2><form id="useItemChoices" method="dialog"></form></dialog><dialog id="combatStats" aria-labelledby="combatStatTitle"><div id="combatStatBody" data-page="info">
 <nav class="summary-tabs" role="tablist" aria-label="寶可夢資料"><button type="button" data-summary-page="info" role="tab">資料</button><button type="button" data-summary-page="skills" role="tab">能力</button><button type="button" data-summary-page="moves" role="tab">招式</button></nav>
 <div class="summary-mon"><h2 id="combatStatTitle"></h2><img id="combatStatSprite" alt=""><div id="combatStatTypes" class="summary-types"></div><span id="combatStatHp"></span></div>
 <div id="combatSummaryContent" class="summary-content" role="tabpanel"></div>
 <form method="dialog" class="summary-actions"><button type="button" id="combatSwap" hidden>換上場</button><button>關閉</button></form></div></dialog><dialog id="reference" aria-label="圖鑑與試玩規則"><details id="dex"><summary>全國圖鑑 001–386</summary><p><label>寶可夢 <select id="dexSpecies"></select></label> <label>預覽等級 <input id="dexLevel" type="number" min="1" max="100" value="5"></label></p><div id="dexInfo"></div></details><details><summary>試玩規則與暫定數值</summary>
-<p>試玩與正式模式皆由 Lv. 5 開始。永久增強會套用於新開的正式局。正式局通關可累積金幣，結算時入帳。開局會帶上截至該等級已能習得的招式。普通系能由任一屬性連線觸發，其他招式需要同屬性。同一招每次拉霸最多因連線發動一次，所有成線累加這次的傷害倍率。每條線必須由五個同屬性圖案構成。普通線可代替其他屬性的指定線型；只有靠普通線才能達標的招式，效果為 50%。五個輪盤各有六個固定格位，每次先依攜帶屬性數的試玩權重抽出中線數，再從輪盤可達成的停點組合中隨機選一組，畫面顯示每輪連續五格。三屬性各占兩格，五屬性各一格且每輪隨機重複一種，六屬性各占一格。盤面為 5×5。五條橫線、五條直線與兩條主對角線皆可中獎。部分中線結果使用同色堆疊輪帶，讓直線能實際停出。1／2／3／4 條線分別為 ×1.0／×1.2／×1.5／×3，之後每多一條加 1 倍。試玩可重複挑戰至 Lv. 13。正式關都挑戰共 100 關，等級上限為 100。野生寶可夢依原作的等級進化，進化道具與交換型態在野外採試玩門檻。訓練家關有備戰隊伍。對手倒下後會優先派出克制當前寶可夢的隊員。招式依原作升級習得。試玩個體設定為中性性格、個體值與努力值為 0。圖鑑可預覽等級與進化能力值。連線負責觸發招式，招式再判定命中率。灼傷與凍傷每次拉霸扣 5% 最大 HP，中毒扣 8%。睡眠與冰凍會暫停出招，受到傷害或對手完成下次行動後解除；對應的物理或特殊傷害增加 50%。麻痺有一半機率讓招式失效，混亂則可能使攻擊打向自己。</p>
+<p>試玩與正式模式皆由 Lv. 5 開始。永久增強會套用於新開的正式局。正式局通關可累積金幣，結算時入帳。開局會帶上截至該等級已能習得的招式。普通系能由任一屬性連線觸發，其他招式需要同屬性。同一招每次拉霸最多因連線發動一次，所有成線累加這次的傷害倍率。每條線必須由五個同屬性圖案構成。普通線可代替其他屬性的指定線型；只有靠普通線才能達標的招式，效果為 50%。五個輪盤各有六個固定格位，每次先依攜帶屬性數的試玩權重抽出中線數，再從輪盤可達成的停點組合中隨機選一組，畫面顯示每輪連續五格。三屬性各占兩格，五屬性各一格且每輪隨機重複一種，六屬性各占一格。盤面為 5×5。五條橫線、五條直線與兩條主對角線皆可中獎。部分中線結果使用同色堆疊輪帶，讓直線能實際停出。0–1／2／3／4／5 條線分別為 ×1.0／×1.2／×1.5／×1.8／×2.0，之後每多一條加 0.1 倍，上限 ×2.5。試玩可重複挑戰至 Lv. 13。正式關都挑戰共 100 關，等級上限為 100。野生寶可夢依原作的等級進化，進化道具與交換型態在野外採試玩門檻。訓練家關有備戰隊伍。對手倒下後會優先派出克制當前寶可夢的隊員。招式依原作升級習得。試玩個體設定為中性性格、個體值與努力值為 0。圖鑑可預覽等級與進化能力值。連線負責觸發招式，招式再判定命中率。灼傷與凍傷每次拉霸扣 5% 最大 HP，中毒扣 8%。睡眠與冰凍會暫停出招，受到傷害或對手完成下次行動後解除；對應的物理或特殊傷害增加 50%。麻痺有一半機率讓招式失效，混亂則可能使攻擊打向自己。</p>
 <p>試玩球不限數量，正式模式初始有 5 顆神奇寶貝球。訓練家關卡無法捕捉。</p>
-<p>每次拉霸先結算我方所有相符招式。若至少一招成功且對手仍在場，對手才隨機反擊一招。確認換人後，對手依序使用目前所有已學招式。換人不消耗拉霸次數，也不回復血量。場上寶可夢倒下時由存活隊友自動接替。對手倒下即過關，我方全倒即失敗。血量、攻擊、技能與連線都是本關測試設定。</p>
+<p>每次拉霸先結算我方所有相符招式。若至少一招成功且對手仍在場，對手才隨機反擊一招。確認換人後，對手最多使用一招。正式模式的致命招式會先預告，下一次拉霸或換人後才發動。換人不消耗拉霸次數，也不回復血量。場上寶可夢倒下時由存活隊友自動接替。對手倒下即過關，我方全倒即失敗。血量、攻擊、技能與連線都是本關測試設定。</p>
 <small>道具圖案參考 <a href="https://wiki.52poke.com/zh-hant/%E9%81%93%E5%85%B7%E5%88%97%E8%A1%A8">神奇寶貝百科</a> · 寶可夢像素圖來源 <a href="https://github.com/PokeAPI/sprites/tree/master/sprites/pokemon/versions/generation-iii/emerald">PokeAPI · Emerald</a></small></details>
 <form method="dialog"><button>關閉</button></form></dialog><dialog id="regionDialog" aria-labelledby="regionTitle"><header><h2 id="regionTitle">選擇冒險地區</h2><form method="dialog"><button id="regionBack" autofocus>返回組隊</button></form></header><div id="regionChoices"></div></dialog>
-<dialog id="saveDialog" aria-labelledby="saveTitle"><header><h2 id="saveTitle"></h2><button id="closeSave" aria-label="關閉">X</button></header><div id="saveBody"></div><p id="saveStatus" role="status"></p></dialog><dialog id="items" aria-labelledby="itemTitle"><h2 id="itemTitle">道具</h2><div id="itemInfo"></div><div class="item-actions"><button id="showReference">圖鑑與規則</button><button id="reset">重新開始本局</button></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="catchDialog" aria-labelledby="catchTitle"><h2 id="catchTitle"></h2><p id="catchInfo"></p><form method="dialog"><span id="ballChoices"></span> <button value="cancel" autofocus>關閉</button></form></dialog><dialog id="reelInfoDialog" aria-labelledby="reelInfoTitle"><h2 id="reelInfoTitle">圖庫</h2><p id="reelInfoTotal"></p><div id="reelInfoCounts"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="tutorialComplete" aria-labelledby="tutorialCompleteTitle"><h2 id="tutorialCompleteTitle">⑥ 教學完成！</h2><p>這遊戲就是如此簡單,帶上你的金幣<br>成為拉霸大...不是,成為寶可夢大師吧!</p><form method="dialog"><button autofocus>返回主畫面</button></form></dialog><dialog id="partyPicker" aria-labelledby="partyPickerTitle"><h2 id="partyPickerTitle"></h2><form id="partyPickerChoices" method="dialog"></form></dialog><dialog id="learn" aria-labelledby="learnTitle"><h2 id="learnTitle"></h2><form id="learnChoices" method="dialog"></form></dialog><dialog id="skill" aria-labelledby="skillTitle"><h2 id="skillTitle">技能詳情</h2><div id="skillBody" class="skill-card"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="swapDialog" aria-labelledby="swapTitle"><h2 id="swapTitle"></h2><p>換人後，對手會依序使用目前所有已學招式。</p><form method="dialog"><button value="cancel" autofocus>取消</button> <button value="confirm">確認換人</button></form></dialog></main>
+<dialog id="saveDialog" aria-labelledby="saveTitle"><header><h2 id="saveTitle"></h2><button id="closeSave" aria-label="關閉">X</button></header><div id="saveBody"></div><p id="saveStatus" role="status"></p></dialog><dialog id="items" aria-labelledby="itemTitle"><h2 id="itemTitle">道具</h2><div id="itemInfo"></div><div class="item-actions"><button id="showReference">圖鑑與規則</button><button id="reset">重新開始本局</button></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="catchDialog" aria-labelledby="catchTitle"><h2 id="catchTitle"></h2><p id="catchInfo"></p><form method="dialog"><span id="ballChoices"></span> <button value="cancel" autofocus>關閉</button></form></dialog><dialog id="reelInfoDialog" aria-labelledby="reelInfoTitle"><h2 id="reelInfoTitle">圖庫</h2><p id="reelInfoTotal"></p><div id="reelInfoCounts"></div><form method="dialog"><button>關閉</button></form></dialog><dialog id="tutorialComplete" aria-labelledby="tutorialCompleteTitle"><h2 id="tutorialCompleteTitle">⑥ 教學完成！</h2><p>這遊戲就是如此簡單,帶上你的金幣<br>成為拉霸大...不是,成為寶可夢大師吧!</p><form method="dialog"><button autofocus>返回主畫面</button></form></dialog><dialog id="partyPicker" aria-labelledby="partyPickerTitle"><h2 id="partyPickerTitle"></h2><form id="partyPickerChoices" method="dialog"></form></dialog><dialog id="learn" aria-labelledby="learnTitle"><h2 id="learnTitle"></h2><form id="learnChoices" method="dialog"></form></dialog><dialog id="skill" aria-labelledby="skillTitle"><h2 id="skillTitle">技能詳情</h2><div id="skillBody" class="skill-card"></div><form method="dialog"><button>關閉</button></form></dialog></main>
 <div style="position:fixed;bottom:8px;left:8px;z-index:20;max-width:75vw;color:white;font-size:12px;overflow-wrap:anywhere"><button id="musicToggle" type="button">播放音樂</button> <span id="musicStatus" role="status"></span></div>
 <aside id="tutorialHint" role="status" hidden></aside>
 <script src="./assets/emerald-sprites.js"></script>
 <script src="./assets/pokerogue/manifest.js"></script>
-<script src="./assets/pokerogue-player.js"></script>
+<script src="./assets/pokerogue-player.js?v=layers-1"></script>
 <script>
 'use strict';
 const typeColors={毒:'#d69afb'};
@@ -1459,14 +1475,10 @@ function showCombatStats(mon,index=null){
   swap.hidden=index===null||index===state.active||!mon.left||state.tutorial||Boolean(state.result);
   swap.disabled=!swap.hidden&&!canSwap(index);
   swap.title=swap.disabled?musicLabel('目前受到效果限制，無法換人。','An active effect prevents switching.'):'';
-  swap.onclick=()=>{
+  swap.onclick=async()=>{
     if(index===null||state.team[index]!==mon||!canSwap(index)) return;
     $('combatStats').close();
-    pendingSwap=index;
-    const dialog=$('swapDialog');
-    dialog.returnValue='';
-    $('swapTitle').textContent='換上'+mon.name+'？';
-    dialog.showModal();
+    await openPartySwitch(index);
   };
   $('combatStats').showModal();
 }
@@ -1545,7 +1557,7 @@ const elementalDescriptions={
  petal:'命中兩次，之後自身陷入混亂。',seed3:'每次拉霸吸取目標 3% 最大 HP，並恢復等量 HP。',teamCure:'治療己方全隊的異常狀態。',root:'每次拉霸恢復自身 5% 最大 HP。',
  sun:'雙方火系傷害提高 25%，直到對手下一次行動結束。',rain:'雙方水系傷害提高 25%，火系降低 25%，直到對手下一次行動結束。',
  waterSport:'對方火系傷害降低 25%，直到對手下一次行動結束。',mudSport:'己方暫時免疫電系傷害，直到對手下一次行動結束。',
- always:'此招式必定命中。',guard:'免疫對手此次反擊傷害。',mimic:'隨機使用對手的一個招式。',fissure:'使目標立即氣竭。',
+ always:'此招式必定命中。',guard:'免疫對手此次反擊傷害。',mimic:'隨機使用對手的一個招式。',fissure:'目標等級高於使用者或免疫地面系時無效。命中率為 30% 加上雙方等級差，命中時使目標氣竭。',
  twoHits:'命中兩次。',manyHits:'命中 2–5 次。',spikes25:'對方換人時，上場寶可夢扣除 25% 最大 HP。',magnitude:'基礎威力 40，每多一條符合線型的線，威力增加 20。',spinThree:'延後對手行動一次拉霸，每關最多觸發三次。',
  drain5:'從下一次拉霸起，目標每次損失 5% 最大 HP。',drain10:'從下一次拉霸起，目標每次損失 10% 最大 HP。'
 };
@@ -2033,39 +2045,52 @@ function teachPartyMove(mon,name,slot){
   mon.moves[slot]=name;
   if(mon.forgottenMoves) mon.forgottenMoves=mon.forgottenMoves.filter(move=>move!==name);
 }
-function chooseForgottenMove(p,name){
-  const dialog=$('learn');
-  const form=$('learnChoices');
-  $('learnTitle').textContent=p.name+'想學會'+name;
-  const card=(move,attrs)=>'<button type="button" class="learn-move" '+attrs+' data-effect="'+moveTooltip(move)+'">'+typeIcon(skillDetails[move].type)+'<span>'+move+'</span></button>';
-  function choices(){
-    form.innerHTML='<div class="learn-grid"><section><h3>原有招式</h3><div class="learn-current">'+p.moves.map((move,i)=>'<div>'+card(move,'data-forget="'+i+'"')+'<button type="button" data-learn-detail="'+move+'">查看詳情</button></div>').join('')+'</div></section>'+
-      '<section><h3>新招式</h3>'+card(name,'data-new')+'</section></div><div class="learn-actions"><button value="skip" autofocus>放棄學習</button></div>';
-    form.onclick=event=>{
-      const detail=event.target.closest('[data-learn-detail], [data-new]');
-      if(detail){
-        hideItemTip();
-        const move=detail.dataset.learnDetail??name;
-        showSkill(p,move,skillDetails[move].type);
-        return;
-      }
-      const button=event.target.closest('[data-forget]');
-      if(!button) return;
-      const index=Number(button.dataset.forget);
-      hideItemTip();
-      form.innerHTML='<p>遺忘「'+p.moves[index]+'」，學習「'+name+'」嗎？</p><div class="learn-actions"><button type="button" data-back>返回</button><button value="'+index+'">確認換招</button></div>';
-      form.onclick=event=>{if(event.target.closest('[data-back]')) choices();};
-      dialog.oncancel=event=>{event.preventDefault();choices();};
-      form.querySelector('[data-back]')?.focus();
-    };
-    dialog.oncancel=null;
-  }
-  choices();
-  dialog.returnValue='skip';
+function battleChoice(dialog,form,canCancel=true){
+  const previous=document.activeElement;
+  dialog.returnValue='cancel';
+  dialog.oncancel=canCancel?null:event=>event.preventDefault();
   return new Promise(resolve=>{
-    dialog.onclose=()=>resolve(dialog.returnValue==='skip'?-1:Number(dialog.returnValue));
+    dialog.onclose=()=>{
+      dialog.onclose=null;
+      form.onclick=null;
+      if(previous?.isConnected&&!previous.disabled) previous.focus({preventScroll:true});
+      const value=dialog.returnValue;
+      resolve(/^\d+$/.test(value)?Number(value):-1);
+    };
     dialog.showModal();
+    form.querySelector('button:not(:disabled)')?.focus({preventScroll:true});
   });
+}
+function chooseForgottenMove(p,name){
+  const dialog=$('learn'),form=$('learnChoices');
+  $('learnTitle').textContent=displayPokemon(p)+' 想學會 '+displayMove(name);
+  const preview=move=>{
+    const skill=skillDetails[move];
+    return '<div class="battle-choice-preview"><strong>'+summaryType(skill.type)+' '+displayMove(move)+'</strong>'+
+      '<p>威力 '+movePowerText(move,p)+'　命中 '+(skill.accuracy?skill.accuracy+'%':'—')+'</p>'+
+      triggerDiagrams(skill.type,moveRules[move])+'<p>'+moveEffectText(move)+'</p></div>';
+  };
+  form.innerHTML='<div class="battle-choice-layout"><div class="battle-choice-list"><h3>原有招式</h3>'+
+    p.moves.map((move,i)=>'<button type="button" class="battle-choice-row" data-forget="'+i+'" aria-pressed="false">'+
+      typeIcon(skillDetails[move].type)+'<span>'+displayMove(move)+'</span></button>').join('')+
+    '<div data-old-preview></div></div><div class="battle-choice-side"><h3>新招式</h3>'+preview(name)+'</div></div>'+
+    '<p class="battle-choice-note" aria-live="polite">選擇要遺忘的招式。</p><div class="battle-choice-actions"><button value="cancel">放棄學習</button><button data-commit disabled>確認換招</button></div>';
+  form.onclick=event=>{
+    const button=event.target.closest('[data-forget]');
+    if(!button) return;
+    const index=Number(button.dataset.forget),old=p.moves[index];
+    form.querySelectorAll('[data-forget]').forEach(row=>row.setAttribute('aria-pressed',String(row===button)));
+    form.querySelector('[data-old-preview]').innerHTML=preview(old);
+    form.querySelector('.battle-choice-note').textContent='遺忘「'+displayMove(old)+'」 → 學習「'+displayMove(name)+'」';
+    const confirm=form.querySelector('[data-commit]');
+    confirm.value=index;
+    confirm.disabled=false;
+    confirm.focus();
+  };
+  return battleChoice(dialog,form);
+}
+function boosterBonus(count){
+  return 10*Math.min(3,count)+3*Math.max(0,count-3);
 }
 function setBattleLevel(p,level,run){
   const before=p.hp;
@@ -2077,15 +2102,16 @@ function setBattleLevel(p,level,run){
     }
   }
   if(run&&run.items){
-    next[0]=Math.floor(next[0]*(100+10*itemCount(run,'hp-up'))/100);
-    next[1]=Math.floor(next[1]*(100+10*itemCount(run,'protein'))/100);
-    next[2]=Math.floor(next[2]*(100+10*itemCount(run,'iron'))/100);
-    next[3]=Math.floor(next[3]*(100+10*itemCount(run,'calcium'))/100);
-    next[4]=Math.floor(next[4]*(100+10*itemCount(run,'zinc'))/100);
+    statBoosterIds.forEach((id,index)=>{
+      next[index]=Math.floor(next[index]*(100+boosterBonus(itemCount(run,id)))/100);
+    });
   }
   if(p.id===292) next[0]=1;
   p.level=level;
-  p.stats=next;
+  if(p.transformOriginal){
+    p.transformOriginal.stats=next;
+    p.stats=[next[0],...p.stats.slice(1)];
+  }else p.stats=next;
   p.hp=next[0];
   if(p.left>0) p.left=Math.min(p.hp,Math.max(1,p.left+(p.hp-before)));
 }
@@ -2414,7 +2440,8 @@ async function playRogueEffect(id,source,target,attacker){
   const mon=attacker==='enemy'?state?.enemy:state?.team?.[state.active];
   const cue=moveSoundCues[id];
   return globalThis.pokerogueArt.play(id,{
-    arena:$('arena'),overlay:$('moveFx'),source,target,enemy:attacker==='enemy',
+    arena:$('arena'),overlay:$('moveFx'),rear:$('moveFxRear'),between:$('moveFxBetween'),
+    source,target,enemy:attacker==='enemy',behindBattlers:String(id)==='352',
     speed:battleSpeed,volume:.18*settings.effectsVolume/100,reduced:reducedMotion.matches,
     cry:attacker?()=>playSpeciesCry(mon,.115):null,
     fallbackSound:cue?()=>playGameSound(cue):null,
@@ -2556,14 +2583,15 @@ function healMon(s,p,side,amount){
   updateHp(side+'Hp',p);
   s.log.unshift(p.name+'恢復 '+healed+' HP。');
 }
-const universalBooster={name:'萬能增強劑',sprite:'hp-up',tier:1,description:'每件使 HP／攻擊／特攻／防禦／特防額外增加 10%。'};
+const boosterDescription='同項前 3 件各增加 10%，第 4 件起各增加 3%。';
+const universalBooster={name:'萬能增強劑',sprite:'hp-up',tier:1,description:'提升 HP／攻擊／特攻／防禦／特防，各項分開計算。'+boosterDescription};
 function applyEnemyBoosters(mon,stage,items){
   const count=stage===100?15:Math.floor(stage/10)+(stage>=92&&stage<=98&&stage%2===0&&items?2:0);
   const hpBoost=items?.['hp-up']??0;
-  if((!count&&!hpBoost)||mon.enemyBoosterCount===count&&(mon.enemyHpBoost??0)===hpBoost) return;
   const before=mon.hp;
-  const stats=statsAt(mon,mon.level).map((value,index)=>index<5?Math.floor(value*(100+10*count)/100):value);
-  stats[0]=mon.id===292?1:Math.floor(stats[0]*(100+10*hpBoost)/100);
+  const stats=statsAt(mon,mon.level).map((value,index)=>index<5
+    ?Math.floor(value*(100+boosterBonus(count+(items?.[statBoosterIds[index]]??0)))/100):value);
+  if(mon.id===292) stats[0]=1;
   mon.enemyHpBoost=hpBoost;
   mon.enemyBoosterCount=count;
   mon.hp=stats[0];
@@ -3019,7 +3047,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   const accuracy=Math.max(-6,Math.min(6,source.stages[6]-Math.min(6,target.stages[7]+powder)));
   const accuracyFactor=accuracy>=0?(3+accuracy)/3:3/(3-accuracy);
   if((skill.effect!=='OHKO'&&custom!=='always'&&!skill.self&&skill.accuracy&&skill.effect!=='ALWAYS_HIT'&&![14,51].includes(activeAbility(source))&&!locked&&!target.identified&&Math.random()*100>=skill.accuracy*accuracyFactor)||
-    (skill.effect==='OHKO'&&custom!=='fissure'&&(source.level<target.level||Math.random()*100>=30+source.level-target.level))){
+    (skill.effect==='OHKO'&&(source.level<target.level||Math.random()*100>=skill.accuracy+source.level-target.level))){
     s.log.unshift(action+'，沒有命中。');
     return false;
   }
@@ -3061,13 +3089,13 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       if(hit&&custom==='tripleKick'&&Math.random()*100>=skill.accuracy*accuracyFactor) break;
       if(hit) await animateAttack(side,other,skill);
       const strike=custom==='tripleKick'?{...skill,power:10*(hit+1)}:skill;
-      let raw=custom==='fissure'?target.left:custom==='psywave'?Math.max(1,Math.floor(source.level*(.5+Math.random()))):
+      let raw=custom==='psywave'?Math.max(1,Math.floor(source.level*(.5+Math.random()))):
         damageForMove(s,custom==='beatUp'?allies[hit]:source,target,strike,side);
       const wake=target.status==='sleep'||target.status==='freeze';
       const physical=!specialTypes.includes(skill.type);
       const wakeFactor=target.status==='sleep'&&physical&&defenseAbility!==48||target.status==='freeze'&&!physical?1.5:1;
       if(custom==='endeavor') raw=target.left>source.left&&raw?target.left-source.left:0;
-      const fixed=['endeavor','fixed20','fissure','psywave'].includes(custom);
+      const fixed=['endeavor','fixed20','psywave'].includes(custom);
       const camouflage=target.moves.includes('保護色')&&target.type.some(type=>source.type.includes(type));
       const charge=source.nextDamage&&raw>0&&!target.counterGuard;
       if(charge) source.nextDamage=false;
@@ -3079,6 +3107,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       let amount=raw*factor*strength*grace*fat*(lens?1.5:1)*(other==='player'?resistanceBerryFactor(s,skill.type):1-.1*Math.min(5,enemyItemCount(s,resistanceBerryByType[skill.type])));
       if(defenseAbility===5&&target.left===target.hp) amount*=.25;
       if([4,75].includes(defenseAbility)&&amount>target.hp*.5) amount*=.5;
+      if(skill.effect==='OHKO') amount=target.left;
       let damage=target.counterGuard||amount<=0?0:Math.min(target.left,Math.max(1,Math.floor(amount))); 
       if(lens&&damage) s.log.unshift('焦點鏡提高了本次傷害。');
       if(skill.effect==='FALSE_SWIPE') damage=Math.min(damage,Math.max(0,target.left-1));
@@ -3278,7 +3307,8 @@ function trainerDefeatLine(run){
   return lines[name]??(kind.startsWith('反派組織')?'可惡，竟然輸給你了！':'這場對戰是你贏了！');
 }
 async function finishStage(s,message){
-  if(s.won) return;
+  delete s.enemyWarning;
+  if(s.won||s.rewardPending) return;
   s.rewardPending=true;
   if(activeBerrySpins.has(s)) await checkHealingBerry(s);
   completeStage(s,message);
@@ -3367,6 +3397,7 @@ function bestEnemyReserve(s,defensive=false){
 }
 async function sendEnemy(s,index,switching=false){
   const previous=s.enemy;
+  delete s.enemyWarning;
   transferAbilityDebuffs(previous,s.foes[index],s.team[s.active]);
   leaveAbility(previous);
   if(switching){
@@ -3387,7 +3418,10 @@ async function sendEnemy(s,index,switching=false){
   if(!s.enemy.left) await winBattle(s,s.team[s.active]);
 }
 async function winBattle(s,p){
-  if(!s.enemy.left) await animateFaint('enemy',s.enemy);
+  if(!s.enemy.left){
+    delete s.enemyWarning;
+    await animateFaint('enemy',s.enemy);
+  }
   if(s.trainer){
     const reserve=s.foes.find(mon=>mon!==s.enemy&&!mon.left);
     const revived=reserve??(bestEnemyReserve(s)<0&&!s.enemy.left?s.enemy:null);
@@ -3420,9 +3454,14 @@ function healLeftovers(s){
 }
 async function resolveSpin(s,board,settledTracks=null){
   if(s.result) return;
+  const warning=s.enemyWarning;
   activeBerrySpins.add(s);
   try{
     await resolveSpinCore(s,board,settledTracks);
+    if(warning&&s.enemyWarning===warning&&!s.result){
+      await enemyAct(s);
+      if(!s.enemy.left&&!s.result) await winBattle(s,s.team[s.active]);
+    }
     if(!s.result){
       for(const [mon,opponent] of [[s.team[s.active],s.enemy],[s.enemy,s.team[s.active]]]){
         if(mon.left&&activeAbility(mon)===28&&['poison','toxic','paralysis','burn'].includes(mon.status)) giveStatus(s,opponent,mon.status);
@@ -3557,15 +3596,19 @@ async function resolveSpinCore(s,board,settledTracks=null){
   delete s.enemy.tempDefense;delete s.enemy.counterGuard;
   if(!p.left){await replaceFainted(s);return;}
   const beforeCounter=s.weather?.kind;
-  const enemyLensMoves=enemyItemCount(s,'wide-lens')?s.enemy.moves.filter(name=>moveRules[name]?.shapes!=='P'):[];
+  const warning=s.enemyWarning;
+  const enemyLensMoves=!warning&&enemyItemCount(s,'wide-lens')?s.enemy.moves.filter(name=>moveRules[name]?.shapes!=='P'):[];
   if(enemyLensMoves.length){
     const move=pick(enemyLensMoves);
     s.log.unshift('對手的廣角鏡觸發 '+move+'。');
-    await executeMove(s,s.enemy,s.team[s.active],move,'enemy');
+    if(mode==='formal'&&isLethalMove(move)) await warnEnemyMove(s,move);
+    else await executeMove(s,s.enemy,s.team[s.active],move,'enemy');
     if(!s.enemy.left){await winBattle(s,s.team[s.active]);return;}
     if(!s.team[s.active].left){await replaceFainted(s);return;}
   }
-  if(s.counterSpins>=counterTarget(s)) await enemyAct(s);
+  if(warning) await enemyAct(s);
+  else if(s.enemyWarning) delete s.team[s.active].counterGuard;
+  else if(s.counterSpins>=counterTarget(s)) await enemyAct(s);
   else if(shouldCounter(s,landed)&&!(activeAbility(p)===8&&matched.some(line=>line.type==='地面'||line.type===wildReelType))) await enemyAct(s,true);
   else delete s.team[s.active].counterGuard;
   await playWeather(s.weather?.kind??beforeCounter);
@@ -3632,26 +3675,42 @@ function clearResidualDamage(mon){
   mon.burned=false;
   mon.toxicTurns=0;
 }
-function choosePartyMember(run,title,eligible,cancelLabel,entryStatus){
+function partyMemberDetails(mon,label=''){
+  const percent=Math.max(0,Math.min(100,100*mon.left/mon.hp));
+  return '<img src="'+sprite(mon)+'" alt=""><span><strong>'+displayPokemon(mon)+'</strong>'+
+    '<small>Lv. '+mon.level+'　HP '+mon.left+' / '+mon.hp+'</small>'+
+    '<span class="battle-choice-hp" data-band="'+healthBand(mon)+'"><i style="width:'+percent+'%"></i></span>'+
+    '<span class="battle-choice-status">'+mon.type.map(typeIcon).join('')+fighterStatus(mon)+'</span>'+
+    (label?'<small>'+label+'</small>':'')+'</span>';
+}
+function choosePartyMember(run,title,eligible,cancelLabel,entryStatus,{incoming=null,confirm=false}={}){
   const dialog=$('partyPicker');
   const form=$('partyPickerChoices');
   $('partyPickerTitle').textContent=title;
-  const member=(index,mon)=>{
-    if(!mon) return '<button type="button" class="party-member" disabled><span>空位</span></button>';
-    const status=entryStatus?.(mon);
-    const marker=status?'<small class="machine-status" data-teach="'+status+'">'+({learn:'可學會',known:'已學會',blocked:'不能學會'}[status])+'</small>':'';
-    return '<button class="party-member" value="'+index+'" '+(eligible(mon,index)?'':'disabled')+'><img src="'+sprite(mon)+'" alt=""><strong>'+mon.name+'</strong><small>Lv. '+mon.level+' · HP '+mon.left+' / '+mon.hp+'</small>'+marker+'</button>';
+  const rows=run.team.map((mon,index)=>{
+    const label=[index===run.active?'目前上場':'',!mon.left?'氣竭':'',({learn:'可學會',known:'已學會',blocked:'不能學會'})[entryStatus?.(mon)]].filter(Boolean).join(' · ');
+    return '<button class="battle-choice-row" '+(confirm?'type="button" data-member-choice="'+index+'" aria-pressed="false"':'value="'+index+'"')+
+      (eligible(mon,index)?'':' disabled')+'>'+partyMemberDetails(mon,label)+'</button>';
+  }).join('');
+  const preview=incoming?'<div class="battle-choice-side"><h3>新收服的寶可夢</h3><div class="battle-choice-row">'+partyMemberDetails(incoming)+'</div></div>':'';
+  form.innerHTML='<div class="'+(incoming?'battle-choice-layout':'')+'"><div class="battle-choice-list">'+rows+'</div>'+preview+'</div>'+
+    (confirm?'<p class="battle-choice-note" aria-live="polite">請選擇隊員。</p>':'')+
+    '<div class="battle-choice-actions">'+(cancelLabel?'<button value="cancel">'+cancelLabel+'</button>':'')+
+    (confirm?'<button data-commit disabled>'+ (incoming?'確認替換':'換上場') +'</button>':'')+'</div>';
+  if(confirm) form.onclick=event=>{
+    const row=event.target.closest('[data-member-choice]');
+    if(!row||row.disabled) return;
+    const index=Number(row.dataset.memberChoice);
+    form.querySelectorAll('[data-member-choice]').forEach(button=>button.setAttribute('aria-pressed',String(button===row)));
+    form.querySelector('.battle-choice-note').textContent=incoming
+      ?displayPokemon(incoming)+' → 替換 '+displayPokemon(run.team[index])
+      :'換上 '+displayPokemon(run.team[index])+'？對手最多使用一招。';
+    const commit=form.querySelector('[data-commit]');
+    commit.value=index;
+    commit.disabled=false;
+    commit.focus();
   };
-  const reserve=run.team.map((mon,index)=>({mon,index})).filter(entry=>entry.index!==run.active);
-  form.innerHTML='<section class="party-active"><h3>正在場上</h3>'+member(run.active,run.team[run.active])+'</section>'+
-    '<section><h3>備戰隊員</h3>'+Array.from({length:5},(_,i)=>member(reserve[i]?.index,reserve[i]?.mon)).join('')+'</section>'+
-    (cancelLabel?'<button class="party-cancel" value="cancel">'+cancelLabel+'</button>':'');
-  dialog.returnValue='cancel';
-  dialog.oncancel=cancelLabel?null:event=>event.preventDefault();
-  return new Promise(resolve=>{
-    dialog.onclose=()=>resolve(dialog.returnValue==='cancel'?-1:Number(dialog.returnValue));
-    dialog.showModal();
-  });
+  return battleChoice(dialog,form,Boolean(cancelLabel));
 }
 function chooseReplacement(run,candidates){
   return choosePartyMember(run,'派哪隻寶可夢上場？',(_,index)=>candidates.includes(index));
@@ -3731,11 +3790,35 @@ async function checkPerish(s,mon,side){
   s.log.unshift(mon.name+'因滅亡之歌倒下。');
 }
 function pickDisabledMove(acting,moves){const name=pick(moves);acting.disable=false;return name;}
-async function enemyAct(s,random=false){
+function isLethalMove(name){
+  return ['EXPLOSION','OHKO'].includes(skillDetails[name]?.effect);
+}
+function enemyWarningText(s){
+  const move=displayMove(s.enemyWarning.move);
+  return musicLabel('對手預告 '+move+'！拉霸或換人後將發動。','Incoming: '+move+'! Spin or switch to respond.');
+}
+async function warnEnemyMove(s,move){
+  s.enemyWarning={move,foeIndex:s.foeIndex};
+  const alert=$('enemyAlert');
+  alert.textContent=enemyWarningText(s);
+  $('notice').textContent=alert.textContent;
+  s.log.unshift(alert.textContent);
+  alert.hidden=false;
+  renderLog();
+  try{await wait(1000);}
+  finally{alert.hidden=true;}
+}
+async function enemyAct(s,random=false,switching=false){
+  const warning=s.enemyWarning;
+  if(warning){
+    delete s.enemyWarning;
+    if(warning.foeIndex!==s.foeIndex||!s.enemy.left||!isLethalMove(warning.move)) return;
+    random=false;
+  }
   s.enemyTurns=(s.enemyTurns??0)+1;
   if(s.actionFlags) s.actionFlags.enemy=false;
   try{
-    await enemyActCore(s,random);
+    await enemyActCore(s,random,switching,warning?.move);
     if(random&&!s.result){
       const player=s.team[s.active];
       if(player.left&&s.enemy.left){
@@ -3757,9 +3840,9 @@ async function enemyAct(s,random=false){
     for(const [id,field] of Object.entries(s.fieldEffects??{})) if(field.until<=s.enemyTurns) delete s.fieldEffects[id];
   }
 }
-async function enemyActCore(s,random){
-  if(!random) s.counterSpins=0;
-  if(!random&&s.trainer&&s.stage>50&&!blocksSwitch(s.enemy,s.team[s.active])){
+async function enemyActCore(s,random,switching,prepared){
+  if(!random&&!switching) s.counterSpins=0;
+  if(!prepared&&!random&&!switching&&s.trainer&&s.stage>50&&!blocksSwitch(s.enemy,s.team[s.active])){
     const active=s.team[s.active];
     const next=bestEnemyReserve(s,true);
     if(next>=0&&threat(active,s.enemy)>1&&matchupScore(s.foes[next],active)>matchupScore(s.enemy,active)){
@@ -3768,7 +3851,7 @@ async function enemyActCore(s,random){
     }
   }
   const acting=s.enemy;
-  let moves=acting.moves.filter(name=>moveRules[name]?.shapes!=='P');
+  let moves=prepared?[prepared]:acting.moves.filter(name=>moveRules[name]?.shapes!=='P');
   if(acting.disable&&moves.length){const blocked=pickDisabledMove(acting,moves);moves=moves.filter(name=>name!==blocked);}
   if(!moves.length){delete s.team[s.active].counterGuard;delete s.team[s.active].tempDefense;return;}
   const alert=$('enemyAlert');
@@ -3776,8 +3859,8 @@ async function enemyActCore(s,random){
   alert.hidden=false;
   playPokemonCry(acting);
   $('notice').textContent=random?'對手即將反擊…':'對手即將行動…';
-  await wait(1000);
-  alert.hidden=true;
+  try{await wait(1000);}
+  finally{alert.hidden=true;}
   const player=s.team[s.active];
   if(acting.selfCounter){
     acting.selfCounter=false;
@@ -3790,12 +3873,17 @@ async function enemyActCore(s,random){
   }
   if(random&&(s.kind||acting.follow)){const attacks=moves.filter(name=>skillDetails[name].power>0);if(attacks.length)moves=attacks;}
   acting.follow=false;
-  let actions=random?[pick(moves)]:moves;
+  let actions=random||switching?[pick(moves)]:moves;
   if(acting.encore){
     acting.encore=false;
     if(moves.length>1){const repeated=pick(moves),omitted=pick(moves.filter(name=>name!==repeated));actions=random?[repeated,repeated]:[...moves.filter(name=>name!==omitted),repeated];}
   }
+  if(switching) actions=actions.slice(0,1);
   for(const [i,move] of actions.entries()){
+    if(mode==='formal'&&!prepared&&isLethalMove(move)){
+      await warnEnemyMove(s,move);
+      break;
+    }
     await executeMove(s,s.enemy,s.team[s.active],move,'enemy',random,actions.length>1?'　'+(i+1)+' / '+actions.length:'');
     await replaceFainted(s);
     if(s.result||!s.enemy.left||s.enemy!==acting||s.team[s.active]!==player) break;
@@ -3905,7 +3993,7 @@ function renderBoard(board,matches=[],settledTracks=null){
   }
 }
 function lineMultiplier(count){
-  return count<2?1:count===2?1.2:count===3?1.5:count-1;
+  return count<=5?[1,1,1.2,1.5,1.8,2][count]:Math.min(25,20+count-5)/10;
 }
 function multiplierLabel(value){
   return '×'+(value===1?'1.0':String(value));
@@ -3967,11 +4055,20 @@ async function playWinningLines(matches){
   pulse?.classList.remove('line-pulse');
   fx.hidden=true;
 }
-function bindMoves(root,p,entries){
-  root.querySelectorAll('[data-move]').forEach(button=>{
-    const [trigger,name]=entries[Number(button.dataset.move)];
-    button.onclick=()=>showSkill(p,name,trigger);
-  });
+for(const [side,ours] of [['player',true],['enemy',false]]){
+  $(side+'Moves').onclick=event=>{
+    const button=event.target.closest('[data-move]');
+    if(!button) return;
+    const mon=ours?state.team[state.active]:state.enemy;
+    const name=mon.moves[Number(button.dataset.move)];
+    if(skillDetails[name]) showSkill(mon,name,ours?skillDetails[name].type:null);
+  };
+  $(side+'Party').onclick=event=>{
+    const button=event.target.closest('[data-slot]');
+    if(!button||button.disabled) return;
+    const index=Number(button.dataset.slot);
+    showCombatStats((ours?state.team:state.foes??[state.enemy])[index],ours?index:null);
+  };
 }
 function healthBand(p){
   return p.left*4<p.hp?'red':p.left*5<p.hp*3?'yellow':'green';
@@ -4106,18 +4203,15 @@ function render(refreshBoard=true){
     display.onclick=()=>showCombatStats(mon);
     display.onkeydown=event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();showCombatStats(mon);}};
   }
-  bindMoves($('playerMoves'),p,p.moves.map(name=>[skillDetails[name].type,name]));
-  bindMoves($('enemyMoves'),state.enemy,state.enemy.moves.map(name=>[null,name]));
-  for(const [id,team,ours] of [['playerParty',state.team,true],['enemyParty',state.foes??[state.enemy],false]]){
+  for(const id of ['playerParty','enemyParty']){
     $(id).querySelectorAll('[data-slot]').forEach(button=>{
-      const index=Number(button.dataset.slot);
       button.disabled=rolling;
-      button.onclick=()=>showCombatStats(team[index],ours?index:null);
     });
   }
   if(refreshBoard) renderBoard(state.board,state.matches);
   $('notice').textContent=state.result||('第 '+state.stage+' 關'+(state.kind?' · '+state.kind:state.phaseType?' · '+state.phaseType+'系野生區':''));
   if(state.matches.length) $('notice').textContent+=' ◆ '+state.matches.length+' 條連線 '+multiplierLabel(lineMultiplier(state.matches.length));
+  if(state.enemyWarning&&!state.result) $('notice').textContent=enemyWarningText(state);
   renderLog();
   $('reelInfo').textContent=musicLabel('圖庫','Library');
   $('reelInfo').disabled=rolling;
@@ -4145,14 +4239,18 @@ function render(refreshBoard=true){
   paintBattleLevel('enemy',state.enemy);
   if(!rolling&&mode==='formal'&&(state.finished||(state.result&&!state.won))) openSettlement(state);
 }
-let pendingSwap=null;
 function canSwap(index){
   return !rolling&&!state.tutorial&&!state.result&&!blocksSwitch(state.team[state.active],state.enemy)&&index!==state.active&&state.team[index]?.left>0;
 }
-$('swapDialog').onclose=async()=>{
-  const index=pendingSwap;
-  pendingSwap=null;
-  if($('swapDialog').returnValue!=='confirm'||!canSwap(index)) return;
+async function openPartySwitch(preselected=null){
+  if(rolling||state.result||$('partyPicker').open) return;
+  const selection=choosePartyMember(state,'選擇上場的寶可夢',(_,index)=>canSwap(index),'取消',null,{confirm:true});
+  if(preselected!==null) $('partyPickerChoices').querySelector('[data-member-choice="'+preselected+'"]')?.click();
+  const index=await selection;
+  if(index<0||!canSwap(index)){
+    if(preselected!==null) $('playerParty').querySelector('[data-slot="'+preselected+'"]')?.focus({preventScroll:true});
+    return;
+  }
   transferAbilityDebuffs(state.team[state.active],state.team[index],state.enemy);
   undoTransform(state.team[state.active]);
   leaveAbility(state.team[state.active]);
@@ -4168,7 +4266,7 @@ $('swapDialog').onclose=async()=>{
     await animatePlayerSendOut(state);
     spikeDamage(state,'player',state.team[state.active]);
     if(!state.team[state.active].left) await replaceFainted(state);
-    else if(!state.result) await enemyAct(state);
+    if(!state.result&&(state.active===index||state.enemyWarning)) await enemyAct(state,false,true);
     if(!state.enemy.left&&!state.result) await winBattle(state,state.team[state.active]);
   }finally{
     state.playerSending=false;
@@ -4180,7 +4278,7 @@ $('swapDialog').onclose=async()=>{
   }
   if(state.won&&!state.finished){advanceStage();return;}
   $(state.won?'nextBattle':state.result?'reset':'spin').focus();
-};
+}
 const randomIndex=length=>Math.floor(Math.random()*length);
 const outcomeWeights={3:[20,50,20,10],5:[30,45,15,10],6:[40,40,12,8]};
 const fallbackReels={
@@ -4232,11 +4330,9 @@ function boardAt(reels,positions){
   }
   return board;
 }
-function matchingMoves(moves,type){
-  return moves.filter(name=>type===wildReelType||type==='普通'||skillDetails[name].type==='普通'||skillDetails[name].type===type);
-}
-function matchingLines(board){
-  const matched=[];
+function matchingLines(board,countOnly=false){
+  const matched=countOnly?null:[];
+  let count=0;
   for(const cells of lines){
     let type=wildReelType;
     let valid=true;
@@ -4246,12 +4342,12 @@ function matchingLines(board){
       if(!Object.hasOwn(types,symbol)||type!==wildReelType&&symbol!==type){valid=false;break;}
       type=symbol;
     }
-    if(valid) matched.push({cells,type});
+    if(valid){
+      if(countOnly){if(++count===3) return count;}
+      else matched.push({cells,type});
+    }
   }
-  return matched;
-}
-function winningLines(board,moves){
-  return [...new Set(moveQueue(moves,matchingLines(board)).flatMap(move=>move.supports.map(line=>line.cells)))];
+  return countOnly?count:matched;
 }
 function moveQueue(moves,matched){
   return [...new Set(moves)].flatMap(name=>{
@@ -4279,8 +4375,7 @@ function stopGroups(reels){
       offset=Math.floor(offset/reel.length);
       return stop;
     });
-    const hits=matchingLines(boardAt(reels,positions));
-    groups[Math.min(3,hits.length)].push({positions,hits});
+    groups[matchingLines(boardAt(reels,positions),true)].push({positions});
   }
   stopCache.set(reels,groups);
   return groups;
@@ -4294,10 +4389,13 @@ function stackLayout(reels,mask){
   });
 }
 function verticalGroups(reels){
-  if(reels.some(reel=>reel.length!==6)) return [[],[],[],[]];
   const cached=verticalCache.get(reels);
   if(cached) return cached;
   const groups=[[],[],[],[]];
+  if(reels.some(reel=>reel.length!==6)){
+    verticalCache.set(reels,groups);
+    return groups;
+  }
   for(let mask=1;mask<(1<<boardSize);mask++){
     const layout=stackLayout(reels,mask);
     const free=layout.filter((_,i)=>!(mask&(1<<i))).length;
@@ -4307,8 +4405,7 @@ function verticalGroups(reels){
         if(mask&(1<<i)) return 0;
         const index=offset%6;offset=Math.floor(offset/6);return index;
       });
-      const hits=matchingLines(boardAt(layout,positions));
-      groups[Math.min(3,hits.length)].push({mask,positions,hits});
+      groups[matchingLines(boardAt(layout,positions),true)].push({mask,positions});
     }
   }
   verticalCache.set(reels,groups);
@@ -4316,6 +4413,7 @@ function verticalGroups(reels){
 }
 const pendingReelGroups=new WeakMap();
 function preloadReelGroups(reels,includeVertical=false){
+  includeVertical=includeVertical&&reels.every(reel=>reel.length===6);
   if(typeof Worker!=='function'||stopCache.has(reels)&&(!includeVertical||verticalCache.has(reels))) return;
   const pending=pendingReelGroups.get(reels);
   if(pending) return pending;
@@ -4325,10 +4423,10 @@ function preloadReelGroups(reels,includeVertical=false){
     'const stopCache=new WeakMap(),verticalCache=new WeakMap();',
     boardAt.toString(),matchingLines.toString(),stopGroups.toString(),stackLayout.toString(),verticalGroups.toString(),
     'self.onmessage=({data})=>{',
-    'const groups=stopGroups(data.reels),stacks=data.vertical?verticalGroups(data.reels):null;',
+    'const groups=data.normal?stopGroups(data.reels):null,stacks=data.vertical?verticalGroups(data.reels):null;',
     'const pack=(list,stacked)=>list.map(group=>Uint32Array.from(group.flatMap(row=>stacked?[row.mask,...row.positions]:row.positions)));',
-    'const normal=pack(groups,false),vertical=stacks?pack(stacks,true):null;',
-    'self.postMessage({normal,vertical},[...normal,...(vertical??[])].map(group=>group.buffer));',
+    'const normal=groups?pack(groups,false):null,vertical=stacks?pack(stacks,true):null;',
+    'self.postMessage({normal,vertical},[...(normal??[]),...(vertical??[])].map(group=>group.buffer));',
     '};'
   ].join('\n');
   const url=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
@@ -4352,12 +4450,13 @@ function preloadReelGroups(reels,includeVertical=false){
     });
     const timeout=setTimeout(finish,5000);
     worker.onmessage=({data})=>{
-      if(!stopCache.has(reels)) stopCache.set(reels,unpack(data.normal,false));
+      if(data.normal&&!stopCache.has(reels)) stopCache.set(reels,unpack(data.normal,false));
       if(data.vertical&&!verticalCache.has(reels)) verticalCache.set(reels,unpack(data.vertical,true));
       finish();
     };
     worker.onerror=finish;
-    worker.postMessage({reels,vertical:includeVertical});
+    try{worker.postMessage({reels,normal:!stopCache.has(reels),vertical:includeVertical&&!verticalCache.has(reels)});}
+    catch{queueMicrotask(finish);}
   });
   pendingReelGroups.set(reels,task);
   return task;
@@ -4374,6 +4473,7 @@ function changeReelSymbols(run,type){
   run.reelsCustomized=true;
   run.layoutMask=0;
   delete run.layoutColumn;
+  delete run.playerDampSymbols;
   run.board=boardAt(reels,run.positions);
   run.matches=[];
   return true;
@@ -4400,22 +4500,6 @@ function weightedStops(reels,count,gems=0,physical=false){
   }
   const result=pick(pool);
   return {mask:result.mask??0,positions:result.positions};
-}
-function lineOdds(reels,moves,count){
-  const odds=Array(lines.length+1).fill(0);
-  const stacks=verticalGroups(reels);
-  stopGroups(reels).forEach((group,i)=>{
-    const weight=outcomeWeights[count][i]/100;
-    const stackShare=stacks[i].length?verticalShare:0;
-    for(const [options,mass] of [[group,weight*(1-stackShare)],[stacks[i],weight*stackShare]]){
-      for(const result of options){
-        const matched=result.hits??matchingLines(boardAt(stackLayout(reels,result.mask),result.positions));
-        const hits=new Set(moveQueue(moves,matched).flatMap(attack=>attack.supports)).size;
-        odds[hits]+=mass/options.length;
-      }
-    }
-  });
-  return odds;
 }
 function pullLever(){
   const button=$('spin');
@@ -5232,7 +5316,7 @@ function creditEggProgress(wallet,prior,run){
     }
     wallet.shopEggs=wallet.shopEggs.filter(egg=>egg.progress<eggTarget(egg));
   }
-  return {eggStages:Math.max(cleared,prior.eggStages??0),hatched:[...(prior.hatched??[]),...hatched]};
+  return {eggStages:Math.max(cleared,prior.eggStages??0),hatched:[...(prior.hatched??[]),...hatched],newlyHatched:hatched};
 }
 function applyHatchedEggs(eggs){
   for(const egg of eggs){
@@ -6109,6 +6193,7 @@ async function openBattleStage(entering=false,playerEnters=entering){
   $('spin').focus();
 }
 function startBattle(region='national'){
+  if($('setup').hidden||rolling) return;
   state=fresh(1,undefined,undefined,undefined,mode==='trial',region);
   screen('battleScreen');
   openBattleStage(true);
@@ -6266,7 +6351,9 @@ async function openSettlement(run){
   shownSettlements.add(run);
   if(run.finished){
     rolling=true;
-    try{await playChampionCredits();}finally{rolling=false;}
+    try{await playChampionCredits();}
+    catch(error){console.error(error);}
+    finally{rolling=false;}
   }
   $('settlementTitle').textContent=run.finished?musicLabel('冠軍挑戰結算','Champion Results'):musicLabel('正式模式結算','Run Results');
   $('settlementStage').textContent=settings.language==='en'?(run.finished?'Champion · Cleared stage ':run.surrendered?'Surrendered at stage ':'Defeated at stage ')+run.stage:run.finished?'通過第 '+run.stage+' 關 · 地區冠軍':(run.surrendered?'投降於第 ':'倒在第 ')+run.stage+' 關'+(run.kind?' · '+run.kind:'');
@@ -6279,6 +6366,7 @@ async function openSettlement(run){
   const controls=$('settlementScreen').querySelectorAll('.settlement-actions button');
   controls.forEach(button=>button.disabled=true);
   screen('settlementScreen');
+  try{
   const result=await changeWallet(wallet=>{
     const prior=wallet.settled[run.runId]??{coins:0,champion:false};
     const credited=Math.max(0,totalCoins-prior.coins);
@@ -6286,16 +6374,19 @@ async function openSettlement(run){
     wallet.gold+=credited;
     if(champion) wallet.championTickets=(wallet.championTickets??0)+1;
     const eggs=creditEggProgress(wallet,prior,run);
-    wallet.settled[run.runId]={coins:Math.max(totalCoins,prior.coins),champion:prior.champion||champion,...eggs};
-    return {credited,champion,balance:wallet.gold,hatched:eggs.hatched};
+    wallet.settled[run.runId]={coins:Math.max(totalCoins,prior.coins),champion:prior.champion||champion,eggStages:eggs.eggStages,hatched:eggs.hatched};
+    return {credited,champion,balance:wallet.gold,hatched:eggs.hatched,newlyHatched:eggs.newlyHatched};
   });
   applyHatchedEggs(result.hatched);
   $('settlementHatchSection').hidden=!result.hatched.length;
   $('settlementHatchTitle').textContent=musicLabel('本局孵化','Hatched this run');
   $('settlementHatches').innerHTML=result.hatched.map(egg=>settlementMon({...speciesById(egg.id),shiny:egg.shiny})).join('');
   $('settlementGold').textContent=musicLabel('本局獲得 '+totalCoins+' 金幣 · 本次入帳 '+result.credited+' · 持有 '+result.balance+(result.champion?' · 扭蛋券 ×1':''),'Earned '+totalCoins+' gold · Credited '+result.credited+' · Balance '+result.balance+(result.champion?' · Ticket ×1':''));
-  try{await showHatchAnimations(result.hatched);}
-  finally{controls.forEach(button=>button.disabled=false);}
+  await showHatchAnimations(result.newlyHatched);
+  }catch(error){
+    console.error(error);
+    $('settlementGold').textContent=musicLabel('結算顯示中斷。可返回主畫面，從存檔重新查看。','Results interrupted. Return to the menu and reopen the save.');
+  }finally{controls.forEach(button=>button.disabled=false);}
   $('playAgain').focus({preventScroll:true});
 }
 $('playAgain').onclick=()=>openSetup('formal');
@@ -6366,7 +6457,7 @@ const itemCatalog=Object.fromEntries([
   ['focus-band','氣勢披帶',3,'每關一次，受到致命招式時以 1 HP 撐住。'],
   ['wide-lens','廣角鏡',3,'每次拉霸額外使用一個已學會的隨機招式。只會觸發一次。'],
   ['leftovers','吃剩的東西',3,'每次拉霸後，每件讓在場隊員恢復 5% 最大 HP。'],
-  ...statBoosterIds.map((id,i)=>[id,['HP增強劑','攻擊增強劑','防禦增強劑','特攻增強劑','特防增強劑'][i],1,'每件使我方全員'+['最大 HP','攻擊','防禦','特攻','特防'][i]+'增加 10%。']),
+  ...statBoosterIds.map((id,i)=>[id,['HP增強劑','攻擊增強劑','防禦增強劑','特攻增強劑','特防增強劑'][i],1,'提升我方全員的'+['最大 HP','攻擊','防禦','特攻','特防'][i]+'。'+boosterDescription]),
   ['exp-share','學習裝置',1,'每通過 5 的倍數關卡，每件使全隊額外升 1 級。'],
   ['white-flute','白色玻璃哨',1,'使用後，接下來 5 關的對手等級額外降低 1 級。',true],
   ['lure','引蟲香水',2,'更容易遇到稀有寶可夢。'],
@@ -6396,7 +6487,7 @@ function borrowEnemyItem(s,target,reason='銳利之爪'){
   s.stolenItems[id]=(s.stolenItems[id]??0)+1;
   if(s.enemyItems){
     s.enemyItems[id]--;
-    if(id==='hp-up') for(const mon of s.foes) applyEnemyBoosters(mon,s.stage,s.enemyItems);
+    if(statBoosterIds.includes(id)) for(const mon of s.foes) applyEnemyBoosters(mon,s.stage,s.enemyItems);
   }
   else {target.borrowedItem=id;target.heldItem=null;}
   if(statBoosterIds.includes(id)) for(const mon of s.team) setBattleLevel(mon,mon.level,s);
@@ -6716,17 +6807,16 @@ async function applyUsableItem(run,id,fromReward=false){
 async function useInventoryItem(id){
   const def=itemCatalog[id];
   if(rolling||!def?.usable||!itemCount(state,id)||state.used[id]||state.result) return;
-  const confirmed=await itemPrompt('確認使用'+def.name+'嗎？','<button value="yes">確認</button>');
-  if(confirmed==='yes'){
-    rolling=true;
-    try{
-      if(await applyUsableItem(state,id)) render(id.startsWith('gem:')||id.startsWith('reel-stone:')||reelTools.has(id)||id==='color-screw'||id==='super-shard');
-    }finally{
-      rolling=false;
-      render(false);
-    }
+  const reels=state.reels;
+  rolling=true;
+  try{
+    const confirmed=await itemPrompt('確認使用'+def.name+'嗎？','<button value="yes">確認</button>');
+    if(confirmed==='yes') await applyUsableItem(state,id);
+  }finally{
+    rolling=false;
+    render(state.reels!==reels);
+    if(lowerMode==='items') setLowerPanel('items');
   }
-  if(lowerMode==='items') setLowerPanel('items');
 }
 function ballStock(s,id){
   return mode==='trial'&&id==='poke'?Infinity:s.balls?.[id]??0;
@@ -6743,6 +6833,8 @@ function ballPanel(){
 }
 function migrateRun(run){
   run.items??={};run.used??={};
+  run.log??=[];
+  run.matches??=[];
   run.coins??=0;run.newUnlocks??=[];run.upgrades??={};
   run.counterSpins??=itemCount(run,'quick-claw')?run.spins%6:0;
   if(!run.runId){
@@ -6764,9 +6856,14 @@ function migrateRun(run){
     if(run.stage>=100&&run.won) run.finished=true;
   }
   run.foes??=[run.enemy];
-  run.foeIndex??=0;
+  if(!run.foes[run.foeIndex]) run.foeIndex=0;
   run.enemy=run.foes[run.foeIndex];
-  for(const mon of run.foes) applyEnemyBoosters(mon,run.stage,run.enemyItems);
+  if(!run.team[run.active]?.left&&!run.result){
+    const active=run.team.findIndex(mon=>mon.left>0);
+    if(active>=0) run.active=active;
+    else run.result='挑戰失敗，隊伍已全數倒下。';
+  }
+  if(!run.team[run.active]) run.active=0;
   run.introSeen??=Boolean(!run.kind||run.spins||run.result);
   for(const p of [...run.team,...run.foes]){
     if(p.transformOriginal) continue;
@@ -6777,9 +6874,11 @@ function migrateRun(run){
     p.type=mon.type;p.base=mon.base;p.evol=mon.evol;p.yield=mon.yield;p.growth=mon.growth;
     p.stages??=neutralStages();
     while(p.stages.length<8) p.stages.push(0);
-    p.moves=p.moves.filter(name=>skillDetails[name]);
+    p.moves=(p.moves??[]).filter(name=>skillDetails[name]);
     if(!p.moves.length) p.moves=battleMon(p.id,p.level).moves;
   }
+  for(const mon of run.foes) applyEnemyBoosters(mon,run.stage,run.enemyItems);
+  if(mode==='formal') for(const p of run.team) setBattleLevel(p,p.level,run);
 }
 function inventoryPanel(){
   const rows=Object.keys({...state.items,...state.stolenItems}).flatMap(id=>{
@@ -6833,7 +6932,7 @@ function toggleLowerPanel(panel){
 }
 $('itemBox').onclick=()=>toggleLowerPanel('items');
 $('closeLower').onclick=()=>setLowerPanel(null);
-$('partyControl').onclick=()=>toggleLowerPanel('party');
+$('partyControl').onclick=()=>openPartySwitch();
 $('logControl').onclick=()=>{
   const log=$('log');
   log.hidden=!log.hidden;
@@ -6855,7 +6954,7 @@ function battleNavigation(event){
   const dialog=[...document.querySelectorAll('dialog[open]')].findLast(node=>node.matches(':modal'));
   const advance=$('trainerIntroAdvance');
   if(!dialog&&!advance.hidden&&space){event.preventDefault();advance.click();return true;}
-  const navigable=['rewardDialog','useItemDialog','partyPicker','battlePause','combatStats','skill','swapDialog','saveDialog','replacementDialog','trainerIntro','evolutionDialog','tutorialComplete','learn','surrenderDialog','catchDialog','reelInfoDialog','hotkeyDialog'];
+  const navigable=['rewardDialog','useItemDialog','partyPicker','battlePause','combatStats','skill','saveDialog','trainerIntro','evolutionDialog','tutorialComplete','learn','surrenderDialog','catchDialog','reelInfoDialog','hotkeyDialog'];
   if(dialog&&!navigable.includes(dialog.id)) return false;
   if(!dialog&&!lowerMode){
     if(space&&!rolling&&!$('nextBattle').hidden){event.preventDefault();$('nextBattle').click();return true;}
@@ -6917,9 +7016,6 @@ function captureShakeThreshold(mon,id='poke'){
   return legendarySpeciesIds.has(mon.id)&&healthBand(mon)==='red'
     ?Math.min(65536,Math.round(threshold*2**.25))
     :threshold;
-}
-function captureChance(mon,id='poke'){
-  return (captureShakeThreshold(mon,id)/65536)**4;
 }
 function rollCapture(mon,id,tutorial=false){
   const threshold=tutorial?65536:captureShakeThreshold(mon,id);
@@ -6990,7 +7086,8 @@ async function acceptCapture(s){
   const mon={...s.enemy,moves:s.enemy.moves.slice(),stages:neutralStages(),seeded:false,burned:false,status:null,confusion:0};
   if(mon.enemyBoosterCount) delete mon.enemyBoosterCount;
   if(mode==='formal'||s.stage>=10) setBattleLevel(mon,mon.level,s);
-  const slot=s.team.length<6?s.team.length:await choosePartyMember(s,'隊伍已滿。要用'+mon.name+'替換誰？',()=>true,'保留目前隊伍');
+  const full=s.team.length>=6;
+  const slot=full?await choosePartyMember(s,'成功收服 '+displayPokemon(mon)+'！',()=>true,'維持目前隊伍',null,{incoming:mon,confirm:true}):s.team.length;
   if(slot>=0){
     s.team[slot]=mon;
     s.log.unshift(mon.name+'加入了隊伍。');
@@ -7006,27 +7103,35 @@ async function acceptCapture(s){
   s.log.unshift((species[baseId-1]?.name??mon.name)+'已在正式組隊名單解鎖。');
   s.caught=true;
   saveProfile();
+  await showBattleDialogue(slot>=0?'成功收服 '+displayPokemon(mon)+'！'+displayPokemon(mon)+' 加入隊伍。':'成功收服 '+displayPokemon(mon)+'！維持目前隊伍。');
   await finishStage(s,'成功收服'+mon.name+'！');
 }
 async function throwCaptureBall(id){
   if(!ballCatalog[id]||rolling||state.result||trainerStage(state)||!ballStock(state,id)) return;
-  setLowerPanel(null);
-  if(ballStock(state,id)!==Infinity) state.balls[id]--;
-  const {caught,shakes}=rollCapture(state.enemy,id,state.tutorial&&state.stage===2);
   rolling=true;
-  render(false);
-  $('notice').textContent='投出了'+ballCatalog[id].name+'…';
-  $('captureBall').dataset.kind=id;
-  await playCapture(caught,shakes);
-  if(caught) await acceptCapture(state);
-  else{
-    state.log.unshift(state.enemy.name+'掙脫了寶可夢球。');
-    await enemyAct(state,true);
-    if(!state.enemy.left&&!state.result) await winBattle(state,state.team[state.active]);
+  try{
+    setLowerPanel(null);
+    if(ballStock(state,id)!==Infinity) state.balls[id]--;
+    const {caught,shakes}=rollCapture(state.enemy,id,state.tutorial&&state.stage===2);
+    render(false);
+    $('notice').textContent='投出了'+ballCatalog[id].name+'…';
+    $('captureBall').dataset.kind=id;
+    try{await playCapture(caught,shakes);}
+    catch(error){console.error(error);}
+    if(caught) await acceptCapture(state);
+    else{
+      state.log.unshift(state.enemy.name+'掙脫了寶可夢球。');
+      if(!state.enemyWarning) await enemyAct(state,true);
+      if(!state.enemy.left&&!state.result) await winBattle(state,state.team[state.active]);
+    }
+  }finally{
+    $('captureBall').hidden=true;
+    $('captureBall').replaceChildren();
+    $('enemy').querySelector('.portrait')?.classList.remove('absorbed','released');
+    rolling=false;
+    render(false);
   }
-  rolling=false;
   if(state.won&&!state.finished){advanceStage();return;}
-  render(false);
   $(state.won?'nextBattle':state.result?'reset':'spin').focus();
 }
 const savePrefix='poke-slot-run-v1-';
@@ -7036,9 +7141,13 @@ const modeLabel=(value,run)=>value==='formal'?adventureLabel(run.adventure?.regi
 function readRun(slot){
   try{
     const save=JSON.parse(localStorage.getItem(savePrefix+slot));
+    const run=save?.run;
     if(save?.version===1&&['formal','trial'].includes(save.mode)&&
-      (save.run?.universalRules?selectableEnergyCounts:[3,5,6]).includes(save.types?.length)&&save.run?.team?.length&&
-      save.run.reels?.length===boardSize&&save.run.positions?.length===boardSize) return save;
+      (run?.universalRules?selectableEnergyCounts:[3,5,6]).includes(save.types?.length)&&
+      Array.isArray(run?.team)&&run.team.length&&run.team.every(mon=>speciesById(mon?.id))&&
+      speciesById(run.enemy?.id)&&Array.isArray(run.reels)&&run.reels.length===boardSize&&
+      run.reels.every(reel=>Array.isArray(reel)&&reel.length>=boardSize)&&
+      Array.isArray(run.positions)&&run.positions.length===boardSize) return save;
   }catch{}
   return null;
 }
@@ -7130,7 +7239,7 @@ function finishManualSave(slot){
   if(writeRun(slot,state)) leaveBattle();
   else $('saveStatus').textContent=musicLabel('存檔失敗。本局仍在，請重試或關閉視窗。','Save failed. Try again or close this window to resume.');
 }
-$('saveBody').onclick=event=>{
+$('saveBody').onclick=async event=>{
   const answer=event.target.closest('[data-answer]');
   if(answer){
     const yes=answer.dataset.answer==='yes';
@@ -7156,24 +7265,33 @@ $('saveBody').onclick=event=>{
     }else finishManualSave(slot);
     return;
   }
-  if(savePage!=='load') return;
+  if(savePage!=='load'||rolling) return;
   const save=readRun(slot);
   if(!save) return;
-  mode=save.mode;
-  selectedTypes=save.types;
-  state=save.run;
-  migrateRun(state);
-  if(!state.universalRules&&!state.reelsCustomized&&stopGroups(state.reels).some(group=>!group.length)){
-    state.reels=buildReels(selectedTypes);
-    state.positions=state.reels.map(reel=>randomIndex(reel.length));
-    state.board=boardAt(state.reels,state.positions);
-    state.matches=[];
-    state.log.unshift('已將舊存檔輪盤更新為目前的試玩機率設定。');
-  }
+  const previous={mode,types:selectedTypes,run:state};
+  rolling=true;
+  try{
+    mode=save.mode;
+    selectedTypes=save.types;
+    state=save.run;
+    migrateRun(state);
+    if(!state.universalRules&&!state.reelsCustomized&&stopGroups(state.reels).some(group=>!group.length)){
+      state.reels=buildReels(selectedTypes);
+      state.positions=state.reels.map(reel=>randomIndex(reel.length));
+      state.board=boardAt(state.reels,state.positions);
+      state.matches=[];
+      state.log.unshift('已將舊存檔輪盤更新為目前的試玩機率設定。');
+    }
+  }catch(error){
+    mode=previous.mode;selectedTypes=previous.types;state=previous.run;
+    console.error(error);
+    $('saveStatus').textContent=musicLabel('無法讀取此存檔。','Could not load this save.');
+    return;
+  }finally{rolling=false;}
   selectedTeam=state.team.map(p=>p.id);
   $('saveDialog').close();
   screen('battleScreen');
-  openBattleStage();
+  await openBattleStage();
 };
 state=fresh();
 render();

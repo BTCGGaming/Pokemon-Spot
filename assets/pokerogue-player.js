@@ -62,7 +62,7 @@
     audio.play().catch(() => {});
   }
 
-  async function play(id, { arena, overlay, source, target, enemy, speed, volume, reduced, cry, fallbackSound }) {
+  async function play(id, { arena, overlay, rear = overlay, between = overlay, source, target, enemy, speed, volume, reduced, cry, fallbackSound, behindBattlers }) {
     const pending = preload(id);
     let timeout;
     const variants = await Promise.race([pending, new Promise(resolve => { timeout = setTimeout(() => resolve(null), 220); })]);
@@ -80,17 +80,23 @@
     };
     const from = point(source);
     const to = point(target);
-    const canvas = document.createElement('canvas');
-    canvas.width = 320;
-    canvas.height = 144;
-    const parent = overlay.getBoundingClientRect();
-    Object.assign(canvas.style, {
-      position: 'absolute', left: (field.left - parent.left) + 'px', top: (field.top - parent.top) + 'px',
-      width: field.width + 'px', height: field.height + 'px', imageRendering: 'pixelated',
-    });
-    overlay.append(canvas);
-    const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingEnabled = false;
+    const layers = new Map();
+    function context(layer) {
+      if (layers.has(layer)) return layers.get(layer);
+      const canvas = document.createElement('canvas');
+      canvas.width = 320;
+      canvas.height = 144;
+      const parent = layer.getBoundingClientRect();
+      Object.assign(canvas.style, {
+        position: 'absolute', left: (field.left - parent.left) + 'px', top: (field.top - parent.top) + 'px',
+        width: field.width + 'px', height: field.height + 'px', imageRendering: 'pixelated',
+      });
+      layer.append(canvas);
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+      layers.set(layer, ctx);
+      return ctx;
+    }
     const sprites = [source.querySelector('img'), target.querySelector('img')];
     const saved = [...new Set(sprites.filter(Boolean))].map(sprite => [sprite, sprite.style.transform, sprite.style.opacity, sprite.style.filter]);
     let bg = null;
@@ -110,8 +116,9 @@
     }
 
     function renderFrame(index) {
-      ctx.clearRect(0, 0, 320, 144);
+      for (const ctx of layers.values()) ctx.clearRect(0, 0, 320, 144);
       if (bg?.image) {
+        const ctx = context(rear);
         ctx.globalAlpha = bg.opacity;
         ctx.drawImage(bg.image, 0, 0, 320, 144);
         ctx.globalAlpha = 1;
@@ -138,6 +145,11 @@
         if (!sheet || frame.visible === false) continue;
         const columns = Math.floor(sheet.width / 96);
         if (!columns) continue;
+        const focus = frame.focus === 1 ? target : frame.focus === 2 ? source : null;
+        const onPlayer = focus?.closest('#player');
+        const layer = behindBattlers || frame.priority === 0 || frame.priority === 2 && (bg?.image || !onPlayer)
+          ? rear : frame.priority === 2 || frame.priority === 3 && focus && !onPlayer ? between : overlay;
+        const ctx = context(layer);
         const cell = frame.graphicFrame ?? 0;
         ctx.save();
         ctx.globalAlpha = opacity;
@@ -171,13 +183,13 @@
             renderFrame(visible);
             lastFrame = visible;
           }
-          if (frame < animation.frames.length && canvas.isConnected) requestAnimationFrame(tick);
+          if (frame < animation.frames.length && overlay.isConnected) requestAnimationFrame(tick);
           else resolve();
         }
         requestAnimationFrame(tick);
       });
     } finally {
-      canvas.remove();
+      for (const ctx of layers.values()) ctx.canvas.remove();
       for (const [sprite, transform, opacity, filter] of saved) {
         sprite.style.transform = transform;
         sprite.style.opacity = opacity;

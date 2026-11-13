@@ -893,8 +893,11 @@ button:not(:disabled):active{filter:brightness(.9)}
 .nds #playerHealthbox .fighter-status{left:13%;top:36%}
 .nds .healthbox .fighter-status img{width:3.75cqw;height:auto;image-rendering:pixelated}
 .nds .healthbox .fighter-status .custom-status{padding:.12cqw .2cqw;font-size:.72cqw;white-space:nowrap}
-.nds #player .portrait{bottom:4%;height:76%;overflow:visible;z-index:2}
-.nds #enemy .portrait{bottom:22%}
+/* Clip both fighter layers at the arena opening, including during attacks. */
+.nds #player{clip-path:inset(-.49% -125.65% -3.45% -3.04%)}
+.nds #enemy{clip-path:inset(-.49% -1.73% -3.45% -126.95%)}
+.nds #player .portrait{bottom:-11%;left:15.95%;right:15.95%;height:53.4%;overflow:visible;z-index:2}
+.nds #enemy .portrait{bottom:41%;left:12.83%;right:30.83%;height:36.45%}
 .nds #player .portrait.fainting{overflow:hidden}
 .nds #playerParty,.nds #enemyParty{top:32%;height:6.7%;width:19.35%;z-index:4}
 .nds #playerParty{left:1.83%}.nds #enemyParty{left:78.72%}
@@ -906,7 +909,6 @@ button:not(:disabled):active{filter:brightness(.9)}
 .nds :is(#itemBox,#ballBox,#spin,#exitBattle,#homeBattle,#partyControl):is(:hover,:focus,:active){outline:0;box-shadow:none}
 .nds :is(#itemBox,#ballBox,#spin,#exitBattle,#homeBattle,#partyControl):focus-visible{filter:brightness(.8)}
 
-.nds #player .portrait{bottom:-5.8%;height:76%;z-index:2}
 .nds #arena{z-index:0}
 .nds .healthbox .art-hp{overflow:hidden}
 .nds .healthbox .art-hp>span{z-index:1}

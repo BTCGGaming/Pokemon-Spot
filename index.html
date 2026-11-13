@@ -898,12 +898,15 @@ button:not(:disabled):active{filter:brightness(.9)}
 .nds #enemy{clip-path:inset(-.49% -1.73% -3.45% -126.95%)}
 .nds #player .portrait{bottom:-11%;left:15.95%;right:15.95%;height:53.4%;overflow:visible;z-index:2}
 .nds #enemy .portrait{bottom:41%;left:12.83%;right:30.83%;height:36.45%}
-.nds :is(#player,#enemy) .portrait{--sprite-max-height:12cqw;--sprite-scale:.19cqw}
-.nds #enemy .portrait{--sprite-max-height:8.2cqw;--sprite-scale:.16cqw}
+.nds :is(#player,#enemy) .portrait{--sprite-max-height:19cqw;--sprite-max-width:20cqw;--sprite-scale:.19cqw}
+.nds #enemy .portrait{--sprite-max-height:13cqw;--sprite-max-width:17cqw;--sprite-scale:.16cqw}
 .nds :is(#player,#enemy) .portrait[data-sized] img[data-mon-id]{
   width:var(--sprite-width);height:auto;aspect-ratio:var(--sprite-ratio);left:50%;translate:-50% 0
 }
-.nds .portrait[data-sized]{--sprite-width:min(100%,calc(var(--sprite-pixels) * var(--sprite-scale)),calc(var(--sprite-ratio) * var(--sprite-max-height)))}
+.nds #player .portrait[data-sized] img[data-mon-id]{bottom:calc(var(--sprite-growth) * 1.72cqw)}
+.nds .portrait[data-sized]{
+  --sprite-width:min(var(--sprite-max-width),calc(var(--sprite-pixels) * var(--sprite-scale) * (1 + var(--sprite-growth) * .4)),calc(var(--sprite-ratio) * var(--sprite-max-height)))
+}
 .nds .portrait[data-sized]:is(.stat-rising,.stat-falling)::after{mask-size:var(--sprite-width) auto}
 .nds #player .portrait.fainting{overflow:hidden}
 .nds #playerParty,.nds #enemyParty{top:32%;height:6.7%;width:19.35%;z-index:4}
@@ -3797,7 +3800,8 @@ function portrait(p,back=false){
   const fallback=p.art?'<svg viewBox="0 0 18 18" aria-hidden="true"><path fill="currentColor" d="'+p.art+'"/><rect x="'+p.eye[0]+'" y="'+p.eye[1]+'" width="1" height="2" fill="#172039"/></svg>':'<span class="mon-fallback">'+typeIcon(p.type[0])+' #'+String(p.id).padStart(3,'0')+'</span>';
   const art=sprite(p,false,back);
   const size=globalThis.pokerogueArt?.size(art);
-  const sizing=size?' data-sized style="--sprite-pixels:'+size[0]+';--sprite-ratio:'+(size[0]/size[1])+';--ink:':' style="--ink:';
+  const growth=size?Math.min(1,Math.max(0,(Math.max(...size)-55)/35)):0;
+  const sizing=size?' data-sized style="--sprite-pixels:'+size[0]+';--sprite-ratio:'+(size[0]/size[1])+';--sprite-growth:'+growth+';--ink:':' style="--ink:';
   return '<div class="portrait"'+sizing+(p.color||'#514962')+'">'+fallback+'<img data-mon-id="'+p.id+'" src="'+art+'" alt="" onerror="this.hidden=true"></div>';
 }
 const moveEffectLabels={

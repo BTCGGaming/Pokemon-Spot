@@ -904,7 +904,7 @@ button:not(:disabled):active{filter:brightness(.9)}
 .nds :is(#player,#enemy) .portrait[data-sized] img[data-mon-id]{
   width:var(--sprite-width);height:auto;aspect-ratio:var(--sprite-ratio);left:50%;translate:-50% 0
 }
-.nds #player .portrait[data-sized] img[data-mon-id]{bottom:calc(var(--sprite-growth) * 1.72cqw)}
+.nds #player .portrait[data-sized] img[data-mon-id]{bottom:calc(var(--sprite-growth) * 1.72cqw + var(--player-stance))}
 .nds .portrait[data-sized]{
   --sprite-width:min(var(--sprite-max-width),calc(var(--sprite-pixels) * var(--sprite-scale) * (1 + var(--sprite-growth) * .4)),calc(var(--sprite-ratio) * var(--sprite-max-height)))
 }
@@ -1444,6 +1444,7 @@ function renderCombatSummary(mon,page){
   }
 }
 function showCombatStats(mon,index=null){
+  if(!mon||rolling||document.querySelector('dialog[open]')) return;
   $('combatStatTitle').textContent=mon.name+'　Lv. '+mon.level;
   $('combatStatSprite').src=sprite(mon);
   $('combatStatTypes').innerHTML=mon.type.map(summaryType).join('');
@@ -1452,7 +1453,9 @@ function showCombatStats(mon,index=null){
   body.querySelectorAll('[data-summary-page]').forEach(button=>button.onclick=()=>renderCombatSummary(mon,button.dataset.summaryPage));
   renderCombatSummary(mon,'info');
   const swap=$('combatSwap');
-  swap.hidden=index===null||!canSwap(index);
+  swap.hidden=index===null||index===state.active||!mon.left||state.tutorial||Boolean(state.result);
+  swap.disabled=!swap.hidden&&!canSwap(index);
+  swap.title=swap.disabled?musicLabel('目前受到效果限制，無法換人。','An active effect prevents switching.'):'';
   swap.onclick=()=>{
     if(index===null||state.team[index]!==mon||!canSwap(index)) return;
     $('combatStats').close();
@@ -3802,7 +3805,8 @@ function portrait(p,back=false){
   const art=sprite(p,false,back);
   const size=globalThis.pokerogueArt?.size(art);
   const growth=size?Math.min(1,Math.max(0,(Math.max(...size)-55)/35)):0;
-  const sizing=size?' data-sized style="--sprite-pixels:'+size[0]+';--sprite-ratio:'+(size[0]/size[1])+';--sprite-growth:'+growth+';--ink:':' style="--ink:';
+  const stance=growth>=.7?-.25:growth>0?-.35:.85;
+  const sizing=size?' data-sized style="--sprite-pixels:'+size[0]+';--sprite-ratio:'+(size[0]/size[1])+';--sprite-growth:'+growth+';--player-stance:'+stance+'cqw;--ink:':' style="--ink:';
   return '<div class="portrait"'+sizing+(p.color||'#514962')+'">'+fallback+'<img data-mon-id="'+p.id+'" src="'+art+'" alt="" onerror="this.hidden=true"></div>';
 }
 const moveEffectLabels={
@@ -3854,7 +3858,7 @@ function party(team, active){
     const p=team[i];
     if(!p) return '<span aria-label="空位"></span>';
     const status=!p.left?'fainted':i===active?'active':'';
-    return '<button data-slot="'+i+'" aria-label="'+p.name+(status==='active'?'，上場中':status==='fainted'?'，已倒下':'')+'" title="'+p.name+'" class="'+status+'" '+(rolling?'disabled':'')+'>'+partyIcon(p)+'</button>';
+    return '<button data-slot="'+i+'" aria-label="'+p.name+(status==='active'?'，上場中':status==='fainted'?'，已倒下':'')+'" title="'+p.name+'" class="'+status+'">'+partyIcon(p)+'</button>';
   }).join('')+'</div>';
 }
 function reelMarkup(strip,isHit=()=>false){
@@ -4103,6 +4107,7 @@ function render(refreshBoard=true){
   for(const [id,team,ours] of [['playerParty',state.team,true],['enemyParty',state.foes??[state.enemy],false]]){
     $(id).querySelectorAll('[data-slot]').forEach(button=>{
       const index=Number(button.dataset.slot);
+      button.disabled=rolling;
       button.onclick=()=>showCombatStats(team[index],ours?index:null);
     });
   }
@@ -4153,15 +4158,23 @@ $('swapDialog').onclose=async()=>{
   state.log.unshift(state.team[index].name+'上場。');
   rolling=true;
   state.playerSending=true;
-  render(false);
-  await animatePlayerSendOut(state);
-  spikeDamage(state,'player',state.team[state.active]);
-  if(!state.team[state.active].left) await replaceFainted(state);
-  if(!state.result) await enemyAct(state);
-  if(!state.enemy.left&&!state.result) await winBattle(state,state.team[state.active]);
-  rolling=false;
+  try{
+    setLowerPanel(null);
+    render(false);
+    await animatePlayerSendOut(state);
+    spikeDamage(state,'player',state.team[state.active]);
+    if(!state.team[state.active].left) await replaceFainted(state);
+    else if(!state.result) await enemyAct(state);
+    if(!state.enemy.left&&!state.result) await winBattle(state,state.team[state.active]);
+  }finally{
+    state.playerSending=false;
+    $('playerSendBall').hidden=true;
+    $('playerSendBall').replaceChildren();
+    $('player').querySelector('.portrait')?.classList.remove('released');
+    rolling=false;
+    render(false);
+  }
   if(state.won&&!state.finished){advanceStage();return;}
-  render(false);
   $(state.won?'nextBattle':state.result?'reset':'spin').focus();
 };
 const randomIndex=length=>Math.floor(Math.random()*length);
@@ -4424,6 +4437,7 @@ function pullLever(){
 $('spin').onclick=async()=>{
   if(rolling||state.result) return;
   rolling=true;
+  try{
   $('ballBox').disabled=true;
   $('itemBox').disabled=true;
   $('exitBattle').disabled=true;
@@ -4433,6 +4447,7 @@ $('spin').onclick=async()=>{
   $('spin').disabled=true;
   $('reset').disabled=true;
   $('playerParty').querySelectorAll('button').forEach(button=>button.disabled=true);
+  $('enemyParty').querySelectorAll('button').forEach(button=>button.disabled=true);
   $('reelInfo').disabled=true;
   $('battleSpeed').disabled=true;
   if(state.tutorial) renderTutorialHint();
@@ -4501,9 +4516,12 @@ $('spin').onclick=async()=>{
     state.counterSpins=4;
     state.log.unshift('教學快轉：跳到第 5 次拉霸，示範對手完整行動。');
   }
-  try{
     await resolveSpin(state,finalBoard,tracks);
   }finally{
+    if($('grid').classList.contains('spinning')){
+      $('grid').classList.remove('spinning');
+      renderBoard(state.board,state.matches);
+    }
     rolling=false;
     render(false);
   }

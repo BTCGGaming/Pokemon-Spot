@@ -1,0 +1,1 @@
+globalThis.pokerogueAnimationData["267"]={"id":267,"graphic":"","frames":[],"frameTimedEvents":{},"position":4,"hue":0};

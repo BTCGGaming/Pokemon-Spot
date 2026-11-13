@@ -1058,7 +1058,7 @@ button:not(:disabled):active{filter:brightness(.9)}
 .reel-item-symbol.gold-crown{color:#e5ae45}.reel-item-symbol.eject-button{color:#e67f71}
 
 .nds #grid{left:25.2%;top:56.6%;width:49.4%;height:39.3%;gap:0 .68cqw;background:none;border-radius:0}
-.nds #lineFx{inset:56.6% 25.4% 4.1% 25.2%}
+.nds #lineFx{inset:56.6% 25.4% 4.1% 25.2%;z-index:7}
 .nds #grid .reel-window{border:0;background:transparent}
 .nds #grid .reel-strip .tile{border:0;background:none;display:grid;place-items:center;padding:0;box-shadow:none}
 .nds #grid .reel-strip .tile.hit{background:#ffdd7766}
@@ -4003,7 +4003,7 @@ function lineMultiplier(count){
   return count<=5?[1,1,1.2,1.5,1.8,2][count]:Math.min(25,20+count-5)/10;
 }
 function multiplierLabel(value){
-  return '×'+(value===1?'1.0':String(value));
+  return '×'+value.toFixed(1);
 }
 function lineOutline(line){
   const first=line[0],last=line.at(-1);
@@ -4018,6 +4018,8 @@ async function playWinningLines(matches){
   const tracks=$('grid').querySelectorAll('.reel-strip'),fx=$('lineFx');
   const short=reducedMotion.matches;
   const duration=Math.min(short?240:520,(short?1200:2500)/matches.length)/battleSpeed;
+  const sweep=duration*.62;
+  const hold=Math.max(90,duration-sweep);
   const prepared=matches.map(line=>{
     const ordered=line.slice().sort((a,b)=>a%boardSize-b%boardSize||a-b);
     return {ordered,tiles:ordered.map(cell=>tracks[cell%boardSize]?.children[Math.floor(cell/boardSize)])};
@@ -4026,41 +4028,39 @@ async function playWinningLines(matches){
     prepared.map(({ordered})=>'<g style="display:none">'+lineOutline(ordered)+'</g>').join('')+'</svg><strong></strong>';
   const outlines=fx.querySelectorAll('g'),label=fx.querySelector('strong');
   fx.hidden=false;
-  let lineIndex=-1,pulse;
-  function finishLine(index){
-    for(const tile of prepared[index].tiles) tile?.classList.add('hit');
-    outlines[index].style.display='none';
-  }
-  await new Promise(resolve=>{
-    let startTime;
-    function tick(now){
-      startTime??=now;
-      const elapsed=now-startTime;
-      const index=Math.min(prepared.length,Math.floor(elapsed/duration));
-      while(lineIndex<index){
-        if(lineIndex>=0) finishLine(lineIndex);
-        lineIndex++;
-      }
-      if(index===prepared.length){resolve();return;}
-      const progress=(elapsed-index*duration)/duration;
-      const tiles=prepared[index].tiles;
-      const sweeping=progress<.62;
-      const active=sweeping?tiles[Math.floor(progress/.62*tiles.length)]:null;
-      if(pulse!==active){
-        pulse?.classList.remove('line-pulse');
-        active?.classList.add('line-pulse');
-        pulse=active;
-      }
-      if(!sweeping&&outlines[index].style.display==='none'){
-        outlines[index].style.display='';
-        label.textContent=index?multiplierLabel(lineMultiplier(index+1)):'';
-      }else if(sweeping&&label.textContent) label.textContent='';
-      requestAnimationFrame(tick);
+  let pulse;
+  try{
+    for(const [index,{tiles}] of prepared.entries()){
+      label.textContent='';
+      await new Promise(resolve=>{
+        let startTime;
+        function tick(now){
+          startTime??=now;
+          const progress=(now-startTime)/sweep;
+          if(progress>=1){resolve();return;}
+          const active=tiles[Math.floor(progress*tiles.length)];
+          if(pulse!==active){
+            pulse?.classList.remove('line-pulse');
+            active?.classList.add('line-pulse');
+            pulse=active;
+          }
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+      pulse?.classList.remove('line-pulse');
+      pulse=null;
+      outlines[index].style.display='';
+      label.textContent=multiplierLabel(lineMultiplier(index+1));
+      // Start the hold on a fresh frame so a stall cannot skip this line's outline.
+      await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,hold)));
+      for(const tile of tiles) tile?.classList.add('hit');
+      outlines[index].style.display='none';
     }
-    requestAnimationFrame(tick);
-  });
-  pulse?.classList.remove('line-pulse');
-  fx.hidden=true;
+  }finally{
+    pulse?.classList.remove('line-pulse');
+    fx.hidden=true;
+  }
 }
 for(const [side,ours] of [['player',true],['enemy',false]]){
   $(side+'Moves').onclick=event=>{
@@ -4431,7 +4431,7 @@ function preloadReelGroups(reels,includeVertical=false){
     boardAt.toString(),matchingLines.toString(),stopGroups.toString(),stackLayout.toString(),verticalGroups.toString(),
     'self.onmessage=({data})=>{',
     'const groups=data.normal?stopGroups(data.reels):null,stacks=data.vertical?verticalGroups(data.reels):null;',
-    'const pack=(list,stacked)=>list.map(group=>Uint32Array.from(group.flatMap(row=>stacked?[row.mask,...row.positions]:row.positions)));',
+    'const pack=(list,stacked)=>list.map(group=>{const data=new Uint32Array(group.length*(boardSize+Number(stacked)));let offset=0;for(const row of group){if(stacked)data[offset++]=row.mask;data.set(row.positions,offset);offset+=boardSize;}return data;});',
     'const normal=groups?pack(groups,false):null,vertical=stacks?pack(stacks,true):null;',
     'self.postMessage({normal,vertical},[...(normal??[]),...(vertical??[])].map(group=>group.buffer));',
     '};'

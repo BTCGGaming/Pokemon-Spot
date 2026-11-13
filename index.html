@@ -897,7 +897,8 @@ button:not(:disabled):active{filter:brightness(.9)}
 .nds #player{clip-path:inset(-.49% -125.65% -3.45% -3.04%)}
 .nds #enemy{clip-path:inset(-.49% -1.73% -3.45% -126.95%)}
 .nds #player .portrait{bottom:-11%;left:15.95%;right:15.95%;height:53.4%;overflow:visible;z-index:2}
-.nds #enemy .portrait{bottom:41%;left:12.83%;right:30.83%;height:36.45%}
+.nds #enemy .portrait{bottom:41%;left:12.83%;right:30.83%;height:36.45%;overflow:visible}
+.nds #enemy .portrait.fainting{overflow:hidden}
 .nds :is(#player,#enemy) .portrait{--sprite-max-height:19cqw;--sprite-max-width:20cqw;--sprite-scale:.19cqw}
 .nds #enemy .portrait{--sprite-max-height:13cqw;--sprite-max-width:17cqw;--sprite-scale:.16cqw}
 .nds :is(#player,#enemy) .portrait[data-sized] img[data-mon-id]{

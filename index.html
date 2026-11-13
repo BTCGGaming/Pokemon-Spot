@@ -3865,26 +3865,21 @@ function healthBand(p){
   return p.left*4<p.hp?'red':p.left*5<p.hp*3?'yellow':'green';
 }
 let warnedLowHp;
-function paintBattleNumber(id,value,level=false){
+function paintBattleNumber(id,value,level=false,ownership=null){
   const box=$(id);
   const symbols=(level?['Lv']:[]).concat([...String(value)]);
   box.classList.add('pixel-number');
-  box.setAttribute('aria-label',(level?'等級 ':'')+value);
-  updateMarkup(box,symbols.map(symbol=>symbol===' '?'<span class="number-gap" aria-hidden="true"></span>':
+  const label=ownership==='party'?'隊伍內':'已解鎖';
+  const badge=ownership?'<img class="ownership-ball" src="'+ownershipBalls[ownership]+'" alt="" title="'+label+'">':'';
+  box.setAttribute('aria-label',(ownership?label+'，':'')+(level?'等級 ':'')+value);
+  updateMarkup(box,badge+symbols.map(symbol=>symbol===' '?'<span class="number-gap" aria-hidden="true"></span>':
     '<img src="'+emeraldBattleDetails.digits[symbol]+'" alt="" aria-hidden="true">').join(''));
 }
 const ownershipBalls={"party": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAWElEQVR4nGNkgAIvx6j/MPa2/csYYWy4JAh8m1L8/15W1H9kxYwgzppgSbjiF9eeg+mc6xCTWECc3vcScAXHr0MUYBgPAlfP7oVjZGvAinBJwl2L1xf4AABj2UY+Y/fWOwAAAABJRU5ErkJggg==", "unlocked": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAXElEQVR4nIVPMQoAMQhTuL/5FJ/nWsGte8dufUuPlkZuKRcQgolRmQ5EZIK7O4M/EEspZGY0xlitCRMvUVUxAANFxE7aCb33NNRak+duoLWW9b1pm25iXnv74hcvFGRGYPdghC8AAAAASUVORK5CYII="};
 function paintBattleLevel(side,mon){
-  const id=side+'Level';
-  paintBattleNumber(id,mon.level,true);
   const inParty=state.team.some(member=>member.id===mon.id);
   const status=inParty?'party':profile.unlocked.includes(mon.id)?'unlocked':null;
-  if(status){
-    const label=inParty?'隊伍內':'已解鎖';
-    const level=$(id);
-    level.innerHTML='<img class="ownership-ball" src="'+ownershipBalls[status]+'" alt="" title="'+label+'">'+level.innerHTML;
-    level.setAttribute('aria-label',label+'，等級 '+mon.level);
-  }
+  paintBattleNumber(side+'Level',mon.level,true,status);
 }
 function paintBattleName(side,mon){
   const name=$(side+'BattleName');

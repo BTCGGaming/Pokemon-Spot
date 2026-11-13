@@ -74,7 +74,7 @@
     if (!Object.values(events).flat().some(event => event.eventType === 'AnimTimedSoundEvent' && (assets.sounds[event.resourceName] || !event.resourceName && cry))) fallbackSound?.();
     const field = arena.getBoundingClientRect();
     const point = element => {
-      const box = element.getBoundingClientRect();
+      const box = (element.querySelector('img[data-mon-id]:not([hidden])') ?? element).getBoundingClientRect();
       return [(box.left + box.width / 2 - field.left) * 320 / field.width,
         (box.top + box.height * .58 - field.top) * 144 / field.height];
     };
@@ -189,6 +189,7 @@
 
   globalThis.pokerogueArt = {
     url, preload, play,
+    size: src => src.startsWith(base.href) ? assets.dimensions?.[decodeURIComponent(src.slice(base.href.length))] : undefined,
     species: (key, shiny, back) => url(assets.species[(back ? 'back/' : '') + (shiny ? 'shiny/' : '') + key]),
     trainer: key => assets.trainers[key]?.map(url),
     ball: key => url(assets.balls[key]),

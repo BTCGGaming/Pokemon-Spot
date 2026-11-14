@@ -564,10 +564,17 @@ button:not(:disabled):active{filter:brightness(.9)}
 .desktop .reel-strip .tile .type-icon{width:4.2cqw;height:4.2cqw}
 .desktop .reel-strip .tile.hit{background:#f6edda;outline:0}
 .desktop .reel-strip .tile.line-pulse{background:#fff5ae;box-shadow:inset 0 0 0 .24cqw #ffcb53}
-.desktop .tile.line-pulse .type-icon{animation:line-icon .24s ease-out both}
-@keyframes line-icon{0%{filter:brightness(2);transform:scale(1.18)}100%{filter:brightness(1);transform:none}}
+
 #lineFx{position:absolute;inset:10.75% 35.42% 38.5% 26.04%;z-index:4;display:grid;place-items:center;pointer-events:none}
 #lineFx svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;fill:none;stroke:#ffe17a;stroke-width:6}
+#lineFx .line-aura{stroke:#ff9d46;stroke-width:21;opacity:.36}
+#lineFx .line-trim{stroke:#ffb64c;stroke-width:12}
+#lineFx .line-tier-2 .line-core{stroke:#fff5b5;stroke-width:4}
+#lineFx .line-tier-3 .line-aura{stroke:#ff60ac;stroke-width:29;opacity:.42}
+#lineFx .line-tier-3 .line-trim{stroke:#ffb53f;stroke-width:16}
+#lineFx .line-tier-3 .line-core{stroke:#fff8cd;stroke-width:5;stroke-dasharray:20 5}
+#lineFx .line-spark{fill:#fff4a6;stroke:#b75b3f;stroke-width:2}
+#lineFx .line-tier-3 .line-spark{fill:#fff9db;stroke:#ef74bb;stroke-width:3}
 #lineFx strong{position:relative;font-size:6.4cqw;line-height:1;color:#fff5a0;-webkit-text-stroke:.16cqw #7c3b2b;text-shadow:.22cqw .22cqw #2f1c39}
 @keyframes line-frame{0%{opacity:0}23%,78%{opacity:1}100%{opacity:.15}}
 
@@ -999,6 +1006,8 @@ button:not(:disabled):active{filter:brightness(.9)}
 .nds .moves-panel .move-name{font-size:1.42cqw;line-height:1.18;text-align:center;padding:.08em .1em;max-width:100%}
 .nds .moves-panel .move-name[data-effect="normal"]{color:#000}
 .nds .moves-panel .move-name[data-effect="immune"]{color:#66636d}
+.line-flight{position:fixed!important;z-index:999;display:block;pointer-events:none;margin:0!important;image-rendering:pixelated;filter:drop-shadow(0 0 3px #ffd96f)}
+.nds .moves-panel button[data-move].move-highlight{background:#fff2bd;box-shadow:inset 0 0 0 1px #dec481}
 .nds .moves-panel .move-name[data-effect="strong"]{color:#226229}
 .nds .moves-panel .move-name[data-effect="weak"]{color:#a92124}
 .nds .healthbox :is(#playerBattleName,#enemyBattleName){display:flex;align-items:center;gap:.32cqw;overflow:visible}
@@ -3191,6 +3200,7 @@ async function executeMove(s,...args){
   const active=visible?[...new Set([s.team[s.active],s.enemy])]:[];
   const previous=active.map(mon=>[mon,mon.stages.slice()]);
   const statuses=active.map(mon=>[mon,mon.status,Boolean(mon.confusion)]);
+  const side=args[3];
   try{
     return await executeMoveCore(s,...args);
   }finally{
@@ -3206,6 +3216,7 @@ async function executeMove(s,...args){
       await playRogueEffect('common-'+effect,portrait,portrait);
     }
     await playBerryAnimations(s);
+    if(side==='enemy'&&s===state) setMoveHighlights(s,'enemy',s.enemy,[]);
   }
 }
 async function executeMoveCore(s,source,target,name,side,counter=false,sequence='',scale=1,support=[],depth=0,potency=1){
@@ -3292,6 +3303,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   if(custom==='trump') source.trumpUses=(source.trumpUses??0)+1;
   if(side==='player'&&activeAbility(source)===1&&skill.power&&Math.random()<.05) alterSpinDelay(s,side,1);
   $('notice').textContent=action+'！'+sequence;
+  if(side==='enemy'&&s===state&&source===s.enemy) setMoveHighlights(s,'enemy',source,[name]);
   if(custom==='chatter') playSpeciesCry(source,.16);
   else await animateAttack(side,skill.self?side:other,skill);
   const powder=other==='player'?itemCount(s,'bright-powder'):enemyItemCount(s,'bright-powder');
@@ -3578,6 +3590,7 @@ function trainerDefeatLine(run){
   return lines[name]??(kind.startsWith('反派組織')?'可惡，竟然輸給你了！':'這場對戰是你贏了！');
 }
 async function finishStage(s,message){
+  clearMoveHighlights(s);
   delete s.enemyWarning;
   if(s.won||s.rewardPending) return;
   s.rewardPending=true;
@@ -3765,6 +3778,7 @@ async function resolveSpin(s,board,settledTracks=null){
     await checkHealingBerry(s);
   }finally{
     activeBerrySpins.delete(s);
+    clearMoveHighlights(s);
   }
 }
 function abilityBoard(run,original){
@@ -3813,8 +3827,12 @@ async function resolveSpinCore(s,board,settledTracks=null){
     s.spins++;
     s.matches=matchingLines(board).map(line=>line.cells);
     renderBoard(board,[],settledTracks);
-    await playWinningLines(s.matches);
     const lead=s.team[s.active], enemy=s.enemy;
+    const lines=matchingLines(board);
+    const qualified=moveQueue(lead.moves,lines,lead);
+    const feedback=moveLineFeedback(s,lead,lines,qualified);
+    await playWinningLines(s.matches,feedback);
+    setMoveHighlights(s,'player',lead,lead.moves);
     const startingHp=enemy.left;
     for(const [index,name] of lead.moves.entries()){
       $('notice').textContent=lead.name+'使用'+name+'！ '+(index+1)+' / '+lead.moves.length;
@@ -3863,6 +3881,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
   renderBattleProgress(s);
   const p=s.team[s.active];
   const matched=matchingLines(board,false,activeAbility(p)===100);
+  let attacks=moveQueue(p.moves,matched,p);
   const waterLines=matched.filter(line=>line.type==='水'||line.type===wildReelType).length;
   if(waterLines){
     if(activeAbility(p)===44) healMon(s,p,'player',Math.max(1,Math.floor(p.hp*.05*waterLines)));
@@ -3872,7 +3891,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
   renderBoard(board,[],settledTracks);
   if(s.matches.length){
     $('notice').textContent=s.matches.length+' 條連線';
-    await playWinningLines(s.matches);
+    await playWinningLines(s.matches,moveLineFeedback(s,p,matched,attacks));
     const substitutedNormal=matched.filter(line=>line.type==='普通'&&line.cells.some(index=>board[index]===wildReelType)).length;
     const universal=matched.filter(line=>line.type===wildReelType).length;
     const details=[
@@ -3882,7 +3901,6 @@ async function resolveSpinCore(s,board,settledTracks=null){
     const summary=musicLabel(s.matches.length+' 條連線 · 最終傷害 ',s.matches.length+' lines · Damage ')+multiplierLabel(multiplier);
     s.log.unshift([summary,...details].join(' · '));
   }
-  let attacks=moveQueue(p.moves,matched,p);
   if(p.disable&&attacks.length){const blocked=pick(attacks);attacks=attacks.filter(attack=>attack!==blocked);p.disable=false;}
   if(p.follow&&attacks.length){attacks.sort((a,b)=>Number(Boolean(skillDetails[b.name].power))-Number(Boolean(skillDetails[a.name].power)));p.follow=false;}
   if(p.encore&&attacks.length>1){const repeated=pick(attacks),omitted=pick(attacks.filter(attack=>attack!==repeated));attacks=[...attacks.filter(attack=>attack!==omitted),repeated];p.encore=false;}
@@ -4245,6 +4263,24 @@ const moveEffectLabels={
   immune:['無效','No effect'],strong:['效果絕佳','Super effective'],
   weak:['效果微弱','Not very effective'],normal:['一般效果','Normal effectiveness']
 };
+function paintMoveHighlights(run,side,mon){
+  if(run!==state) return;
+  const names=moveHighlights.get(run)?.get(mon);
+  for(const button of $(side+'Moves').querySelectorAll('[data-move]')){
+    button.classList.toggle('move-highlight',Boolean(names?.has(mon.moves[Number(button.dataset.move)])));
+  }
+}
+const moveHighlights=new WeakMap();
+function setMoveHighlights(run,side,mon,names){
+  if(!moveHighlights.has(run)) moveHighlights.set(run,new WeakMap());
+  moveHighlights.get(run).set(mon,new Set(names));
+  paintMoveHighlights(run,side,mon);
+}
+function clearMoveHighlights(run){
+  moveHighlights.delete(run);
+  paintMoveHighlights(run,'player',run.team[run.active]);
+  paintMoveHighlights(run,'enemy',run.enemy);
+}
 function moveButtons(mon,target){
   return Array.from({length:4},(_,i)=>{
     const name=mon.moves[i],skill=skillDetails[name];
@@ -4346,7 +4382,70 @@ function lineOutline(line){
   const d=Math.hypot(x2-x1,y2-y1),dx=(x2-x1)*48/d,dy=(y2-y1)*48/d;
   return '<polygon points="'+[[x1-dx+dy,y1-dy-dx],[x2+dx+dy,y2+dy-dx],[x2+dx-dy,y2+dy+dx],[x1-dx-dy,y1-dy+dx]].map(p=>p.join(',')).join(' ')+'"/>';
 }
-async function playWinningLines(matches){
+function moveLineFeedback(run,mon,matched,attacks){
+  const byLine=new Map();
+  for(const {name,supports,minimum} of attacks){
+    const required=supports.slice(0,minimum);
+    const index=matched.indexOf(required.at(-1));
+    if(!byLine.has(index)) byLine.set(index,[]);
+    byLine.get(index).push({name,required});
+  }
+  const highlighted=new Set();
+  return async (index,tilesByLine)=>{
+    const entries=byLine.get(index);
+    if(!entries||run!==state||run.team[run.active]!==mon) return;
+    if(!reducedMotion.matches) await wait(150);
+    const buttons=$('playerMoves').querySelectorAll('[data-move]');
+    const flights=[];
+    for(const {name,required} of entries){
+      highlighted.add(name);
+      for(const button of buttons){
+        if(mon.moves[Number(button.dataset.move)]!==name) continue;
+        for(const line of required){
+          const tiles=tilesByLine[matched.indexOf(line)];
+          const center=tiles[Math.floor(tiles.length/2)];
+          const icon=tiles.map(tile=>tile?.querySelector('.type-icon')).find(icon=>icon&&!icon.classList.contains('wild-reel-icon'))??center?.querySelector('.type-icon');
+          if(icon&&center) flights.push(flyLineIcon(icon,center,button));
+        }
+      }
+    }
+    await Promise.all(flights);
+    setMoveHighlights(run,'player',mon,highlighted);
+    if(!reducedMotion.matches) await wait(150);
+  };
+}
+async function flyLineIcon(icon,origin,target){
+  if(reducedMotion.matches||typeof target.animate!=='function') return;
+  const from=origin.getBoundingClientRect(),to=target.getBoundingClientRect();
+  const size=Math.min(from.width,from.height,to.width,to.height)*1.32;
+  if(!size) return;
+  const copy=icon.cloneNode(true);
+  copy.classList.add('line-flight');
+  Object.assign(copy.style,{left:from.left+from.width/2-size/2+'px',top:from.top+from.height/2-size/2+'px',width:size+'px',height:size+'px'});
+  document.body.append(copy);
+  const x=to.left+to.width/2-from.left-from.width/2;
+  const y=to.top+to.height/2-from.top-from.height/2;
+  try{
+    await copy.animate([
+      {transform:'translate(0,0) scale(.85)',opacity:.95},
+      {transform:'translate('+x*.5+'px,'+(y*.5-18)+'px) scale(1)',offset:.5},
+      {transform:'translate('+x+'px,'+y+'px) scale(.42)',opacity:.3}
+    ],{duration:550/battleSpeed,easing:'ease-out'}).finished;
+  }catch{}finally{copy.remove();}
+}
+function winningLineFrame(line,index){
+  const tier=index>=4?3:index>=2?2:1;
+  const outline=lineOutline(line);
+  const layer=name=>'<g class="'+name+'">'+outline+'</g>';
+  const sparks=(tier===3?line:tier===2?[line[0],line.at(-1)]:[]).map(cell=>{
+    const x=(cell%boardSize+.5)*100;
+    const y=(Math.floor(cell/boardSize)+.5)*100;
+    return '<path class="line-spark" transform="translate('+x+' '+y+')" d="M0 -17 4 -4 17 0 4 4 0 17 -4 4 -17 0 -4 -4Z"/>';
+  }).join('');
+  return '<g data-line-frame class="line-tier-'+tier+'" style="display:none">'+
+    (tier>1?layer('line-aura')+layer('line-trim'):'')+layer('line-core')+sparks+'</g>';
+}
+async function playWinningLines(matches,onLine){
   if(!matches.length) return;
   const tracks=$('grid').querySelectorAll('.reel-strip'),fx=$('lineFx');
   const short=reducedMotion.matches;
@@ -4358,8 +4457,9 @@ async function playWinningLines(matches){
     return {ordered,tiles:ordered.map(cell=>tracks[cell%boardSize]?.children[Math.floor(cell/boardSize)])};
   });
   fx.innerHTML='<svg viewBox="0 0 500 500" preserveAspectRatio="none">'+
-    prepared.map(({ordered})=>'<g style="display:none">'+lineOutline(ordered)+'</g>').join('')+'</svg><strong></strong>';
-  const outlines=fx.querySelectorAll('g'),label=fx.querySelector('strong');
+    prepared.map(({ordered},index)=>winningLineFrame(ordered,index)).join('')+'</svg><strong></strong>';
+  const outlines=fx.querySelectorAll('[data-line-frame]'),label=fx.querySelector('strong');
+  const tilesByLine=prepared.map(line=>line.tiles);
   fx.hidden=false;
   let pulse;
   try{
@@ -4385,8 +4485,14 @@ async function playWinningLines(matches){
       pulse=null;
       outlines[index].style.display='';
       label.textContent=multiplierLabel(lineMultiplier(index+1));
+      const pops=short?[]:tiles.map(tile=>tile?.querySelector('.type-icon')?.animate?.([
+        {transform:'scale(1)'},
+        {transform:'scale(1.42)',offset:.28},
+        {transform:'scale(1)'}
+      ],{duration:Math.max(125,225/battleSpeed),easing:'ease-out'}).finished);
+
       // Start the hold on a fresh frame so a stall cannot skip this line's outline.
-      await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,hold)));
+      await Promise.all([new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,hold))),onLine?.(index,tilesByLine),Promise.allSettled(pops)]);
       for(const tile of tiles) tile?.classList.add('hit');
       outlines[index].style.display='none';
     }
@@ -4530,6 +4636,8 @@ function render(refreshBoard=true){
   updateMarkup($('enemy'),panel(state.enemy,false),state.enemy);
   updateMarkup($('playerMoves'),movePanel(p,state.enemy));
   updateMarkup($('enemyMoves'),movePanel(state.enemy,p));
+  paintMoveHighlights(state,'player',p);
+  paintMoveHighlights(state,'enemy',state.enemy);
   updateHp('playerHp',p);
   updateHp('enemyHp',state.enemy);
   updateMarkup($('playerParty'),party(state.team,state.active));
@@ -4696,7 +4804,7 @@ function moveQueue(moves,matched,mon){
     const minimum=(rule?.min||1)+(rule?.effect==='trump'?(mon?.trumpUses??0):0);
     if(supports.length<minimum) return [];
     const full=supports.filter(line=>lineSupportsType(line,rule?.lineType??skill.type)===1);
-    return [{name,supports,half:full.length<minimum}];
+    return [{name,supports,minimum,half:full.length<minimum}];
   });
 }
 function stopGroups(reels){

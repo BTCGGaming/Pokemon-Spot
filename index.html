@@ -1093,6 +1093,17 @@ button:not(:disabled):active{filter:brightness(.9)}
 .battle-choice-preview strong img{width:auto;height:1em;vertical-align:middle;image-rendering:pixelated}
 .battle-choice-status img:not(.type-icon){width:auto;height:1em}
 @media(max-width:540px){.battle-choice-layout{grid-template-columns:minmax(0,1fr)}}
+#learn{width:min(94vw,1080px);max-width:none;padding:clamp(6px,1.2vmin,16px);font-size:clamp(12px,2.25vmin,18px)}
+#learn .learn-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:.65em}
+#learn .learn-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4em}
+#learn .learn-entry{min-width:0;display:grid;align-content:start;gap:.3em;padding:.48em .55em;background:#e7efd2;border:2px solid #273b37;color:#243b35;text-align:left;margin:0;font:inherit;line-height:1.18;white-space:normal;overflow-wrap:anywhere}
+#learn button.learn-entry:is(:hover,:focus-visible,[aria-pressed=true]){background:#fff2ac;outline:2px solid #b28334;outline-offset:-3px}
+#learn button.learn-entry[aria-pressed=true] strong::before{content:"▶ "}
+#learn .learn-meta,#learn .learn-lines{display:flex;align-items:center;gap:.35em;flex-wrap:wrap}
+#learn .learn-meta img,#learn .learn-meta .type-icon,#learn .learn-lines .type-icon{height:1em;width:1em;object-fit:contain}
+#learn .learn-lines svg{width:1.45em;height:1.25em;color:#365846;flex:none}
+@media(max-width:620px) and (orientation:portrait){#learn .learn-layout{grid-template-columns:1fr}#learn .battle-choice-side{grid-row:1}}
+@media(max-height:440px) and (orientation:landscape){#learn{font-size:clamp(9px,3vh,13px)}#learn .learn-entry{gap:.15em;padding:.26em .35em}#learn h2{margin-bottom:.25em}}
 #musicStyleStatus:empty{display:none}
 #musicStyleStatus{font-size:.85em;overflow-wrap:anywhere}
 
@@ -2176,23 +2187,30 @@ function battleChoice(dialog,form,canCancel=true){
 function chooseForgottenMove(p,name){
   const dialog=$('learn'),form=$('learnChoices');
   $('learnTitle').textContent=displayPokemon(p)+' 想學會 '+displayMove(name);
-  const preview=move=>{
-    const skill=skillDetails[move];
-    return '<div class="battle-choice-preview"><strong>'+summaryType(skill.type)+' '+displayMove(move)+'</strong>'+
-      '<p>威力 '+movePowerText(move,p)+'　命中 '+(skill.accuracy?skill.accuracy+'%':'—')+'</p>'+
-      triggerDiagrams(moveRules[move]?.lineType??skill.type,moveRules[move])+'<p>'+moveEffectText(move)+'</p></div>';
+  const details=move=>{
+    const skill=skillDetails[move],rule=moveRules[move],type=rule?.lineType??skill.type;
+    const shapes=[['H',2,12,22,12],['V',12,2,12,22],['D',3,3,21,21],['D',3,21,21,3]];
+    const diagrams=shapes.filter(([shape])=>(rule?.shapes??'HVD').includes(shape)).map(([shape,x,y,endX,endY])=>{
+      const dots=Array.from({length:matchLength},(_,i)=>{
+        const t=i/(matchLength-1);
+        return '<circle cx="'+(x+(endX-x)*t)+'" cy="'+(y+(endY-y)*t)+'" r="1.8" fill="currentColor"/>';
+      }).join('');
+      const label={H:musicLabel('橫線','Horizontal'),V:musicLabel('直線','Vertical'),D:musicLabel('斜線','Diagonal')}[shape];
+      return '<svg viewBox="0 0 24 24" role="img" aria-label="'+label+'"><line x1="'+x+'" y1="'+y+'" x2="'+endX+'" y2="'+endY+'" stroke="currentColor"/>'+dots+'</svg>';
+    }).join('');
+    const requirement=rule?.shapes==='P'?musicLabel('被動，無需連線','Passive · no lines'):
+      (rule?.min??1)+musicLabel(' 條 · ',' line(s) · ')+(type==='普通'?musicLabel('任意屬性','Any type'):typeIcon(type)+type)+diagrams;
+    return '<strong>'+displayMove(move)+'</strong><span class="learn-meta">'+summaryType(skill.type)+' '+skill.type+' · '+musicLabel('威力','Power')+' '+movePowerText(move,p)+'</span><span>'+moveEffectText(move)+'</span><span class="learn-lines">'+requirement+'</span>';
   };
-  form.innerHTML='<div class="battle-choice-layout"><div class="battle-choice-list"><h3>原有招式</h3>'+
-    p.moves.map((move,i)=>'<button type="button" class="battle-choice-row" data-forget="'+i+'" aria-pressed="false">'+
-      typeIcon(skillDetails[move].type)+'<span>'+displayMove(move)+'</span></button>').join('')+
-    '<div data-old-preview></div></div><div class="battle-choice-side"><h3>新招式</h3>'+preview(name)+'</div></div>'+
-    '<p class="battle-choice-note" aria-live="polite">選擇要遺忘的招式。</p><div class="battle-choice-actions"><button value="cancel">放棄學習</button><button data-commit disabled>確認換招</button></div>';
+  form.innerHTML='<div class="learn-layout"><div class="battle-choice-list"><h3>'+musicLabel('原有招式','Current moves')+'</h3><div class="learn-grid">'+
+    p.moves.map((move,i)=>'<button type="button" class="learn-entry" data-forget="'+i+'" aria-pressed="false">'+details(move)+'</button>').join('')+
+    '</div></div><div class="battle-choice-side"><h3>'+musicLabel('新招式','New move')+'</h3><div class="learn-entry">'+details(name)+'</div></div></div>'+
+    '<p class="battle-choice-note" aria-live="polite">'+musicLabel('選擇要遺忘的招式。','Choose a move to forget.')+'</p><div class="battle-choice-actions"><button value="cancel">'+musicLabel('放棄學習','Skip learning')+'</button><button data-commit disabled>'+musicLabel('確認換招','Replace move')+'</button></div>';
   form.onclick=event=>{
     const button=event.target.closest('[data-forget]');
     if(!button) return;
     const index=Number(button.dataset.forget),old=p.moves[index];
     form.querySelectorAll('[data-forget]').forEach(row=>row.setAttribute('aria-pressed',String(row===button)));
-    form.querySelector('[data-old-preview]').innerHTML=preview(old);
     form.querySelector('.battle-choice-note').textContent='遺忘「'+displayMove(old)+'」 → 學習「'+displayMove(name)+'」';
     const confirm=form.querySelector('[data-commit]');
     confirm.value=index;

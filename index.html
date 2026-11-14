@@ -5889,8 +5889,13 @@ function card(mon,group,selected=false,locked=false,seen=false){
 let dexRegion=0;
 let ownedDexOnly=false;
 const dexRegionEnds=[151,251,386,493,649,721,809];
+<<<<<<< HEAD
 function renderSetup(){
   energyRule.textContent=musicLabel('默認10個普通屬性圖案,普通系能觸發其他屬性50%效果','Starts with 10 Normal symbols. Normal lines trigger other types at 50% effect.');
+=======
+function renderSetup(){
+  energyRule.textContent=musicLabel('默認10個萬用屬性圖案,普通系能觸發其他屬性50%效果','Starts with 10 Wild symbols. Normal lines trigger other types at 50% effect.');
+>>>>>>> f830ec1ae26a1dd1176d918dff71c9dfd726e250
   const pickingStarter=mode==='formal'&&!profile.starter;
   $('setupTitle').textContent=mode==='trial'?musicLabel('新手教學 · 1 / 6','Tutorial · 1 / 6'):musicLabel('開始冒險 · 組隊','Start Adventure · Team Builder');
   $('starterSetup').hidden=!pickingStarter;

@@ -5413,7 +5413,10 @@ const settings={
 const defaultHotkeys={spin:'Space',itemBox:'KeyI',ballBox:'KeyP'};
 const hotkeyActions={spin:'拉霸',itemBox:'道具',ballBox:'收服'};
 let editingHotkey=null;
-function hotkeyFor(action){return settings.hotkeys[action]??defaultHotkeys[action];}
+function hotkeyFor(action){
+  const code=settings.hotkeys[action];
+  return typeof code==='string'&&code.trim()?code:defaultHotkeys[action];
+}
 function keyLabel(code){return code==='Space'?'SPACE':code.replace(/^(?:Key|Digit|Numpad)/,'');}
 function refreshHotkeyTitles(){
   for(const [action,label] of Object.entries(hotkeyActions)) $(action).title=label+' · '+keyLabel(hotkeyFor(action));

@@ -7382,24 +7382,20 @@ function captureShakeThreshold(mon,id='poke'){
   if(!mon.left||!mon.hp||!ballCatalog[id]) return 0;
   if(id==='master') return 65536;
   const rate=mon.catchRate??speciesById(mon.id)?.catchRate??emeraldCatchRates[mon.id]??0;
-  const scaledRate=Math.floor(rate*ballCatalog[id].multiplier/10);
-  let odds=Math.floor(scaledRate*(3*mon.hp-2*mon.left)/(3*mon.hp));
-  if(['sleep','freeze'].includes(mon.status)) odds*=2;
-  if(mon.burned||['burn','poison','paralysis','toxic'].includes(mon.status)) odds=Math.floor(odds*15/10);
-  if(odds>=255) return 65536;
-  if(odds<=0) return 0;
-  const root=Math.floor(Math.sqrt(Math.floor(Math.sqrt(Math.floor(16711680/odds)))));
-  const threshold=Math.min(65536,Math.floor(1048560/root));
-  // Capture requires four checks, so scale each threshold by the fourth root of two.
-  return legendarySpeciesIds.has(mon.id)&&healthBand(mon)==='red'
-    ?Math.min(65536,Math.round(threshold*2**.25))
-    :threshold;
+  const hpFactor=(3*mon.hp-2*mon.left)/(3*mon.hp);
+  const statusFactor=['sleep','freeze'].includes(mon.status)?2.5:
+    mon.burned||['burn','poison','toxic','paralysis'].includes(mon.status)?1.5:1;
+  const modified=Math.round(hpFactor*rate*(ballCatalog[id].multiplier/10)*statusFactor*(mon.shiny?2:1));
+  if(modified>=255) return 65536;
+  const shakeProbability=(modified/255)**.1875;
+  const legendaryRedBonus=legendarySpeciesIds.has(mon.id)&&healthBand(mon)==='red'?Math.cbrt(2):1;
+  return Math.min(65536,Math.round(65536*shakeProbability*legendaryRedBonus));
 }
 function rollCapture(mon,id,tutorial=false){
   const threshold=tutorial?65536:captureShakeThreshold(mon,id);
-  let checks=0;
-  while(checks<4&&(threshold===65536||randomIndex(65536)<threshold)) checks++;
-  return {caught:checks===4,shakes:Math.min(3,checks)};
+  let shakes=0;
+  while(shakes<3&&(threshold===65536||randomIndex(65536)<threshold)) shakes++;
+  return {caught:shakes===3,shakes};
 }
 function baseSpeciesId(id){
   while(parentIds.has(id)) id=parentIds.get(id);

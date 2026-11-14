@@ -4655,12 +4655,10 @@ function buildReels(picks){
   return fallbackReels[picks.length].map(pattern=>rotate([...pattern].map(i=>order[i])));
 }
 function buildWildReels(picks){
-  const normalSelected=picks.includes('普通');
-  const order=shuffle(picks.filter(type=>type!=='普通'));
-  const slots=normalSelected?2:4;
+  const order=shuffle(picks.slice());
   return Array.from({length:boardSize},(_,column)=>{
-    const regular=Array.from({length:slots},(_,index)=>order[(slots*column+index)%order.length]);
-    return shuffle([...regular,...Array(6-slots).fill('普通')]);
+    const regular=Array.from({length:4},(_,index)=>order[(4*column+index)%order.length]);
+    return shuffle([...regular,wildReelType,wildReelType]);
   });
 }
 function boardAt(reels,positions){
@@ -5936,7 +5934,7 @@ let dexRegion=0;
 let ownedDexOnly=false;
 const dexRegionEnds=[151,251,386,493,649,721,809];
 function renderSetup(){
-  energyRule.textContent=musicLabel('默認10個普通屬性圖案,普通系能觸發其他屬性50%效果','Starts with 10 Normal symbols. Normal lines trigger other types at 50% effect.');
+  energyRule.textContent=musicLabel('默認10個萬用屬性圖案,普通系能觸發其他屬性50%效果','Starts with 10 Wild symbols. Normal lines trigger other types at 50% effect.');
   const pickingStarter=mode==='formal'&&!profile.starter;
   $('setupTitle').textContent=mode==='trial'?musicLabel('新手教學 · 1 / 6','Tutorial · 1 / 6'):musicLabel('開始冒險 · 組隊','Start Adventure · Team Builder');
   $('starterSetup').hidden=!pickingStarter;
@@ -5948,11 +5946,11 @@ function renderSetup(){
   const help=$('partyHelp');
   if(help.dataset.language!==settings.language){
     help.dataset.language=settings.language;
-    help.innerHTML='<p id="tutorialSetupHelp" hidden>① 隊伍與攜帶能量　小火龍是火系，傑尼龜是水系。優先選能觸發隊伍招式的能量，教學推薦「水、火」。可攜帶 2、4 或 5 種不同屬性，圖庫另有 10 個普通圖案。選滿後按右下角「開始教學」。</p>'+
+    help.innerHTML='<p id="tutorialSetupHelp" hidden>① 隊伍與攜帶能量　小火龍是火系，傑尼龜是水系。優先選能觸發隊伍招式的能量，教學推薦「水、火」。可攜帶 2、4 或 5 種不同屬性，圖庫另有 10 個萬能圖案。選滿後按右下角「開始教學」。</p>'+
       '<nav class="dex-regions" aria-label="地區圖鑑">'+regions.map((region,i)=>'<button type="button" data-dex-region="'+i+'">'+musicLabel(region,['Kanto','Johto','Hoenn','Sinnoh','Unova','Kalos','Alola'][i])+'</button>').join('')+'</nav>';
   }
   $('tutorialSetupHelp').hidden=mode!=='trial';
-  if(settings.language==='en') $('tutorialSetupHelp').textContent='Charmander leads and Squirtle is in reserve. Choose energy that matches your team. For the tutorial, select Water and Fire, then choose Start Tutorial. Choose 2, 4, or 5 types. Every new run includes 10 Normal symbols.';
+  if(settings.language==='en') $('tutorialSetupHelp').textContent='Charmander leads and Squirtle is in reserve. Choose energy that matches your team. For the tutorial, select Water and Fire, then choose Start Tutorial. Choose 2, 4, or 5 types. Every new run includes 10 Wild symbols.';
   help.querySelectorAll('[data-dex-region]').forEach(button=>button.setAttribute('aria-pressed',!ownedDexOnly&&Number(button.dataset.dexRegion)===dexRegion));
   const teamCards=$('teamCards');
   teamCards.hidden=false;

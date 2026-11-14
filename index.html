@@ -4720,7 +4720,6 @@ let musicFailed=false;
 let musicPlayer;
 let defaultMusicPlayer;
 const preparedBattleMusic=new Map();
-let musicPaused=false;
 const johtoMusic={
   town:'new-bark-town',wild:'wild-battle',lavender:'wild-battle',rival:'rival-battle',
   trainer:'trainer-battle',gym:'gym-battle',champion:'champion-battle',
@@ -4835,7 +4834,7 @@ function syncKantoMusic(intro=false,retry=false){
   if(!prepared) musicPlayer.src=source;
   else if(retry||musicPlayer.error) musicPlayer.load();
   else if(musicPlayer.currentTime>0) musicPlayer.currentTime=0;
-  if(!musicPaused) playKantoMusic();
+  if(!settings.musicPaused) playKantoMusic();
 }
 function showMusicStatus(message){
   musicStatus.textContent=message;
@@ -5024,10 +5023,12 @@ document.addEventListener('click',event=>{
   clickAudio.play().catch(()=>{});
 });
 const musicStatus=$('musicStatus');
+const musicStartupGesture=new AbortController();
 function createMusicPlayer(){
   const player=new Audio();
   player.addEventListener('playing',()=>{
     if(player!==musicPlayer) return;
+    musicStartupGesture.abort();
     musicToggle.textContent=musicLabel('暫停音樂','Pause music');
     musicFailed=false;
     showMusicStatus('');
@@ -5039,19 +5040,24 @@ function startKantoMusic(){
   musicPlayer=defaultMusicPlayer=createMusicPlayer();
   syncKantoMusic();
 }
-document.addEventListener('click',event=>{
-  if(event.target!==musicToggle&&musicPlayer?.paused&&!musicPaused&&!musicPlayer.error) playKantoMusic();
-},{capture:true,once:true});
+function resumeMusicOnFirstInteraction(event){
+  if(!event.isTrusted||event.target.closest?.('#musicToggle')) return;
+  if(musicPlayer?.paused&&!settings.musicPaused&&!musicPlayer.error) playKantoMusic();
+}
+for(const eventName of ['click','keydown']){
+  document.addEventListener(eventName,resumeMusicOnFirstInteraction,{capture:true,signal:musicStartupGesture.signal});
+}
 musicToggle.onclick=()=>{
   if(!musicPlayer){startKantoMusic();return;}
   if(musicPlayer.paused){
-    musicPaused=false;
+    settings.musicPaused=false;
+    saveSettings();
     if(musicFailed||musicPlayer.error) musicPlayer.load();
     playKantoMusic();
   }else{
-    musicPaused=true;
+    settings.musicPaused=true;
     musicPlayer.pause();
-    musicToggle.textContent=musicLabel('播放音樂','Play music');
+    saveSettings();
   }
 };
 
@@ -5064,6 +5070,7 @@ function savedVolume(value){
 }
 const settings={
   musicVolume:savedVolume(savedSettings?.musicVolume),
+  musicPaused:savedSettings?.musicPaused===true,
   clickVolume:savedVolume(savedSettings?.clickVolume),
   effectsVolume:savedVolume(savedSettings?.effectsVolume),
   language:savedSettings?.language==='en'?'en':'zh-Hant',
@@ -6000,7 +6007,7 @@ function prepareVictoryMusic(run){
 }
 async function showTrainerVictory(run,line){
   const trainer=$('trainerOnField');
-  const victory=!musicPaused&&settings.musicVolume?prepareVictoryMusic(run):null;
+  const victory=!settings.musicPaused&&settings.musicVolume?prepareVictoryMusic(run):null;
   trainer.src=trainerSprite(run.trainer[2]);
   trainer.hidden=false;
   trainer.classList.add('arriving');

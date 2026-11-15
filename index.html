@@ -385,6 +385,9 @@ main{container-type:inline-size;min-width:0;margin:0;position:relative}
 #collectionTitle{font-size:2.9cqw;margin:0}
 #collectionBack,#collectionCount{font-size:1.25cqw;margin:0}
 #collectionCards{flex:1}
+:is(#teamCards,#collectionCards) button{position:relative}
+:is(#setup,#collectionScreen) :is(#teamCards,#collectionCards) img.dex-caught-ball{position:absolute;top:.35cqw;right:.35cqw;width:1.2cqw;height:1.2cqw}
+#setup #teamCards button.caught-form{opacity:1;background:#c9c3cf;color:#554d60}
 :is(#teamCards,#collectionCards) .empty-region{grid-column:1/-1;text-align:center;margin:1em}
 :is(#setup,#collectionScreen) :is(#teamCards,#collectionCards){display:grid;grid-template-columns:repeat(9,minmax(0,1fr));grid-auto-rows:8.4cqw;align-content:start;align-items:stretch;min-height:0;max-height:none;width:100%;margin:0;padding:.35cqw;overflow-x:hidden;overflow-y:auto;scrollbar-gutter:stable;background:#bdb4c9;border:2px solid #5d526e}
 :is(#setup,#collectionScreen) :is(#teamCards,#collectionCards) button,#setup #starterCards button{display:grid;grid-template-rows:minmax(0,1fr) auto auto;justify-items:center;align-items:center;gap:.05cqw;min-width:0;min-height:0;width:100%;padding:.15cqw;font-size:1.12cqw;line-height:1.03;overflow:hidden}
@@ -4527,7 +4530,7 @@ function paintBattleNumber(id,value,level=false,ownership=null){
   const box=$(id);
   const symbols=(level?['Lv']:[]).concat([...String(value)]);
   box.classList.add('pixel-number');
-  const label=ownership==='party'?'隊伍內':'已解鎖';
+  const label=ownership==='party'?musicLabel('隊伍內','In party'):musicLabel('已捕捉','Caught');
   const badge=ownership?'<img class="ownership-ball" src="'+ownershipBalls[ownership]+'" alt="" title="'+label+'">':'';
   box.setAttribute('aria-label',(ownership?label+'，':'')+(level?'等級 ':'')+value);
   updateMarkup(box,badge+symbols.map(symbol=>symbol===' '?'<span class="number-gap" aria-hidden="true"></span>':
@@ -4536,7 +4539,7 @@ function paintBattleNumber(id,value,level=false,ownership=null){
 const ownershipBalls={"party": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAWElEQVR4nGNkgAIvx6j/MPa2/csYYWy4JAh8m1L8/15W1H9kxYwgzppgSbjiF9eeg+mc6xCTWECc3vcScAXHr0MUYBgPAlfP7oVjZGvAinBJwl2L1xf4AABj2UY+Y/fWOwAAAABJRU5ErkJggg==", "unlocked": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAXElEQVR4nIVPMQoAMQhTuL/5FJ/nWsGte8dufUuPlkZuKRcQgolRmQ5EZIK7O4M/EEspZGY0xlitCRMvUVUxAANFxE7aCb33NNRak+duoLWW9b1pm25iXnv74hcvFGRGYPdghC8AAAAASUVORK5CYII="};
 function paintBattleLevel(side,mon){
   const inParty=state.team.some(member=>member.id===mon.id);
-  const status=inParty?'party':profile.unlocked.includes(mon.id)?'unlocked':null;
+  const status=inParty?'party':caughtFamilyIds().has(baseSpeciesId(mon.id))?'unlocked':null;
   paintBattleNumber(side+'Level',mon.level,true,status);
 }
 function paintBattleName(side,mon){
@@ -6032,12 +6035,17 @@ $('shopMachines').onclick=event=>{
     return {eggs,message:musicLabel('獲得 '+count+' 顆蛋。','Received '+count+' eggs.')};
   });
 };
-function card(mon,group,selected=false,locked=false,seen=false){
+function caughtFamilyIds(){
+  return new Set(profile.caught.map(baseSpeciesId));
+}
+function card(mon,group,selected=false,locked=false,seen=false,caught=false){
   const number=String(mon.id).padStart(3,'0');
-  const hidden=locked&&!seen;
+  const hidden=locked&&!seen&&!caught;
+  const caughtLabel=musicLabel('已捕捉','Caught');
+  const badge=caught?'<img class="dex-caught-ball" src="'+ownershipBalls.unlocked+'" alt="'+caughtLabel+'" title="'+caughtLabel+'">':'';
   const label='NO. '+number+(hidden?musicLabel(' · 未遇過',' · Unseen'):' '+displayPokemon(mon)+(locked?musicLabel(' · 已見過，尚不可編入',' · Seen, unavailable for selection'):''));
 
-  return '<button data-'+group+'="'+mon.id+'" aria-label="'+label+'" title="'+label+'" aria-pressed="'+selected+'" '+(locked?'disabled class="'+(seen?'seen':'locked')+'"':'')+'><img src="'+sprite(mon)+'" alt="" loading="lazy" onerror="this.hidden=true"><small>'+number+'</small><span class="card-name">'+(hidden?'???':displayPokemon(mon))+'</span></button>';
+  return '<button data-'+group+'="'+mon.id+'" aria-label="'+label+'" title="'+label+'" aria-pressed="'+selected+'" '+(locked?'disabled class="'+(caught?'caught-form':seen?'seen':'locked')+'"':'')+'>'+badge+'<img src="'+sprite(mon)+'" alt="" loading="lazy" onerror="this.hidden=true"><small>'+number+'</small><span class="card-name">'+(hidden?'???':displayPokemon(mon))+'</span></button>';
 
 }
 let dexRegion=0;
@@ -6069,11 +6077,12 @@ function renderSetup(){
     const unlocked=new Set(profile.unlocked);
     if(mode==='trial') selectedTeam.forEach(id=>unlocked.add(id));
     const seen=new Set(profile.seen);
-    const key=settings.language+':'+mode+':'+(ownedDexOnly?'owned':dexRegion)+':'+[...unlocked].sort((a,b)=>a-b).join(',')+'|'+[...seen].sort((a,b)=>a-b).join(',');
+    const caught=caughtFamilyIds();
+    const key=settings.language+':'+mode+':'+(ownedDexOnly?'owned':dexRegion)+':'+[...unlocked].sort((a,b)=>a-b).join(',')+'|'+[...seen].sort((a,b)=>a-b).join(',')+'|'+[...caught].sort((a,b)=>a-b).join(',');
     if(teamCards.dataset.unlocked!==key){
       const lower=dexRegionEnds[dexRegion-1]??0,upper=dexRegionEnds[dexRegion];
       const regional=species.filter(mon=>ownedDexOnly?unlocked.has(mon.id)&&baseSpeciesId(mon.id)===mon.id:mon.id>lower&&mon.id<=upper);
-      teamCards.innerHTML=regional.length?regional.map(mon=>card(mon,'member',selectedTeam.includes(mon.id),baseSpeciesId(mon.id)!==mon.id||!unlocked.has(mon.id),seen.has(mon.id))).join(''):'<p class="empty-region">'+(ownedDexOnly?musicLabel('還沒有已擁有的寶可夢。','No owned Pokémon yet.'):'此地區尚未收錄寶可夢。')+'</p>';
+      teamCards.innerHTML=regional.length?regional.map(mon=>card(mon,'member',selectedTeam.includes(mon.id),baseSpeciesId(mon.id)!==mon.id||!unlocked.has(mon.id),seen.has(mon.id),caught.has(baseSpeciesId(mon.id)))).join(''):'<p class="empty-region">'+(ownedDexOnly?musicLabel('還沒有已擁有的寶可夢。','No owned Pokémon yet.'):'此地區尚未收錄寶可夢。')+'</p>';
       teamCards.dataset.unlocked=key;
       teamCards.scrollTop=scroll;
     }else{
@@ -6373,9 +6382,11 @@ $('shopMode').onclick=()=>renderShop();
 $('collectionMode').onclick=()=>{
   $('collectionTitle').textContent=musicLabel('圖鑑','Pokédex');
   $('collectionBack').textContent=musicLabel('返回主畫面','Back to menu');
-  $('collectionCount').textContent=musicLabel('收服紀錄','Caught Pokémon')+' · '+profile.caught.length;
+  const caught=caughtFamilyIds();
+  const entries=species.filter(mon=>caught.has(baseSpeciesId(mon.id)));
+  $('collectionCount').textContent=musicLabel('收服紀錄','Caught Pokémon')+' · '+entries.length;
   const cards=$('collectionCards');
-  cards.innerHTML=profile.caught.slice().sort((a,b)=>a-b).map(id=>card(speciesById(id),'caught')).join('')||
+  cards.innerHTML=entries.map(mon=>card(mon,'caught',false,false,true,true)).join('')||
     '<p class="empty-region">'+musicLabel('還沒有收服紀錄。','No captured Pokémon yet.')+'</p>';
   screen('collectionScreen');
   cards.scrollTop=0;

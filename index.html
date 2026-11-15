@@ -1428,8 +1428,8 @@ Object.assign(abilityDescriptions,{
   122:'大晴天時攻擊與特攻各提高 1 階。',
   123:'在場時，每次拉霸前，以及輪盤停下後、招式發動前，各有 25% 機率使對手陷入睡眠。'
 });
-function luckValue(team,items={}){
-  return Math.min(15,3*team.filter(mon=>mon.shiny).length+3*Math.min(3,items['strawberry-sweet']??0)+9*Number((items['love-sweet']??0)>0));
+function luckValue(team,items={},permanent=0){
+  return Math.min(15,permanent+3*team.filter(mon=>mon.shiny).length+3*Math.min(3,items['strawberry-sweet']??0)+9*Number((items['love-sweet']??0)>0));
 }
 function luckRank(luck){return 'DCBAS'[Math.min(4,Math.floor(luck/3))];}
 function hiddenAbilityChance(commonCount,luck){
@@ -2174,19 +2174,26 @@ function wildPool(stage,region){
 function legendaryPool(adventure){
   return adventure.national?gachaLegendary:regionalDex[adventure.region]?.legends??legendaryIds;
 }
+const redEncounterKind='RED 彩蛋關';
+const redTrainer=[redEncounterKind,'RED','red','...',[25,131,143,3,6,9]];
 function formalEncounter(stage,prior,rivalStarter,adventure=legacyAdventure,luck=0){
   const phase=Math.floor((stage-1)/10);
   const region=adventure.national?undefined:adventure.region;
   const pool=wildPool(stage,region);
   // Pick a type available throughout the entire block so a phase never needs an off-type fallback.
-  const type=stage<=10?null:prior?.phase===phase&&prior.phaseType?prior.phaseType:pick(Object.keys(types).filter(type=>
-    Array.from({length:10},(_,i)=>phase*10+i+1).every(n=>wildPool(n,region).some(mon=>mon.type.includes(type)))));
+  const usedWildTypes=new Set(prior?.usedWildTypes??[]);
+  if(prior?.phaseType) usedWildTypes.add(prior.phaseType);
+  const type=stage<=10?null:prior?.phase===phase?prior.phaseType??null:pick(Object.keys(types).filter(type=>
+    !usedWildTypes.has(type)&&Array.from({length:10},(_,i)=>phase*10+i+1).every(n=>wildPool(n,region).some(mon=>mon.type.includes(type)))))??null;
   const trainer=regionalTrainer(stage,rivalStarter,adventure);
   if(trainer) return {id:trainer[4][0],kind:trainer[0],phase,phaseType:type,trainer};
   if(stage===90||(stage<90&&Math.random()<.005*(1+itemCount(prior??{},'lure'))+.001*luck)){
     const legends=legendaryPool(adventure);
     const preview=prior?.stage===89&&stage===90?prior.stage90Legendary:undefined;
     return {id:legends.includes(preview)?preview:pick(legends),kind:'神獸',phase,phaseType:type};
+  }
+  if(stage>=81&&stage<=100&&type==='冰'&&!prior?.redEncountered&&prior?.kind!==redEncounterKind&&Math.random()<.25){
+    return {id:redTrainer[4][0],kind:redEncounterKind,phase,phaseType:type,trainer:redTrainer};
   }
   return {id:pick(type?pool.filter(mon=>mon.type.includes(type)):pool).id,kind:'',phase,phaseType:type};
 }
@@ -2257,7 +2264,7 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false,start
   const balls=prior?.balls??startingBallStock({upgrades});
   const adventure=mode==='formal'?(prior?.adventure??(prior?legacyAdventure:chooseAdventure(party,startRegion))):null;
   const rivalStarter=mode==='formal'?(prior?.rivalStarter??adventure.starter??selectRivalStarter(party)):null;
-  const luck=mode==='formal'?luckValue(party,prior?.items):0;
+  const luck=mode==='formal'?luckValue(party,prior?.items,upgradeEffect({upgrades},'luck')):0;
   const foe=mode==='formal'?formalEncounter(stage,prior,rivalStarter,adventure,luck):tutorial&&stage===3
     ?{id:9,kind:'地區冠軍',trainer:['地區冠軍','冠軍','champion_rival','沒想到啊 如今的你也能與我奮戰到這一刻',[9]]}:{id:tutorial&&stage===2?16:1,kind:''};
   const level=mode==='formal'?Math.min(100,enemyStartingLevel+stage-1):Math.max(...party.map(mon=>mon.level));
@@ -2279,6 +2286,7 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false,start
   if(foe.kind&&!enemyItems) for(const mon of foes) equipEnemy(mon);
   for(const mon of foes) applyEnemyBoosters(mon,stage,enemyItems);
   const run={tutorial,team:party,enemy:foes[0],foes,foeIndex:0,rivalStarter,adventure,enemyItems,trainer:foe.trainer??null,introSeen:!foe.kind&&!foes[0].shiny,stage,kind:foe.kind,phase:foe.phase,phaseType:foe.phaseType,
+    usedWildTypes:[...new Set([...(prior?.usedWildTypes??[]),prior?.phaseType,foe.phaseType].filter(Boolean))],redEncountered:Boolean(prior?.redEncountered||prior?.kind===redEncounterKind||foe.kind===redEncounterKind),
     region:mode==='formal'?(adventure.region?adventureLabel(adventure.region):adventure.national?'全國冒險':regions[0]):null,items:prior?.items??{},loveSweetAcquired:Boolean(prior?.loveSweetAcquired||prior?.items?.["love-sweet"]),balls,used:{},
     reels,positions,active,spins:0,result:'',won:false,board:boardAt(reels,positions),matches:[],log:['第 '+stage+' 關開始。'],
     runId:prior?.runId??newRunId(),coins:prior?.coins??0,newUnlocks:prior?.newUnlocks??[],upgrades,counterSpins:0,fluteUntil,reelsCustomized:prior?.reelsCustomized??false,universalRules,reelsPhysical:universalRules||Boolean(prior?.reelsPhysical),reelGemCount:prior?.reelGemCount??(prior?.reelsCustomized?1:0)};
@@ -3819,6 +3827,7 @@ function victoryGold(run){
 }
 function trainerDefeatLine(run){
   const [kind,name]=run.trainer;
+  if(kind===redEncounterKind) return '...';
   const lines={
     小茂:'這次是你贏了……下次我會贏回來！',
     小剛:'我輸了。你的寶可夢確實比我的岩石還堅強！',
@@ -5609,6 +5618,7 @@ function legendaryMusic(id){
   return [hoennLegendaryIds.includes(id)?'hoenn':'kanto','legendary'];
 }
 function resolveMusicTrack(screenId,run,intro=false){
+  if(screenId==='battleScreen'&&run?.kind===redEncounterKind) return {source:'./audio/johto/champion-battle.mp3',loop:true};
   if(screenId==='battleScreen'&&run?.tutorial&&run.stage===3) return {source:'./audio/kanto/champion-battle.mp3',loop:true};
   if(screenId==='battleScreen'&&run&&!run.trainer&&!run.kind&&run.phaseType==='幽靈'){
     return {source:'./audio/kanto/lavender-town.mp3',loop:true};
@@ -6632,7 +6642,7 @@ function renderSetup(){
   $('setupStatus').textContent=selectedTypes.length+' / '+count;
   $('startBattle').textContent=mode==='formal'?musicLabel('出發','Depart'):musicLabel('開始教學','Start Tutorial');
   $('setupLuck').hidden=mode!=='formal';
-  $('setupLuck').textContent=musicLabel('運氣','Luck')+' '+luckRank(luckValue(selectedTeam.map(id=>({shiny:selectedShiny.has(id)&&profile.shinyUnlocked.includes(id)}))));
+  $('setupLuck').textContent=musicLabel('運氣','Luck')+' '+luckRank(luckValue(selectedTeam.map(id=>({shiny:selectedShiny.has(id)&&profile.shinyUnlocked.includes(id)})),{},upgradeEffect(readWallet(),'luck')));
   $('startBattle').disabled=selectedTypes.length!==count||!selectedTeam.length;
   $('startBattle').classList.toggle('tutorial-target',mode==='trial'&&!$('startBattle').disabled);
   choices.classList.toggle('tutorial-target',mode==='trial'&&selectedTypes.length<count);
@@ -7130,6 +7140,7 @@ async function openFormalTrainerIntro(run){
   try{
     await wait(reducedMotion.matches?220:580);
     for(const trainer of [player,enemy]) trainer.classList.remove('arriving');
+    if(run.kind===redEncounterKind) await showBattleDialogue(musicLabel('冰系野生區出現了神祕訓練家！','A mysterious Trainer appeared in the Ice area!'));
     await showBattleDialogue(line?name+'「'+line+'」':name+'前來挑戰！');
     syncKantoMusic();
     enemy.classList.add('retreat');
@@ -7338,6 +7349,7 @@ const upgradesCatalog={
   specialDefense:{name:'特防強化',sprite:'zinc',values:[5,10,15,20,25],unit:'%'},
   gold:{name:'通關額外金幣',sprite:'amulet-coin',values:[2,5,10,15,25],unit:' 金幣'},
   healing:{name:'通關全隊回復',sprite:'potion',values:[2,4,8],unit:' HP'},
+  luck:{name:'幸運',sprite:'lucky-egg',values:[3,6,9],labels:['變得有點幸運','變得有點幸運','運氣真的不錯'],costs:[500,1000,2000]},
   rewardChoices:{name:'可選擇道具',sprite:'lucky-egg',values:[1,2],unit:' 件',costs:[1000,2000]},
   delay:{name:'延後對手行動',sprite:'quick-claw',values:[1,2],unit:' 次拉霸'},
   startLevel:{name:'開局等級',sprite:'lucky-egg',values:[1,2],unit:' 級',costs:[1000,3000]},
@@ -7384,7 +7396,7 @@ function upgradeEffect(run,id){
   return tier?upgradesCatalog[id].values[tier-1]:0;
 }
 function upgradeText(value,def){
-  return def.labels?(def.labels[value-1]??'基本配備'):'+'+value+def.unit;
+  return def.labels?(def.labels[def.values.indexOf(value)]??'基本配備'):'+'+value+def.unit;
 }
 function openUpgrades(message=''){
   const wallet=readWallet();
@@ -7746,7 +7758,7 @@ function rewardOptions(s){
     (!id.startsWith('gem:')||id==='gem:普通'||moveTypes.has(id.slice(4))));
   const results=[];
   const count=4+(s.tutorial?0:upgradeEffect(s,'rewardChoices'));
-  const luck=s.tutorial?0:luckValue(s.team,s.items);
+  const luck=s.tutorial?0:luckValue(s.team,s.items,upgradeEffect(s,'luck'));
   for(let i=0;i<count;i++){
     const draw=Math.random();
     const tier=rewardRarity(draw,luck);
@@ -8021,6 +8033,8 @@ function migrateRun(run){
     }
     run.region??=regions[0];
     if(run.stage<=10) run.phaseType=null;
+    run.usedWildTypes=[...new Set([...(Array.isArray(run.usedWildTypes)?run.usedWildTypes:[]),run.phaseType].filter(type=>Object.hasOwn(types,type)))];
+    run.redEncountered=Boolean(run.redEncountered||run.trainer?.[0]===redEncounterKind);
     run.kind??=run.trainer?.[0]??(run.stage===90?'神獸':'');
     if(run.stage>=100&&run.won) run.finished=true;
   }

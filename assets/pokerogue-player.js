@@ -67,7 +67,8 @@
     let timeout;
     const variants = await Promise.race([pending, new Promise(resolve => { timeout = setTimeout(() => resolve(null), 220); })]);
     clearTimeout(timeout);
-    const entry = variants?.[enemy ? 1 : 0] ?? variants?.[0];
+    const opponentVariant = enemy && variants?.[1];
+    const entry = opponentVariant || variants?.[0];
     if (!entry || !arena?.offsetWidth || !source || !target) return false;
     const { animation, sheet, backgrounds } = entry;
     const events = animation.frameTimedEvents ?? {};
@@ -78,8 +79,11 @@
       return [(box.left + box.width / 2 - field.left) * 320 / field.width,
         (box.top + box.height * .58 - field.top) * 144 / field.height];
     };
-    const from = point(source);
-    const to = point(target);
+    // Authored opponent variants use player-to-enemy coordinates and battler slots.
+    const frameUser = opponentVariant ? target : source;
+    const frameTarget = opponentVariant ? source : target;
+    const from = point(frameUser);
+    const to = point(frameTarget);
     const layers = new Map();
     function context(layer) {
       if (layers.has(layer)) return layers.get(layer);
@@ -97,7 +101,8 @@
       layers.set(layer, ctx);
       return ctx;
     }
-    const sprites = [source.querySelector('img'), target.querySelector('img')];
+    const sprites = [frameUser.querySelector('img'), frameTarget.querySelector('img')];
+    const reverseGraphic = to[0] < from[0];
     const saved = [...new Set(sprites.filter(Boolean))].map(sprite => [sprite, sprite.style.transform, sprite.style.opacity, sprite.style.filter]);
     let bg = null;
     let lastFrame = -1;
@@ -130,7 +135,7 @@
       }
       for (const frame of animation.frames[index] ?? []) {
         const [x, y] = coordinates(frame);
-        const mirror = Boolean(frame.mirror) !== (frame.focus === 3 && to[0] < from[0]);
+        const mirror = Boolean(frame.mirror) !== (frame.target === 2 && frame.focus === 3 && reverseGraphic);
         const sx = (frame.zoomX ?? 100) / 100 * (mirror ? -1 : 1);
         const sy = (frame.zoomY ?? 100) / 100;
         const opacity = (frame.opacity ?? 255) / 255;
@@ -145,7 +150,7 @@
         if (!sheet || frame.visible === false) continue;
         const columns = Math.floor(sheet.width / 96);
         if (!columns) continue;
-        const focus = frame.focus === 1 ? target : frame.focus === 2 ? source : null;
+        const focus = frame.focus === 1 ? frameTarget : frame.focus === 2 ? frameUser : null;
         const onPlayer = focus?.closest('#player');
         const layer = behindBattlers || frame.priority === 0 || frame.priority === 2 && (bg?.image || !onPlayer)
           ? rear : frame.priority === 2 || frame.priority === 3 && focus && !onPlayer ? between : overlay;

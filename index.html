@@ -1758,11 +1758,6 @@ function showSkill(p, name, trigger){
     '<p><strong>'+musicLabel('威力','Power')+'</strong>'+movePowerText(name,p)+'</p>'+
     '<p><strong>'+musicLabel('命中率','Accuracy')+'</strong>'+skill.accuracy+'%</p><p><strong>'+musicLabel('技能敘述','Effect')+'</strong>'+moveEffectText(name)+'</p></div>';
   $('skill').showModal();
-  if(state?.tutorial&&state.stage===1&&p===state.team[state.active]&&name==='抓擊'){
-    state.tutorialSkillSeen=true;
-    $('spin').disabled=rolling;
-    renderTutorialHint();
-  }
 }
 
 const $ = id => document.getElementById(id);
@@ -4411,7 +4406,15 @@ function moveLineFeedback(run,mon,matched,attacks){
     }
     await Promise.all(flights);
     setMoveHighlights(run,'player',mon,highlighted);
-    if(!reducedMotion.matches) await wait(150);
+    const scratch=run.tutorial&&run.stage===1&&run.spins===1&&entries.some(entry=>entry.name==='抓擊');
+    const target=scratch&&Array.from(buttons).find(button=>mon.moves[Number(button.dataset.move)]==='抓擊');
+    if(target){
+      const hint=$('tutorialHint');
+      hint.textContent=musicLabel('連線觸發了抓擊','The line triggered Scratch');
+      placeTutorialHint(hint,target);
+      try{await new Promise(resolve=>setTimeout(resolve,750));}
+      finally{hint.hidden=true;}
+    }else if(!reducedMotion.matches) await wait(150);
   };
 }
 async function flyLineIcon(icon,origin,target){
@@ -4590,22 +4593,21 @@ function renderLog(){
 function renderTutorialHint(){
   const hint=$('tutorialHint');
   hint.hidden=true;
-  const reading=state.stage===1&&!state.tutorialSkillSeen;
   const messages={
-    1:reading?['② 查看招式','點左側小火龍的「抓擊」。普通系招式可用任意屬性的有效連線觸發。']:
-      state.spins===0?['② 按把手試拉一次','五格同屬性可成線，寶可夢球是萬能，可補任何屬性的空位。全萬能線可觸發任意屬性招式。普通線代替其他屬性時，效果只有 50%。我方發動招式後，對手會還擊一次。']:
-      state.spins<5?['② 快轉看對手行動','看戰報右上角的行動計數。再按一次把手，教學會快轉到第 5 次，示範對手把 4 招各用一次。']:
+    1:state.spins===0?['','拉一下']:
+      state.spins<5?['② 快轉看對手行動','萬能球可補任意屬性。用普通線替代其他屬性時，招式效果減半。出招後對手可能反擊；再拉一次，快轉到第 5 次看對手完整行動。']:
       ['② 結束練習戰','對手已完成一輪行動。再按一次把手，擊敗練習對手。'],
     2:['④ 捕捉野生寶可夢','點右下方「收服」，再點寶可夢球。目標血量越低，通常越容易捕捉。'],
     3:['⑤ 冠軍決戰','確認冠軍台詞後，拉一次把手。噴火龍會使出四招，擊敗冠軍最後一隻寶可夢。']
   };
   const message=state.tutorial?messages[state.stage]:null;
-  hint.innerHTML=message?'<strong>'+message[0]+'</strong>'+message[1]:'';
-  const skillButtons=Array.from($('playerMoves').querySelectorAll('[data-move]'));
-  const skillButton=reading?skillButtons.find(button=>state.team[state.active].moves[Number(button.dataset.move)]==='抓擊'):null;
-  const target=!state.tutorial||rolling||state.result?null:reading?skillButton:state.stage===2?$('ballBox'):$('spin');
-  for(const button of [$('spin'),$('ballBox'),...skillButtons]) button.classList.toggle('tutorial-target',button===target);
-  if(!target) return;
+  hint.innerHTML=message?(message[0]?'<strong>'+message[0]+'</strong>':'')+message[1]:'';
+  if(state.tutorial&&state.stage===1&&state.spins===0) hint.textContent=musicLabel('拉一下','Pull once');
+  const target=!state.tutorial||rolling||state.result?null:state.stage===2?$('ballBox'):$('spin');
+  for(const button of [$('spin'),$('ballBox')]) button.classList.toggle('tutorial-target',button===target);
+  if(target) placeTutorialHint(hint,target);
+}
+function placeTutorialHint(hint,target){
   hint.hidden=false;
   const rect=target.getBoundingClientRect();
   const gap=18;
@@ -4664,7 +4666,7 @@ function render(refreshBoard=true){
   $('reelInfo').textContent=musicLabel('圖庫','Library');
   $('reelInfo').disabled=rolling;
   $('battleSpeed').disabled=rolling;
-  $('spin').disabled=rolling||Boolean(state.result)||Boolean(state.tutorial&&(state.stage===2||state.stage===1&&!state.tutorialSkillSeen));
+  $('spin').disabled=rolling||Boolean(state.result)||Boolean(state.tutorial&&state.stage===2);
   $('reset').disabled=rolling;
   $('nextBattle').hidden=!state.won||rolling||state.rewardPending||state.finished;
   $('itemBox').disabled=rolling;

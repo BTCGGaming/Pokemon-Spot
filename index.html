@@ -1153,7 +1153,15 @@ button:not(:disabled):active{filter:brightness(.9)}
 #learn .learn-meta,#learn .learn-lines{display:flex;align-items:center;gap:.35em;flex-wrap:wrap}
 #learn .learn-meta img,#learn .learn-meta .type-icon,#learn .learn-lines .type-icon{height:1em;width:1em;object-fit:contain}
 #learn .learn-lines svg{width:1.45em;height:1.25em;color:#365846;flex:none}
-@media(max-width:620px) and (orientation:portrait){#learn .learn-layout{grid-template-columns:1fr}#learn .battle-choice-side{grid-row:1}}
+#learn .battle-choice-side{grid-template-rows:auto auto minmax(0,1fr);align-content:stretch}
+#learn .learn-pokemon-art{position:relative;min-height:0}
+#learn .learn-pokemon-art img{position:absolute;inset:0;margin:auto;width:min(78%,9em);height:100%;object-fit:contain;image-rendering:pixelated}
+@media(max-width:620px) and (orientation:portrait){
+  #learn .learn-layout{grid-template-columns:1fr}
+  #learn .battle-choice-side{grid-row:1;grid-template-columns:minmax(0,1fr) 4.75em;grid-template-rows:auto auto}
+  #learn .battle-choice-side h3{grid-column:1/-1}
+  #learn .learn-pokemon-art{min-height:3.5em}
+}
 @media(max-height:440px) and (orientation:landscape){#learn{font-size:clamp(9px,3vh,13px)}#learn .learn-entry{gap:.15em;padding:.26em .35em}#learn h2{margin-bottom:.25em}}
 #musicStyleStatus:empty{display:none}
 #musicStyleStatus{font-size:.85em;overflow-wrap:anywhere}
@@ -1349,7 +1357,7 @@ button.egg-card:not(:disabled):hover{background:#fff8c9;border-color:#675937}
 <div class="summary-mon"><h2 id="combatStatTitle"></h2><img id="combatStatSprite" alt=""><div id="combatStatTypes" class="summary-types"></div><span id="combatStatHp"></span></div>
 <div id="combatSummaryContent" class="summary-content" role="tabpanel"></div>
 <form method="dialog" class="summary-actions"><button type="button" id="combatSwap" hidden>換上場</button><button>關閉</button></form></div></dialog><dialog id="reference" aria-label="圖鑑與試玩規則"><details id="dex"><summary>全國圖鑑 001–386</summary><p><label>寶可夢 <select id="dexSpecies"></select></label> <label>預覽等級 <input id="dexLevel" type="number" min="1" max="100" value="5"></label></p><div id="dexInfo"></div></details><details><summary>試玩規則與暫定數值</summary>
-<p>試玩與正式模式皆由 Lv. 5 開始。永久增強會套用於新開的正式局。正式局通關可累積金幣，結算時入帳。開局會帶上截至該等級已能習得的招式。普通系能由任一屬性連線觸發，其他招式需要同屬性。同一招每次拉霸最多因連線發動一次，所有成線累加這次的傷害倍率。每條線必須由五個同屬性圖案構成。普通線可代替其他屬性的指定線型；只有靠普通線才能達標的招式，效果為 50%。五個輪盤各有六個固定格位，每次先依攜帶屬性數的試玩權重抽出中線數，再從輪盤可達成的停點組合中隨機選一組，畫面顯示每輪連續五格。三屬性各占兩格，五屬性各一格且每輪隨機重複一種，六屬性各占一格。盤面為 5×5。五條橫線、五條直線與兩條主對角線皆可中獎。部分中線結果使用同色堆疊輪帶，讓直線能實際停出。0–1／2／3／4／5 條線分別為 ×1.0／×1.2／×1.5／×1.8／×2.0，之後每多一條加 0.1 倍，上限 ×2.5。試玩可重複挑戰至 Lv. 13。正式關都挑戰共 100 關，等級上限為 100。野生寶可夢依原作的等級進化，進化道具與交換型態在野外採試玩門檻。訓練家關有備戰隊伍。對手倒下後會優先派出克制當前寶可夢的隊員。招式依原作升級習得。試玩個體設定為中性性格、個體值與努力值為 0。圖鑑可預覽等級與進化能力值。連線負責觸發招式，招式再判定命中率。灼傷與凍傷每次拉霸扣 5% 最大 HP，中毒扣 8%。睡眠與冰凍會暫停出招，受到傷害或對手完成下次行動後解除；對應的物理或特殊傷害增加 50%。麻痺有一半機率讓招式失效，混亂則可能使攻擊打向自己。</p>
+<p>試玩與正式模式皆由 Lv. 5 開始。永久增強會套用於新開的正式局。正式局通關可累積金幣，結算時入帳。開局會帶上截至該等級已能習得的招式。普通系能由任一屬性連線觸發，其他招式需要同屬性。同一招每次拉霸最多因連線發動一次，所有成線累加這次的傷害倍率。每條線必須由五個同屬性圖案構成。普通線可代替其他屬性的指定線型；只有靠普通線才能達標的招式，效果為 50%。五個輪盤各有六個固定格位，每次先依攜帶屬性數的試玩權重抽出中線數，再從輪盤可達成的停點組合中隨機選一組，畫面顯示每輪連續五格。三屬性各占兩格，五屬性各一格且每輪隨機重複一種，六屬性各占一格。盤面為 5×5。五條橫線、五條直線與兩條主對角線皆可中獎。部分中線結果使用同色堆疊輪帶，讓直線能實際停出。0–1／2／3／4／5 條線分別為 ×1.0／×1.2／×1.5／×1.8／×2.0，之後每多一條加 0.1 倍，上限 ×2.5。試玩可重複挑戰至 Lv. 13。正式關都挑戰共 100 關，等級上限為 100。野生寶可夢依原作的等級進化，進化道具與交換型態在野外採試玩門檻。訓練家關有備戰隊伍。對手倒下後會優先派出克制當前寶可夢的隊員。招式依原作升級習得。試玩個體設定為中性性格、個體值與努力值為 0。圖鑑可預覽等級與進化能力值。連線負責觸發招式，招式再判定命中率。灼傷使物理傷害減半，每次拉霸結算扣 1/16 最大 HP。中毒扣 1/8，劇毒從 1/16 開始逐次增加。睡眠與冰凍在嘗試出招時判定。麻痺使速度減半，出招時有 12.5% 機率無法行動；混亂時有 1/3 機率傷到自己。</p>
 <p>試玩球不限數量，正式模式初始有 5 顆神奇寶貝球。訓練家關卡無法捕捉。</p>
 <p>每次拉霸先結算我方所有相符招式。若至少一招成功且對手仍在場，對手才隨機反擊一招。確認換人後，對手最多使用一招。正式模式的致命招式會先預告，下一次拉霸或換人後才發動。換人不消耗拉霸次數，也不回復血量。場上寶可夢倒下時由存活隊友自動接替。對手倒下即過關，我方全倒即失敗。血量、攻擊、技能與連線都是本關測試設定。</p>
 <small>道具圖案參考 <a href="https://wiki.52poke.com/zh-hant/%E9%81%93%E5%85%B7%E5%88%97%E8%A1%A8">神奇寶貝百科</a> · 寶可夢像素圖來源 <a href="https://github.com/PokeAPI/sprites/tree/master/sprites/pokemon/versions/generation-iii/emerald">PokeAPI · Emerald</a></small></details>
@@ -1363,7 +1371,7 @@ button.egg-card:not(:disabled):hover{background:#fff8c9;border-color:#675937}
 <aside id="tutorialHint" role="status" hidden></aside>
 <script src="./assets/emerald-sprites.js"></script>
 <script src="./assets/pokerogue/manifest.js?v=sinnoh-dex-2"></script>
-<script src="./assets/pokerogue-player.js?v=enemy-move-effects-1"></script>
+<script src="./assets/pokerogue-player.js?v=status-feedback-1"></script>
 <script>
 'use strict';
 const typeColors={毒:'#d69afb'};
@@ -1395,7 +1403,7 @@ species.push(...sinnohData.mons);
 emeraldData.ms[232]={name:'金屬爪',type:'鋼',power:50,accuracy:95,pp:35,effect:'ATTACK_UP_HIT',chance:10};
 const speciesById=id=>species[id-1];
 const abilityNames={"1":"惡臭","2":"降雨","3":"加速","4":"戰鬥盔甲","5":"結實","6":"濕氣","7":"柔軟","8":"沙隱","9":"靜電","10":"蓄電","11":"儲水","12":"遲鈍","13":"無關天氣","14":"複眼","15":"不眠","16":"變色","17":"免疫","18":"引火","19":"鱗粉","20":"我行我素","21":"吸盤","22":"威嚇","23":"踩影","24":"粗糙皮膚","25":"神奇守護","26":"漂浮","27":"孢子","28":"同步","29":"恆淨之軀","30":"自然回復","31":"避雷針","32":"天恩","33":"悠游自如","34":"葉綠素","35":"發光","36":"複製","37":"大力士","38":"毒刺","39":"精神力","40":"熔岩鎧甲","41":"水幕","42":"磁力","43":"隔音","44":"雨盤","45":"揚沙","46":"壓迫感","47":"厚脂肪","48":"早起","49":"火焰之軀","50":"逃跑","51":"銳利目光","52":"怪力鉗","53":"撿拾","54":"懶惰","55":"活力","56":"迷人之軀","57":"正電","58":"負電","59":"陰晴不定","60":"黏著","61":"蛻皮","62":"毅力","63":"神奇鱗片","64":"污泥漿","65":"茂盛","66":"猛火","67":"激流","68":"蟲之預感","69":"堅硬腦袋","70":"日照","71":"沙穴","72":"幹勁","73":"白色煙霧","74":"瑜珈之力","75":"硬殼盔甲","76":"氣閘","77":"雜音"};
-const abilityDescriptions=["","每次攻擊有 5% 機率增加 1 次可拉霸機會。","每次拉霸將 5 個未連線圖案變成水。","增加 1 次可拉霸機會。","單次傷害超過最大 HP 的 50% 時，該次傷害減半。","滿血時受到的傷害減少 75%。","每次拉霸將 1 個非水圖案變成水，持續至本關結束。","免疫麻痺。","地面系連線時對手無法反擊。","受到物理傷害時有 50% 機率使對手麻痺。","電系傷害改為回復自身 HP。","水系傷害改為回復自身 HP。","免疫混亂。","免疫天氣效果。","招式必定命中。","免疫睡眠。","受傷後變成命中招式的屬性。","免疫中毒與劇毒。","火系傷害改為攻擊與特攻各提升 1 階。","免疫攻擊招式機率附帶的異常狀態。","免疫混亂。","對手的減益轉移到其後續上場的寶可夢。","對手每次反擊後攻擊降低 1 階。","對手無法主動更換。","受到物理傷害時使對手損失 10% 最大 HP。","只會受到效果絕佳的招式傷害。","免疫地面系傷害。","受到物理傷害時，有 50% 機率使對手中毒、麻痺或灼傷。","每次拉霸後將自身的中毒、麻痺或灼傷傳給對手。","免疫能力下降。","換下場時治癒異常狀態。","電系傷害改為攻擊與特攻各提升 1 階。","造成傷害時有 25% 機率額外造成 50% 傷害。","雨天多 2 次可拉霸機會。","晴天多 2 次可拉霸機會。","將命中率下降返還給對手。","上場時複製對手的特性。","物理傷害變為 2 倍。","受到物理傷害時有 50% 機率使對手中毒。","免疫威嚇。","免疫冰凍與凍傷。","免疫灼傷。","對手無法主動更換。","免疫特殊傷害。","每條水系連線回復 5% 最大 HP。","每次拉霸將 5 個未連線圖案變成地面。","對手反擊後損失 10% 最大 HP。","受到的火系和冰系傷害減半。","睡眠時免疫額外傷害。","受到物理傷害時有 50% 機率使對手灼傷。","免疫無法更換的效果。","招式必定命中。","免疫攻擊下降。","每次拉霸有 10% 機率偷走對手的道具。","一次拉霸計為兩次。","上場時攻擊提高 2 階，命中降低 2 階。","受到物理傷害時有 50% 機率使對手混亂。","使用電系招式後，特攻提高 1 階。","使用電系招式後，攻擊提高 1 階。","依天氣變成水、火或冰屬性。","道具不會被偷走。","陷入異常狀態時有 50% 機率立即痊癒。","受到異常狀態時攻擊提高 3 階。","受到異常狀態時防禦提高 3 階。","每次拉霸使對手損失 5% 最大 HP。","低於 50% HP 時，拉霸後將 最多 3 個未連線圖案變成草。","低於 50% HP 時，拉霸後將 最多 3 個未連線圖案變成火。","低於 50% HP 時，拉霸後將 最多 3 個未連線圖案變成水。","低於 50% HP 時，拉霸後將 8 個未連線圖案變成蟲。","造成物理傷害時有 10% 機率使對手混亂。","每次拉霸將 5 個未連線圖案變成火。","對手無法主動更換。","免疫睡眠。","免疫能力下降。","物理傷害變為 2 倍。","單次傷害超過最大 HP 的 50% 時，該次傷害減半。","消除場上的天氣效果。","免疫混亂。"];
+const abilityDescriptions=["","每次攻擊有 5% 機率增加 1 次可拉霸機會。","每次拉霸將 5 個未連線圖案變成水。","增加 1 次可拉霸機會。","單次傷害超過最大 HP 的 50% 時，該次傷害減半。","滿血時受到的傷害減少 75%。","每次拉霸將 1 個非水圖案變成水，持續至本關結束。","免疫麻痺。","地面系連線時對手無法反擊。","受到物理傷害時有 50% 機率使對手麻痺。","電系傷害改為回復自身 HP。","水系傷害改為回復自身 HP。","免疫混亂。","免疫天氣效果。","招式必定命中。","免疫睡眠。","受傷後變成命中招式的屬性。","免疫中毒與劇毒。","火系傷害改為攻擊與特攻各提升 1 階。","免疫攻擊招式機率附帶的異常狀態。","免疫混亂。","對手的減益轉移到其後續上場的寶可夢。","對手每次反擊後攻擊降低 1 階。","對手無法主動更換。","受到物理傷害時使對手損失 10% 最大 HP。","只會受到效果絕佳的招式傷害。","免疫地面系傷害。","受到物理傷害時，有 50% 機率使對手中毒、麻痺或灼傷。","每次拉霸後將自身的中毒、麻痺或灼傷傳給對手。","免疫能力下降。","換下場時治癒異常狀態。","電系傷害改為攻擊與特攻各提升 1 階。","造成傷害時有 25% 機率額外造成 50% 傷害。","雨天多 2 次可拉霸機會。","晴天多 2 次可拉霸機會。","將命中率下降返還給對手。","上場時複製對手的特性。","物理傷害變為 2 倍。","受到物理傷害時有 50% 機率使對手中毒。","免疫威嚇。","免疫冰凍。","免疫灼傷。","對手無法主動更換。","免疫特殊傷害。","每條水系連線回復 5% 最大 HP。","每次拉霸將 5 個未連線圖案變成地面。","對手反擊後損失 10% 最大 HP。","受到的火系和冰系傷害減半。","睡眠時免疫額外傷害。","受到物理傷害時有 50% 機率使對手灼傷。","免疫無法更換的效果。","招式必定命中。","免疫攻擊下降。","每次拉霸有 10% 機率偷走對手的道具。","一次拉霸計為兩次。","上場時攻擊提高 2 階，命中降低 2 階。","受到物理傷害時有 50% 機率使對手混亂。","使用電系招式後，特攻提高 1 階。","使用電系招式後，攻擊提高 1 階。","依天氣變成水、火或冰屬性。","道具不會被偷走。","陷入異常狀態時有 50% 機率立即痊癒。","受到異常狀態時攻擊提高 3 階。","受到異常狀態時防禦提高 3 階。","每次拉霸使對手損失 5% 最大 HP。","低於 50% HP 時，拉霸後將 最多 3 個未連線圖案變成草。","低於 50% HP 時，拉霸後將 最多 3 個未連線圖案變成火。","低於 50% HP 時，拉霸後將 最多 3 個未連線圖案變成水。","低於 50% HP 時，拉霸後將 8 個未連線圖案變成蟲。","造成物理傷害時有 10% 機率使對手混亂。","每次拉霸將 5 個未連線圖案變成火。","對手無法主動更換。","免疫睡眠。","免疫能力下降。","物理傷害變為 2 倍。","單次傷害超過最大 HP 的 50% 時，該次傷害減半。","消除場上的天氣效果。","免疫混亂。"];
 const speciesAbilities={"1":{"common":[65],"hidden":34},"2":{"common":[65],"hidden":34},"3":{"common":[65],"hidden":34},"4":{"common":[66],"hidden":null},"5":{"common":[66],"hidden":null},"6":{"common":[66],"hidden":null},"7":{"common":[67],"hidden":44},"8":{"common":[67],"hidden":44},"9":{"common":[67],"hidden":44},"10":{"common":[19],"hidden":50},"11":{"common":[61],"hidden":null},"12":{"common":[14],"hidden":null},"13":{"common":[19],"hidden":50},"14":{"common":[61],"hidden":null},"15":{"common":[68],"hidden":null},"16":{"common":[51],"hidden":null},"17":{"common":[51],"hidden":null},"18":{"common":[51],"hidden":null},"19":{"common":[50,62],"hidden":55},"20":{"common":[50,62],"hidden":55},"21":{"common":[51],"hidden":null},"22":{"common":[51],"hidden":null},"23":{"common":[22,61],"hidden":null},"24":{"common":[22,61],"hidden":null},"25":{"common":[9],"hidden":31},"26":{"common":[9],"hidden":31},"27":{"common":[8],"hidden":null},"28":{"common":[8],"hidden":null},"29":{"common":[38],"hidden":55},"30":{"common":[38],"hidden":55},"31":{"common":[38],"hidden":null},"32":{"common":[38],"hidden":55},"33":{"common":[38],"hidden":55},"34":{"common":[38],"hidden":null},"35":{"common":[56],"hidden":null},"36":{"common":[56],"hidden":null},"37":{"common":[18],"hidden":70},"38":{"common":[18],"hidden":70},"39":{"common":[56],"hidden":null},"40":{"common":[56],"hidden":null},"41":{"common":[39],"hidden":null},"42":{"common":[39],"hidden":null},"43":{"common":[34],"hidden":50},"44":{"common":[34],"hidden":1},"45":{"common":[34],"hidden":27},"46":{"common":[27],"hidden":6},"47":{"common":[27],"hidden":6},"48":{"common":[14],"hidden":50},"49":{"common":[19],"hidden":null},"50":{"common":[8,71],"hidden":null},"51":{"common":[8,71],"hidden":null},"52":{"common":[53],"hidden":null},"53":{"common":[7],"hidden":null},"54":{"common":[6,13],"hidden":33},"55":{"common":[6,13],"hidden":33},"56":{"common":[72],"hidden":null},"57":{"common":[72],"hidden":null},"58":{"common":[22,18],"hidden":null},"59":{"common":[22,18],"hidden":null},"60":{"common":[11,6],"hidden":33},"61":{"common":[11,6],"hidden":33},"62":{"common":[11,6],"hidden":33},"63":{"common":[28,39],"hidden":null},"64":{"common":[28,39],"hidden":null},"65":{"common":[28,39],"hidden":null},"66":{"common":[62],"hidden":null},"67":{"common":[62],"hidden":null},"68":{"common":[62],"hidden":null},"69":{"common":[34],"hidden":null},"70":{"common":[34],"hidden":null},"71":{"common":[34],"hidden":null},"72":{"common":[29,64],"hidden":44},"73":{"common":[29,64],"hidden":44},"74":{"common":[69,5],"hidden":8},"75":{"common":[69,5],"hidden":8},"76":{"common":[69,5],"hidden":8},"77":{"common":[50,18],"hidden":49},"78":{"common":[50,18],"hidden":49},"79":{"common":[12,20],"hidden":null},"80":{"common":[12,20],"hidden":null},"81":{"common":[42,5],"hidden":null},"82":{"common":[42,5],"hidden":null},"83":{"common":[51,39],"hidden":null},"84":{"common":[50,48],"hidden":null},"85":{"common":[50,48],"hidden":null},"86":{"common":[47],"hidden":null},"87":{"common":[47],"hidden":null},"88":{"common":[1,60],"hidden":null},"89":{"common":[1,60],"hidden":null},"90":{"common":[75],"hidden":null},"91":{"common":[75],"hidden":null},"92":{"common":[26],"hidden":null},"93":{"common":[26],"hidden":null},"94":{"common":[26],"hidden":null},"95":{"common":[69,5],"hidden":null},"96":{"common":[15],"hidden":39},"97":{"common":[15],"hidden":39},"98":{"common":[52,75],"hidden":null},"99":{"common":[52,75],"hidden":null},"100":{"common":[43,9],"hidden":null},"101":{"common":[43,9],"hidden":null},"102":{"common":[34],"hidden":null},"103":{"common":[34],"hidden":null},"104":{"common":[69,31],"hidden":4},"105":{"common":[69,31],"hidden":4},"106":{"common":[7],"hidden":null},"107":{"common":[51],"hidden":39},"108":{"common":[20,12],"hidden":13},"109":{"common":[26],"hidden":1},"110":{"common":[26],"hidden":1},"111":{"common":[31,69],"hidden":null},"112":{"common":[31,69],"hidden":null},"113":{"common":[30,32],"hidden":null},"114":{"common":[34],"hidden":null},"115":{"common":[48],"hidden":39},"116":{"common":[33],"hidden":6},"117":{"common":[38],"hidden":6},"118":{"common":[33,41],"hidden":31},"119":{"common":[33,41],"hidden":31},"120":{"common":[35,30],"hidden":null},"121":{"common":[35,30],"hidden":null},"122":{"common":[43],"hidden":null},"123":{"common":[68],"hidden":null},"124":{"common":[12],"hidden":null},"125":{"common":[9],"hidden":72},"126":{"common":[49],"hidden":72},"127":{"common":[52],"hidden":null},"128":{"common":[22],"hidden":null},"129":{"common":[33],"hidden":null},"130":{"common":[22],"hidden":null},"131":{"common":[11,75],"hidden":null},"132":{"common":[7],"hidden":null},"133":{"common":[50],"hidden":null},"134":{"common":[11],"hidden":null},"135":{"common":[10],"hidden":null},"136":{"common":[18],"hidden":62},"137":{"common":[36],"hidden":null},"138":{"common":[33,75],"hidden":null},"139":{"common":[33,75],"hidden":null},"140":{"common":[33,4],"hidden":null},"141":{"common":[33,4],"hidden":null},"142":{"common":[69,46],"hidden":null},"143":{"common":[17,47],"hidden":null},"144":{"common":[46],"hidden":null},"145":{"common":[46],"hidden":9},"146":{"common":[46],"hidden":49},"147":{"common":[61],"hidden":63},"148":{"common":[61],"hidden":63},"149":{"common":[39],"hidden":null},"150":{"common":[46],"hidden":null},"151":{"common":[28],"hidden":null},"152":{"common":[65],"hidden":null},"153":{"common":[65],"hidden":null},"154":{"common":[65],"hidden":null},"155":{"common":[66],"hidden":18},"156":{"common":[66],"hidden":18},"157":{"common":[66],"hidden":18},"158":{"common":[67],"hidden":null},"159":{"common":[67],"hidden":null},"160":{"common":[67],"hidden":null},"161":{"common":[50,51],"hidden":null},"162":{"common":[50,51],"hidden":null},"163":{"common":[15,51],"hidden":null},"164":{"common":[15,51],"hidden":null},"165":{"common":[68,48],"hidden":null},"166":{"common":[68,48],"hidden":null},"167":{"common":[68,15],"hidden":null},"168":{"common":[68,15],"hidden":null},"169":{"common":[39],"hidden":null},"170":{"common":[10,35],"hidden":11},"171":{"common":[10,35],"hidden":11},"172":{"common":[9],"hidden":31},"173":{"common":[56],"hidden":null},"174":{"common":[56],"hidden":null},"175":{"common":[55,32],"hidden":null},"176":{"common":[55,32],"hidden":null},"177":{"common":[28,48],"hidden":null},"178":{"common":[28,48],"hidden":null},"179":{"common":[9],"hidden":57},"180":{"common":[9],"hidden":57},"181":{"common":[9],"hidden":57},"182":{"common":[34],"hidden":null},"183":{"common":[47,37],"hidden":null},"184":{"common":[47,37],"hidden":null},"185":{"common":[5,69],"hidden":null},"186":{"common":[11,6],"hidden":2},"187":{"common":[34],"hidden":null},"188":{"common":[34],"hidden":null},"189":{"common":[34],"hidden":null},"190":{"common":[50,53],"hidden":null},"191":{"common":[34],"hidden":48},"192":{"common":[34],"hidden":48},"193":{"common":[3,14],"hidden":null},"194":{"common":[6,11],"hidden":null},"195":{"common":[6,11],"hidden":null},"196":{"common":[28],"hidden":null},"197":{"common":[28],"hidden":39},"198":{"common":[15],"hidden":null},"199":{"common":[12,20],"hidden":null},"200":{"common":[26],"hidden":null},"201":{"common":[26],"hidden":null},"202":{"common":[23],"hidden":null},"203":{"common":[39,48],"hidden":null},"204":{"common":[5],"hidden":null},"205":{"common":[5],"hidden":null},"206":{"common":[32,50],"hidden":null},"207":{"common":[52,8],"hidden":17},"208":{"common":[69,5],"hidden":null},"209":{"common":[22,50],"hidden":null},"210":{"common":[22],"hidden":null},"211":{"common":[38,33],"hidden":22},"212":{"common":[68],"hidden":null},"213":{"common":[5],"hidden":null},"214":{"common":[68,62],"hidden":null},"215":{"common":[39,51],"hidden":null},"216":{"common":[53],"hidden":null},"217":{"common":[62],"hidden":null},"218":{"common":[40,49],"hidden":null},"219":{"common":[40,49],"hidden":null},"220":{"common":[12],"hidden":47},"221":{"common":[12],"hidden":47},"222":{"common":[55,30],"hidden":null},"223":{"common":[55],"hidden":null},"224":{"common":[21],"hidden":null},"225":{"common":[72,55],"hidden":15},"226":{"common":[33,11],"hidden":41},"227":{"common":[51,5],"hidden":null},"228":{"common":[48,18],"hidden":null},"229":{"common":[48,18],"hidden":null},"230":{"common":[33],"hidden":6},"231":{"common":[53],"hidden":8},"232":{"common":[5],"hidden":8},"233":{"common":[36],"hidden":null},"234":{"common":[22],"hidden":null},"235":{"common":[20],"hidden":null},"236":{"common":[62],"hidden":72},"237":{"common":[22],"hidden":null},"238":{"common":[12],"hidden":null},"239":{"common":[9],"hidden":72},"240":{"common":[49],"hidden":72},"241":{"common":[47],"hidden":null},"242":{"common":[30,32],"hidden":null},"243":{"common":[46],"hidden":39},"244":{"common":[46],"hidden":39},"245":{"common":[46],"hidden":39},"246":{"common":[62],"hidden":8},"247":{"common":[61],"hidden":null},"248":{"common":[45],"hidden":null},"249":{"common":[46],"hidden":null},"250":{"common":[46],"hidden":null},"251":{"common":[30],"hidden":null},"252":{"common":[65],"hidden":null},"253":{"common":[65],"hidden":null},"254":{"common":[65],"hidden":null},"255":{"common":[66],"hidden":3},"256":{"common":[66],"hidden":3},"257":{"common":[66],"hidden":3},"258":{"common":[67],"hidden":6},"259":{"common":[67],"hidden":6},"260":{"common":[67],"hidden":6},"261":{"common":[50],"hidden":null},"262":{"common":[22],"hidden":null},"263":{"common":[53],"hidden":null},"264":{"common":[53],"hidden":null},"265":{"common":[19],"hidden":50},"266":{"common":[61],"hidden":null},"267":{"common":[68],"hidden":null},"268":{"common":[61],"hidden":null},"269":{"common":[19],"hidden":14},"270":{"common":[33,44],"hidden":20},"271":{"common":[33,44],"hidden":20},"272":{"common":[33,44],"hidden":20},"273":{"common":[34,48],"hidden":null},"274":{"common":[34,48],"hidden":null},"275":{"common":[34,48],"hidden":null},"276":{"common":[62],"hidden":null},"277":{"common":[62],"hidden":null},"278":{"common":[51],"hidden":44},"279":{"common":[51],"hidden":44},"280":{"common":[28,36],"hidden":null},"281":{"common":[28,36],"hidden":null},"282":{"common":[28,36],"hidden":null},"283":{"common":[33],"hidden":44},"284":{"common":[22],"hidden":null},"285":{"common":[27],"hidden":null},"286":{"common":[27],"hidden":null},"287":{"common":[54],"hidden":null},"288":{"common":[72],"hidden":null},"289":{"common":[54],"hidden":null},"290":{"common":[14],"hidden":50},"291":{"common":[3],"hidden":null},"292":{"common":[25],"hidden":null},"293":{"common":[43],"hidden":null},"294":{"common":[43],"hidden":null},"295":{"common":[43],"hidden":null},"296":{"common":[47,62],"hidden":null},"297":{"common":[47,62],"hidden":null},"298":{"common":[47,37],"hidden":null},"299":{"common":[5,42],"hidden":null},"300":{"common":[56],"hidden":null},"301":{"common":[56],"hidden":null},"302":{"common":[51],"hidden":null},"303":{"common":[52,22],"hidden":null},"304":{"common":[5,69],"hidden":null},"305":{"common":[5,69],"hidden":null},"306":{"common":[5,69],"hidden":null},"307":{"common":[74],"hidden":null},"308":{"common":[74],"hidden":null},"309":{"common":[9,31],"hidden":58},"310":{"common":[9,31],"hidden":58},"311":{"common":[57],"hidden":31},"312":{"common":[58],"hidden":10},"313":{"common":[35,68],"hidden":null},"314":{"common":[12],"hidden":null},"315":{"common":[30,38],"hidden":null},"316":{"common":[64,60],"hidden":null},"317":{"common":[64,60],"hidden":null},"318":{"common":[24],"hidden":3},"319":{"common":[24],"hidden":3},"320":{"common":[41,12],"hidden":46},"321":{"common":[41,12],"hidden":46},"322":{"common":[12],"hidden":20},"323":{"common":[40],"hidden":null},"324":{"common":[73],"hidden":75},"325":{"common":[47,20],"hidden":null},"326":{"common":[47,20],"hidden":null},"327":{"common":[20],"hidden":null},"328":{"common":[52,71],"hidden":null},"329":{"common":[26],"hidden":null},"330":{"common":[26],"hidden":null},"331":{"common":[8],"hidden":11},"332":{"common":[8],"hidden":11},"333":{"common":[30],"hidden":13},"334":{"common":[30],"hidden":13},"335":{"common":[17],"hidden":null},"336":{"common":[61],"hidden":null},"337":{"common":[26],"hidden":null},"338":{"common":[26],"hidden":null},"339":{"common":[12],"hidden":null},"340":{"common":[12],"hidden":null},"341":{"common":[52,75],"hidden":null},"342":{"common":[52,75],"hidden":null},"343":{"common":[26],"hidden":null},"344":{"common":[26],"hidden":null},"345":{"common":[21],"hidden":null},"346":{"common":[21],"hidden":null},"347":{"common":[4],"hidden":33},"348":{"common":[4],"hidden":33},"349":{"common":[33],"hidden":null},"350":{"common":[63],"hidden":56},"351":{"common":[59],"hidden":null},"352":{"common":[16],"hidden":null},"353":{"common":[15],"hidden":null},"354":{"common":[15],"hidden":null},"355":{"common":[26],"hidden":null},"356":{"common":[46],"hidden":null},"357":{"common":[34],"hidden":null},"358":{"common":[26],"hidden":null},"359":{"common":[46],"hidden":null},"360":{"common":[23],"hidden":null},"361":{"common":[39],"hidden":null},"362":{"common":[39],"hidden":null},"363":{"common":[47],"hidden":12},"364":{"common":[47],"hidden":12},"365":{"common":[47],"hidden":12},"366":{"common":[75],"hidden":null},"367":{"common":[33],"hidden":41},"368":{"common":[33],"hidden":null},"369":{"common":[33,69],"hidden":5},"370":{"common":[33],"hidden":null},"371":{"common":[69],"hidden":null},"372":{"common":[69],"hidden":null},"373":{"common":[22],"hidden":null},"374":{"common":[29],"hidden":null},"375":{"common":[29],"hidden":null},"376":{"common":[29],"hidden":null},"377":{"common":[29],"hidden":5},"378":{"common":[29],"hidden":null},"379":{"common":[29],"hidden":null},"380":{"common":[26],"hidden":null},"381":{"common":[26],"hidden":null},"382":{"common":[2],"hidden":null},"383":{"common":[70],"hidden":null},"384":{"common":[76],"hidden":null},"385":{"common":[32],"hidden":null},"386":{"common":[46],"hidden":null}};
 const natures={"1":{"name":"勤奮","down":1,"up":1},"2":{"name":"大膽","down":1,"up":2},"3":{"name":"內斂","down":1,"up":3},"4":{"name":"溫和","down":1,"up":4},"5":{"name":"膽小","down":1,"up":5},"6":{"name":"怕寂寞","down":2,"up":1},"7":{"name":"坦率","down":2,"up":2},"8":{"name":"慢吞吞","down":2,"up":3},"9":{"name":"溫順","down":2,"up":4},"10":{"name":"急躁","down":2,"up":5},"11":{"name":"固執","down":3,"up":1},"12":{"name":"淘氣","down":3,"up":2},"13":{"name":"害羞","down":3,"up":3},"14":{"name":"慎重","down":3,"up":4},"15":{"name":"馬虎","down":4,"up":3},"16":{"name":"爽朗","down":3,"up":5},"17":{"name":"頑皮","down":4,"up":1},"18":{"name":"樂天","down":4,"up":2},"19":{"name":"浮躁","down":4,"up":4},"20":{"name":"天真","down":4,"up":5},"21":{"name":"勇敢","down":5,"up":1},"22":{"name":"悠閒","down":5,"up":2},"23":{"name":"冷靜","down":5,"up":3},"24":{"name":"自大","down":5,"up":4},"25":{"name":"認真","down":5,"up":5}};
 Object.assign(abilityNames,sinnohData.abilityNames);
@@ -1485,9 +1493,20 @@ function abilityImmuneToStatus(mon,status){
     ['freeze','frostbite'].includes(status)&&ability===40||
     status==='burn'&&ability===41;
 }
+function clearMajorStatus(mon){
+  mon.status=null;mon.burned=false;mon.sleep=0;mon.toxicTurns=0;
+  delete mon.statusUntil;
+  delete mon.statusMovesRemaining;
+}
 function clearMonStatus(mon){
-  mon.status=null;mon.burned=false;mon.confusion=0;mon.sleep=0;mon.toxicTurns=0;
-  delete mon.statusUntil;delete mon.confusionUntil;
+  clearMajorStatus(mon);
+  mon.confusion=0;
+  delete mon.confusionUntil;
+  delete mon.drowsyUntil;
+}
+function battleSpeedStat(mon){
+  const speed=effectiveBattleStat(mon,5);
+  return mon.status==='paralysis'?Math.max(1,Math.floor(speed/2)):speed;
 }
 function activateAbility(run,mon,opponent){
   delete mon.copiedAbility;
@@ -1525,7 +1544,13 @@ function leaveAbility(mon,withdrawing=true){
   delete mon.embargo;
   delete mon.flowerGift;
   delete mon.titanBoosted;
-  if(withdrawing&&activeAbility(mon)===30) clearMonStatus(mon);
+  if(withdrawing){
+    if(activeAbility(mon)===30) clearMonStatus(mon);
+    mon.toxicTurns=0;
+    mon.confusion=0;
+    delete mon.confusionUntil;
+    delete mon.drowsyUntil;
+  }
   if(mon.abilityBaseType) mon.type=mon.abilityBaseType;
   delete mon.abilityBaseType;
   delete mon.copiedAbility;
@@ -1533,19 +1558,24 @@ function leaveAbility(mon,withdrawing=true){
 function blocksSwitch(mon,opponent){
   return activeAbility(mon)!==50&&(mon.noSwitch||(opponent?.left&&[23,42,71].includes(activeAbility(opponent))));
 }
+function effectiveBattleStat(mon,index,stage=mon.stages[index]){
+  const multiplier=stage>=0?(2+stage)/2:2/(2-stage);
+  return Math.max(1,Math.floor(mon.stats[index]*multiplier));
+}
 function damageAt(attacker,defender,move,roll,critical=false){
   const special=move.category?move.category===3:specialTypes.includes(move.type);
   const attackIndex=special?3:1;
   const defenseIndex=special?4:2;
-  const stat=(p,i,stage)=>Math.max(1,Math.floor(p.stats[i]*(stage>=0?(2+stage)/2:2/(2-stage))));
   const attackStage=Math.min(6,attacker.stages[attackIndex]+Number(Boolean(attacker.flowerGift)));
   const defenseStage=Math.min(6,defender.stages[defenseIndex]+(defenseIndex===2&&defender.tempDefense?1:0));
-  const attack=stat(attacker,attackIndex,critical?Math.max(0,attackStage):attackStage);
-  const defense=stat(defender,defenseIndex,critical?Math.min(0,defenseStage):defenseStage);
+  const attack=effectiveBattleStat(attacker,attackIndex,critical?Math.max(0,attackStage):attackStage);
+  const defense=effectiveBattleStat(defender,defenseIndex,critical?Math.min(0,defenseStage):defenseStage);
   const type=move.type;
-  const power=move.power;
+  const status=attacker.status??(attacker.burned?'burn':null);
+  const facadeBoost=move.effect==='FACADE'&&['burn','poison','toxic','paralysis'].includes(status);
+  const power=move.power*(facadeBoost?2:1);
   let damage=Math.floor((Math.floor(2*attacker.level/5)+2)*power*attack/defense/50);
-  const statusPenalty=(!special&&(attacker.status==='burn'||attacker.burned))||(special&&attacker.status==='frostbite')?0.75:1;
+  const statusPenalty=!special&&status==='burn'&&activeAbility(attacker)!==62&&move.effect!=='FACADE'?.5:1;
   damage=(special?damage:Math.max(1,damage))+2;
   if(critical) damage*=2;
   if(attacker.type.includes(type)) damage=Math.floor(damage*1.5);
@@ -1715,7 +1745,7 @@ const elementalRules=[
  [22,'HVD',1],[75,'HD',1,'bonus10'],[71,'HVD',1],[72,'HD',1],[202,'HVD',2],[80,'HVD',3,'petal'],[76,'HVD',3],[79,'HVD',4],[147,'HVD',4],[78,'HVD',3],[73,'HVD',2,'seed3'],[235,'HD',1],[312,'HVD',3,'teamCure'],[275,'HVD',2,'root'],
  [55,'HVD',1],[56,'HVD',3],[127,'HVD',2],[145,'HVD',1,'spin10'],[61,'HD',1,'spin10'],[152,'HVD',2,'bonus20'],[128,'HD',1,'drain10'],[110,'HVD',1],[240,'HVD',2,'rain'],[346,'VH',1,'waterSport'],
  [16,'HVD',1],[17,'HD',1],[64,'HVD',1],[65,'VH',1],[332,'HVD',2,'always'],[314,'HVD',2,'bonus20'],[143,'HVD',3,'skyBonus'],[340,'HVD',3,'guard'],[297,'HVD',2],[119,'HVD',2,'mimic'],
- [28,'HVD',1],[89,'HD',2],[90,'HVD',5,'fissure'],[91,'VH',2,'guard'],[125,'HVD',2,'spin10'],[155,'HVD',2,'twoHits'],[189,'VH',1],[191,'HVD',3,'spikes25'],[198,'HVD',3,'manyHits'],[222,'HVD',1,'magnitude'],[300,'VH',3,'mudSport'],[328,'HVD',2,'drain10'],[341,'HVD',4,'spinThree']
+ [28,'HVD',1],[89,'HD',2],[90,'HVD',5,'fissure'],[91,'VH',2,'guard'],[125,'HVD',2,'spin10'],[155,'HVD',2,'twoHits'],[189,'VH',1],[191,'HVD',3,'spikes25'],[198,'HVD',3,'manyHits'],[222,'HVD',1,'magnitude'],[300,'VH',3,'mudSport'],[328,'HVD',2,'drain10'],[341,'HVD',2,'spinThree'],[122,'HVD',1]
 ];
 const elementalDescriptions={
  burn10:'造成傷害後有 10% 機率使目標灼傷。',burn20:'造成傷害後有 20% 機率使目標灼傷。',burn50:'造成傷害後有 50% 機率使目標灼傷。',burnAlways:'使目標灼傷。',
@@ -1725,7 +1755,7 @@ const elementalDescriptions={
  sun:'雙方火系傷害提高 25%，直到對手下一次行動結束。',rain:'雙方水系傷害提高 25%，火系降低 25%，直到對手下一次行動結束。',
  waterSport:'對方火系傷害降低 25%，直到對手下一次行動結束。',mudSport:'己方暫時免疫電系傷害，直到對手下一次行動結束。',
  always:'此招式必定命中。',guard:'免疫對手此次反擊傷害。',mimic:'隨機使用對手的一個招式。',fissure:'目標等級高於使用者或免疫地面系時無效。命中率為 30% 加上雙方等級差，命中時使目標氣竭。',
- twoHits:'命中兩次。',manyHits:'命中 2–5 次。',spikes25:'對方換人時，上場寶可夢扣除 25% 最大 HP。',magnitude:'基礎威力 40，每多一條符合線型的線，威力增加 20。',spinThree:'延後對手行動一次拉霸，每關最多觸發三次。',
+ twoHits:'命中兩次。',manyHits:'命中 2–5 次。',spikes25:'對方換人時，上場寶可夢扣除 25% 最大 HP。',magnitude:'基礎威力 40，每多一條符合線型的線，威力增加 20。',spinThree:'有 20% 機率延後對手行動一次拉霸，每關最多觸發三次。',
  drain5:'從下一次拉霸起，目標每次損失 5% 最大 HP。',drain10:'從下一次拉霸起，目標每次損失 10% 最大 HP。'
 };
 for(const [id,shapes,min,effect] of elementalRules){
@@ -2276,7 +2306,7 @@ function moveEffectText(name){
     DREAM_EATER:'只對睡眠中的目標有效，恢復相當於傷害一半的 HP。',
     RECOIL:'自身受到相當於傷害 1/4 的反作用力。',DOUBLE_EDGE:'自身受到相當於傷害 1/3 的反作用力。',
     EXPLOSION:'造成傷害後，使用者氣竭。',RECHARGE:'造成傷害後，使用者須休息。',
-    REST:'恢復全部 HP，使用者進入睡眠。',ENDURE:'受到致命傷害時以 1 HP 撐住。',
+    YAWN:'使目標昏昏欲睡，下次拉霸結算時進入睡眠。',REST:'恢復全部 HP，使用者進入睡眠。',ENDURE:'受到致命傷害時以 1 HP 撐住。',
     HAZE:'重置雙方場上寶可夢的能力階級。',REFRESH:'解除自身異常狀態。',
     HEAL_BELL:'解除我方隊伍的異常狀態。',SPLASH:'躍起，沒有其他效果。',
     TRANSFORM:'複製目標的屬性、非 HP 能力值、能力階級及招式。',CONFUSE:'使目標陷入混亂。'
@@ -2285,7 +2315,7 @@ function moveEffectText(name){
   if(['RESTORE_HP','SOFTBOILED','SYNTHESIS','MOONLIGHT','SWALLOW'].includes(effect)) return '恢復自身最大 HP 的 50%。';
   if(directStatuses[effect]) return '使目標陷入'+statusNames[directStatuses[effect]]+'。';
   if(hitStatuses[effect]||effect==='CONFUSE_HIT'){
-    const status=effect==='CONFUSE_HIT'?'混亂':effect==='FREEZE_HIT'&&skill.power<100?'凍傷':statusNames[hitStatuses[effect]];
+    const status=effect==='CONFUSE_HIT'?'混亂':statusNames[hitStatuses[effect]];
     const chance=effect==='CONFUSE_HIT'?skill.secondaryChance:Math.min(25,skill.secondaryChance);
     return '造成傷害後，有 '+chance+'% 機率使目標陷入'+status+'。';
   }
@@ -2357,7 +2387,8 @@ function chooseForgottenMove(p,name){
   };
   form.innerHTML='<div class="learn-layout"><div class="battle-choice-list"><h3>'+musicLabel('原有招式','Current moves')+'</h3><div class="learn-grid">'+
     p.moves.map((move,i)=>'<button type="button" class="learn-entry" data-forget="'+i+'" aria-pressed="false">'+details(move)+'</button>').join('')+
-    '</div></div><div class="battle-choice-side"><h3>'+musicLabel('新招式','New move')+'</h3><div class="learn-entry">'+details(name)+'</div></div></div>'+
+    '</div></div><div class="battle-choice-side"><h3>'+musicLabel('新招式','New move')+'</h3><div class="learn-entry">'+details(name)+'</div>'+
+    '<div class="learn-pokemon-art"><img src="'+sprite(p)+'" alt=""></div></div></div>'+
     '<p class="battle-choice-note" aria-live="polite">'+musicLabel('選擇要遺忘的招式。','Choose a move to forget.')+'</p><div class="battle-choice-actions"><button value="cancel">'+musicLabel('放棄學習','Skip learning')+'</button><button data-commit disabled>'+musicLabel('確認換招','Replace move')+'</button></div>';
   form.onclick=event=>{
     const button=event.target.closest('[data-forget]');
@@ -2720,13 +2751,13 @@ async function animateAttack(attacker,defender,skill){
   target.classList.remove('receiving','buffing');
   $('moveFx').innerHTML='';
 }
-async function playRogueEffect(id,source,target,attacker){
+async function playRogueEffect(id,source,target,attacker,requireGraphic=false){
   if(!globalThis.pokerogueArt||!id) return false;
   const mon=attacker==='enemy'?state?.enemy:state?.team?.[state.active];
   const cue=moveSoundCues[id];
   return globalThis.pokerogueArt.play(id,{
     arena:$('arena'),overlay:$('moveFx'),rear:$('moveFxRear'),between:$('moveFxBetween'),
-    source,target,enemy:attacker==='enemy',behindBattlers:String(id)==='352',
+    source,target,enemy:attacker==='enemy',requireGraphic,behindBattlers:String(id)==='352',
     speed:battleSpeed,volume:.18*settings.effectsVolume/100,reduced:reducedMotion.matches,
     cry:attacker?()=>playSpeciesCry(mon,.115):null,
     fallbackSound:cue?()=>playGameSound(cue):null,
@@ -2795,13 +2826,7 @@ function consumeStatusBerry(run,mon,status){
     mon.confusion=0;
     delete mon.confusionUntil;
   }
-  if(status!=='confusion'||id==='lum-berry'){
-    mon.status=null;
-    mon.burned=false;
-    mon.sleep=0;
-    mon.toxicTurns=0;
-    delete mon.statusUntil;
-  }
+  if(status!=='confusion'||id==='lum-berry') clearMajorStatus(mon);
   run.log.unshift(mon.name+'吃下'+itemCatalog[id].name+'，解除'+statusNames[status]+'。');
   queueBerryAnimation(run,mon,id);
   refreshFighterStatus(run,mon);
@@ -2843,12 +2868,15 @@ async function playBerryAnimations(run){
 function giveStatus(s,p,status,secondary=false){
   if(abilityImmuneToStatus(p,status)||secondary&&activeAbility(p)===19) return false;
   if(p.status||p.burned||!p.left||s.safeguard?.[s.team.includes(p)?'player':'enemy']) return false;
-  if((status==='burn'&&p.type.includes('火'))||(['freeze','frostbite'].includes(status)&&p.type.includes('冰'))||
+  if((status==='burn'&&p.type.includes('火'))||(status==='paralysis'&&p.type.includes('電'))||
+     (status==='freeze'&&(p.type.includes('冰')||s.weather?.kind==='sun'))||
      (['poison','toxic'].includes(status)&&p.type.some(type=>['毒','鋼'].includes(type)))) return false;
   p.status=status;
   p.burned=status==='burn';
   refreshFighterStatus(s,p);
-  if(status==='sleep'||status==='freeze') p.statusUntil=(s.enemyTurns??0)+1;
+  if(status==='sleep') p.statusMovesRemaining=Math.random()<1/3?2:3;
+  if(status==='freeze') p.statusMovesRemaining=3;
+  if(status==='toxic') p.toxicTurns=0;
   s.log.unshift(p.name+'陷入'+statusNames[status]+'。');
   if(!applyStatusAbility(s,p)) consumeStatusBerry(s,p,status);
   return true;
@@ -3024,8 +3052,8 @@ function confuseTarget(s,target,potency,secondary=false){
   if(abilityImmuneToStatus(target,'confusion')||secondary&&activeAbility(target)===19) return false;
   const side=s.team.includes(target)?'player':'enemy';
   if(!target.left||target.confusion||s.safeguard?.[side]||(potency<1&&Math.random()>=potency)) return false;
-  target.confusion=1;
-  target.confusionUntil=(s.enemyTurns??0)+1;
+  target.confusion=2+Math.floor(Math.random()*4);
+  delete target.confusionUntil;
   refreshFighterStatus(s,target);
   noteEffect(s,target,'陷入混亂。');
   if(!applyStatusAbility(s,target)) consumeStatusBerry(s,target,'confusion');
@@ -3146,7 +3174,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
     case 'root':source.rooted=.05*potency;source.rootStart=s.spins+1;return noteEffect(s,source,'扎根了。');
     case 'teamCure':
       if(potency<1&&Math.random()>=potency) return false;
-      for(const mon of side==='player'?s.team:s.foes){mon.status=null;mon.burned=false;mon.confusion=0;}
+      for(const mon of side==='player'?s.team:s.foes) clearMonStatus(mon);
       return noteEffect(s,source,'治癒了己方隊伍。');
     case 'sun':case 'rain':case 'sand':case 'hail':
       if([s.team[s.active],s.enemy].some(mon=>mon?.left&&activeAbility(mon)===214)) return false;
@@ -3158,7 +3186,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
     case 'spin10':case 'skyBonus':if(Math.random()<.1*potency) alterSpinDelay(s,side,1);break;
     case 'spinThree':{
       s.skillUsed??={};const key=side+':mud-shot';const count=s.skillUsed[key]??0;
-      if(count<3&&Math.random()<potency){s.skillUsed[key]=count+1;alterSpinDelay(s,side,1);}break;
+      if(count<3&&Math.random()<.20*potency){s.skillUsed[key]=count+1;alterSpinDelay(s,side,1);}break;
     }
     case 'speedChance':case 'flinchSpin':case 'speedSure':{
       const chance=effect==='speedSure'?1:Math.min(.25,(skill.secondaryChance||10)/100);
@@ -3183,7 +3211,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
       const statuses=[...(source.status||source.burned?['status']:[]),...(source.confusion?['confusion']:[])];
       if(!statuses.length) break;
       if(pick(statuses)==='confusion') source.confusion=0;
-      else{source.status=null;source.burned=false;source.sleep=0;source.toxicTurns=0;}
+      else clearMajorStatus(source);
       return noteEffect(s,source,'解除了異常狀態。');
     }
     case 'steal':
@@ -3265,7 +3293,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
         const statuses=statusBerries[berry][1];
         if(!statuses) clearMonStatus(source);
         else{
-          if(statuses.includes(source.status??(source.burned?'burn':null))) {source.status=null;source.burned=false;delete source.statusUntil;}
+          if(statuses.includes(source.status??(source.burned?'burn':null))) clearMajorStatus(source);
           if(statuses.includes('confusion')) {source.confusion=0;delete source.confusionUntil;}
         }
       }
@@ -3352,14 +3380,89 @@ async function executeMove(s,...args){
       if(!side||!mon.left) continue;
       const key=!confused&&mon.confusion?'confusion':mon.status!==before?mon.status:null;
       if(!key) continue;
-      const effect={paralysis:'paralysis',freeze:'frozen',frostbite:'frozen',sleep:'sleep',burn:'burn',poison:'poison',toxic:'toxic',confusion:'confusion'}[key];
-      if(!effect) continue;
-      const portrait=$(side).querySelector('.portrait');
-      await playRogueEffect('common-'+effect,portrait,portrait);
+      await animateStatusAction(side,key);
     }
     await playBerryAnimations(s);
     if(side==='enemy'&&s===state) setMoveHighlights(s,'enemy',s.enemy,[]);
   }
+}
+function cureBattleStatus(run,mon){
+  run.log.unshift(mon.name+'解除了'+statusNames[mon.status]+'。');
+  clearMajorStatus(mon);
+  refreshFighterStatus(run,mon);
+}
+const statusFeedback={
+  paralysis:['paralysis','lightning_2','Paralysis'],
+  freeze:['frozen','ice_spikes','Frozen'],
+  sleep:['sleep','gray_smoke','Sleep'],
+  burn:['burn','small_ember','Burn'],
+  poison:['poison','poison_bubble','Poison'],
+  toxic:['toxic','poison_bubble','Toxic2'],
+  confusion:['confusion','gold_ring','Confused'],
+  attract:['attract','gold_ring','Attract']
+};
+async function animateStatusAction(side,status){
+  const portrait=$(side).querySelector('.portrait');
+  const feedback=statusFeedback[status];
+  if(!portrait||!feedback) return;
+  const [animation,art]=feedback;
+  if(await playRogueEffect('common-'+animation,portrait,portrait,undefined,true)) return;
+  showMoveFx(portrait,portrait,{name:status,power:0},art);
+  playGameSound('status-'+status);
+  await wait(reducedMotion.matches?125:335);
+  $('moveFx').replaceChildren();
+}
+function showStatusNotice(run,zh,en){
+  const message=musicLabel(zh,en);
+  run.log.unshift(message);
+  if(run===state) $('notice').textContent=message;
+}
+async function checkSleepOrFreeze(run,mon,side,asleepOnly,thawsUser){
+  const status=mon.status;
+  if((status!=='sleep'&&status!=='freeze')||thawsUser) return false;
+  mon.statusMovesRemaining=(mon.statusMovesRemaining??2)-(status==='sleep'&&activeAbility(mon)===48?2:1);
+  if(status==='freeze'&&Math.random()<.25||mon.statusMovesRemaining<=0){
+    cureBattleStatus(run,mon);
+    return false;
+  }
+  if(status==='sleep'&&asleepOnly) return false;
+  const name=displayPokemon(mon);
+  showStatusNotice(run,mon.name+'因'+statusNames[status]+'無法發動招式。',status==='sleep'?name+' is fast asleep!':name+' is frozen solid!');
+  await animateStatusAction(side,status);
+  return true;
+}
+async function checkActionStatus(run,mon,target,side){
+  if(mon.confusion>0){
+    mon.confusion--;
+    if(!mon.confusion){
+      run.log.unshift(mon.name+'解除了混亂。');
+      refreshFighterStatus(run,mon);
+    }else{
+      showStatusNotice(run,mon.name+'仍在混亂中。',displayPokemon(mon)+' is confused!');
+      await animateStatusAction(side,'confusion');
+      if(Math.random()<1/3){
+        const roll=(85+Math.floor(Math.random()*16))/100;
+        const base=((2*mon.level/5+2)*40*effectiveBattleStat(mon,1)/effectiveBattleStat(mon,2)/50+2)*roll;
+        const damage=Math.min(mon.left,Math.max(1,Math.floor(base)));
+        mon.left-=damage;
+        updateHp(side+'Hp',mon);
+        showStatusNotice(run,mon.name+'因混亂傷到自己，受到 '+damage+' 傷害。',displayPokemon(mon)+' hurt itself in confusion!');
+        await damagePopup(side,damage);
+        return true;
+      }
+    }
+  }
+  if(mon.status==='paralysis'&&Math.random()<1/8){
+    showStatusNotice(run,mon.name+'因麻痺無法行動。',displayPokemon(mon)+' is paralyzed! It can’t move!');
+    await animateStatusAction(side,'paralysis');
+    return true;
+  }
+  if(mon.attractedTo!=null&&mon.attractedTo===target.personality&&Math.random()<.5){
+    showStatusNotice(run,mon.name+'因著迷而無法行動。',displayPokemon(mon)+' is immobilized by love!');
+    await animateStatusAction(side,'attract');
+    return true;
+  }
+  return false;
 }
 async function executeMoveCore(s,source,target,name,side,counter=false,sequence='',scale=1,support=[],depth=0,potency=1){
   const original=skillDetails[name];
@@ -3392,7 +3495,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   if(skill.effect==='GEN4_BRINE'&&target.left*2<=target.hp) skill={...skill,power:skill.power*2};
   if(['GEN4_CRUSH_GRIP','GEN4_WRING_OUT'].includes(skill.effect)) skill={...skill,power:Math.max(1,Math.floor(120*target.left/target.hp)+1)};
   if(skill.effect==='GEN4_PUNISHMENT') skill={...skill,power:Math.min(200,60+20*target.stages.slice(1).reduce((sum,value)=>sum+Math.max(0,value),0))};
-  if(skill.effect==='GEN4_GYRO_BALL') skill={...skill,power:Math.min(150,Math.max(1,Math.floor(25*target.stats[5]/source.stats[5])))};
+  if(skill.effect==='GEN4_GYRO_BALL') skill={...skill,power:Math.min(150,Math.max(1,Math.floor(25*battleSpeedStat(target)/battleSpeedStat(source))))};
   if(skill.effect==='GEN4_ASSURANCE'&&target.lastHurtSpin===s.spins) skill={...skill,power:skill.power*2};
   if(skill.effect==='GEN4_WAKE_UP_SLAP'&&target.status==='sleep') skill={...skill,power:skill.power*2};
   if(skill.effect==='WEATHER_BALL'){
@@ -3408,28 +3511,16 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   const other=side==='player'?'enemy':'player';
   const actor=side==='player'?'我方':counter?'對手反擊':'對手出招';
   const action=musicLabel(actor+' · '+source.name+'使用'+name,(source===s.team[s.active]?'Ally':'Opponent')+' · '+displayPokemon(source)+' used '+displayMove(name));
-  if(custom==='sacredFire'&&source.status==='freeze'){
-    source.status=null;
-    delete source.statusUntil;
-  }
   const asleepOnly=['SLEEP_TALK','SNORE'].includes(skill.effect);
+  const thawsUser=source.status==='freeze'&&['172','221','394'].includes(String(skill.id));
+  if(depth===0&&await checkSleepOrFreeze(s,source,side,asleepOnly,thawsUser)) return false;
   if(asleepOnly&&source.status!=='sleep'){s.log.unshift(action+'，但使用者沒有睡著。');return false;}
   if(source.torment&&source.lastMove===name){s.log.unshift(action+'，但無法連續使用。');return false;}
   if(target.imprison&&target.moves.includes(name)){s.log.unshift(action+'，但被封印了。');return false;}
-  if(source.attractedTo!=null&&source.attractedTo===target.personality&&Math.random()<.5){s.log.unshift(source.name+'因著迷而無法行動。');return false;}
   if(source.blockedMove===name){s.log.unshift(source.name+'的'+name+'受到封鎖。');return false;}
   if(source.taunted&&!skill.power){s.log.unshift(source.name+'受到挑釁，無法使用變化招式。');return false;}
-  if((source.status==='sleep'&&!asleepOnly&&depth===0)||source.status==='freeze'){s.log.unshift(source.name+'因'+statusNames[source.status]+'無法發動招式。');return false;}
-  if(source.status==='paralysis'&&Math.random()<.5){s.log.unshift(source.name+'因麻痺無法行動。');return false;}
   if(source.recharge){source.recharge=false;s.log.unshift(source.name+'正在恢復體力。');return false;}
-  if(skill.power&&source.confusion&&Math.random()<.5){
-    const damage=Math.min(source.left,Math.max(1,Math.floor((Math.floor(source.level*2/5)+2)*40*source.stats[1]/source.stats[2]/50)+2));
-    source.left-=damage;
-    updateHp(side+'Hp',source);
-    s.log.unshift(source.name+'因混亂傷到自己，受到 '+damage+' 傷害。');
-    await damagePopup(side,damage);
-    return false;
-  }
+  if(depth===0&&await checkActionStatus(s,source,target,side)) return false;
   const giftBerry=custom==='naturalGift'?randomBerry(s,side):null;
   if(custom==='naturalGift'&&!giftBerry) return false;
   if(custom==='retaliate'&&side==='player'&&!s.actionFlags?.retaliation){
@@ -3438,6 +3529,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     await enemyAct(s);
     if(!source.left||!target.left||s.enemy!==target||s.team[s.active]!==source) return false;
   }
+  if(thawsUser) cureBattleStatus(s,source);
   source.lastMove=name;
   if(counter&&side==='enemy') s.lastEnemyCounter=name;
   source.usedMoves??=[];
@@ -3498,15 +3590,14 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       const strike=custom==='tripleKick'?{...skill,power:10*(hit+1)}:skill;
       let raw=custom==='psywave'?Math.max(1,Math.floor(source.level*(.5+Math.random()))):
         damageForMove(s,custom==='beatUp'?allies[hit]:source,target,strike,side);
-      const wake=target.status==='sleep'||target.status==='freeze';
       const physical=skill.category?skill.category===2:!specialTypes.includes(skill.type);
-      const wakeFactor=target.status==='sleep'&&physical&&defenseAbility!==48||target.status==='freeze'&&!physical?1.5:1;
+      const thawTarget=target.status==='freeze'&&(skill.type==='火');
       if(custom==='endeavor') raw=target.left>source.left&&raw?target.left-source.left:0;
       const fixed=['endeavor','fixed20','psywave'].includes(custom);
       const camouflage=target.moves.includes('保護色')&&target.type.some(type=>source.type.includes(type));
       const charge=source.nextDamage&&raw>0&&!target.counterGuard;
       if(charge) source.nextDamage=false;
-      const factor=potency*(fixed?1:scale*bonus*extraHit*wakeFactor*weatherDamage(s,skill.type,side)*(charge?1.5:1)*(camouflage?0.5:1)*electricBonus*(1-.5*(s.fieldEffects?.[(physical?'physicalScreen:':'specialScreen:')+other]?.potency??0)));
+      const factor=potency*(fixed?1:scale*bonus*extraHit*weatherDamage(s,skill.type,side)*(charge?1.5:1)*(camouflage?0.5:1)*electricBonus*(1-.5*(s.fieldEffects?.[(physical?'physicalScreen:':'specialScreen:')+other]?.potency??0)));
       const lens=raw>0&&!target.counterGuard&&(side==='player'?itemCount(s,'scope-lens'):enemyItemCount(s,'scope-lens'))&&Math.random()<.1;
       const strength=physical&&[37,74].includes(attackAbility)?2:1;
       const grace=attackAbility===32&&raw>0&&Math.random()<.25 ? 1.5 : 1;
@@ -3528,7 +3619,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       }
       if(target.enduring&&damage===target.left){damage=Math.max(0,target.left-1);target.enduring=false;}
       target.left-=damage;
-      if(damage&&wake){s.log.unshift(target.name+'解除了'+statusNames[target.status]+'。');target.status=null;delete target.statusUntil;}
+      if(damage&&(thawTarget||target.status==='sleep'&&['WAKE_UP_SLAP','GEN4_WAKE_UP_SLAP'].includes(skill.effect))) cureBattleStatus(s,target);
       inflicted+=damage;
       if(damage) target.lastHurtSpin=s.spins;
       if(damage&&side==='player'&&itemCount(s,'razor-claw')&&hasStealableEnemyItem(s,target)&&Math.random()<.1) borrowEnemyItem(s,target);
@@ -3559,7 +3650,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     if(!inflicted) return false;
     if(skill.effect==='SUPERPOWER'){changeStage(source,1,-1);changeStage(source,2,-1);}
     if(skill.effect==='OVERHEAT') changeStage(source,3,-2);
-    if(skill.effect==='SMELLINGSALT'&&target.status==='paralysis') clearMonStatus(target);
+    if(skill.effect==='SMELLINGSALT'&&target.status==='paralysis') cureBattleStatus(s,target);
     if(skill.effect==='KNOCK_OFF'&&target.heldItem&&activeAbility(target)!==60){
       delete target.heldItem;
       noteEffect(s,target,'失去了攜帶道具。');
@@ -3597,12 +3688,12 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       s.log.unshift(source.name+'受到反作用力。');
     }
     if(skill.effect==='RECHARGE') source.recharge=true;
-    const fangStatus={GEN4_FIRE_FANG:'burn',GEN4_ICE_FANG:'frostbite',GEN4_THUNDER_FANG:'paralysis'}[skill.effect];
+    const fangStatus={GEN4_FIRE_FANG:'burn',GEN4_ICE_FANG:'freeze',GEN4_THUNDER_FANG:'paralysis'}[skill.effect];
     if(fangStatus&&target.left){
       if(Math.random()<.1*potency) giveStatus(s,target,fangStatus,true);
       if(Math.random()<.1*potency) alterSpinDelay(s,side,1);
     }
-    if(target.left&&hitStatuses[skill.effect]&&Math.random()*100<Math.min(25,skill.secondaryChance)*potency) giveStatus(s,target,skill.effect==='FREEZE_HIT'&&skill.power<100?'frostbite':hitStatuses[skill.effect],true);
+    if(target.left&&hitStatuses[skill.effect]&&Math.random()*100<Math.min(25,skill.secondaryChance)*potency) giveStatus(s,target,hitStatuses[skill.effect],true);
   }else s.log.unshift(action+'。');
   if(skill.type==='電'&&[57,58].includes(activeAbility(source))) changeStage(source,activeAbility(source)===57?3:1,1);
   if(custom) return applyCustomMove(s,source,target,skill,side,{support,full,inflicted,depth,potency});
@@ -3646,6 +3737,11 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     target.seeded=true;
     s.log.unshift(target.name+'被寄生了。');
   }
+  if(skill.effect==='YAWN'){
+    if(target.status||target.burned||target.drowsyUntil||abilityImmuneToStatus(target,'sleep')||s.safeguard?.[other]) return false;
+    target.drowsyUntil=s.spins+1;
+    return noteEffect(s,target,'開始昏昏欲睡。');
+  }
   if(directStatuses[skill.effect]&&!giveStatus(s,target,directStatuses[skill.effect])) return false;
   if(skill.effect==='CONFUSE'||(skill.effect==='CONFUSE_HIT'&&Math.random()*100<skill.secondaryChance*potency)){
     confuseTarget(s,target,1,Boolean(skill.power));
@@ -3668,12 +3764,21 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     }
   }
   if(['RESTORE_HP','SOFTBOILED','SYNTHESIS','MOONLIGHT','SWALLOW'].includes(skill.effect)) healMon(s,source,side,Math.max(1,Math.floor(source.hp/2*potency)));
-  if(skill.effect==='REST'&&!abilityImmuneToStatus(source,'sleep')){source.status='sleep';source.statusUntil=(s.enemyTurns??0)+1;source.burned=false;healMon(s,source,side,Math.floor(source.hp*potency));consumeStatusBerry(s,source,'sleep');}
+  if(skill.effect==='REST'){
+    if(source.left===source.hp||source.status==='sleep'||source.healBlocked||abilityImmuneToStatus(source,'sleep')) return false;
+    clearMajorStatus(source);
+    source.status='sleep';
+    source.statusMovesRemaining=3;
+    healMon(s,source,side,Math.floor(source.hp*potency));
+    consumeStatusBerry(s,source,'sleep');
+  }
   if(skill.effect==='PROTECT') source.protected=true;
   if(skill.effect==='ENDURE') source.enduring=true;
   if(skill.effect==='HAZE'){source.stages=neutralStages();target.stages=neutralStages();}
   if(['REFRESH','HEAL_BELL'].includes(skill.effect)){
-    for(const p of skill.effect==='HEAL_BELL'&&side==='player'?s.team:[source]){p.status=null;p.burned=false;p.sleep=0;}
+    for(const p of skill.effect==='HEAL_BELL'?(side==='player'?s.team:s.foes):[source]){
+      if(skill.effect==='HEAL_BELL'||['burn','poison','toxic','paralysis'].includes(p.status)||p.burned) clearMajorStatus(p);
+    }
   }
   if(skill.effect==='TRANSFORM'){
     if(source.transformOriginal||target.transformOriginal) return false;
@@ -4200,15 +4305,33 @@ async function resolveSpinCore(s,board,settledTracks=null){
       await applyResidualHit(mon,side,drain,name);
       s.log.unshift(mon.name+'因'+name+'損失 '+drain+' HP。');
     }
-    const status=mon.status||(mon.burned?'burn':null);
-    const rate={burn:.05,poison:.08,toxic:.08,frostbite:.05}[status];
-    if(!mon.left||!rate) continue;
-    const loss=Math.min(mon.left,Math.max(1,Math.floor(mon.hp*rate)));
-    await applyResidualHit(mon,side,loss,statusNames[status],{burn:'small_ember',poison:'poison_bubble',toxic:'poison_bubble',frostbite:'ice_spikes'}[status]);
-    s.log.unshift(mon.name+'因'+statusNames[status]+'損失 '+loss+' HP。');
+    await applyMajorStatusTurnEnd(s,mon,side);
   }
   if(!s.enemy.left&&s.team.some(mon=>mon.left)){await winBattle(s,active);return;}
   await replaceFainted(s);
+}
+async function applyMajorStatusTurnEnd(run,mon,side){
+  if(!mon.left) return;
+  if(mon.drowsyUntil&&run.spins>=mon.drowsyUntil){
+    delete mon.drowsyUntil;
+    if(giveStatus(run,mon,'sleep')){
+      if(mon.status==='sleep') await animateStatusAction(side,'sleep');
+      await playBerryAnimations(run);
+    }
+  }
+  const status=mon.status??(mon.burned?'burn':null);
+  if(!['burn','poison','toxic'].includes(status)) return;
+  const ability=activeAbility(mon);
+  if(status==='toxic') mon.toxicTurns=(mon.toxicTurns??0)+1;
+  if(ability===98) return;
+  if(ability===90&&status!=='burn'){
+    healMon(run,mon,side,Math.max(1,Math.floor(mon.hp/8)));
+    return;
+  }
+  const rate=status==='burn'?(ability===85?1/32:1/16):status==='poison'?1/8:mon.toxicTurns/16;
+  const loss=Math.min(mon.left,Math.max(1,Math.floor(mon.hp*rate)));
+  await applyResidualHit(mon,side,loss,statusNames[status],undefined,status);
+  run.log.unshift(mon.name+'因'+statusNames[status]+'損失 '+loss+' HP。');
 }
 function setResidualMove(mon,name,rate,start){
   if((mon.spinDrain??0)>rate) return;
@@ -4216,12 +4339,13 @@ function setResidualMove(mon,name,rate,start){
   mon.drainMove=name;
   mon.drainStart=start;
 }
-async function applyResidualHit(mon,side,damage,name,art){
+async function applyResidualHit(mon,side,damage,name,art,status){
   const portrait=$(side).querySelector('.portrait');
   $('notice').textContent=mon.name+'受到'+name+'的傷害。';
-  if(portrait){
+  if(status) await animateStatusAction(side,status);
+  else if(portrait){
     const skill=skillDetails[name]??{name,power:0};
-    const common={灼傷:'burn',中毒:'poison',劇毒:'toxic',凍傷:'frozen',寄生種子:'leech-seed',火焰旋渦:'fire-spin',綁緊:'bind',緊束:'wrap',貝殼夾擊:'clamp',流沙地獄:'sand-tomb'};
+    const common={寄生種子:'leech-seed',火焰旋渦:'fire-spin',綁緊:'bind',緊束:'wrap',貝殼夾擊:'clamp',流沙地獄:'sand-tomb'};
     const effect=common[name]?'common-'+common[name]:skill.id;
     if(!await playRogueEffect(effect,portrait,portrait)){
       showMoveFx(portrait,portrait,skill,art??({火:'spinning_fire',水:'small_bubbles',地面:'impact',幽靈:'blue_flames'}[skill.type]??'string'));
@@ -4235,11 +4359,6 @@ async function applyResidualHit(mon,side,damage,name,art){
 }
 function clearResidualDamage(mon){
   for(const key of ['seeded','seedRate','seedStart','seedSide','spinDrain','drainStart','drainMove']) delete mon[key];
-  if(['burn','poison','toxic','frostbite'].includes(mon.status)){
-    mon.status=null;
-    delete mon.statusUntil;
-  }
-  mon.burned=false;
   mon.toxicTurns=0;
 }
 function partyMemberDetails(mon,label=''){
@@ -4422,10 +4541,6 @@ async function enemyAct(s,random=false,switching=false){
       }
     }
   }finally{
-    for(const mon of [...s.team,...s.foes]){
-      if(mon.statusUntil&&mon.statusUntil<=s.enemyTurns&&['sleep','freeze'].includes(mon.status)){s.log.unshift(mon.name+'解除了'+statusNames[mon.status]+'。');mon.status=null;delete mon.statusUntil;}
-      if(mon.confusionUntil&&mon.confusionUntil<=s.enemyTurns){mon.confusion=0;delete mon.confusionUntil;}
-    }
     for(const mon of s.team) if(mon.bide?.side==='player') delete mon.bide;
     delete s.enemy.taunted;
     delete s.enemy.blockedMove;
@@ -5377,15 +5492,18 @@ function advanceStage(){
   for(const p of state.team){
     undoTransform(p);
     leaveAbility(p,false);
-    if(heal) p.left=p.hp;
+    if(heal){
+      p.left=p.hp;
+      clearMonStatus(p);
+    }
     p.stages=neutralStages();
     clearResidualDamage(p);
     delete p.rooted;delete p.rootStart;
-    if(p.status==='sleep'||p.status==='freeze'){p.status=null;delete p.statusUntil;}
     p.confusion=0;
+    delete p.confusionUntil;
+    delete p.drowsyUntil;
     p.protected=false;
     for(const flag of ['noSwitch','identified','tempDefense','counterGuard','spinDrain','drainStart','perishAfterAction','bide','taunted','blockedMove','mistGuard','electricCharge','grudge','destinyBond','lastMove','nextDamage','lockDamage','disable','encore','follow','selfCounter']) delete p[flag];
-    if(mode==='trial') p.burned=false;
   }
   for(const mon of state.team){
     for(const flag of ['embargo','magnetRise','abilitySuppressed','flowerGift','trumpUses','usedMoves','healBlocked','lastHurtSpin','rooted','rootStart']) delete mon[flag];
@@ -5594,6 +5712,9 @@ function playKantoMusic(){
 }
 const musicToggle=$('musicToggle');
 const gameSounds={
+  ...Object.fromEntries(Object.entries(statusFeedback).map(([status,[,,sound]])=>[
+    'status-'+status,'./assets/pokerogue/audio/battle_anims/'+encodeURIComponent('PRSFX- '+sound+'.wav')
+  ])),
   hit: "./assets/sfx/hit.wav",
   hit_weak: "./assets/sfx/hit_weak.wav",
   hit_strong: "./assets/sfx/hit_strong.wav",
@@ -7102,6 +7223,7 @@ async function animateWildEntrance(run){
 }
 async function openBattleStage(entering=false,playerEnters=entering){
   prepareHitSounds();
+  for(const [animation] of Object.values(statusFeedback)) globalThis.pokerogueArt?.preload('common-'+animation);
   prepareSpecialStageMusic(state);
   if(!state.tutorial) prepareVictoryMusic(state);
   if(state.tutorial||!(state.reelsCustomized||state.reelsPhysical)) preloadReelGroups(state.reels,!state.tutorial);
@@ -7379,7 +7501,7 @@ function startingBallStock(run){
 }
 const emeraldCatchRates=[0,45,45,45,45,45,45,45,45,45,255,120,45,255,120,45,255,120,45,255,127,255,90,255,90,190,75,255,90,235,120,45,235,120,45,150,25,190,75,170,50,255,90,255,120,45,190,75,190,75,255,50,255,90,190,75,190,75,190,75,255,120,45,200,100,50,180,90,45,255,120,45,190,60,255,120,45,190,60,190,75,190,60,45,190,45,190,75,190,75,190,60,190,90,45,45,190,75,225,60,190,60,90,45,190,75,45,45,45,190,60,120,60,30,45,45,225,75,225,60,225,60,45,45,45,45,45,45,45,255,45,45,35,45,45,45,45,45,45,45,45,45,45,25,3,3,3,45,45,45,3,45,45,45,45,45,45,45,45,45,45,255,90,255,90,255,90,255,90,90,190,75,190,150,170,190,75,190,75,235,120,45,45,190,75,65,45,255,120,45,45,235,120,75,255,90,45,45,30,70,45,225,45,60,190,75,190,60,25,190,75,45,25,190,45,60,120,60,190,75,225,75,60,190,75,45,25,25,120,45,45,120,60,45,45,45,75,45,45,45,45,45,30,3,3,3,45,45,45,3,3,45,45,45,45,45,45,45,45,45,45,255,127,255,90,255,120,45,120,45,255,120,45,255,120,45,200,45,190,45,235,120,45,200,75,255,90,255,120,45,255,120,45,190,120,45,180,200,150,255,255,60,45,45,180,90,45,180,90,120,45,200,200,150,150,150,225,75,225,60,125,60,255,150,90,255,60,255,255,120,45,190,60,255,45,90,90,45,45,190,75,205,155,255,90,45,45,45,45,255,60,45,200,225,45,190,90,200,45,30,125,190,75,255,120,45,255,60,60,25,225,45,45,45,3,3,3,3,3,3,3,3,5,5,3,3,3];
 const ballCatalog={
-  poke:{name:'神奇寶貝球',sprite:'poke-ball',tier:0,quantity:20,multiplier:10},
+  poke:{name:'神奇寶貝球',sprite:'poke-ball',tier:0,quantity:10,multiplier:10},
   great:{name:'超級球',sprite:'great-ball',tier:1,quantity:10,multiplier:15},
   ultra:{name:'高級球',sprite:'ultra-ball',tier:2,quantity:5,multiplier:20},
   master:{name:'大師球',sprite:'master-ball',tier:3,quantity:1,multiplier:0}
@@ -7435,7 +7557,7 @@ const itemCatalog=Object.fromEntries([
   ['color-screw','彩色螺絲',2,'永久加入 10 個萬能圖案，每個輪盤加入 2 個。',true],
   ['super-shard','超級碎片',3,'指定一種屬性，永久將該屬性的所有圖案轉換為萬能圖案。',true],
   ['silver-crown','銀色王冠',1,'選擇目標屬性，隨機選一種其他屬性，將該屬性的所有輪盤圖案永久轉換。',true],
-  ['gold-crown','金色王冠',2,'指定來源與目標屬性，將來源屬性的所有輪盤圖案永久轉換。',true],
+  ['gold-crown','金色王冠',3,'指定來源與目標屬性，將來源屬性的所有輪盤圖案永久轉換。',true],
   ['eject-button','逃脫按鍵',1,'移除指定屬性的 10 個輪盤圖案，合計至少保留 30 格。',true],
   ['strawberry-sweet','草莓糖飾',1,'使你運氣變好一點。'],
   ['love-sweet','愛心糖飾',2,'使你運氣變非常好。'],
@@ -7607,11 +7729,15 @@ document.addEventListener('scroll',hideItemTip,true);
 function rewardRarity(draw,luck){
   return draw<.825-.005*luck?0:draw<.975-.0025*luck?1:draw<.995-.001*luck?2:3;
 }
+function rewardItemWeight(id){
+  return id.startsWith('ball:')?1.25:id==='super-shard'?.5:1;
+}
 function rewardOptions(s){
   const typesInTeam=new Set(s.team.flatMap(mon=>mon.type));
   const moveTypes=new Set(s.team.flatMap(mon=>mon.moves.map(move=>skillDetails[move]?.type)));
   const all=Object.keys(rewards).filter(id=>(!rewards[id].type||typesInTeam.has(rewards[id].type))&&
     (!s.tutorial||!isNewReward(id))&&
+    (id!=='gold-crown'||s.stage>=80)&&
     (!immediateReward(id)||canApplyItem(s,id))&&
     !(id==='razor-fang'&&s.items[id])&&
     !(id==='strawberry-sweet'&&(s.items[id]??0)>=3)&&
@@ -7627,9 +7753,9 @@ function rewardOptions(s){
     const pool=all.filter(id=>rewards[id].tier===tier&&!results.includes(id));
     const available=pool.length?pool:all.filter(id=>rewards[id].tier===tier);
     // The super shard has half the weight of other eligible legendary rewards.
-    const weight=available.reduce((sum,id)=>sum+(id==='super-shard'?.5:1),0);
+    const weight=available.reduce((sum,id)=>sum+rewardItemWeight(id),0);
     let selection=Math.random()*weight;
-    results.push(available.find(id=>(selection-=id==='super-shard'?.5:1)<0)??available.at(-1));
+    results.push(available.find(id=>(selection-=rewardItemWeight(id))<0)??available.at(-1));
   }
   return results;
 }
@@ -7699,8 +7825,7 @@ function useItem(run,id,index,fromReward=false){
   if(potionRates[id]){
     p.left=Math.min(p.hp,p.left+Math.max(1,Math.floor(p.hp*potionRates[id])));
   }else if(id==='full-heal'){
-    p.status=null;p.burned=false;p.confusion=0;p.sleep=0;p.toxicTurns=0;
-    delete p.statusUntil;delete p.confusionUntil;
+    clearMonStatus(p);
   }else if(id==='revive'||id==='max-revive'){
     p.left=id==='revive'?Math.max(1,Math.floor(p.hp/2)):p.hp;
   }else return false;
@@ -7910,6 +8035,10 @@ function migrateRun(run){
   if(!run.team[run.active]) run.active=0;
   run.introSeen??=Boolean(!run.kind||run.spins||run.result);
   for(const p of [...run.team,...run.foes]){
+    if(p.status==='frostbite') p.status='freeze';
+    if(['sleep','freeze'].includes(p.status)) p.statusMovesRemaining??=2;
+    delete p.statusUntil;
+    delete p.confusionUntil;
     if(p.transformOriginal) continue;
     const mon=speciesById(p.id);
     if(run.kind&&!run.enemyItems&&run.foes.includes(p)&&p.heldItem===undefined&&!p.borrowedItem) equipEnemy(p);

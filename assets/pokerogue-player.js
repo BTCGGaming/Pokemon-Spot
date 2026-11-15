@@ -62,7 +62,7 @@
     audio.play().catch(() => {});
   }
 
-  async function play(id, { arena, overlay, rear = overlay, between = overlay, source, target, enemy, speed, volume, reduced, cry, fallbackSound, behindBattlers }) {
+  async function play(id, { arena, overlay, rear = overlay, between = overlay, source, target, enemy, speed, volume, reduced, cry, fallbackSound, behindBattlers, requireGraphic }) {
     const pending = preload(id);
     let timeout;
     const variants = await Promise.race([pending, new Promise(resolve => { timeout = setTimeout(() => resolve(null), 220); })]);
@@ -71,6 +71,7 @@
     const entry = opponentVariant || variants?.[0];
     if (!entry || !arena?.offsetWidth || !source || !target) return false;
     const { animation, sheet, backgrounds } = entry;
+    if (requireGraphic && !sheet) return false;
     const events = animation.frameTimedEvents ?? {};
     if (!Object.values(events).flat().some(event => event.eventType === 'AnimTimedSoundEvent' && (assets.sounds[event.resourceName] || !event.resourceName && cry))) fallbackSound?.();
     const field = arena.getBoundingClientRect();

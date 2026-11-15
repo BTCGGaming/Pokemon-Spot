@@ -5610,7 +5610,7 @@ const preparedBattleMusic=new Map();
 const johtoMusic={
   town:'new-bark-town',wild:'wild-battle',lavender:'wild-battle',rival:'rival-battle',
   trainer:'trainer-battle',gym:'gym-battle',champion:'champion-battle',
-  legendary:'legendary-beasts',lugia:'lugia-battle','ho-oh':'ho-oh-battle',grunt:'team-battle',boss:'team-battle',elite:'elite-four-battle'
+  legendary:'legendary-beasts',grunt:'team-battle',boss:'team-battle',elite:'elite-four-battle'
 };
 const hoennMusic={
   town:'littleroot-town',shop:'poke-mart',wild:'wild-battle',ghost:'mt-pyre',
@@ -5636,8 +5636,6 @@ function legendaryMusic(id){
   if(sinnohData.legends.includes(id)) return ['sinnoh',id<=482?'battle_legendary_lake_trio':id<=484?'battle_legendary_dia_pal':id===487?'battle_legendary_giratina':id===493?'battle_legendary_arceus':'battle_legendary_sinnoh'];
   if(id===151) return ['hoenn','mew'];
   if(id===386) return ['hoenn','deoxys'];
-  if(id===249) return ['johto','lugia'];
-  if(id===250) return ['johto','ho-oh'];
   if(johtoLegendaryIds.includes(id)) return ['johto','legendary'];
   if([377,378,379].includes(id)) return ['hoenn','regi'];
   return [hoennLegendaryIds.includes(id)?'hoenn':'kanto','legendary'];
@@ -5663,7 +5661,7 @@ function resolveMusicTrack(screenId,run,intro=false){
     else if(run.trainer?.[0]==='四大天王') cue='elite';
     else if(run.trainer?.[0]?.startsWith('反派組織')) cue='grunt';
     else if(run.kind==='神獸'){
-      cue=run.enemy.id===249?'lugia':run.enemy.id===250?'ho-oh':'legendary';
+      cue='legendary';
     }
   }
   if(style==='sinnoh'){

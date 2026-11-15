@@ -3272,6 +3272,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
       }
       return false;
     case 'pivot':case 'baton':case 'help':{
+      if(side==='enemy'&&s.actionFlags?.interruptingPlayerMoves) return Boolean(inflicted);
       const team=side==='player'?s.team:s.foes;
       const index=side==='player'?s.active:s.foeIndex;
       const reserves=team.flatMap((mon,i)=>i!==index&&mon.left?[i]:[]);
@@ -3564,7 +3565,9 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   if(custom==='retaliate'&&side==='player'&&!s.actionFlags?.retaliation){
     s.actionFlags??={};
     s.actionFlags.retaliation=true;
-    await enemyAct(s);
+    s.actionFlags.interruptingPlayerMoves=true;
+    try{await enemyAct(s);}
+    finally{delete s.actionFlags.interruptingPlayerMoves;}
     if(!source.left||!target.left||s.enemy!==target||s.team[s.active]!==source) return false;
   }
   if(thawsUser) cureBattleStatus(s,source);
@@ -4619,7 +4622,8 @@ async function enemyActCore(s,random,switching,prepared){
   const acting=s.enemy;
   const player=s.team[s.active];
   const forecast=random&&!prepared?foreseenCounter(s):undefined;
-  if(!prepared&&!switching&&!forecast&&s.trainer&&!s.tutorial&&
+  const interrupting=Boolean(s.actionFlags?.interruptingPlayerMoves);
+  if(!interrupting&&!prepared&&!switching&&!forecast&&s.trainer&&!s.tutorial&&
     s.enemyTurns-(s.lastAiSwitchTurn??-Infinity)>1&&!blocksSwitch(acting,player)){
     const next=bestEnemyReserve(s,true);
     if(next>=0){
@@ -4629,6 +4633,9 @@ async function enemyActCore(s,random,switching,prepared){
     }
   }
   let moves=prepared?(enemyMoveCanAffect(s,acting,player,prepared)?[prepared]:[]):enemyUsableMoves(s,acting,player);
+  if(interrupting&&!prepared){
+    moves=moves.filter(name=>skillDetails[name].power||!['baton','help','pivot'].includes(moveRules[name]?.effect));
+  }
   if(acting.disable&&moves.length){
     const blockable=moves.filter(name=>name!==forecast);
     const blocked=pickDisabledMove(acting,blockable.length?blockable:moves);

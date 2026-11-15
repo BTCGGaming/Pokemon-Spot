@@ -2422,8 +2422,9 @@ function chooseForgottenMove(p,name){
   };
   return battleChoice(dialog,form);
 }
-function boosterBonus(count){
-  return 10*Math.min(3,count)+3*Math.max(0,count-3);
+function boosterBonus(count,universal=0){
+  const boosted=Math.min(3,universal);
+  return 15*boosted+10*Math.min(3-boosted,count)+3*Math.max(0,count+universal-3);
 }
 function setBattleLevel(p,level,run){
   const before=p.hp;
@@ -2921,13 +2922,13 @@ function healMon(s,p,side,amount){
   s.log.unshift(p.name+'恢復 '+healed+' HP。');
 }
 const boosterDescription='同項前 3 件各增加 10%，第 4 件起各增加 3%。';
-const universalBooster={name:'萬能增強劑',sprite:'hp-up',tier:1,description:'提升 HP／攻擊／特攻／防禦／特防，各項分開計算。'+boosterDescription};
+const universalBooster={name:'萬能增強劑',sprite:'hp-up',tier:1,description:'提升 HP／攻擊／特攻／防禦／特防，各項分開計算。前 3 件各增加 15%，第 4 件起各增加 3%。'};
 function applyEnemyBoosters(mon,stage,items){
   const count=stage===100?15:Math.floor(stage/10)+(stage>=92&&stage<=98&&stage%2===0&&items?2:0);
   const hpBoost=items?.['hp-up']??0;
   const before=mon.hp;
   const stats=statsAt(mon,mon.level).map((value,index)=>index<5
-    ?Math.floor(value*(100+boosterBonus(count+(items?.[statBoosterIds[index]]??0)))/100):value);
+    ?Math.floor(value*(100+boosterBonus(items?.[statBoosterIds[index]]??0,count))/100):value);
   if(mon.id===292) stats[0]=1;
   mon.enemyHpBoost=hpBoost;
   mon.enemyBoosterCount=count;
@@ -3501,7 +3502,9 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   if(custom==='hiddenPower') skill={...skill,...hiddenPowerFor(source)};
   if(custom==='triType'){
     const shapes=support.map(line=>lineShape(line.cells));
-    skill={...skill,type:shapes.includes('V')?'火':shapes.includes('H')?'電':shapes.includes('D')?'冰':pick(['火','電','冰'])};
+    const types=attackMoveTypes(s,source,skill,custom);
+    const viable=side==='enemy'?types.filter(type=>!moveTypeImpact(type,target,source,s,custom).immune):types;
+    skill={...skill,type:shapes.includes('V')?'火':shapes.includes('H')?'電':shapes.includes('D')?'冰':pick(viable.length?viable:types)};
   }
   const full=target.left===target.hp;
   if(['bonus10','bonus20','skyBonus'].includes(custom)) skill={...skill,highCrit:false};
@@ -3936,21 +3939,53 @@ function moveTypeImpact(type,target,source,run,custom){
     (defenseAbility===26&&type==='地面')||(defenseAbility===43&&specialTypes.includes(type));
   return {effectiveness,defenseAbility,absorb,boost,waterBoost,immune};
 }
-function threat(attacker,defender){
-  const attackTypes=attacker.moves.map(name=>skillDetails[name]).filter(move=>move?.power).map(move=>move.type);
-  return Math.max(...[...new Set([...attacker.type,...attackTypes])].map(type=>typeMultiplier(type,defender)));
+function attackMoveTypes(run,mon,skill,custom){
+  if(custom==='hiddenPower') return [hiddenPowerFor(mon).type];
+  if(custom==='triType') return ['火','電','冰'];
+  const weatherType=skill.effect==='WEATHER_BALL'?{sun:'火',rain:'水',sand:'岩石',hail:'冰'}[run.weather?.kind]:null;
+  return [weatherType??skill.type];
 }
-function matchupScore(candidate,player){
-  const outgoing=threat(candidate,player);
-  const incoming=threat(player,candidate);
-  return (outgoing>=2?20:0)+(incoming===0?3:incoming<1?2:incoming>1?-2:0)+outgoing-incoming;
+function enemyMoveCanAffect(run,mon,target,name){
+  const skill=skillDetails[name],custom=moveRules[name]?.effect;
+  if(!skill||moveRules[name]?.shapes==='P') return false;
+  if(skill.effect==='OHKO'&&mon.level<target.level) return false;
+  if(skill.power||custom==='fling'){
+    return attackMoveTypes(run,mon,skill,custom).some(type=>!moveTypeImpact(type,target,mon,run,custom).immune);
+  }
+  if(skill.effect==='PARALYZE'&&skill.type==='電'&&target.type.includes('地面')) return false;
+  const status=directStatuses[skill.effect];
+  return !status||(!target.status&&!target.burned&&!abilityImmuneToStatus(target,status)&&
+    !(status==='paralysis'&&target.type.includes('電'))&&!(status==='burn'&&target.type.includes('火'))&&
+    !(['poison','toxic'].includes(status)&&target.type.some(type=>type==='毒'||type==='鋼')));
+}
+function enemyUsableMoves(run,mon=run.enemy,target=run.team[run.active]){
+  return mon.moves.filter(name=>enemyMoveCanAffect(run,mon,target,name));
+}
+function matchupPressure(run,attacker,defender){
+  let pressure=0;
+  for(const name of attacker.moves){
+    const skill=skillDetails[name],custom=moveRules[name]?.effect;
+    if(!skill?.power||moveRules[name]?.shapes==='P'||isLethalMove(name)) continue;
+    for(const type of attackMoveTypes(run,attacker,skill,custom)){
+      const {effectiveness,immune}=moveTypeImpact(type,defender,attacker,run,custom);
+      if(immune) continue;
+      const damage=damageAt(attacker,defender,{...skill,type,effectiveness},92);
+      pressure=Math.max(pressure,damage*(skill.accuracy?skill.accuracy/100:1)/Math.max(1,defender.left));
+    }
+  }
+  return pressure;
 }
 function bestEnemyReserve(s,defensive=false){
   const player=s.team[s.active];
-  let best=-1,score=-Infinity;
+  const incoming=matchupPressure(s,player,s.enemy);
+  const outgoing=matchupPressure(s,s.enemy,player);
+  let best=-1,score=defensive?outgoing-incoming+.15:-Infinity;
   (s.foes??[]).forEach((mon,i)=>{
-    if(i===s.foeIndex||!mon.left||(defensive&&threat(player,mon)>=threat(player,s.enemy))) return;
-    const value=matchupScore(mon,player);
+    if(i===s.foeIndex||!mon.left) return;
+    const danger=matchupPressure(s,player,mon);
+    const offense=matchupPressure(s,mon,player);
+    if(defensive&&(!offense||danger>=incoming&&outgoing>0)) return;
+    const value=offense-danger;
     if(value>score){best=i;score=value;}
   });
   return best;
@@ -4284,7 +4319,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
   if(!p.left){await replaceFainted(s);return;}
   const beforeCounter=s.weather?.kind;
   const warning=s.enemyWarning;
-  const enemyLensMoves=!warning&&!s.actionFlags.retaliation&&enemyItemCount(s,'wide-lens')?s.enemy.moves.filter(name=>moveRules[name]?.shapes!=='P'):[];
+  const enemyLensMoves=!warning&&!s.actionFlags.retaliation&&enemyItemCount(s,'wide-lens')?enemyUsableMoves(s):[];
   if(enemyLensMoves.length){
     const move=pick(enemyLensMoves);
     s.log.unshift('對手的廣角鏡觸發 '+move+'。');
@@ -4499,7 +4534,7 @@ const counterForecasts=new WeakMap();
 function foreseenCounter(run){
   const enemy=run.enemy,player=run.team[run.active];
   if(!player?.left||activeAbility(player)!==209||!enemy?.left||run.result) return;
-  const moves=enemy.moves.filter(name=>moveRules[name]?.shapes!=='P');
+  const moves=enemyUsableMoves(run,enemy,player);
   const attacks=moves.filter(name=>skillDetails[name]?.power>0);
   const pool=(run.kind||enemy.follow)&&attacks.length?attacks:moves;
   const prior=counterForecasts.get(run);
@@ -4568,17 +4603,19 @@ async function enemyAct(s,random=false,switching=false){
 }
 async function enemyActCore(s,random,switching,prepared){
   if(!random&&!switching) s.counterSpins=0;
-  if(!prepared&&!random&&!switching&&s.trainer&&s.stage>50&&!blocksSwitch(s.enemy,s.team[s.active])){
-    const active=s.team[s.active];
+  const acting=s.enemy;
+  const player=s.team[s.active];
+  const forecast=random&&!prepared?foreseenCounter(s):undefined;
+  if(!prepared&&!switching&&!forecast&&s.trainer&&!s.tutorial&&
+    s.enemyTurns-(s.lastAiSwitchTurn??-Infinity)>1&&!blocksSwitch(acting,player)){
     const next=bestEnemyReserve(s,true);
-    if(next>=0&&threat(active,s.enemy)>1&&matchupScore(s.foes[next],active)>matchupScore(s.enemy,active)){
+    if(next>=0){
+      s.lastAiSwitchTurn=s.enemyTurns;
       await sendEnemy(s,next,true);
       return;
     }
   }
-  const acting=s.enemy;
-  let moves=prepared?[prepared]:acting.moves.filter(name=>moveRules[name]?.shapes!=='P');
-  const forecast=random&&!prepared?foreseenCounter(s):undefined;
+  let moves=prepared?(enemyMoveCanAffect(s,acting,player,prepared)?[prepared]:[]):enemyUsableMoves(s,acting,player);
   if(acting.disable&&moves.length){
     const blockable=moves.filter(name=>name!==forecast);
     const blocked=pickDisabledMove(acting,blockable.length?blockable:moves);
@@ -4592,7 +4629,6 @@ async function enemyActCore(s,random,switching,prepared){
   $('notice').textContent=random?'對手即將反擊…':'對手即將行動…';
   try{await wait(1000);}
   finally{alert.hidden=true;}
-  const player=s.team[s.active];
   if(acting.selfCounter){
     acting.selfCounter=false;
     if(Math.random()<.5){

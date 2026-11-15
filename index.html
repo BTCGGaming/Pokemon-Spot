@@ -1026,8 +1026,8 @@ button:not(:disabled):active{filter:brightness(.9)}
 .nds #redOnField,.nds #trainerOnField{object-position:center bottom}
 .nds #redOnField{left:26%;top:15.2%;width:19%;height:29.7%}
 .nds #trainerOnField{left:56.8%;top:3.7%;width:16%;height:25.4%}
-.nds #redOnField.arriving{animation:trainer-left-in .56s steps(16) both}
-.nds #trainerOnField.arriving{animation:trainer-right-in .56s steps(16) both}
+.nds #redOnField.arriving{animation:trainer-left-in .68s steps(18) both}
+.nds #trainerOnField.arriving{animation:trainer-right-in .68s steps(18) both}
 .nds #redOnField.retreat{animation:trainer-left-out .34s steps(10) both}
 .nds #trainerOnField.retreat{animation:trainer-right-out .45s steps(12) both}
 .nds #trainerOnField.arriving,.nds #redOnField.arriving,.nds #trainerOnField.retreat,.nds #redOnField.retreat{clip-path:inset(0)}
@@ -1882,7 +1882,7 @@ const selectedShiny=new Set();
 const selectedTraits=new Map();
 const neutralStages=()=>Array(8).fill(0);
 const startingLevel=5;
-const enemyStartingLevel=3;
+const enemyStartingLevel=5;
 const genderRatios=[null,null,31,31,31,31,31,31,31,31,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,254,254,254,0,0,0,191,191,191,191,191,191,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,63,63,127,127,127,63,63,63,63,63,63,127,127,127,127,127,127,127,127,127,127,127,127,null,null,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,null,null,127,127,127,127,0,0,127,127,127,127,127,254,127,254,127,127,127,127,null,null,127,127,254,63,63,127,0,127,127,127,null,31,31,31,31,null,31,31,31,31,31,31,null,null,null,127,127,127,null,null,31,31,31,31,31,31,31,31,31,127,127,127,127,127,127,127,127,127,127,127,127,191,191,31,31,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,31,31,127,127,127,null,127,127,127,127,127,127,127,191,191,127,127,127,127,127,127,127,127,127,127,127,191,127,127,127,127,127,127,127,127,127,127,null,127,127,0,0,254,63,63,254,254,null,null,null,127,127,127,null,null,null,31,31,31,31,31,31,31,31,31,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,null,127,127,127,63,63,191,127,191,191,127,127,127,127,127,127,127,127,127,127,127,0,254,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,null,null,127,127,127,127,null,null,31,31,31,31,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,31,191,127,127,127,null,null,null,null,null,null,254,0,null,null,null,null,null];
 function pokemonGender(id,personality){
   const rate=speciesById(id)?.gender;
@@ -4286,11 +4286,10 @@ async function resolveSpinCore(s,board,settledTracks=null){
     }
   }
   if(!attacks.length&&!itemCount(s,'wide-lens')) s.log.unshift('這次沒有觸發招式。');
-  let landed=false;
   for(const [i,attack] of attacks.entries()){
     const sequence=attacks.length>1?'　'+(i+1)+' / '+attacks.length:'';
     if(attack.half) s.log.unshift(attack.name+'由替代連線觸發，效果為 50%。');
-    if(await executeMove(s,p,s.enemy,attack.name,'player',false,sequence,multiplier,attack.supports,0,attack.half?0.5:1)) landed=true;
+    await executeMove(s,p,s.enemy,attack.name,'player',false,sequence,multiplier,attack.supports,0,attack.half?0.5:1);
     if(s.skipWild){s.skipWild=false;await playWeather(s.weather?.kind);await finishStage(s,'過關！');return;}
     if(!s.enemy.left){healLeftovers(s);await playWeather(s.weather?.kind);await winBattle(s,p);return;}
     if(s.team[s.active]!==p) break;
@@ -4304,7 +4303,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
   if(s.team[s.active]===p&&itemCount(s,'wide-lens')&&p.moves.some(name=>moveRules[name]?.shapes!=='P')){
     const move=pick(p.moves.filter(name=>moveRules[name]?.shapes!=='P'));
     s.log.unshift('廣角鏡觸發 '+move+'。');
-    if(await executeMove(s,p,s.enemy,move,'player',false,'',multiplier)) landed=true;
+    await executeMove(s,p,s.enemy,move,'player',false,'',multiplier);
     if(s.skipWild){s.skipWild=false;await playWeather(s.weather?.kind);await finishStage(s,'過關！');return;}
     if(!s.enemy.left){healLeftovers(s);await playWeather(s.weather?.kind);await winBattle(s,p);return;}
   }
@@ -4332,7 +4331,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
   else if(warning) await enemyAct(s);
   else if(s.enemyWarning) delete s.team[s.active].counterGuard;
   else if(s.counterSpins>=counterTarget(s)) await enemyAct(s);
-  else if(!s.playerTrickRoom&&shouldCounter(s,landed)&&!(activeAbility(p)===8&&matched.some(line=>line.type==='地面'||line.type===wildReelType))) await enemyAct(s,true);
+  else if(!s.playerTrickRoom&&!(activeAbility(p)===8&&matched.some(line=>line.type==='地面'||line.type===wildReelType))) await enemyAct(s,true);
   else delete s.team[s.active].counterGuard;
   await playWeather(s.weather?.kind??beforeCounter);
   if(!s.enemy.left){await winBattle(s,s.team[s.active]);return;}
@@ -4519,9 +4518,6 @@ function counterTarget(s){
     return ability===3?1:ability===33&&weather==='rain'||ability===34&&weather==='sun'?2:0;
   };
   return Math.max(1,5-(s.playerTrickRoom?3:0)+Number(Boolean(s.playerTailwind))-Number(Boolean(s.enemyTailwind))+itemCount(s,'quick-claw')+upgradeEffect(s,'delay')+delay(player)-enemyItemCount(s,'quick-claw'));
-}
-function shouldCounter(s,landed){
-  return landed;
 }
 async function checkPerish(s,mon,side){
   if(!mon.perishAfterAction||!mon.left) return;
@@ -5019,7 +5015,7 @@ function renderTutorialHint(){
   hint.hidden=true;
   const messages={
     1:state.spins===0?['','拉一下']:
-      state.spins<5?['② 快轉看對手行動','萬能球可補任意屬性。用普通線替代其他屬性時，招式效果減半。出招後對手可能反擊；再拉一次，快轉到第 5 次看對手完整行動。']:
+      state.spins<5?['② 快轉看對手行動','萬能球可補任意屬性。用普通線替代其他屬性時，招式效果減半。每次拉霸後，對手都會嘗試反擊。再拉一次，快轉到第 5 次看對手完整行動。']:
       ['② 結束練習戰','對手已完成一輪行動。再按一次把手，擊敗練習對手。'],
     2:['④ 捕捉野生寶可夢','點右下方「收服」，再點寶可夢球。目標血量越低，通常越容易捕捉。'],
     3:['⑤ 冠軍決戰','確認冠軍台詞後，拉一次把手。噴火龍會使出四招，擊敗冠軍最後一隻寶可夢。']
@@ -7127,14 +7123,27 @@ function trainerSprite(key){
 function playerTrainerFrames(){
   return globalThis.pokerogueArt?.trainer('red')??emeraldMenuArt.red;
 }
+async function slideTrainersIn(...trainers){
+  for(const trainer of trainers){
+    trainer.classList.remove('arriving','retreat');
+    trainer.hidden=true;
+  }
+  await Promise.all(trainers.map(trainer=>trainer.decode?.().catch(()=>{})));
+  for(const trainer of trainers){
+    trainer.classList.add('arriving');
+    trainer.hidden=false;
+  }
+  const animations=trainers.flatMap(trainer=>trainer.getAnimations?.()??[]);
+  if(animations.length) await Promise.allSettled(animations.map(animation=>animation.finished));
+  else await wait(reducedMotion.matches?220:580);
+  for(const trainer of trainers) trainer.classList.remove('arriving');
+}
 async function animateTrainerOpening(run){
   const red=$('redOnField'),opponent=$('trainerOnField');
   red.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAMAAAC5zwKfAAAAMFBMVEUBAAAAAAA7hJ+yLCxiLCwfYmofHx8lQlLFxc/PjWKyqTv2xampYkr///98hIT2SkIp0JHVAAAAAXRSTlMAQObYZgAAAjFJREFUeNrt1IGKIyEMxvH5akyME+37v+1F3duhxwF0DLAL/cuADPAjoXSOT59+SWkWyD1niSjGG9gSE2K9EJBcKq0V5zwKAd1zMc2wD6bU2ngiwUJU/KEY0J3eZp0SBYCn0hdYwMzY9dTP5LhDeVskO416B0BopqzKx1Y2FnbNTGncVWnTM1Jz7pzppuegEwCpLlGJj71YCcs1Oru3DTIGCFKfr7dScKwA3Ad7Kd1J6+3ybv5n7GQcDnpE7hXBl9eeLt4BTxrrDdAc7LUCE3yaGe54pwG1dvesFweJGQ42O01PugO6MEBmLoVq5QmaOuiH3vcWmHrnXmiBLtqpfkzfBGl46oKDbYCSBWtEVTMDjndBn2KBz9Zbk5LLAJUPViXc+XSZAqAFPqWUInCLZ8eNaI6xwJLGhAKoKu19FWtNqTjoohBXUiLVLZAW6GKtVGHuKYWANMCK5W2BusAlYm9jB5ODRS+QsOUd3xt7cHBoPwtMFzh3DhjwArnuDyjg0XCJ4N4+OET8bd97eJJlcXKEgY9RjgU9xIACxIF5OBmIAmVB8uNBIC84CMw4sGSJBrELfm8qIeDFxIOHBIIyrzniR1kK5nXcZRuUC8ySs2DPw0P8LHBwAeDjFcwhoKx7HiHiR8YFborI4aCL4sYlyn3wMl7A7REvA/Oese8tA3kbhMgrKLIJpnQRg08e3+fAzIlogstnIrot4sGj5M/rm/tg8ZgAvLwpuL3y6t83//E+/QEymBvrnaFagAAAAABJRU5ErkJggg==';
   red.src=playerTrainerFrames()[0];
   opponent.src=trainerSprite(run.trainer[2]);
-  opponent.classList.remove('retreat');
-  red.hidden=opponent.hidden=false;
-  await wait(reducedMotion.matches?450:1500);
+  await slideTrainersIn(red,opponent);
   const balls=[['playerSendBall','player'],['trainerBall','enemy']];
   for(const [id,side] of balls){
     const ball=$(id);
@@ -7233,14 +7242,8 @@ async function openFormalTrainerIntro(run){
   player.src=playerFrames[0];
   enemy.src=trainerSprite(art);
   enemy.alt=name;
-  for(const trainer of [player,enemy]){
-    trainer.classList.remove('retreat');
-    trainer.classList.add('arriving');
-    trainer.hidden=false;
-  }
   try{
-    await wait(reducedMotion.matches?220:580);
-    for(const trainer of [player,enemy]) trainer.classList.remove('arriving');
+    await slideTrainersIn(player,enemy);
     if(run.kind===redEncounterKind) await showBattleDialogue(musicLabel('冰系野生區出現了神祕訓練家！','A mysterious Trainer appeared in the Ice area!'));
     await showBattleDialogue(line?name+'「'+line+'」':name+'前來挑戰！');
     syncKantoMusic();

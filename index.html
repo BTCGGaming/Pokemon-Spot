@@ -1768,7 +1768,7 @@ const skillDetails=Object.fromEntries(Object.entries(emeraldData.ms).map(([id,mo
   const description=moveDescriptions[move.effect]||(stat?'使'+(self?'自己的':'目標的')+(stat===6?'命中率':stat===7?'閃避率':statNames[stat])+(delta>0?'提高':'下降')+Math.abs(delta)+'階。':move.power?'使用'+move.name+'攻擊。':'變化招式。');
   return [move.name,{...move,id,secondaryChance:move.chance,stat:stat||undefined,delta,self,chance,seed:move.effect==='LEECH_SEED',description,highCrit:['HIGH_CRITICAL','BLAZE_KICK','POISON_TAIL','RAZOR_WIND'].includes(move.effect)}];
 }));
-const moveRules={"拍擊":{"shapes":"HVD","min":1},"抓擊":{"shapes":"HVD","min":1},"撞擊":{"shapes":"HVD","min":1},"打鼾":{"shapes":"HVD","min":1},"點到為止":{"shapes":"HVD","min":1},"百萬噸重拳":{"shapes":"D","min":1},"夾住":{"shapes":"VH","min":1},"摔打":{"shapes":"VH","min":1},"稜角化":{"shapes":"VH","min":1},"生長":{"shapes":"VH","min":1},"百萬噸重踢":{"shapes":"HD","min":1},"變硬":{"shapes":"HD","min":1},"變圓":{"shapes":"HD","min":1},"角撞":{"shapes":"VD","min":1},"泰山壓頂":{"shapes":"VD","min":1},"影子分身":{"shapes":"VD","min":1},"變小":{"shapes":"VD","min":1},"炸蛋":{"shapes":"HVD","min":2},"巨聲":{"shapes":"HVD","min":2},"噴出":{"shapes":"HVD","min":2},"連環巴掌":{"shapes":"HVD","min":2},"連續拳":{"shapes":"HVD","min":2},"亂擊":{"shapes":"HVD","min":2},"尖刺加農炮":{"shapes":"HVD","min":2},"投球":{"shapes":"HVD","min":2},"亂抓":{"shapes":"HVD","min":2},"憤怒門牙":{"shapes":"HVD","min":2},"猛撞":{"shapes":"HVD","min":2},"捨身衝撞":{"shapes":"HVD","min":2},"聚寶功":{"shapes":"VH","min":1,"effect":"gold","description":"命中後有 20% 機率在結算時額外獲得 5 金幣。"},"綁緊":{"shapes":"D","min":1,"effect":"drain5","description":"從下一次拉霸起，目標每次損失 5% 最大 HP。"},"踩踏":{"shapes":"HD","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"纏繞":{"shapes":"HD","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"頭錘":{"shapes":"VD","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"緊束":{"shapes":"VH","min":1,"effect":"drain10","description":"從下一次拉霸起，目標每次損失 10% 最大 HP。"},"大鬧一番":{"shapes":"VH","min":1,"effect":"spinMinus","description":"命中後有 20% 機率讓對手提早一次拉霸行動。"},"電光一閃":{"shapes":"HVD","min":1,"effect":"full10","description":"目標滿血時，傷害增加 10%。"},"憤怒":{"shapes":"H","min":1,"effect":"lowHp","description":"自身每損失 10% 最大 HP，威力增加 10%。"},"火箭頭錘":{"shapes":"HVD","min":1,"effect":"tempDefense","description":"防禦暫升一階，直到對手下次行動結束。不可疊加。"},"必殺門牙":{"shapes":"D","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"三重攻擊":{"shapes":"HVD","min":1,"effect":"triType","description":"直線為火，橫線為電，斜線為冰。同時符合時依此順序選擇。"},"抓狂":{"shapes":"HD","min":1,"effect":"lowHp","description":"自身每損失 10% 最大 HP，威力增加 10%。"},"高速旋轉":{"shapes":"HD","min":1,"effect":"cureOne","description":"隨機解除自身一個異常狀態。"},"神速":{"shapes":"HVD","min":2,"effect":"full40","description":"目標滿血時，傷害增加 40%。"},"擊掌奇襲":{"shapes":"HVD","min":1,"effect":"fullSpin","description":"目標滿血時，延後對手行動一次拉霸。"},"吵鬧":{"shapes":"VH","min":1,"effect":"sleep50","description":"目標睡眠時，傷害增加 50%。"},"蠻幹":{"shapes":"HVD","min":2,"effect":"endeavor","description":"使對手 HP 降到與自身相同；對手 HP 較低時無效。"},"渴望":{"shapes":"VH","min":1,"effect":"steal","description":"有 20% 機率暫時偷走目標一件道具，關卡結束時歸還。"},"高速星星":{"shapes":"HVD","min":2,"effect":"swift","description":"必定命中。目標滿血時，傷害增加 20%。"},"劈開":{"shapes":"VH","min":1,"effect":"slash50","description":"有 20% 機率傷害增加 50%。"},"音爆":{"shapes":"HVD","min":1,"effect":"fixed20","description":"固定造成 20 點傷害。"},"斷頭鉗":{"shapes":"HVD","min":5},"角鑽":{"shapes":"HVD","min":5},"自爆":{"shapes":"HVD","min":4},"大爆炸":{"shapes":"HVD","min":4},"破壞光線":{"shapes":"HVD","min":2,"effect":"rechargeSpin","description":"命中後讓對手提早一次拉霸行動。"},"迷昏拳":{"shapes":"HVD","min":3,"effect":"selfCounter","description":"目標下次行動有 50% 機率攻擊自己。"},"劍舞":{"shapes":"D","min":1},"瞪眼":{"shapes":"HD","min":1},"刺耳聲":{"shapes":"H","min":1},"叫聲":{"shapes":"VH","min":1},"煙幕":{"shapes":"VD","min":1},"甜甜香氣":{"shapes":"VD","min":1},"鬼面":{"shapes":"D","min":1},"搔癢":{"shapes":"HVD","min":2},"唱歌":{"shapes":"VD","min":3},"惡魔之吻":{"shapes":"HVD","min":3},"哈欠":{"shapes":"HVD","min":3},"超音波":{"shapes":"HVD","min":3},"大蛇瞪眼":{"shapes":"HVD","min":3},"自我再生":{"shapes":"VD","min":2},"生蛋":{"shapes":"HVD","min":2},"月光":{"shapes":"HVD","min":2},"吞下":{"shapes":"HVD","min":1,"effect":"swallow","description":"每條有效連線恢復 10% 最大 HP。"},"煥然一新":{"shapes":"HD","min":3},"守住":{"shapes":"VD","min":3,"effect":"guard","description":"無效對手此次反擊傷害。"},"紋理":{"shapes":"VD","min":3,"effect":"guard","description":"無效對手此次反擊傷害。"},"挺住":{"shapes":"VD","min":3,"effect":"endure","description":"每關一次，以 1 HP 撐過致命傷害。"},"變身":{"shapes":"VD","min":1},"吹飛":{"shapes":"VD","min":5,"effect":"phaze","description":"野生戰鬥直接通關；訓練家戰隨機替換對手隊員。"},"吼叫":{"shapes":"VD","min":5},"定身法":{"shapes":"VD","min":4,"effect":"disable","description":"目標下次行動隨機封鎖一招。"},"模仿":{"shapes":"VD","min":1,"effect":"mimic","description":"隨機使用對手的一個招式。"},"聚氣":{"shapes":"VD","min":3,"effect":"focus","description":"同次符合兩組門檻時，延後對手行動一次拉霸。"},"揮指":{"shapes":"VD","min":2,"effect":"randomMove","description":"隨機使用任一第三世代招式。"},"躍起":{"shapes":"VD","min":10,"effect":"splash","description":"什麼效果都沒有。"},"替身":{"shapes":"VD","min":2,"effect":"substitute","description":"每關一次，無效對手此次反擊傷害。"},"心之眼":{"shapes":"VD","min":4,"effect":"next50","description":"下一次造成傷害增加 50%。"},"紋理２":{"shapes":"VD","min":4,"effect":"next50","description":"下一次造成傷害增加 50%。"},"詛咒":{"shapes":"VD","min":2,"effect":"curse","description":"扣除自身 50% 最大 HP；從下一次拉霸起目標每次損失 20% 最大 HP。"},"腹鼓":{"shapes":"VD","min":2,"effect":"belly","description":"每關一次，扣除 50% 最大 HP 並將攻擊提升至 6 階。"},"識破":{"shapes":"VD","min":2,"effect":"identify","description":"目標無法閃避攻擊。"},"滅亡之歌":{"shapes":"VD","min":5,"effect":"perish","description":"目標下次行動結束後倒下。"},"鎖定":{"shapes":"VD","min":2,"effect":"lock","description":"下一次攻擊必定命中。"},"氣味偵測":{"shapes":"VD","min":2,"effect":"lock","description":"下一次攻擊必定命中。"},"黑色目光":{"shapes":"VD","min":2,"effect":"trapSwitch","description":"目標倒下前無法換人。"},"擋路":{"shapes":"VD","min":2,"effect":"trapSwitch","description":"目標倒下前無法換人。"},"神秘守護":{"shapes":"VD","min":4,"effect":"safeguard","description":"我方在本關免疫異常狀態。"},"接棒":{"shapes":"VD","min":4,"effect":"baton","description":"隨機換上存活隊員並繼承能力階級。"},"再來一次":{"shapes":"VD","min":3,"effect":"encore","description":"目標下次行動會重複一招並跳過另一招。"},"自我暗示":{"shapes":"VD","min":3,"effect":"psychUp","description":"複製目標的能力階級。"},"蓄力":{"shapes":"VD","min":2,"effect":"stockpile","description":"防禦、特防各提升一階。"},"看我嘛":{"shapes":"VD","min":3,"effect":"follow","description":"目標下次反擊優先選擇攻擊招式。"},"幫助":{"shapes":"VD","min":4,"effect":"help","description":"隨機換上隊員，並使其攻擊和特攻各升兩階。"},"回收利用":{"shapes":"VD","min":5,"effect":"recycle","description":"恢復我方本關可再次使用的道具次數。"},"保護色":{"shapes":"P","min":0,"effect":"camouflage","description":"被動。與對手有共同屬性時，受到對方的傷害減半。"}};
+const moveRules={"拍擊":{"shapes":"HVD","min":1},"抓擊":{"shapes":"HVD","min":1},"撞擊":{"shapes":"HVD","min":1},"打鼾":{"shapes":"HVD","min":1},"點到為止":{"shapes":"HVD","min":1},"百萬噸重拳":{"shapes":"D","min":1},"夾住":{"shapes":"VH","min":1},"摔打":{"shapes":"VH","min":1},"稜角化":{"shapes":"VH","min":1},"生長":{"shapes":"VH","min":1},"百萬噸重踢":{"shapes":"HD","min":1},"變硬":{"shapes":"HD","min":1},"變圓":{"shapes":"HD","min":1},"角撞":{"shapes":"VD","min":1},"泰山壓頂":{"shapes":"VD","min":1},"影子分身":{"shapes":"VD","min":1},"變小":{"shapes":"VD","min":1},"炸蛋":{"shapes":"HVD","min":2},"巨聲":{"shapes":"HVD","min":2},"噴出":{"shapes":"HVD","min":2},"連環巴掌":{"shapes":"HVD","min":2},"連續拳":{"shapes":"HVD","min":2},"亂擊":{"shapes":"HVD","min":2},"尖刺加農炮":{"shapes":"HVD","min":2},"投球":{"shapes":"HVD","min":2},"亂抓":{"shapes":"HVD","min":2},"憤怒門牙":{"shapes":"HVD","min":2},"猛撞":{"shapes":"HVD","min":2},"捨身衝撞":{"shapes":"HVD","min":2},"聚寶功":{"shapes":"VH","min":1,"effect":"gold","description":"命中後有 20% 機率在結算時額外獲得 5 金幣。"},"綁緊":{"shapes":"D","min":1,"effect":"drain5","description":"從下一次拉霸起，目標每次損失 5% 最大 HP。"},"踩踏":{"shapes":"HD","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"纏繞":{"shapes":"HD","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"頭錘":{"shapes":"VD","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"緊束":{"shapes":"VH","min":1,"effect":"drain10","description":"從下一次拉霸起，目標每次損失 10% 最大 HP。"},"大鬧一番":{"shapes":"VH","min":1,"effect":"spinMinus","description":"命中後有 20% 機率讓對手提早一次拉霸行動。"},"電光一閃":{"shapes":"HVD","min":1,"effect":"full10","description":"目標滿血時，傷害增加 10%。"},"憤怒":{"shapes":"H","min":1,"effect":"lowHp","description":"自身每損失 10% 最大 HP，威力增加 10%。"},"火箭頭錘":{"shapes":"HVD","min":1,"effect":"tempDefense","description":"防禦暫升一階，直到對手下次行動結束。不可疊加。"},"必殺門牙":{"shapes":"D","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"三重攻擊":{"shapes":"HVD","min":1,"effect":"triType","description":"直線為火，橫線為電，斜線為冰。同時符合時依此順序選擇。"},"抓狂":{"shapes":"HD","min":1,"effect":"lowHp","description":"自身每損失 10% 最大 HP，威力增加 10%。"},"高速旋轉":{"shapes":"HD","min":1,"effect":"cureOne","description":"隨機解除自身一個異常狀態。"},"神速":{"shapes":"HVD","min":2,"effect":"full40","description":"目標滿血時，傷害增加 40%。"},"擊掌奇襲":{"shapes":"HVD","min":1,"effect":"fullSpin","description":"目標滿血時，延後對手行動一次拉霸。"},"吵鬧":{"shapes":"VH","min":1,"effect":"sleep50","description":"目標睡眠時，傷害增加 50%。"},"蠻幹":{"shapes":"HVD","min":2,"effect":"endeavor","description":"使對手 HP 降到與自身相同；對手 HP 較低時無效。"},"渴望":{"shapes":"VH","min":1,"effect":"steal","description":"有 20% 機率暫時偷走目標一件道具，關卡結束時歸還。"},"高速星星":{"shapes":"HVD","min":2,"effect":"swift","description":"必定命中。目標滿血時，傷害增加 20%。"},"劈開":{"shapes":"VH","min":1,"effect":"slash50","description":"有 20% 機率傷害增加 50%。"},"音爆":{"shapes":"HVD","min":1,"effect":"fixed20","description":"固定造成 20 點傷害。"},"斷頭鉗":{"shapes":"HVD","min":5},"角鑽":{"shapes":"HVD","min":5},"自爆":{"shapes":"HVD","min":4},"大爆炸":{"shapes":"HVD","min":4},"破壞光線":{"shapes":"HVD","min":2,"effect":"rechargeSpin","description":"命中後讓對手提早一次拉霸行動。"},"迷昏拳":{"shapes":"HVD","min":3,"effect":"selfCounter","description":"目標下次行動有 50% 機率攻擊自己。"},"劍舞":{"shapes":"D","min":1},"瞪眼":{"shapes":"HD","min":1},"刺耳聲":{"shapes":"H","min":1},"叫聲":{"shapes":"VH","min":1},"煙幕":{"shapes":"VD","min":1},"甜甜香氣":{"shapes":"VD","min":1},"鬼面":{"shapes":"D","min":1},"搔癢":{"shapes":"HVD","min":2},"唱歌":{"shapes":"VD","min":3},"惡魔之吻":{"shapes":"HVD","min":3},"哈欠":{"shapes":"HVD","min":3},"超音波":{"shapes":"HVD","min":3},"大蛇瞪眼":{"shapes":"HVD","min":3},"自我再生":{"shapes":"VD","min":2},"生蛋":{"shapes":"HVD","min":2},"月光":{"shapes":"HVD","min":2},"吞下":{"shapes":"HVD","min":1,"effect":"swallow","description":"每條有效連線恢復 10% 最大 HP。"},"煥然一新":{"shapes":"HD","min":3},"守住":{"shapes":"VD","min":3,"effect":"guard","description":"無效對手此次反擊傷害。"},"紋理":{"shapes":"VD","min":3,"effect":"guard","description":"無效對手此次反擊傷害。"},"挺住":{"shapes":"VD","min":3,"effect":"endure","description":"每關一次，以 1 HP 撐過致命傷害。"},"變身":{"shapes":"VD","min":1},"吹飛":{"shapes":"VD","min":5,"effect":"phaze","description":"野生戰鬥直接通關；訓練家戰隨機替換對手隊員。"},"吼叫":{"shapes":"VD","min":5},"定身法":{"shapes":"VD","min":4,"effect":"disable","description":"目標下次行動隨機封鎖一招。"},"模仿":{"shapes":"VD","min":1,"effect":"mimic","description":"隨機使用對手的一個招式。"},"聚氣":{"shapes":"VD","min":3,"effect":"focus","description":"同次達到 6 條連線時，我方使用會延後對手行動 1 次拉霸。"},"揮指":{"shapes":"VD","min":2,"effect":"randomMove","description":"從目前收錄的招式中隨機抽一招使用。"},"躍起":{"shapes":"VD","min":10,"effect":"splash","description":"什麼效果都沒有。"},"替身":{"shapes":"VD","min":2,"effect":"substitute","description":"每關一次，無效對手此次反擊傷害。"},"心之眼":{"shapes":"VD","min":4,"effect":"next50","description":"下一次造成傷害增加 50%。"},"紋理２":{"shapes":"VD","min":4,"effect":"next50","description":"下一次造成傷害增加 50%。"},"詛咒":{"shapes":"VD","min":2,"effect":"curse","description":"扣除自身 50% 最大 HP；從下一次拉霸起目標每次損失 20% 最大 HP。"},"腹鼓":{"shapes":"VD","min":2,"effect":"belly","description":"每關一次，扣除 50% 最大 HP 並將攻擊提升至 6 階。"},"識破":{"shapes":"VD","min":2,"effect":"identify","description":"目標無法閃避攻擊。"},"滅亡之歌":{"shapes":"VD","min":5,"effect":"perish","description":"目標下次行動結束後倒下。"},"鎖定":{"shapes":"VD","min":2,"effect":"lock","description":"下一次攻擊必定命中。"},"氣味偵測":{"shapes":"VD","min":2,"effect":"lock","description":"下一次攻擊必定命中。"},"黑色目光":{"shapes":"VD","min":2,"effect":"trapSwitch","description":"目標倒下前無法換人。"},"擋路":{"shapes":"VD","min":2,"effect":"trapSwitch","description":"目標倒下前無法換人。"},"神秘守護":{"shapes":"VD","min":4,"effect":"safeguard","description":"我方在本關免疫異常狀態。"},"接棒":{"shapes":"VD","min":4,"effect":"baton","description":"隨機換上存活隊員並繼承能力階級。"},"再來一次":{"shapes":"VD","min":3,"effect":"encore","description":"目標下次行動會重複一招並跳過另一招。"},"自我暗示":{"shapes":"VD","min":3,"effect":"psychUp","description":"複製目標的能力階級。"},"蓄力":{"shapes":"VD","min":2,"effect":"stockpile","description":"防禦、特防各提升一階。"},"看我嘛":{"shapes":"VD","min":3,"effect":"follow","description":"目標下次反擊優先選擇攻擊招式。"},"幫助":{"shapes":"VD","min":4,"effect":"help","description":"隨機換上隊員，並使其攻擊和特攻各升兩階。"},"回收利用":{"shapes":"VD","min":5,"effect":"recycle","description":"恢復我方本關可再次使用的道具次數。"},"保護色":{"shapes":"P","min":0,"effect":"camouflage","description":"被動。與對手有共同屬性時，受到對方的傷害減半。"}};
 const elementalRules=[
  [52,'HVD',1,'burn10'],[83,'VH',1,'drain5'],[172,'HVD',2,'burn10'],[53,'HD',2,'burn20'],[261,'HVD',2,'burnAlways'],[257,'HVD',3,'burn50'],[126,'HD',3,'burn50'],[241,'HVD',2,'sun'],
  [22,'HVD',1],[75,'HD',1,'bonus10'],[71,'HVD',1],[72,'HD',1],[202,'HVD',2],[80,'HVD',3,'petal'],[76,'HVD',3],[79,'HVD',4],[147,'HVD',4],[78,'HVD',3],[73,'HVD',2,'seed3'],[235,'HD',1],[312,'HVD',3,'teamCure'],[275,'HVD',2,'root'],
@@ -1783,7 +1783,7 @@ const elementalDescriptions={
  petal:'命中兩次，之後自身陷入混亂。',seed3:'每次拉霸吸取目標 3% 最大 HP，並恢復等量 HP。',teamCure:'治療己方全隊的異常狀態。',root:'每次拉霸恢復自身 5% 最大 HP。',
  sun:'雙方火系傷害提高 25%，直到對手下一次行動結束。',rain:'雙方水系傷害提高 25%，火系降低 25%，直到對手下一次行動結束。',
  waterSport:'對方火系傷害降低 25%，直到對手下一次行動結束。',mudSport:'己方暫時免疫電系傷害，直到對手下一次行動結束。',
- always:'此招式必定命中。',guard:'免疫對手此次反擊傷害。',mimic:'隨機使用對手的一個招式。',fissure:'目標等級高於使用者或免疫地面系時無效。命中率為 30% 加上雙方等級差，命中時使目標氣竭。',
+ always:'此招式必定命中。',guard:'免疫對手此次反擊傷害。',mimic:'隨機使用對手的一個招式。',fissure:'目標等級高於使用者或免疫地面系時無效。命中率為 30% 加上雙方等級差，命中時以目標目前 HP 結算，全威力可使目標氣竭。',
  twoHits:'命中兩次。',manyHits:'命中 2–5 次。',spikes25:'對方換人時，上場寶可夢扣除 25% 最大 HP。',magnitude:'基礎威力 40，每多一條有效連線，威力增加 20。',spinThree:'有 20% 機率延後對手行動一次拉霸，每關最多觸發三次。',
  drain5:'從下一次拉霸起，目標每次損失 5% 最大 HP。',drain10:'從下一次拉霸起，目標每次損失 10% 最大 HP。'
 };
@@ -1792,7 +1792,7 @@ for(const [id,shapes,min,effect] of elementalRules){
  moveRules[name]={shapes,min,effect,description:elementalDescriptions[effect]};
  if(effect==='magnitude') skillDetails[name].power=40;
 }
-Object.assign(moveRules,{"忍耐":{"shapes":"HVD","min":3,"effect":"bide","description":"受到對手反擊的傷害後，將實際承受傷害的兩倍返還給對手。"},"寫生":{"shapes":"VD","min":1,"effect":"mimic","description":"隨機使用對手已學會的一個招式。"},"天使之吻":{"shapes":"HVD","min":3,"effect":"johtoConfuse","description":"使對手陷入混亂。"},"撒嬌":{"shapes":"HVD","min":4,"effect":"charmSteal","description":"威力 60。命中並造成傷害後，偷走對手一件持有道具。"},"虛張聲勢":{"shapes":"HVD","min":3,"effect":"swagger","description":"使對手的攻擊提高 2 階，並陷入混亂。"},"喝牛奶":{"shapes":"HVD","min":2,"effect":"milk","description":"恢復自身最大 HP 的 50%。"},"禮物":{"shapes":"HVD","min":1,"effect":"present","description":"有 50% 機率造成傷害，威力為 40、80 或 120。另有 50% 機率回復對手 25% 最大 HP。"},"分擔痛楚":{"shapes":"HVD","min":4,"effect":"painSplit","description":"雙方目前 HP 加總後平分，各自以最大 HP 為上限。"},"晨光":{"shapes":"HVD","min":2,"effect":"morningSun","description":"通常恢復 50% 最大 HP。大晴天回復量增加 50%，其他天氣恢復 25% 最大 HP。"},"覺醒力量":{"shapes":"HD","min":2,"effect":"hiddenPower","description":"依個體值決定實際屬性與威力。使用任意屬性的橫線或斜線觸發。"},"祈願":{"shapes":"HVD","min":4,"effect":"wish","description":"下次拉霸恢復自身 25% 最大 HP。若在此之前換人，新上場的寶可夢免疫對手此次行動的傷害。"},"長嚎":{"shapes":"HVD","min":2,"effect":"howl","description":"使自身的攻擊提高 1 階。"}});
+Object.assign(moveRules,{"忍耐":{"shapes":"HVD","min":3,"effect":"bide","description":"受到對手反擊的傷害後，將實際承受傷害的兩倍返還給對手。"},"寫生":{"shapes":"VD","min":1,"effect":"mimic","description":"隨機使用對手已學會的一個招式。"},"天使之吻":{"shapes":"HVD","min":3,"effect":"johtoConfuse","description":"使對手陷入混亂。"},"撒嬌":{"shapes":"HVD","min":4,"effect":"charmSteal","description":"威力 60。命中並造成傷害後，偷走對手一件持有道具。"},"虛張聲勢":{"shapes":"HVD","min":3,"effect":"swagger","description":"使對手的攻擊提高 2 階，並陷入混亂。"},"喝牛奶":{"shapes":"HVD","min":2,"effect":"milk","description":"恢復自身最大 HP 的 50%。"},"禮物":{"shapes":"HVD","min":1,"effect":"present","description":"有 50% 機率造成傷害，威力為 40、80 或 120。另有 50% 機率回復對手 25% 最大 HP。"},"分擔痛楚":{"shapes":"HVD","min":4,"effect":"painSplit","description":"雙方目前 HP 加總後平分，各自以最大 HP 為上限。"},"晨光":{"shapes":"HVD","min":2,"effect":"morningSun","description":"通常恢復 50% 最大 HP。大晴天回復量增加 50%，其他天氣恢復 25% 最大 HP。"},"覺醒力量":{"shapes":"HD","min":2,"effect":"hiddenPower","description":"依個體值決定實際屬性與威力，任意線型都可觸發。"},"祈願":{"shapes":"HVD","min":4,"effect":"wish","description":"下次拉霸恢復自身 25% 最大 HP。若在此之前換人，新上場的寶可夢免疫對手此次行動的傷害。"},"長嚎":{"shapes":"HVD","min":2,"effect":"howl","description":"使自身的攻擊提高 1 階。"}});
 Object.assign(moveRules,{"精神波":{"shapes":"HVD","min":2,"effect":"psywave","description":"造成使用者等級 50% 至 150% 的傷害。"},"三連踢":{"shapes":"HVD","min":2,"effect":"tripleKick","description":"最多踢三次，每一踢各自判定命中，威力依序為 10、20、30。"},"蛛網":{"shapes":"VD","min":2,"effect":"trapSwitch","description":"使目標在氣竭前無法更換。"},"神聖之火":{"shapes":"HVD","min":4,"effect":"sacredFire","description":"解除自身冰凍。命中後有 50% 機率使對手灼傷。"},"圍攻":{"shapes":"HVD","min":3,"effect":"beatUp","description":"每位存活且沒有異常狀態的我方隊員各參與一擊。"},"挑釁":{"shapes":"HVD","min":3,"effect":"taunt","description":"目標在下次行動結束前只能使用攻擊招式。"},"魔法葉":{"shapes":"HVD","min":2,"effect":"always","description":"必定命中。"}});
 Object.assign(moveRules,{"反射壁":{"shapes":"HVD","min":2,"effect":"physicalScreen","description":"我方受到的物理傷害減半，直到對手下次行動結束。"},"光牆":{"shapes":"HVD","min":2,"effect":"specialScreen","description":"我方受到的特殊傷害減半，直到對手下次行動結束。"},"充電":{"shapes":"HVD","min":2,"effect":"electricCharge","description":"下次造成的電系招式傷害加倍。"},"瞬間移動":{"shapes":"HVD","min":4,"effect":"escapeWild","description":"野生戰鬥中直接脫離並通關。訓練家戰無法使用。"},"看穿":{"shapes":"HVD","min":3,"effect":"protectCounter","description":"抵銷對手此次反擊傷害。"},"白霧":{"shapes":"HVD","min":3,"effect":"mistGuard","description":"我方隊員在對手下次行動結束前免疫能力下降。"},"怨恨":{"shapes":"HVD","min":3,"effect":"spite","description":"封鎖目標最後使用的招式，直到其下次行動結束。"},"怨念":{"shapes":"HVD","min":4,"effect":"grudge","description":"若被招式擊倒，對手下次行動無法使用該招式。"},"同命":{"shapes":"HVD","min":5,"effect":"destinyBond","description":"若被下一次傷害招式擊倒，使用該招式的對手一同氣竭。"},"吼叫":{"shapes":"VD","min":5,"effect":"phaze","description":"野生戰鬥直接通關。訓練家對戰中，隨機更換一位存活對手。"}});
 Object.assign(skillDetails['羽棲'],{effect:'RESTORE_HP',self:true});
@@ -1840,7 +1840,7 @@ for(const [id,[min,effect,description,,lineType]] of Object.entries(sinnohMoveRu
   moveRules[emeraldData.ms[id].name]={shapes:'HVD',min,effect,description,lineType};
 }
 // Lower the line count for selected high-power attacks while keeping their line shapes.
-for(const id of [56,59,76,87,126,177]){
+for(const id of [56,59,76,82,87,126,177]){
   moveRules[emeraldData.ms[id].name].min=2;
 }
 for(const rule of Object.values(moveRules)){
@@ -2227,7 +2227,7 @@ function specialMoveScore(mon,skill){
   if(skill.power){
     if(skill.effect==='EXPLOSION'||skill.effect==='OHKO') return 28*accuracy;
     if(['SLEEP_TALK','SNORE'].includes(skill.effect)) return 0;
-    const physical=skill.category?skill.category===2:!specialTypes.includes(skill.type);
+    const physical=moveDamageCategory(skill)==='物理';
     const offense=mon.stats[physical?1:3]/Math.max(mon.stats[1],mon.stats[3]);
     const stab=mon.type.includes(skill.type)?1.5:1;
     const hits=['DOUBLE_HIT','TWINEEDLE'].includes(skill.effect)?2:skill.effect==='MULTI_HIT'?3:1;
@@ -2324,15 +2324,16 @@ function moveEffectText(name){
   if(emeraldMoveText[effect]) return emeraldMoveText[effect];
   const descriptions={
     MULTI_HIT:'連續攻擊 2 至 5 次。',DOUBLE_HIT:'連續攻擊 2 次。',
-    LEVEL_DAMAGE:'造成等同使用者等級的傷害。',SUPER_FANG:'扣除目標目前 HP 的一半。',
+    DRAGON_RAGE:'固定造成 40 點基礎傷害。對應屬性連線不足時降為 20 點，連線倍率不會提高此傷害。',
+    LEVEL_DAMAGE:'基礎傷害等於使用者的等級。',SUPER_FANG:'基礎傷害為目標目前 HP 的一半。',
     OHKO:'目標等級高於使用者時無效。命中時以目前 HP 計算傷害，全威力命中可使目標氣竭。',FALSE_SWIPE:'命中時至少留下目標 1 HP。',
-    HIGH_CRITICAL:'較容易擊中要害。',ABSORB:'恢復相當於造成傷害一半的 HP。',
+    ALWAYS_HIT:'不受命中率或閃避率影響。',HIGH_CRITICAL:'較容易擊中要害。',ABSORB:'恢復相當於造成傷害一半的 HP。',
     DREAM_EATER:'只對睡眠中的目標有效，恢復相當於傷害一半的 HP。',
     RECOIL:'自身受到相當於傷害 1/4 的反作用力。',DOUBLE_EDGE:'自身受到相當於傷害 1/3 的反作用力。',
     EXPLOSION:'造成傷害後，使用者氣竭。',RECHARGE:'造成傷害後，使用者須休息。',
     YAWN:'使目標昏昏欲睡，下次拉霸結算時進入睡眠。',REST:'恢復全部 HP，使用者進入睡眠。',ENDURE:'受到致命傷害時以 1 HP 撐住。',
-    HAZE:'重置雙方場上寶可夢的能力階級。',REFRESH:'解除自身異常狀態。',
-    HEAL_BELL:'解除我方隊伍的異常狀態。',SPLASH:'躍起，沒有其他效果。',
+    HAZE:'重置雙方場上寶可夢的能力階級。',REFRESH:'解除自身灼傷、中毒、劇毒或麻痺。',
+    HEAL_BELL:'解除己方隊伍的主要異常狀態。',SPLASH:'躍起，沒有其他效果。',
     TRANSFORM:'複製目標的屬性、非 HP 能力值、能力階級及招式。',CONFUSE:'使目標陷入混亂。'
   };
   if(descriptions[effect]) return descriptions[effect];
@@ -2345,13 +2346,27 @@ function moveEffectText(name){
   }
   if(stageEffects[effect]){
     const stats=stageEffects[effect].map(([id,amount])=>(statNames[id]??'閃避率')+(amount>0?'提高':'降低')+Math.abs(amount)+' 階');
-    return (skill.power?'命中後有 '+skill.secondaryChance+'% 機率使':'使')+(effect==='TICKLE'?'目標':'自身')+stats.join('、')+'。';
+    return (skill.power&&effect!=='GEN4_CLOSE_COMBAT'?'命中後有 '+skill.secondaryChance+'% 機率使':skill.power?'命中後使':'使')+(effect==='TICKLE'?'目標':'自身')+stats.join('、')+'。';
   }
-  if(skill.stat) return skill.description+(skill.chance?' 發動機率 '+Math.round(skill.chance*100)+'%。':'');
-  return skill.power?'造成'+(specialTypes.includes(skill.type)?'特殊':'物理')+'傷害。':'目前版本無額外戰鬥效果。';
+  if(skill.stat!==undefined){
+    const stat=skill.stat===6?'命中率':skill.stat===7?'閃避率':statNames[skill.stat];
+    return (skill.chance?'有 '+Math.round(skill.chance*100)+'% 機率使':'使')+(skill.self||skill.delta>0?'自身':'目標')+'的'+stat+(skill.delta>0?'提高':'降低')+Math.abs(skill.delta)+' 階。';
+  }
+  return skill.power?'造成'+moveDamageCategory(skill)+'傷害。':'目前版本無額外戰鬥效果。';
 }
+function moveDamageCategory(skill){
+  return (skill.category?skill.category===2:!specialTypes.includes(skill.type))?'物理':'特殊';
+}
+const specialPowerText={
+  DRAGON_RAGE:'固定 40 點傷害',SONICBOOM:'固定 20 點傷害',LEVEL_DAMAGE:'依使用者等級',SUPER_FANG:'依目標目前 HP',OHKO:'一擊必殺',
+  ERUPTION:'最高 150',FLAIL:'20～200',GEN4_GYRO_BALL:'1～150',GEN4_PUNISHMENT:'60～200',GEN4_CRUSH_GRIP:'依目標目前 HP',GEN4_WRING_OUT:'依目標目前 HP'
+};
 function movePowerText(name,mon){
   const skill=skillDetails[name];
+  if(specialPowerText[skill.effect]) return specialPowerText[skill.effect]+' · '+moveDamageCategory(skill);
+  if(moveRules[name]?.effect==='fling') return '每種持有道具 +5 · '+moveDamageCategory(skill);
+  if(moveRules[name]?.effect==='magnitude') return '40 起 · '+moveDamageCategory(skill);
+  if(moveRules[name]?.effect==='trump') return (skill.power+40*(mon?.trumpUses??0))+' · '+moveDamageCategory(skill);
   if(name==='禮物') return '40／80／120 · 物理';
   if(name==='精神波') return '依等級浮動';
   if(name==='忍耐') return '依實際承受傷害計算';
@@ -2361,7 +2376,7 @@ function movePowerText(name,mon){
     const strike=hiddenPowerFor(mon);
     return strike.power+' · '+strike.type+' · '+(specialTypes.includes(strike.type)?'特殊':'物理');
   }
-  return skill.power?skill.power+' · '+(specialTypes.includes(skill.type)?'特殊':'物理'):'— · 變化';
+  return skill.power?skill.power+' · '+moveDamageCategory(skill):'— · 變化';
 }
 function moveTooltip(name){
   return '威力 '+movePowerText(name)+' · '+moveEffectText(name);
@@ -3027,6 +3042,25 @@ function damageForMove(s,source,target,skill,side){
 }
 const emeraldMoveText={
   ATTRACT:'使異性的目標著迷，發動招式時有 50% 機率失敗。',
+  GEN4_BRINE:'目標目前 HP 不超過一半時，威力加倍。',
+  GEN4_CRUSH_GRIP:'目標目前 HP 比例越高，威力越高。',
+  GEN4_WRING_OUT:'目標目前 HP 比例越高，威力越高。',
+  GEN4_GYRO_BALL:'目標相對於使用者的速度越快，威力越高，最高 150。',
+  GEN4_PUNISHMENT:'目標能力上升的階級越多，威力越高，最高 200。',
+  GEN4_ASSURANCE:'目標在本次拉霸已受傷時，威力加倍。',
+  GEN4_WAKE_UP_SLAP:'對睡眠中的目標威力加倍。',
+  GEN4_ACUPRESSURE:'隨機提高自身一項能力 2 階。',
+  GEN4_LUCKY_CHANT:'本關防止對手的招式擊中己方要害。',
+  GEN4_POWER_TRICK:'交換自身的攻擊與防禦數值。',
+  GEN4_POWER_SWAP:'交換雙方的攻擊與特攻階級。',
+  GEN4_GUARD_SWAP:'交換雙方的防禦與特防階級。',
+  GEN4_HEART_SWAP:'交換雙方全部能力階級。',
+  GEN4_PSYCHO_SHIFT:'將自身的主要異常狀態轉移給目標。',
+  GEN4_FIRE_FANG:'命中後有 10% 機率使目標灼傷，另有 10% 機率改變行動間隔。',
+  GEN4_ICE_FANG:'命中後有 10% 機率使目標冰凍，另有 10% 機率改變行動間隔。',
+  GEN4_THUNDER_FANG:'命中後有 10% 機率使目標麻痺，另有 10% 機率改變行動間隔。',
+  GEN4_FLARE_BLITZ:'造成物理傷害，可解除自身冰凍。',
+  TWINEEDLE:'連續攻擊 2 次，造成傷害後有 20% 機率使目標中毒。',
   NATURE_POWER:'在野外使用自然之力叫出的招式；本作對戰場地預設為草地，叫出麻痺粉。',
   TORMENT:'目標無法連續使用同一招。',
   IMPRISON:'目標無法使用與自身相同的招式，直到自身退場。',
@@ -3628,10 +3662,10 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       const strike=custom==='tripleKick'?{...skill,power:10*(hit+1)}:skill;
       let raw=custom==='psywave'?Math.max(1,Math.floor(source.level*(.5+Math.random()))):
         damageForMove(s,custom==='beatUp'?allies[hit]:source,target,strike,side);
-      const physical=skill.category?skill.category===2:!specialTypes.includes(skill.type);
+      const physical=moveDamageCategory(skill)==='物理';
       const thawTarget=target.status==='freeze'&&(skill.type==='火');
       if(custom==='endeavor') raw=target.left>source.left&&raw?target.left-source.left:0;
-      const fixed=['endeavor','fixed20','psywave'].includes(custom);
+      const fixed=skill.effect==='DRAGON_RAGE'||['endeavor','fixed20','psywave'].includes(custom);
       const camouflage=target.moves.includes('保護色')&&target.type.some(type=>source.type.includes(type));
       const charge=source.nextDamage&&raw>0&&!target.counterGuard;
       if(charge) source.nextDamage=false;

@@ -2419,9 +2419,9 @@ function chooseForgottenMove(p,name){
   };
   return battleChoice(dialog,form);
 }
-function boosterBonus(count,universal=0){
+function boosterBonus(count,universal=0,isHp=false){
   const boosted=Math.min(3,universal);
-  return 15*boosted+10*Math.min(3-boosted,count)+3*Math.max(0,count+universal-3);
+  return 15*boosted+10*Math.min(3-boosted,count)+3*Math.max(0,count+universal-3)+(isHp?7*(universal-boosted):0);
 }
 function setBattleLevel(p,level,run){
   const before=p.hp;
@@ -2919,13 +2919,13 @@ function healMon(s,p,side,amount){
   s.log.unshift(p.name+'恢復 '+healed+' HP。');
 }
 const boosterDescription='同項前 3 件各增加 10%，第 4 件起各增加 3%。';
-const universalBooster={name:'萬能增強劑',sprite:'hp-up',tier:1,description:'提升 HP／攻擊／特攻／防禦／特防，各項分開計算。前 3 件各增加 15%，第 4 件起各增加 3%。'};
+const universalBooster={name:'萬能增強劑',sprite:'hp-up',tier:1,description:'提升 HP／攻擊／特攻／防禦／特防，各項分開計算。前 3 件每件使各項增加 15%，第 4 件起每件增加 HP 10%，其餘各項增加 3%。'};
 function applyEnemyBoosters(mon,stage,items){
   const count=stage===100?15:Math.floor(stage/10)+(stage>=92&&stage<=98&&stage%2===0&&items?2:0);
-  const hpBoost=items?.['hp-up']??0;
+  const hpBoost=Math.floor(stage/10);
   const before=mon.hp;
   const stats=statsAt(mon,mon.level).map((value,index)=>index<5
-    ?Math.floor(value*(100+boosterBonus(items?.[statBoosterIds[index]]??0,count))/100):value);
+    ?Math.floor(value*(100+boosterBonus((items?.[statBoosterIds[index]]??0)+(index===0?hpBoost:0),count,index===0))/100):value);
   if(mon.id===292) stats[0]=1;
   mon.enemyHpBoost=hpBoost;
   mon.enemyBoosterCount=count;
@@ -2951,8 +2951,8 @@ function enemyItemCards(run,iconOnly=false){
   const ids=run.enemyItems?Object.keys(run.enemyItems):mon.heldItem?[mon.heldItem]:[];
   const card=(def,count=1)=>itemButton(def,'type="button" aria-label="'+def.name+'"',iconOnly?'':def.name,count);
   return (mon.enemyBoosterCount?card(universalBooster,mon.enemyBoosterCount):'')+
-    [...new Set([...ids,...Object.keys(run.enemyStolenItems??{})])].map(id=>{
-      const count=enemyItemCount(run,id),held=itemCatalog[id];
+    [...new Set([...ids,...Object.keys(run.enemyStolenItems??{}),...(mon.enemyHpBoost?['hp-up']:[])])].map(id=>{
+      const count=enemyItemCount(run,id)+(id==='hp-up'?(mon.enemyHpBoost??0):0),held=itemCatalog[id];
       if(!count||!held) return '';
       const description=id==='quick-claw'?'每件使我方可拉霸次數減少 1 次。':held.description.replaceAll('我方','對手').replace('在場隊員','持有者');
       return card({...held,description},count);
@@ -7713,7 +7713,7 @@ const itemCatalog=Object.fromEntries([
   ['strawberry-sweet','草莓糖飾',1,'使你運氣變好一點。'],
   ['love-sweet','愛心糖飾',2,'使你運氣變非常好。'],
   ['up-grade','升級資料',1,'讓一名隊員回憶一個本局曾遺忘的招式。',true],
-  ...Object.keys(gemNames).map(type=>['reel-stone:'+type,type+'屬性石頭',0,'每輪增加 1 個'+type+'屬性圖案，共 5 個，永久生效。',true]),
+  ...Object.keys(gemNames).map(type=>['reel-stone:'+type,type+'屬性石頭',0,'在 3 個不同輪盤各加入 1 個'+type+'屬性圖案，永久生效。',true]),
   ...Object.entries(technicalMachines).map(([id,tm])=>[id,id.slice(0,2).toUpperCase()+id.slice(3)+' '+tm.name,tm.tier,'教相容的寶可夢學會'+tm.name+'。'+(tm.power>1?'威力 '+tm.power+'。':''),true]),
   ...Object.entries(healingBerries).map(([id,[name,tier,fraction]])=>[
     id,name,tier,'拉霸結算後，若我方場上寶可夢低於 50% HP，自動消耗並恢復 '+Math.round(fraction*100)+'% 最大 HP。每次拉霸最多觸發一種補血樹果，優先使用恢復量最高的樹果。'
@@ -7800,7 +7800,7 @@ function itemKinds(run,side){
 }
 function itemTotal(run,side){
   const count=side==='player'?itemCount:enemyItemCount;
-  return itemKinds(run,side).reduce((total,id)=>total+count(run,id),side==='enemy'?(run.enemy?.enemyBoosterCount??0):0);
+  return itemKinds(run,side).reduce((total,id)=>total+count(run,id),side==='enemy'?(run.enemy?.enemyBoosterCount??0)+(run.enemy?.enemyHpBoost??0):0);
 }
 function randomBerry(run,side){
   const count=side==='player'?itemCount:enemyItemCount;
@@ -7951,7 +7951,7 @@ function isNewReward(id){
   return id==='strawberry-sweet'||id==='love-sweet'||reelTools.has(id)||id==='color-screw'||id==='super-shard'||id==='up-grade'||id.startsWith('reel-stone:')||Boolean(technicalMachines[id]);
 }
 function canApplyItem(run,id){
-  if(id.startsWith('reel-stone:')) return run.team.length>0&&run.team.every(mon=>mon.moves.some(name=>skillDetails[name]?.type===id.slice(11)));
+  if(id.startsWith('reel-stone:')) return run.team.some(mon=>mon.type.includes(id.slice(11)));
   if(id==='eject-button') return Object.keys(types).some(type=>removableReelCount(run,type)>=10);
   if(id==='color-screw') return true;
   if(id==='super-shard'||reelTools.has(id)) return run.reels.some(reel=>reel.some(type=>Object.hasOwn(types,type)));
@@ -8018,7 +8018,9 @@ function commitReels(run,reels){
   run.matches=[];
 }
 function addReelStone(run,type){
-  const reels=run.reels.map(reel=>{
+  const columns=shuffle(run.reels.map((_,column)=>column)).slice(0,3);
+  const reels=run.reels.map((reel,column)=>{
+    if(!columns.includes(column)) return reel;
     const copy=reel.slice();
     copy.splice(randomIndex(copy.length+1),0,type);
     return copy;
@@ -8089,7 +8091,7 @@ async function applyUsableItem(run,id,fromReward=false){
   if(id.startsWith('reel-stone:')){
     const type=id.slice(11);
     addReelStone(run,type);
-    run.log.unshift(def.name+'加入了 5 個'+type+'屬性圖案。');
+    run.log.unshift(def.name+'加入了 3 個'+type+'屬性圖案。');
   }else if(id==='color-screw'){
     commitReels(run,run.reels.map(reel=>{
       const copy=reel.slice();
@@ -8407,6 +8409,7 @@ async function acceptCapture(s){
   undoTransform(s.enemy);
   leaveAbility(s.enemy,false);
   const mon={...s.enemy,moves:s.enemy.moves.slice(),stages:neutralStages(),seeded:false,burned:false,status:null,confusion:0};
+  delete mon.enemyHpBoost;
   if(mon.enemyBoosterCount) delete mon.enemyBoosterCount;
   if(mode==='formal'||s.stage>=10) setBattleLevel(mon,mon.level,s);
   const full=s.team.length>=6;

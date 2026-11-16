@@ -5296,7 +5296,17 @@ function needsMatchingPowerLines(name){
 function moveLineMinimum(name,mon){
   const ability=activeAbility(mon),type=skillDetails[name].type,rule=moveRules[name];
   const discount=ability===212&&['水','冰'].includes(type)||ability===213&&['火','地面'].includes(type);
-  return Math.max(1,(rule?.min||1)+Number(isSupportMove(name))+(rule?.effect==='trump'?(mon?.trumpUses??0):0)-Number(discount));
+  const skill=skillDetails[name];
+  // Use a typical total for variable-hit moves, and the full total for two-hit moves.
+  const hits=['petal','twoHits'].includes(rule?.effect)||['DOUBLE_HIT','TWINEEDLE'].includes(skill.effect)?2:
+    rule?.effect==='manyHits'||skill.effect==='MULTI_HIT'?3:1;
+  const power=skill.power*hits;
+  // Flail and Reversal reach 150+ from the user's current HP alone.
+  const reachesHighPower=power>=150||skill.effect==='FLAIL';
+  const attackMinimum=reachesHighPower?5:power>=100?4:power>=80?3:1;
+  const base=Math.max(rule?.min||1,attackMinimum);
+  const added=Number(isSupportMove(name))+(rule?.effect==='trump'?(mon?.trumpUses??0):0);
+  return Math.max(1,base+added-Number(discount));
 }
 function moveQueue(moves,matched,mon){
   return [...new Set(moves)].flatMap(name=>{

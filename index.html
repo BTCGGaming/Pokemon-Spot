@@ -1499,6 +1499,7 @@ function hiddenAbilityChance(commonCount,luck){
   return .1/(commonCount+.1)+luck*(commonCount===1?.005:commonCount===2?.002:0);
 }
 const legendaryAbilityDefs=[[[144,145,146],201,"神鳥之驅","Legendary Wings","每次拉霸後將最多 3 個未連線圖案暫時變為萬能。"],[[150],202,"人造結果","Engineered Outcome","每次拉霸至少形成一條任意連線。"],[[151],203,"隨心所欲","Free Spirit","每次拉霸後將未連線圖案暫時改為隨機屬性。"],[[243],204,"天雷","Heavenly Thunder","每次拉霸後將隨機十字範圍內的圖案暫時改為電。"],[[244],205,"野火","Wildfire","每次拉霸後將隨機十字範圍內的圖案暫時改為火。"],[[245],206,"汪洋","Open Ocean","每次拉霸後將隨機十字範圍內的圖案暫時改為水。"],[[249],207,"暴風降臨","Tempest","水系連線可計入超能力系與飛行系招式的全威力門檻。"],[[250],208,"神火鳳凰","Divine Phoenix","火系連線可計入超能力系與飛行系招式的全威力門檻。"],[[251],209,"穿梭時空","Time Travel","拉霸前顯示對手下一次反擊的招式。"],[[377,378,379],210,"三神柱","Legendary Titans","隊伍每多一種屬性，攻擊及特攻各提高 1 階，最多提高 6 階。"],[[380,381],211,"水都守護者","Eon Guardians","龍系與超能力系連線可互相計入對方招式的全威力門檻。"],[[382],212,"海洋之神","Sea God","水與冰招式的連線需求減 1，最低 1 條。"],[[383],213,"大地之神","Land God","火與地面招式的連線需求減 1，最低 1 條。"],[[384],214,"天空之神","Sky God","在場時天氣無效。普通系連線可計入所有攻擊招式的全威力門檻。"],[[385],215,"許願之神","Wish Maker","每次拉霸有 10% 機率將盤面暫時改為超能力圖案。"],[[386],216,"烈空的訪問者","Space Visitor","每次拉霸後將最多 5 個未連線圖案暫時改為超能力。"],[[480,481,482],217,"湖之主","Lake Guardian","任意屬性的連線都可計入超能力系招式的全威力門檻。"],[[483],218,"時間掌控者","Time Master","氣絕時每關可滿血復活一次。"],[[484],219,"空間掌控者","Space Master","可指定對手接替氣絕寶可夢的備戰隊員。"],[[485],220,"熔岩化身","Avatar of Magma","火系連線可計入地面系與岩石系招式的全威力門檻。"],[[486],221,"神柱之王","King of the Titans","使用普通招式後，額外隨機使出一招已攜帶的其他屬性招式。"],[[487],222,"無視常規","Beyond Rules","幽靈系連線可計入所有攻擊招式的全威力門檻。"],[[488],223,"美夢神","Dream Guardian","免疫睡眠。超能力攻擊的微弱相性視為一般。"],[[489],224,"深海幻靈","Deep-Sea Spirit","每次拉霸至少形成一條水屬性橫線。"],[[490],225,"滄海的王子","Prince of the Sea","每次拉霸至少形成一條水屬性直線。"],[[492],226,"花海","Flower Sea","每次拉霸將最多 2 個非草圖案暫時改為草，維持到本關結束。"],[[493],227,"創造者","Creator","受到的各屬性傷害皆視為效果微弱。"]];
+legendaryAbilityDefs.push(...[[[638,639,640],228,"三劍客","Three Swordsmen","格鬥系連線可計入鋼、岩石與草系招式的全威力門檻，每條只計一次。"],[[647],229,"亞瑟王","King Arthur","鋼、岩石與草系連線可計入水系招式的全威力門檻，每條只計一次。"],[[641,642,645],230,"四雲神","Cloud Deities","拉霸後將未連線圖案隨機轉為飛行、電或地面。結算時飛行圖案視為萬能。"],[[643],163,"渦輪火焰","Turboblaze","每次拉霸後永久加入 1 個火系圖案，最多累積至 30 個火系圖案。"],[[644],164,"兆級電壓","Teravolt","每次拉霸後永久加入 1 個電系圖案，最多累積至 30 個電系圖案。"],[[646],231,"空殼","Empty Shell","隊伍只有萊希拉姆時變為龍／火，只有捷克羅姆時變為龍／電。兩者都在或都不在時維持原屬性。"],[[648],232,"天籟","Celestial Voice","唱歌額外造成威力 100 的傷害並必定命中，所需連線增加 1 條。"],[[649],233,"基因載入","Gene Load","在場時偷取對手的特性，使對手暫時失去該特性。"]]);
 const signatureAbilities=new Map();
 for(const [speciesIds,id,name,,description] of legendaryAbilityDefs){
   abilityNames[id]=name;
@@ -1506,6 +1507,16 @@ for(const [speciesIds,id,name,,description] of legendaryAbilityDefs){
   for(const speciesId of speciesIds) signatureAbilities.set(speciesId,id);
 }
 signatureAbilities.set(491,123);
+const retiredSpeciesAbilities={638:[154],639:[154],640:[154],647:[154],641:[128],642:[128],645:[159],649:[88]};
+for(const [id,removed] of Object.entries(retiredSpeciesAbilities)){
+  const pool=speciesAbilities[id];
+  pool.common=pool.common.filter(ability=>!removed.includes(ability));
+  if(removed.includes(pool.hidden)) pool.hidden=null;
+  if(!pool.common.length) pool.common=[signatureAbilities.get(Number(id))];
+}
+function normalizeSpeciesAbility(id,ability){
+  return retiredSpeciesAbilities[id]?.includes(ability)?signatureAbilities.get(id):ability;
+}
 function encounterAbility(id){
   const signature=signatureAbilities.get(id);
   return signature&&!profile.traitUnlocks[id]?.abilities?.includes(signature)?signature:undefined;
@@ -1544,8 +1555,10 @@ function experienceAt(mon,n){
 const specialTypes=['火','水','草','電','冰','超能力','龍','惡'];
 const matchup=emeraldData.chart;
 Object.assign(abilityDescriptions,{"125":"造成傷害時，無視對手防禦及特防的正階級。","127":"對手的樹果暫時失效。","132":"受到傷害減少 15%。","134":"鋼系攻擊遇到效果微弱時，改為一般效果。","135":"受到鋼系招式傷害減少 25%。","139":"吃下樹果時，獲得一個木子果。","140":"每次拉霸有 50% 機率預知對手的反擊招式，並免疫該招傷害。","148":"本次拉霸後對手將行動時，造成傷害增加 25%。","149":"有 10% 機率免疫攻擊傷害。","151":"攻擊時無視對手的屏障效果。","152":"造成物理傷害時，降低目標防禦 1 階。","156":"反彈對手招式造成的能力下降。","158":"依原本觸發招式的次數，從自己的招式隨機出招。","161":"目前 HP 低於一半時，造成及受到的傷害各增加 25%。"});
+Object.assign(abilityDescriptions,{"78":"免疫電系招式，受到時速度提高 1 階。","79":"對同性目標傷害提高 25%，對異性降低 25%。","80":"因畏縮而延後行動時提高速度 1 階。","81":"冰雹中提高閃避，並免疫冰雹傷害。","83":"受到要害攻擊後，攻擊升到最高階。","85":"受到火系招式及灼傷的傷害減半。","86":"能力升降階數加倍。","87":"免疫水系招式並恢復四分之一 HP。火系傷害提高 25%，雨天回復、晴天扣血。","88":"上場時比較對手雙防，提高攻擊或特攻 1 階。","89":"拳類招式傷害提高 20%。","90":"中毒時每次回復八分之一最大 HP。","91":"同屬性招式加成從 1.5 倍增至 2 倍。","92":"使用原本命中 2 至 5 次的招式時固定命中 5 次。","93":"雨天每次結算解除主要異常。","94":"大晴天特攻提高 50%，每次結算損失八分之一 HP。","95":"有主要異常時速度提高 50%，免受麻痺減速。","97":"擊中要害時額外提高 50% 傷害。","98":"免疫灼傷、中毒、天氣等非直接攻擊傷害。","99":"雙方針對此寶可夢或由此寶可夢使出的招式必定命中。","101":"威力 60 以下的攻擊招式威力提高 50%。","102":"大晴天免疫主要異常狀態。","104":"出招時無視目標會阻礙攻擊的特性。","105":"提高擊中要害的機率。","106":"被物理攻擊擊倒時，攻擊者失去四分之一最大 HP。","107":"上場時若對手帶有剋制、一擊必殺或自爆招式，會發出危險預警。","108":"上場時揭露對手威力最高的一招。","109":"攻擊時無視目標防禦階級，受擊時無視攻擊者的進攻階級。","110":"效果微弱的攻擊傷害加倍。","111":"受到效果絕佳的攻擊時減傷 25%。","113":"普通與格鬥招式可以命中幽靈系。","115":"冰雹中免疫天氣傷害，並回復十六分之一最大 HP。","116":"受到效果絕佳的攻擊時減傷 25%。","117":"上場時使天氣變為冰雹。","119":"上場時揭露對手攜帶的道具。","120":"反作用力招式的威力提高 20%。","124":"受到物理攻擊後，沒有攜帶道具時可偷取攻擊者的道具。","126":"能力提升與下降反轉。","128":"被對手降低能力後，攻擊提高 2 階。","129":"HP 剩一半以下時，攻擊與特攻減半。","130":"受到攻擊時有 30% 機率封鎖該招式。","131":"每次結算有 30% 機率治癒一位備戰隊友的主要異常。","133":"受到物理傷害時，防禦降低 1 階、速度提高 1 階。","136":"滿血時受到的招式傷害減半。","137":"中毒時物理傷害提高 50%。","138":"灼傷時特殊傷害提高 50%。","141":"每次結算隨機提高一項能力 2 階，並降低另一項 1 階。","142":"免疫冰雹與沙暴的傷害。","143":"物理攻擊有 30% 機率使目標中毒。","144":"主動換下場時回復三分之一最大 HP。","145":"防禦階級不會降低。","146":"沙暴中速度加倍，且免疫沙暴傷害。","147":"受對方變化招式時，其命中率至多為 50%。","150":"上場時自動變身為對手。","153":"擊倒對手後攻擊提高 1 階。","154":"受到惡系攻擊後，攻擊提高 1 階。","155":"受到蟲、幽靈或惡系攻擊後，速度提高 1 階。","157":"免疫草系招式，受到時攻擊提高 1 階。","159":"沙暴中岩石、地面和鋼系攻擊提高 30%，並免疫沙暴傷害。","160":"受到物理攻擊時，攻擊者失去八分之一最大 HP。","162":"招式命中率提高 10%。"});
 function activeAbility(mon){
-  const id=mon?.copiedAbility??mon?.abilityId??0;
+  if(mon?.geneAbilityStolen) return 0;
+  const id=mon?.geneAbility??mon?.copiedAbility??mon?.abilityId??0;
   return mon?.abilitySuppressed&&[2,13,23,42,45,69,73,76,84,100,103,112,117,122].includes(id)?0:id;
 }
 function abilityImmuneToStatus(mon,status){
@@ -1558,6 +1571,7 @@ function abilityImmuneToStatus(mon,status){
     status==='burn'&&ability===41;
 }
 function clearMajorStatus(mon){
+  delete mon.nightmare;
   mon.status=null;mon.burned=false;mon.sleep=0;mon.toxicTurns=0;
   delete mon.statusUntil;
   delete mon.statusMovesRemaining;
@@ -1570,7 +1584,55 @@ function clearMonStatus(mon){
 }
 function battleSpeedStat(mon){
   const speed=effectiveBattleStat(mon,5);
-  return mon.status==='paralysis'?Math.max(1,Math.floor(speed/2)):speed;
+  const ability=activeAbility(mon);
+  return ability===95&&mon.status?Math.floor(speed*1.5):ability===146&&mon.inSand?speed*2:mon.status==='paralysis'?Math.max(1,Math.floor(speed/2)):speed;
+}
+function syncGeneLoad(run){
+  const [ally,enemy]=[run.team[run.active],run.enemy];
+  for(const mon of [ally,enemy]){
+    if(!mon) continue;
+    delete mon.geneAbility;
+    delete mon.geneAbilityStolen;
+  }
+  const allyAbility=activeAbility(ally),enemyAbility=activeAbility(enemy);
+  if(!ally?.left||!enemy?.left||allyAbility===enemyAbility) return;
+  if(allyAbility===233&&enemyAbility){
+    ally.geneAbility=enemyAbility;
+    enemy.geneAbilityStolen=true;
+  }else if(enemyAbility===233&&allyAbility){
+    enemy.geneAbility=allyAbility;
+    ally.geneAbilityStolen=true;
+  }
+}
+function applyKyuremType(run,mon){
+  if(activeAbility(mon)!==231||mon.temporaryMoveType||mon.transformOriginal) return;
+  const roster=run.team.includes(mon)?run.team:run.foes;
+  const fire=roster.some(member=>member.id===643),electric=roster.some(member=>member.id===644);
+  if(fire!==electric){
+    mon.abilityBaseType??=mon.type.slice();
+    mon.type=['龍',fire?'火':'電'];
+  }else if(mon.abilityBaseType){
+    mon.type=mon.abilityBaseType;
+    delete mon.abilityBaseType;
+  }
+}
+function activateStandardEntry(run,mon,opponent){
+  if(!mon.left||!opponent?.left) return;
+  const ability=activeAbility(mon);
+  if(ability===88) changeStage(mon,effectiveBattleStat(opponent,2)<effectiveBattleStat(opponent,4)?1:3,1);
+  if(ability===117) run.weather={kind:'hail',until:(run.enemyTurns??0)+5,potency:1};
+  if(ability===150) transformInto(mon,opponent);
+  if(ability===107&&opponent.moves.some(name=>['OHKO','EXPLOSION'].includes(skillDetails[name]?.effect)||
+    skillDetails[name]?.power&&typeMultiplier(skillDetails[name].type,mon)>1)) noteEffect(run,mon,'因危險預知而警戒。');
+  if(ability===108&&opponent.moves.length){
+    const strongest=opponent.moves.reduce((best,name)=>(skillDetails[name]?.power??0)>(skillDetails[best]?.power??0)?name:best);
+    noteEffect(run,mon,'預知了對手的'+displayMove(strongest)+'。');
+  }
+  if(ability===119){
+    const side=run.team.includes(opponent)?'player':'enemy';
+    const items=itemKinds(run,side).map(id=>itemCatalog[id]?.name).filter(Boolean);
+    if(items.length) noteEffect(run,mon,'發現對手持有：'+items.join('、')+'。');
+  }
 }
 function activateAbility(run,mon,opponent){
   delete mon.copiedAbility;
@@ -1579,6 +1641,9 @@ function activateAbility(run,mon,opponent){
     mon.copiedAbility=activeAbility(opponent);
     if(mon.copiedAbility) run.log.unshift(mon.name+'複製了'+abilityNames[mon.copiedAbility]+'。');
   }
+  syncGeneLoad(run);
+  applyKyuremType(run,mon);
+  activateStandardEntry(run,mon,opponent);
   if(activeAbility(mon)===55){
     changeStage(mon,1,2);
     changeStage(mon,6,-2);
@@ -1596,6 +1661,7 @@ function updateWeatherAbilities(run){
   const pair=[run.team[run.active],run.enemy];
   if(pair.some(mon=>mon?.left&&[76,214].includes(activeAbility(mon)))) delete run.weather;
   for(const mon of pair) if(mon) mon.flowerGift=activeAbility(mon)===122&&run.weather?.kind==='sun';
+  for(const mon of pair) if(mon) mon.inSand=run.weather?.kind==='sand';
   for(const mon of pair){
     if(!mon?.left||activeAbility(mon)!==59) continue;
     const type={rain:'水',sun:'火',hail:'冰'}[run.weather?.kind]??'普通';
@@ -1604,13 +1670,23 @@ function updateWeatherAbilities(run){
   }
 }
 function leaveAbility(mon,withdrawing=true){
+  delete mon.stockpiles;
+  delete mon.deferredMove;
+  delete mon.semiInvulnerable;
+  delete mon.rolloutStreak;
+  delete mon.furyStreak;
+  delete mon.rampage;
+  delete mon.geneAbility;
+  delete mon.geneAbilityStolen;
   if(mon.powerTrick){[mon.stats[1],mon.stats[2]]=[mon.stats[2],mon.stats[1]];delete mon.powerTrick;}
   delete mon.embargo;
   delete mon.flowerGift;
   delete mon.titanBoosted;
   if(withdrawing){
     if(activeAbility(mon)===30) clearMonStatus(mon);
+    if(activeAbility(mon)===144&&mon.left&&!mon.healBlocked) mon.left=Math.min(mon.hp,mon.left+Math.max(1,Math.floor(mon.hp/3)));
     mon.toxicTurns=0;
+    delete mon.nightmare;
     mon.confusion=0;
     delete mon.confusionUntil;
     delete mon.drowsyUntil;
@@ -1636,19 +1712,20 @@ function damageAt(attacker,defender,move,roll,critical=false){
   const attackIndex=special?3:1;
   const useSpecialDefense=special&&!move.physicalDefense;
   const defenseIndex=useSpecialDefense?4:2;
-  const attackStage=Math.min(6,attacker.stages[attackIndex]+Number(Boolean(attacker.flowerGift)));
+  const attackStage=activeAbility(defender)===109?0:Math.min(6,attacker.stages[attackIndex]+Number(Boolean(attacker.flowerGift)));
   const defenseStage=Math.min(6,defender.stages[defenseIndex]+(defenseIndex===2&&defender.tempDefense?1:0));
   const attack=move.effect==='GEN5_FOUL_PLAY'?effectiveBattleStat(defender,1):effectiveBattleStat(attacker,attackIndex,critical?Math.max(0,attackStage):attackStage);
-  const defense=effectiveBattleStat(defender,move.wonderRoom?6-defenseIndex:defenseIndex,['GEN5_CHIP_AWAY','GEN5_SACRED_SWORD'].includes(move.effect)?0:critical||activeAbility(attacker)===125?Math.min(0,defenseStage):defenseStage);
+  const defense=effectiveBattleStat(defender,move.wonderRoom?6-defenseIndex:defenseIndex,activeAbility(attacker)===109||['GEN5_CHIP_AWAY','GEN5_SACRED_SWORD'].includes(move.effect)?0:critical||activeAbility(attacker)===125?Math.min(0,defenseStage):defenseStage);
   const type=move.type;
   const status=attacker.status??(attacker.burned?'burn':null);
   const facadeBoost=move.effect==='FACADE'&&['burn','poison','toxic','paralysis'].includes(status);
   const power=move.power*(facadeBoost?2:1);
   let damage=Math.floor((Math.floor(2*attacker.level/5)+2)*power*attack/defense/50);
+  if(activeAbility(attacker)===129&&attacker.left*2<=attacker.hp) damage=Math.floor(damage/2);
   const statusPenalty=!special&&status==='burn'&&activeAbility(attacker)!==62&&move.effect!=='FACADE'?.5:1;
   damage=(special?damage:Math.max(1,damage))+2;
-  if(critical) damage*=2;
-  if(attacker.type.includes(type)) damage=Math.floor(damage*1.5);
+  if(critical) damage*=activeAbility(attacker)===97?3:2;
+  if(attacker.type.includes(type)) damage=Math.floor(damage*(activeAbility(attacker)===91?2:1.5));
   if(move.effectiveness!==undefined){
     if(!move.effectiveness) return 0;
     damage=Math.max(1,Math.floor(damage*move.effectiveness));
@@ -1660,7 +1737,10 @@ function damageAt(attacker,defender,move,roll,critical=false){
   return Math.max(1,Math.floor(Math.floor(damage*roll/100)*statusPenalty));
 }
 function rollDamage(attacker,defender,move){
-  return damageAt(attacker,defender,move,85+Math.floor(Math.random()*16),Math.random()<(move.forceCrit?1:move.noCrit?0:move.highCrit?1/8:1/16));
+  const roll=85+Math.floor(Math.random()*16);
+  const critical=Math.random()<(move.forceCrit?1:move.noCrit?0:move.highCrit&&activeAbility(attacker)===105?1/4:move.highCrit||activeAbility(attacker)===105?1/8:1/16);
+  if(critical) move.onCritical?.();
+  return damageAt(attacker,defender,move,roll,critical);
 }
 function statTable(mon,level,stats){
   return '<table class="stat-table"><thead><tr><th>能力</th><th>種族值</th><th>Lv. '+level+'</th></tr></thead><tbody>'+
@@ -1809,7 +1889,7 @@ const skillDetails=Object.fromEntries(Object.entries(emeraldData.ms).map(([id,mo
   const description=moveDescriptions[move.effect]||(stat?'使'+(self?'自己的':'目標的')+(stat===6?'命中率':stat===7?'閃避率':statNames[stat])+(delta>0?'提高':'下降')+Math.abs(delta)+'階。':move.power?'使用'+move.name+'攻擊。':'變化招式。');
   return [move.name,{...move,id,secondaryChance:move.chance,stat:stat||undefined,delta,self,chance,seed:move.effect==='LEECH_SEED',description,highCrit:['HIGH_CRITICAL','BLAZE_KICK','POISON_TAIL','RAZOR_WIND'].includes(move.effect)}];
 }));
-const moveRules={"拍擊":{"shapes":"HVD","min":1},"抓擊":{"shapes":"HVD","min":1},"撞擊":{"shapes":"HVD","min":1},"打鼾":{"shapes":"HVD","min":1},"點到為止":{"shapes":"HVD","min":1},"百萬噸重拳":{"shapes":"D","min":1},"夾住":{"shapes":"VH","min":1},"摔打":{"shapes":"VH","min":1},"稜角化":{"shapes":"VH","min":1},"生長":{"shapes":"VH","min":1},"百萬噸重踢":{"shapes":"HD","min":1},"變硬":{"shapes":"HD","min":1},"變圓":{"shapes":"HD","min":1},"角撞":{"shapes":"VD","min":1},"泰山壓頂":{"shapes":"VD","min":1},"影子分身":{"shapes":"VD","min":1},"變小":{"shapes":"VD","min":1},"炸蛋":{"shapes":"HVD","min":2},"巨聲":{"shapes":"HVD","min":2},"噴出":{"shapes":"HVD","min":2},"連環巴掌":{"shapes":"HVD","min":2},"連續拳":{"shapes":"HVD","min":2},"亂擊":{"shapes":"HVD","min":2},"尖刺加農炮":{"shapes":"HVD","min":2},"投球":{"shapes":"HVD","min":2},"亂抓":{"shapes":"HVD","min":2},"憤怒門牙":{"shapes":"HVD","min":2},"猛撞":{"shapes":"HVD","min":2},"捨身衝撞":{"shapes":"HVD","min":2},"聚寶功":{"shapes":"VH","min":1,"effect":"gold","description":"命中後有 20% 機率在結算時額外獲得 5 金幣。"},"綁緊":{"shapes":"D","min":1,"effect":"drain5","description":"從下一次拉霸起，目標每次損失 5% 最大 HP。"},"踩踏":{"shapes":"HD","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"纏繞":{"shapes":"HD","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"頭錘":{"shapes":"VD","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"緊束":{"shapes":"VH","min":1,"effect":"drain10","description":"從下一次拉霸起，目標每次損失 10% 最大 HP。"},"大鬧一番":{"shapes":"VH","min":1,"effect":"spinMinus","description":"命中後有 20% 機率讓對手提早一次拉霸行動。"},"電光一閃":{"shapes":"HVD","min":1,"effect":"full10","description":"目標滿血時，傷害增加 10%。"},"憤怒":{"shapes":"H","min":1,"effect":"lowHp","description":"自身每損失 10% 最大 HP，威力增加 10%。"},"火箭頭錘":{"shapes":"HVD","min":1,"effect":"tempDefense","description":"防禦暫升一階，直到對手下次行動結束。不可疊加。"},"必殺門牙":{"shapes":"D","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"三重攻擊":{"shapes":"HVD","min":1,"effect":"triType","description":"直線為火，橫線為電，斜線為冰。同時符合時依此順序選擇。"},"抓狂":{"shapes":"HD","min":1,"effect":"lowHp","description":"自身每損失 10% 最大 HP，威力增加 10%。"},"高速旋轉":{"shapes":"HD","min":1,"effect":"cureOne","description":"隨機解除自身一個異常狀態。"},"神速":{"shapes":"HVD","min":2,"effect":"full40","description":"目標滿血時，傷害增加 40%。"},"擊掌奇襲":{"shapes":"HVD","min":1,"effect":"fullSpin","description":"目標滿血時，延後對手行動一次拉霸。"},"吵鬧":{"shapes":"VH","min":1,"effect":"sleep50","description":"目標睡眠時，傷害增加 50%。"},"蠻幹":{"shapes":"HVD","min":2,"effect":"endeavor","description":"使對手 HP 降到與自身相同；對手 HP 較低時無效。"},"渴望":{"shapes":"VH","min":1,"effect":"steal","description":"有 20% 機率暫時偷走目標一件道具，關卡結束時歸還。"},"高速星星":{"shapes":"HVD","min":2,"effect":"swift","description":"必定命中。目標滿血時，傷害增加 20%。"},"劈開":{"shapes":"VH","min":1,"effect":"slash50","description":"有 20% 機率傷害增加 50%。"},"音爆":{"shapes":"HVD","min":1,"effect":"fixed20","description":"固定造成 20 點傷害。"},"斷頭鉗":{"shapes":"HVD","min":5},"角鑽":{"shapes":"HVD","min":5},"自爆":{"shapes":"HVD","min":4},"大爆炸":{"shapes":"HVD","min":4},"破壞光線":{"shapes":"HVD","min":2,"effect":"rechargeSpin","description":"命中後讓對手提早一次拉霸行動。"},"迷昏拳":{"shapes":"HVD","min":3,"effect":"selfCounter","description":"目標下次行動有 50% 機率攻擊自己。"},"劍舞":{"shapes":"D","min":1},"瞪眼":{"shapes":"HD","min":1},"刺耳聲":{"shapes":"H","min":1},"叫聲":{"shapes":"VH","min":1},"煙幕":{"shapes":"VD","min":1},"甜甜香氣":{"shapes":"VD","min":1},"鬼面":{"shapes":"D","min":1},"搔癢":{"shapes":"HVD","min":2},"唱歌":{"shapes":"VD","min":3},"惡魔之吻":{"shapes":"HVD","min":3},"哈欠":{"shapes":"HVD","min":3},"超音波":{"shapes":"HVD","min":3},"大蛇瞪眼":{"shapes":"HVD","min":3},"自我再生":{"shapes":"VD","min":2},"生蛋":{"shapes":"HVD","min":2},"月光":{"shapes":"HVD","min":2},"吞下":{"shapes":"HVD","min":1,"effect":"swallow","description":"每條有效連線恢復 10% 最大 HP。"},"煥然一新":{"shapes":"HD","min":3},"守住":{"shapes":"VD","min":3,"effect":"guard","description":"無效對手此次反擊傷害。"},"紋理":{"shapes":"VD","min":3,"effect":"guard","description":"無效對手此次反擊傷害。"},"挺住":{"shapes":"VD","min":3,"effect":"endure","description":"每關一次，以 1 HP 撐過致命傷害。"},"變身":{"shapes":"VD","min":1},"吹飛":{"shapes":"VD","min":5,"effect":"phaze","description":"野生戰鬥直接通關；訓練家戰隨機替換對手隊員。"},"吼叫":{"shapes":"VD","min":5},"定身法":{"shapes":"VD","min":4,"effect":"disable","description":"目標下次行動隨機封鎖一招。"},"模仿":{"shapes":"VD","min":1,"effect":"mimic","description":"隨機使用對手的一個招式。"},"聚氣":{"shapes":"VD","min":3,"effect":"focus","description":"同次達到 6 條連線時，我方使用會延後對手行動 1 次拉霸。"},"揮指":{"shapes":"VD","min":2,"effect":"randomMove","description":"從目前收錄的招式中隨機抽一招使用。"},"躍起":{"shapes":"VD","min":10,"effect":"splash","description":"什麼效果都沒有。"},"替身":{"shapes":"VD","min":2,"effect":"substitute","description":"每關一次，無效對手此次反擊傷害。"},"心之眼":{"shapes":"VD","min":4,"effect":"next50","description":"下一次造成傷害增加 50%。"},"紋理２":{"shapes":"VD","min":4,"effect":"next50","description":"下一次造成傷害增加 50%。"},"詛咒":{"shapes":"VD","min":2,"effect":"curse","description":"扣除自身 50% 最大 HP；從下一次拉霸起目標每次損失 20% 最大 HP。"},"腹鼓":{"shapes":"VD","min":2,"effect":"belly","description":"每關一次，扣除 50% 最大 HP 並將攻擊提升至 6 階。"},"識破":{"shapes":"VD","min":2,"effect":"identify","description":"目標無法閃避攻擊。"},"滅亡之歌":{"shapes":"VD","min":5,"effect":"perish","description":"目標下次行動結束後倒下。"},"鎖定":{"shapes":"VD","min":2,"effect":"lock","description":"下一次攻擊必定命中。"},"氣味偵測":{"shapes":"VD","min":2,"effect":"lock","description":"下一次攻擊必定命中。"},"黑色目光":{"shapes":"VD","min":2,"effect":"trapSwitch","description":"目標倒下前無法換人。"},"擋路":{"shapes":"VD","min":2,"effect":"trapSwitch","description":"目標倒下前無法換人。"},"神秘守護":{"shapes":"VD","min":4,"effect":"safeguard","description":"我方在本關免疫異常狀態。"},"接棒":{"shapes":"VD","min":4,"effect":"baton","description":"隨機換上存活隊員並繼承能力階級。"},"再來一次":{"shapes":"VD","min":3,"effect":"encore","description":"目標下次行動會重複一招並跳過另一招。"},"自我暗示":{"shapes":"VD","min":3,"effect":"psychUp","description":"複製目標的能力階級。"},"蓄力":{"shapes":"VD","min":2,"effect":"stockpile","description":"防禦、特防各提升一階。"},"看我嘛":{"shapes":"VD","min":3,"effect":"follow","description":"目標下次反擊優先選擇攻擊招式。"},"幫助":{"shapes":"VD","min":4,"effect":"help","description":"隨機換上隊員，並使其攻擊和特攻各升兩階。"},"回收利用":{"shapes":"VD","min":5,"effect":"recycle","description":"恢復我方本關可再次使用的道具次數。"},"保護色":{"shapes":"P","min":0,"effect":"camouflage","description":"被動。與對手有共同屬性時，受到對方的傷害減半。"}};
+const moveRules={"拍擊":{"shapes":"HVD","min":1},"抓擊":{"shapes":"HVD","min":1},"撞擊":{"shapes":"HVD","min":1},"打鼾":{"shapes":"HVD","min":1},"點到為止":{"shapes":"HVD","min":1},"百萬噸重拳":{"shapes":"D","min":1},"夾住":{"shapes":"VH","min":1},"摔打":{"shapes":"VH","min":1},"稜角化":{"shapes":"VH","min":1},"生長":{"shapes":"VH","min":1},"百萬噸重踢":{"shapes":"HD","min":1},"變硬":{"shapes":"HD","min":1},"變圓":{"shapes":"HD","min":1},"角撞":{"shapes":"VD","min":1},"泰山壓頂":{"shapes":"VD","min":1},"影子分身":{"shapes":"VD","min":1},"變小":{"shapes":"VD","min":1},"炸蛋":{"shapes":"HVD","min":2},"巨聲":{"shapes":"HVD","min":2},"噴出":{"shapes":"HVD","min":2},"連環巴掌":{"shapes":"HVD","min":2},"連續拳":{"shapes":"HVD","min":2},"亂擊":{"shapes":"HVD","min":2},"尖刺加農炮":{"shapes":"HVD","min":2},"投球":{"shapes":"HVD","min":2},"亂抓":{"shapes":"HVD","min":2},"憤怒門牙":{"shapes":"HVD","min":2},"猛撞":{"shapes":"HVD","min":2},"捨身衝撞":{"shapes":"HVD","min":2},"聚寶功":{"shapes":"VH","min":1,"effect":"gold","description":"命中後有 20% 機率在結算時額外獲得 5 金幣。"},"綁緊":{"shapes":"D","min":1,"effect":"drain5","description":"從下一次拉霸起，目標每次損失 5% 最大 HP。"},"踩踏":{"shapes":"HD","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"纏繞":{"shapes":"HD","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"頭錘":{"shapes":"VD","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"緊束":{"shapes":"VH","min":1,"effect":"drain10","description":"從下一次拉霸起，目標每次損失 10% 最大 HP。"},"大鬧一番":{"shapes":"VH","min":1,"effect":"spinMinus","description":"命中後有 20% 機率讓對手提早一次拉霸行動。"},"電光一閃":{"shapes":"HVD","min":1,"effect":"full10","description":"目標滿血時，傷害增加 10%。"},"憤怒":{"shapes":"H","min":1,"effect":"lowHp","description":"自身每損失 10% 最大 HP，威力增加 10%。"},"火箭頭錘":{"shapes":"HVD","min":1,"effect":"tempDefense","description":"防禦暫升一階，直到對手下次行動結束。不可疊加。"},"必殺門牙":{"shapes":"D","min":1,"effect":"spinPlus","description":"命中後有 20% 機率延後對手行動一次拉霸。"},"三重攻擊":{"shapes":"HVD","min":1,"effect":"triType","description":"直線為火，橫線為電，斜線為冰。同時符合時依此順序選擇。"},"抓狂":{"shapes":"HD","min":1,"effect":"lowHp","description":"自身每損失 10% 最大 HP，威力增加 10%。"},"高速旋轉":{"shapes":"HD","min":1,"effect":"cureOne","description":"隨機解除自身一個異常狀態。"},"神速":{"shapes":"HVD","min":2,"effect":"full40","description":"目標滿血時，傷害增加 40%。"},"擊掌奇襲":{"shapes":"HVD","min":1,"effect":"fullSpin","description":"目標滿血時，延後對手行動一次拉霸。"},"吵鬧":{"shapes":"VH","min":1,"effect":"sleep50","description":"目標睡眠時，傷害增加 50%。"},"蠻幹":{"shapes":"HVD","min":2,"effect":"endeavor","description":"使對手 HP 降到與自身相同；對手 HP 較低時無效。"},"渴望":{"shapes":"VH","min":1,"effect":"steal","description":"有 20% 機率暫時偷走目標一件道具，關卡結束時歸還。"},"高速星星":{"shapes":"HVD","min":2,"effect":"swift","description":"必定命中。目標滿血時，傷害增加 20%。"},"劈開":{"shapes":"VH","min":1,"effect":"slash50","description":"有 20% 機率傷害增加 50%。"},"音爆":{"shapes":"HVD","min":1,"effect":"fixed20","description":"固定造成 20 點傷害。"},"斷頭鉗":{"shapes":"HVD","min":5},"角鑽":{"shapes":"HVD","min":5},"自爆":{"shapes":"HVD","min":4},"大爆炸":{"shapes":"HVD","min":4},"破壞光線":{"shapes":"HVD","min":2,"effect":"rechargeSpin","description":"命中後讓對手提早一次拉霸行動。"},"迷昏拳":{"shapes":"HVD","min":3,"effect":"selfCounter","description":"目標下次行動有 50% 機率攻擊自己。"},"劍舞":{"shapes":"D","min":1},"瞪眼":{"shapes":"HD","min":1},"刺耳聲":{"shapes":"H","min":1},"叫聲":{"shapes":"VH","min":1},"煙幕":{"shapes":"VD","min":1},"甜甜香氣":{"shapes":"VD","min":1},"鬼面":{"shapes":"D","min":1},"搔癢":{"shapes":"HVD","min":2},"唱歌":{"shapes":"VD","min":3},"惡魔之吻":{"shapes":"HVD","min":3},"哈欠":{"shapes":"HVD","min":3},"超音波":{"shapes":"HVD","min":3},"大蛇瞪眼":{"shapes":"HVD","min":3},"自我再生":{"shapes":"VD","min":2},"生蛋":{"shapes":"HVD","min":2},"月光":{"shapes":"HVD","min":2},"吞下":{"shapes":"HVD","min":1,"effect":"swallow","description":"每條有效連線恢復 10% 最大 HP。"},"煥然一新":{"shapes":"HD","min":3},"守住":{"shapes":"VD","min":3,"effect":"guard","description":"無效對手此次反擊傷害。"},"紋理":{"shapes":"VD","min":3,"effect":"guard","description":"無效對手此次反擊傷害。"},"挺住":{"shapes":"VD","min":3,"effect":"endure","description":"每關一次，以 1 HP 撐過致命傷害。"},"變身":{"shapes":"VD","min":1},"吹飛":{"shapes":"VD","min":5,"effect":"phaze","description":"野生戰鬥直接通關；訓練家戰隨機替換對手隊員。"},"吼叫":{"shapes":"VD","min":5},"定身法":{"shapes":"VD","min":4,"effect":"disable","description":"目標下次行動隨機封鎖一招。"},"模仿":{"shapes":"VD","min":1,"effect":"mimic","description":"隨機使用對手的一個招式。"},"聚氣":{"shapes":"VD","min":3,"effect":"focus","description":"同次達到 6 條連線時，我方使用會延後對手行動 1 次拉霸。"},"揮指":{"shapes":"VD","min":2,"effect":"randomMove","description":"從目前收錄的招式中隨機抽一招使用。"},"躍起":{"shapes":"VD","min":10,"effect":"splash","description":"什麼效果都沒有。"},"替身":{"shapes":"VD","min":2,"effect":"substitute","description":"每關一次，無效對手此次反擊傷害。"},"心之眼":{"shapes":"VD","min":4,"effect":"next50","description":"下一次造成傷害增加 50%。"},"紋理２":{"shapes":"VD","min":4,"effect":"next50","description":"下一次造成傷害增加 50%。"},"詛咒":{"shapes":"VD","min":2,"effect":"curse","description":"扣除自身 50% 最大 HP；從下一次拉霸起目標每次損失 20% 最大 HP。"},"腹鼓":{"shapes":"VD","min":2,"effect":"belly","description":"每關一次，扣除 50% 最大 HP 並將攻擊提升至 6 階。"},"識破":{"shapes":"VD","min":2,"effect":"identify","description":"目標無法閃避攻擊。"},"滅亡之歌":{"shapes":"VD","min":5,"effect":"perish","description":"目標下次行動結束後倒下。"},"鎖定":{"shapes":"VD","min":2,"effect":"lock","description":"下一次攻擊必定命中。"},"氣味偵測":{"shapes":"VD","min":2,"effect":"lock","description":"下一次攻擊必定命中。"},"黑色目光":{"shapes":"VD","min":2,"effect":"trapSwitch","description":"目標倒下前無法換人。"},"擋路":{"shapes":"VD","min":2,"effect":"trapSwitch","description":"目標倒下前無法換人。"},"神秘守護":{"shapes":"VD","min":4,"effect":"safeguard","description":"我方在本關免疫異常狀態。"},"接棒":{"shapes":"VD","min":4,"effect":"baton","description":"隨機換上存活隊員並繼承能力階級。"},"再來一次":{"shapes":"VD","min":3,"effect":"encore","description":"目標下次行動會重複一招並跳過另一招。"},"自我暗示":{"shapes":"VD","min":3,"effect":"psychUp","description":"複製目標的能力階級。"},"蓄力":{"shapes":"VD","min":2,"effect":"stockpile","description":"每次累積 1 層蓄力，最多 3 層，並使防禦及特防各提升 1 階。"},"看我嘛":{"shapes":"VD","min":3,"effect":"follow","description":"目標下次反擊優先選擇攻擊招式。"},"幫助":{"shapes":"VD","min":4,"effect":"help","description":"隨機換上隊員，並使其攻擊和特攻各升兩階。"},"回收利用":{"shapes":"VD","min":5,"effect":"recycle","description":"恢復我方本關可再次使用的道具次數。"},"保護色":{"shapes":"P","min":0,"effect":"camouflage","description":"被動。與對手有共同屬性時，受到對方的傷害減半。"}};
 const elementalRules=[
  [52,'HVD',1,'burn10'],[83,'VH',1,'drain5'],[172,'HVD',2,'burn10'],[53,'HD',2,'burn20'],[261,'HVD',2,'burnAlways'],[257,'HVD',3,'burn50'],[126,'HD',3,'burn50'],[241,'HVD',2,'sun'],
  [22,'HVD',1],[75,'HD',1,'bonus10'],[71,'HVD',1],[72,'HD',1],[202,'HVD',2],[80,'HVD',3,'petal'],[76,'HVD',3],[79,'HVD',4],[147,'HVD',4],[78,'HVD',3],[73,'HVD',2,'seed3'],[235,'HD',1],[312,'HVD',3,'teamCure'],[275,'HVD',2,'root'],
@@ -1860,6 +1940,10 @@ for(const id of [488,490,527,549]){
   skill.stat=5;
 }
 skillDetails[emeraldData.ms[515].name].power=1;
+for(const name of ['踢倒','打草結']){
+  const skill=skillDetails[name];
+  if(skill?.effect==='LOW_KICK'&&!skill.power) skill.power=1;
+}
 const guaranteedStatus=new Set(['SLEEP','YAWN','POISON','TOXIC','PARALYZE','WILL_O_WISP','CONFUSE']);
 for(const [name,skill] of Object.entries(skillDetails)){
  const previous=moveRules[name];
@@ -1906,7 +1990,10 @@ function lineMatchesMoveType(line,moveType,ability){
     ((ability===207&&type==='水'||ability===208&&type==='火')&&['超能力','飛行'].includes(moveType))||
     (ability===211&&['龍','超能力'].includes(type)&&['龍','超能力'].includes(moveType))||
     (ability===217&&moveType==='超能力')||(ability===214&&type==='普通')||
-    (ability===220&&type==='火'&&['地面','岩石'].includes(moveType))||(ability===222&&type==='幽靈');
+    (ability===220&&type==='火'&&['地面','岩石'].includes(moveType))||(ability===222&&type==='幽靈')||
+    (ability===228&&type==='格鬥'&&['鋼','岩石','草'].includes(moveType))||
+    (ability===229&&moveType==='水'&&['鋼','岩石','草'].includes(type));
+
 }
 const unovaMoveRules={"469":[5,"protectCounter","免疫對手此次反擊傷害。"],"472":[4,"wonderRoom","本關所有寶可夢結算傷害時互換防禦與特防數值。"],"476":[3,"ragePowder","對手此次反擊只會選擇攻擊招式。"],"477":[4,"telekinesis","此次拉霸結算期間，己方後續招式必定命中。"],"478":[5,"magicRoom","本關雙方的道具暫時失效，增強劑除外。"],"481":[3,"flameBurst","若擊倒對手，溢出的傷害會由下一隻上場的寶可夢承受。",70],"484":[4,"heavySlam","自身 HP 比例高於對手才會命中。",150],"485":[4,"synchronoise","目標具超能力屬性時必定擊中要害。",120],"486":[3,"electroBall","基礎威力 60，每少 1 次至對手完整行動增加 15，剩 2 次或更少時威力 120。",60],"487":[3,"soak","將目標變為水屬性，直到換下場或本關結束。"],"493":[4,"simpleBeam","清除目標所有能力階級。"],"494":[4,"entrainment","使目標暫時取得使用者目前的特性。"],"495":[3,"retaliateFirst","對手先反擊一次，己方再繼續出招。"],"496":[3,"round","本關每次使用後威力增加 15。",60],"497":[2,"echoedVoice","本關每次使用後威力增加 10。",40],"501":[4,"quickGuard","本關己方下次主動換人免受反擊。"],"502":[4,"allySwitch","清除場地與空間效果，再隨機施放一個場地或空間效果。"],"505":[3,"healPulse","恢復對手 50% 最大 HP。"],"507":[4,"skyDrop","對手本次不能反擊，傷害延到下次拉霸結算。"],"510":[3,"incinerate","造成傷害後有 25% 機率摧毀對手一個隨機樹果。"],"511":[5,"quash","增加 1 次可拉霸機會，每關最多觸發 3 次。"],"512":[3,"acrobatics","己方樹果少於對手時，威力加倍。"],"513":[3,"reflectType","將自身變為對手的屬性，直到換下場或本關結束。"],"514":[3,"retaliateAllies","己方每有一隻氣竭寶可夢，威力增加 15。",70],"516":[3,"bestow","隨機將己方一件道具送給對手。"],"518":[4,"pledge","己方隊伍每有一種不同屬性，威力增加 10。",80],"519":[4,"pledge","己方隊伍每有一種不同屬性，威力增加 10。",80],"520":[4,"pledge","己方隊伍每有一種不同屬性，威力增加 10。",80],"535":[5,"heatCrash","本關對手每行動一次，威力增加 30。",100],"543":[3,"headCharge","使用者承受所造成傷害的四分之一作為反傷。"],"546":[4,"technoBlast","己方隊伍每有一隻鋼系寶可夢，威力增加 10。"],"547":[4,"relicSong","造成傷害後有 25% 機率使目標睡眠。",75],"553":[5,"freezeShock","造成傷害後有 15% 機率使目標麻痺。",140],"554":[5,"iceBurn","造成傷害後有 15% 機率使目標灼傷。",140],"558":[4,"fusionFlare","同次出招亦觸發電系招式時，威力變為 150。",100],"559":[4,"fusionBolt","同次出招亦觸發火系招式時，威力變為 150。",100]};
 for(const id of [509,525]){
@@ -1945,7 +2032,7 @@ function showSkill(p, name, trigger){
   $('skillBody').innerHTML='<div class="skill-art">'+art+'<small>'+skill.type+'</small><strong>'+displayMove(name)+'</strong></div>'+
     '<div class="skill-info">'+(trigger?triggerRequirements(rule?.lineType??trigger,rule,p,name):'')+
     '<p><strong>'+musicLabel('威力','Power')+'</strong>'+movePowerText(name,p)+'</p>'+
-    '<p><strong>'+musicLabel('命中率','Accuracy')+'</strong>'+skill.accuracy+'%</p><p><strong>'+musicLabel('技能敘述','Effect')+'</strong>'+moveEffectText(name)+'</p></div>';
+    '<p><strong>'+musicLabel('命中率','Accuracy')+'</strong>'+(name==='唱歌'&&activeAbility(p)===232?musicLabel('必定命中','Always hits'):skill.accuracy+'%')+'</p><p><strong>'+musicLabel('技能敘述','Effect')+'</strong>'+moveEffectText(name)+'</p></div>';
   $('skill').showModal();
 }
 
@@ -1970,7 +2057,7 @@ function battleMon(entry,level=startingLevel,traits={},luck=0){
   const id=typeof entry==='number'?entry:entry.id;
   const mon=speciesById(id);
   const natureId=traits.natureId??1+Math.floor(Math.random()*25);
-  const abilitySlot=traits.abilitySlot??rollAbility(id,luck);
+  const abilitySlot=normalizeSpeciesAbility(id,traits.abilitySlot??rollAbility(id,luck));
   const personality=traits.personality??Math.floor(Math.random()*0x100000000);
   const unownIndex=(((personality&0x03000000)>>>18)|((personality&0x00030000)>>>12)|((personality&0x00000300)>>>6)|(personality&3))%28;
   const unownForm=id===201?('abcdefghijklmnopqrstuvwxyz'.split('').concat('exclamation_mark','question_mark')[unownIndex]):undefined;
@@ -2473,6 +2560,11 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false,start
   applyHeldSpeed(run);
   return run;
 }
+const speciesWeight=[null,69,130,1000,85,190,905,90,225,855,29,99,320,32,100,295,18,300,395,35,185,20,380,69,650,60,300,120,295,70,200,600,90,195,620,75,400,99,199,55,120,75,550,54,86,186,54,295,300,125,8,333,42,320,196,766,280,320,190,1550,124,200,540,195,565,480,195,705,1300,40,64,155,455,550,200,1050,3000,300,950,360,785,60,600,150,392,852,900,1200,300,300,40,1325,1,1,405,2100,324,756,65,600,104,666,25,1200,65,450,498,502,655,10,95,1150,1200,346,350,800,80,250,150,390,345,800,545,560,406,300,445,550,884,100,2350,2200,40,65,290,245,250,365,75,350,115,405,590,4600,554,526,600,33,165,2100,1220,40,64,158,1005,79,190,795,95,250,888,60,325,212,408,108,356,85,335,750,120,225,20,30,10,15,32,20,150,78,133,615,58,85,285,380,339,5,10,30,115,18,85,380,85,750,265,270,21,795,10,50,285,415,72,1258,140,648,4000,78,487,39,1180,205,540,280,88,1258,350,550,65,558,50,120,285,160,2200,505,108,350,1520,335,1200,325,712,580,210,480,60,235,214,755,468,1780,1980,1870,720,1520,2020,2160,1990,50,50,216,522,25,195,520,76,280,819,136,370,175,325,36,100,284,115,316,26,325,550,40,280,596,23,198,95,280,66,202,484,17,36,45,392,240,465,1305,55,120,12,163,405,840,864,2538,20,970,110,326,110,115,600,1200,3600,112,315,152,402,42,42,177,177,20,103,800,208,888,1300,3980,240,2200,804,306,715,50,150,153,820,513,774,12,206,403,525,1680,1540,19,236,115,328,215,1080,238,604,125,682,74,1620,8,220,23,125,150,306,1000,10,470,140,168,2565,395,876,1506,525,270,226,234,87,421,1105,1026,952,2025,5500,2300,1750,2050,400,600,3520,9500,2065,11,608,102,970,3100,62,220,550,52,230,845,20,155,249,200,315,22,255,95,305,420,12,145,315,1025,570,1495,34,65,233,55,385,39,295,335,33,93,63,299,203,12,150,55,333,44,273,39,438,6,192,380,605,1870,150,130,244,19,1080,205,560,950,1050,202,540,495,3000,120,615,230,444,270,70,240,650,505,1355,340,1800,1400,2828,1286,1386,680,380,515,255,259,425,2910,340,520,3400,1066,266,3,3,3,3,6830,3360,4300,4200,7500,856,31,14,505,21,3200,40,81,160,630,99,555,1500,59,245,946,116,270,41,147,610,101,375,105,305,110,280,135,290,233,605,21,150,290,298,795,180,1020,2600,21,105,85,404,310,125,400,870,45,170,620,555,510,25,73,205,53,585,2005,6,66,66,163,180,152,334,963,375,929,280,145,2000,118,300,140,15,765,165,810,95,320,310,1073,125,811,58,75,58,180,440,10,80,201,55,242,57,410,575,195,925,50,59,330,10,105,330,1350,316,6,143,188,1100,210,510,810,3,220,805,90,345,31,130,343,180,360,1055,85,2600,1480,77,253,110,200,355,1390,920,3300,102,700,946,105,410,90,395,580,330,173,500,1600,288,460,2500,2600,2000,630,610,3300,3450,680,3250,485,65,825];
+function lowKickPower(mon){
+  const weight=speciesWeight[mon.id]??0;
+  return weight>=2000?120:weight>=1000?100:weight>=500?80:weight>=250?60:weight>=100?40:20;
+}
 function moveEffectText(name){
   const skill=skillDetails[name], effect=skill.effect;
   const rule=moveRules[name];
@@ -2543,6 +2635,11 @@ const specialPowerText={
 };
 function movePowerText(name,mon){
   const skill=skillDetails[name];
+  if(name==='唱歌'&&activeAbility(mon)===232) return '100 · 特殊';
+  if(['RETURN','FRUSTRATION'].includes(skill.effect)) return '依親密度 · 物理';
+  if(skill.effect==='SPIT_UP') return '每層蓄力 100 · 物理';
+  if(['COUNTER','MIRROR_COAT'].includes(skill.effect)) return '依受到的傷害';
+  if(skill.effect==='LOW_KICK') return '20～120 · '+moveDamageCategory(skill);
   if(skill.effect==='GEN5_FINAL_GAMBIT') return '依自身目前 HP';
   if(moveRules[name]?.effect==='electroBall') return '60～120 · 特殊';
   if(specialPowerText[skill.effect]) return specialPowerText[skill.effect]+' · '+moveDamageCategory(skill);
@@ -2991,10 +3088,17 @@ async function damagePopup(side,damage,effectiveness){
   portrait.classList.remove('impact-number','confirmed-hit');
 }
 function changeOpposingStage(source,target,index,amount){
-  return changeStage(amount<0&&activeAbility(target)===156?source:target,index,amount);
+  const recipient=amount<0&&activeAbility(target)===156?source:target;
+  const before=recipient.stages[index];
+  const changed=changeStage(recipient,index,amount);
+  if(changed&&recipient===target&&target.stages[index]<before&&activeAbility(target)===128) changeStage(target,1,2);
+  return changed;
 }
 function changeStage(p,index,amount){
-  if(amount<0&&(p.mistGuard||[29,73].includes(activeAbility(p))||index===1&&activeAbility(p)===52)) return 0;
+  const ability=activeAbility(p);
+  if(ability===126) amount=-amount;
+  if(ability===86) amount*=2;
+  if(amount<0&&(p.mistGuard||[29,73].includes(ability)||index===1&&ability===52||index===2&&ability===145)) return 0;
   const before=p.stages[index];
   p.stages[index]=Math.max(-6,Math.min(6,before+amount));
   return p.stages[index]!==before;
@@ -3078,6 +3182,7 @@ async function playBerryAnimations(run){
   }
 }
 function giveStatus(s,p,status,secondary=false){
+  if(activeAbility(p)===102&&s.weather?.kind==='sun') return false;
   if(abilityImmuneToStatus(p,status)||secondary&&activeAbility(p)===19) return false;
   if(p.status||p.burned||!p.left||s.safeguard?.[s.team.includes(p)?'player':'enemy']) return false;
   if((status==='burn'&&p.type.includes('火'))||(status==='paralysis'&&p.type.includes('電'))||
@@ -3218,6 +3323,7 @@ function spikeDamage(s,side,mon){
 }
 function damageForMove(s,source,target,skill,side){
   if(skill.effectiveness===0) return 0;
+  if(skill.fixedDamage!==undefined) return skill.fixedDamage;
   if(skill.effect==='GEN5_FINAL_GAMBIT') return source.left;
   if(skill.effect==='DRAGON_RAGE') return 40;
   if(skill.effect==='SONICBOOM') return 20;
@@ -3226,10 +3332,46 @@ function damageForMove(s,source,target,skill,side){
   if(skill.effect==='OHKO') return source.level>=target.level?target.left:0;
   const bonus=Object.entries(typeItems).reduce((sum,[id,[,type]])=>sum+(type===skill.type?(side==='player'?itemCount(s,id):enemyItemCount(s,id)):0),0);
   let strike={...skill,wonderRoom:Boolean(s.wonderRoom),power:bonus?Math.floor(skill.power*(100+typeItemPowerBonus*bonus)/100):skill.power};
+  const ability=activeAbility(source);
+  const punchMoves=[4,5,7,8,9,146,183,223,264,309,325,327,359,409,418];
+  const recoil=['RECOIL','DOUBLE_EDGE','RECOIL_IF_MISS','GEN4_HEAD_SMASH','GEN4_FLARE_BLITZ'].includes(skill.effect)||moveRules[skill.name]?.effect==='headCharge';
+  if(ability===89&&punchMoves.includes(Number(skill.id))||ability===120&&recoil) strike.power=Math.floor(strike.power*1.2);
+  if(ability===101&&skill.power<=60) strike.power=Math.floor(strike.power*1.5);
   if(s.luckyChant?.[side==='player'?'enemy':'player']) strike={...strike,noCrit:true};
   return rollDamage(source,target,strike);
 }
 const emeraldMoveText={
+  RAZOR_WIND:'在下次拉霸結算時攻擊，較容易擊中要害。',
+  GUST:'攻擊正在因飛翔而升空的目標時威力加倍。',
+  SEMI_INVULNERABLE:'進入暫時無法被一般招式擊中的狀態，下次拉霸結算時攻擊。',
+  COUNTER:'將本次拉霸中受到的物理招式傷害以兩倍返還。',
+  MIRROR_COAT:'將本次拉霸中受到的特殊招式傷害以兩倍返還。',
+  SOLAR_BEAM:'下次拉霸結算時攻擊。大晴天立即發動，雨、冰雹、沙暴時威力減半。',
+  EARTHQUAKE:'對正在挖洞的目標威力加倍。',
+  QUICK_ATTACK:'在同次發動的普通招式之前出招。',
+  RAMPAGE:'連續攻擊 2～3 次拉霸，結束後陷入混亂。',
+  ROLLOUT:'連續成功使用時威力逐次加倍，最多四次加倍。',
+  FURY_CUTTER:'連續成功使用時威力逐次加倍，最高 160。',
+  RETURN:'親密度越高，威力越高，最高 102。',
+  FRUSTRATION:'親密度越低，威力越高，最高 102。',
+  PURSUIT:'目標準備換下場時，威力加倍。',
+  VITAL_THROW:'較晚出招，但必定命中。',
+  FUTURE_SIGHT:'兩次拉霸後，攻擊對方當時上場的寶可夢。',
+  SPIT_UP:'消耗蓄力層數，每層提供 100 威力。',
+  FACADE:'自身中毒、灼傷或麻痺時，威力加倍。',
+  FOCUS_PUNCH:'較晚出招。若本次拉霸中已受招式傷害，則失敗。',
+  REVENGE:'較晚出招。若本次拉霸中已受目標的招式傷害，威力加倍。',
+  BRICK_BREAK:'移除對手的光牆和反射壁後攻擊。',
+  SECRET_POWER:'草地場景下造成傷害後有 30% 機率使目標睡眠。',
+  SKY_UPPERCUT:'可擊中因飛翔而升空的目標。',
+  GEN4_FEINT:'可穿透目標的守住，並解除其防護。',
+  NIGHTMARE:'讓睡眠中的對手每次結算失去四分之一最大 HP，醒來後解除。',
+  TRICK:'交換雙方持有的道具。',
+  ROLE_PLAY:'將自身特性改為對手的特性，直到換下場。',
+  SKILL_SWAP:'交換雙方特性，直到換下場。',
+  LOW_KICK:'目標越重，威力越高，最高 120。',
+  GEN4_HEAD_SMASH:'使用者承受所造成傷害的一半作為反作用力。',
+  RECOIL_IF_MISS:'未命中時失去所預期傷害的一半，最多扣自身一半 HP。',
   GEN5_GUARD_SPLIT:'使雙方的防禦與特防數值各自取平均。',GEN5_POWER_SPLIT:'使雙方的攻擊與特攻數值各自取平均。',
   GEN5_PSYSHOCK:'以自身特攻對目標的防禦計算傷害。',GEN5_PSYSTRIKE:'以自身特攻對目標的防禦計算傷害。',
   GEN5_SECRET_SWORD:'以自身特攻對目標的防禦計算傷害。',GEN5_VENOSHOCK:'對中毒或劇毒目標的威力加倍。',
@@ -3259,7 +3401,7 @@ const emeraldMoveText={
   GEN4_FIRE_FANG:'命中後有 10% 機率使目標灼傷，另有 10% 機率改變行動間隔。',
   GEN4_ICE_FANG:'命中後有 10% 機率使目標冰凍，另有 10% 機率改變行動間隔。',
   GEN4_THUNDER_FANG:'命中後有 10% 機率使目標麻痺，另有 10% 機率改變行動間隔。',
-  GEN4_FLARE_BLITZ:'造成物理傷害，可解除自身冰凍。',
+  GEN4_FLARE_BLITZ:'可解除自身冰凍。命中時有 10% 機率灼傷，並承受傷害的三分之一作為反作用力。',
   TWINEEDLE:'連續攻擊 2 次，造成傷害後有 20% 機率使目標中毒。',
   NATURE_POWER:'在野外使用自然之力叫出的招式；本作對戰場地預設為草地，叫出麻痺粉。',
   TORMENT:'目標無法連續使用同一招。',
@@ -3448,6 +3590,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
         if(effect==='speedSure')(s.actionFlags??={})[side]=true;
         alterSpinDelay(s,side,1);
         if(skill.effect==='DRAGON_DANCE') changeStage(source,1,1);
+        if(effect==='flinchSpin'&&activeAbility(target)===80) changeStage(target,5,1);
       }break;
     }
     case 'bonus10':case 'bonus20':case 'twoHits':case 'manyHits':case 'always':case 'fissure':case 'magnitude':break;
@@ -3484,7 +3627,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
     case 'perish':target.perishAfterAction=true;return noteEffect(s,target,'下次行動結束後將倒下。');
     case 'safeguard':(s.safeguard??={})[side]=true;return noteEffect(s,source,'的隊伍受到神秘守護。');
     case 'psychUp':source.stages=target.stages.slice();return noteEffect(s,source,'複製了能力階級。');
-    case 'stockpile':changeStage(source,2,1);changeStage(source,4,1);return noteEffect(s,source,'提升了防禦和特防。');
+    case 'stockpile':if((source.stockpiles??0)>=3) return false;source.stockpiles=(source.stockpiles??0)+1;changeStage(source,2,1);changeStage(source,4,1);return noteEffect(s,source,'蓄積了力量並提高雙防。');
     case 'belly':case 'curse':{
       const cost=Math.max(1,Math.floor(source.hp/2));
       if(effect==='belly'&&(source.left<=cost||!once('belly'))) return false;
@@ -3790,7 +3933,9 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   if(!original) return false;
   const custom=moveRules[name]?.effect;
   if(custom==='camouflage') return false;
-  let skill=original;
+  const celestialVoice=name==='唱歌'&&activeAbility(source)===232;
+  let skill=celestialVoice?{...original,power:100,category:3}:original;
+  if(skill.effect==='LOW_KICK') skill={...skill,power:lowKickPower(target)};
   const unovaPower=unovaMovePower(s,source,target,skill,side,custom);
   if(unovaPower!==skill.power) skill={...skill,power:unovaPower};
   if(custom==='synchronoise'&&target.type.includes('超能力')||['GEN5_STORM_THROW','GEN5_FROST_BREATH'].includes(skill.effect)) skill={...skill,forceCrit:true};
@@ -3798,6 +3943,30 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   if(skill.effect==='GEN5_STORED_POWER') skill={...skill,power:20+source.stages.slice(1).reduce((sum,stage)=>sum+Math.max(0,stage),0)*20};
   if(skill.effect==='GEN5_FINAL_GAMBIT') skill={...skill,power:1};
   if(['GEN5_PSYSHOCK','GEN5_PSYSTRIKE','GEN5_SECRET_SWORD'].includes(skill.effect)) skill={...skill,physicalDefense:true};
+  if(['RETURN','FRUSTRATION'].includes(skill.effect)){
+    const friendship=source.friendship??70;
+    skill={...skill,power:Math.max(1,Math.floor((skill.effect==='RETURN'?friendship:255-friendship)*.4))};
+  }
+  if(skill.effect==='SPIT_UP'){
+    if(!source.stockpiles) return false;
+    skill={...skill,power:100*source.stockpiles};
+  }
+  if(skill.effect==='ROLLOUT') skill={...skill,power:skill.power*2**(source.rolloutStreak??0)};
+  if(skill.effect==='FURY_CUTTER') skill={...skill,power:Math.min(160,skill.power*2**(source.furyStreak??0))};
+  if(skill.effect==='REVENGE'&&source.lastHurtSpin===s.spins) skill={...skill,power:skill.power*2};
+  if(skill.effect==='PURSUIT'&&side==='player'&&s.trainer&&!s.tutorial&&
+    s.enemyTurns-(s.lastAiSwitchTurn??-Infinity)>1&&!blocksSwitch(target,source)&&bestEnemyReserve(s,true)>=0){
+    skill={...skill,power:skill.power*2};
+  }
+  if(skill.effect==='GUST'&&target.semiInvulnerable==='飛'||skill.effect==='EARTHQUAKE'&&target.semiInvulnerable==='地面') skill={...skill,power:skill.power*2};
+  if(skill.effect==='SOLAR_BEAM'&&['rain','hail','sand'].includes(s.weather?.kind)) skill={...skill,power:Math.floor(skill.power/2)};
+  if(skill.effect==='RAZOR_WIND') skill={...skill,highCrit:true};
+  const returning=['COUNTER','MIRROR_COAT'].includes(skill.effect);
+  if(returning){
+    const last=source.lastMoveDamage;
+    if(last?.spin!==s.spins||last.physical!==(skill.effect==='COUNTER')) return false;
+    skill={...skill,fixedDamage:2*last.damage};
+  }
   if(custom==='trump') skill={...skill,power:skill.power+40*(source.trumpUses??0)};
   if(custom==='fling'){
     const power=5*itemKinds(s,side).length;
@@ -3863,6 +4032,9 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   }
   if(thawsUser) cureBattleStatus(s,source);
   source.lastMove=name;
+  if(skill.effect!=='ROLLOUT') delete source.rolloutStreak;
+  if(skill.effect!=='FURY_CUTTER') delete source.furyStreak;
+  if(skill.effect==='FOCUS_PUNCH'&&source.lastHurtSpin===s.spins) return moveFailure(s,action+'，集中力中斷了。');
   if(custom==='round'||custom==='echoedVoice'){
     const key=custom+'Uses';source[key]=(source[key]??0)+1;
   }
@@ -3873,13 +4045,34 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   if(side==='player'&&activeAbility(source)===1&&skill.power&&Math.random()<.05) alterSpinDelay(s,side,1);
   $('notice').textContent=action+'！'+sequence;
   if(side==='enemy'&&s===state&&source===s.enemy) setMoveHighlights(s,'enemy',source,[name]);
+  const releasing=s.actionFlags?.releasingDeferred;
+  const charges=['RAZOR_WIND','SOLAR_BEAM','SEMI_INVULNERABLE','FUTURE_SIGHT'].includes(skill.effect);
+  if(charges&&!releasing&&!(skill.effect==='SOLAR_BEAM'&&s.weather?.kind==='sun')){
+    if(source.deferredMove) return false;
+    const delay=skill.effect==='FUTURE_SIGHT'?2:1;
+    source.deferredMove={name,at:s.spins+delay,scale,potency};
+    if(skill.effect==='SEMI_INVULNERABLE') source.semiInvulnerable=name==='潛水'?'水':'飛';
+    return noteEffect(s,source,'開始準備'+name+'。');
+  }
+  if(target.semiInvulnerable&&skill.power&&!(target.semiInvulnerable==='飛'&&['GUST','SKY_UPPERCUT','THUNDER'].includes(skill.effect))&&
+    !(target.semiInvulnerable==='地面'&&skill.effect==='EARTHQUAKE')&&!['衝浪','潮旋'].includes(name)&&activeAbility(source)!==99&&activeAbility(target)!==99){
+    return moveFailure(s,action+'，目標避開了攻擊。');
+  }
+  if(skill.effect==='BRICK_BREAK') for(const screen of ['physicalScreen','specialScreen']) delete s.fieldEffects?.[screen+':'+other];
+  if(skill.effect==='GEN4_FEINT'){target.protected=false;target.counterGuard=false;}
   if(custom==='heavySlam'&&source.left*target.hp<=target.left*source.hp) return moveFailure(s,action+'，使用者的 HP 比例不足。','move-miss');
-  const forceAccuracy=s.actionFlags?.[side+'Accurate']||custom==='skyDrop'&&s.actionFlags?.releasingSkyDrop;
+  const forceAccuracy=returning||skill.effect==='VITAL_THROW'||celestialVoice||activeAbility(source)===99||activeAbility(target)===99||s.actionFlags?.[side+'Accurate']||custom==='skyDrop'&&s.actionFlags?.releasingSkyDrop;
   const powder=other==='player'?itemCount(s,'bright-powder'):enemyItemCount(s,'bright-powder');
   const accuracy=Math.max(-6,Math.min(6,source.stages[6]-Math.min(6,target.stages[7]+powder)));
   const accuracyFactor=accuracy>=0?(3+accuracy)/3:3/(3-accuracy);
-  if((skill.effect!=='OHKO'&&custom!=='always'&&!forceAccuracy&&!skill.self&&skill.accuracy&&skill.effect!=='ALWAYS_HIT'&&![14,51].includes(activeAbility(source))&&!locked&&!target.identified&&Math.random()*100>=skill.accuracy*accuracyFactor)||
+  if((skill.effect!=='OHKO'&&custom!=='always'&&!forceAccuracy&&!skill.self&&skill.accuracy&&skill.effect!=='ALWAYS_HIT'&&![14,51].includes(activeAbility(source))&&!locked&&!target.identified&&Math.random()*100>=Math.min(!skill.power&&activeAbility(target)===147?50:Infinity,skill.accuracy*accuracyFactor*(activeAbility(source)===162?1.1:1)*(activeAbility(target)===81&&s.weather?.kind==='hail'?.8:1)))||
     (skill.effect==='OHKO'&&(source.level<target.level||Math.random()*100>=skill.accuracy+source.level-target.level))){
+    delete source.rolloutStreak;
+    delete source.furyStreak;
+    if(skill.effect==='RECOIL_IF_MISS'&&activeAbility(source)!==98){
+      const predicted=damageAt(source,target,skill,100);
+      await abilityDamage(s,source,side,Math.min(.5,Math.max(1,Math.floor(predicted/2))/source.hp),'反作用力');
+    }
     return moveFailure(s,action+'，沒有命中。','move-miss');
   }
   if(skill.effect==='DREAM_EATER'&&target.status!=='sleep') return moveFailure(s,action+'，但目標未入睡。');
@@ -3893,6 +4086,9 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     if(impact.absorb) healMon(s,target,other,Math.max(1,Math.floor(target.hp/4)));
     if(impact.boost){changeStage(target,1,1);changeStage(target,3,1);}
     if(impact.waterBoost) changeStage(target,3,1);
+    if(celestialVoice&&target.left&&giveStatus(s,target,'sleep')) return true;
+    if(impact.speedBoost) changeStage(target,5,1);
+    if(impact.grassBoost) changeStage(target,1,1);
     return moveFailure(s,action+'。'+target.name+'免疫這次傷害。');
   }
   if(impact&&target.counterGuard) return moveFailure(s,target.name+'擋下了這次攻擊。');
@@ -3925,25 +4121,27 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   let inflicted=0;
   if(skill.power){
     const {effectiveness,defenseAbility}=impact;
-    if(activeAbility(source)===134&&skill.type==='鋼'||custom==='judgment'||s.gravity||s.miracleEye||[96,121,227].includes(defenseAbility)||[121,223].includes(activeAbility(source))) skill={...skill,effectiveness};
+    if(activeAbility(source)===113||activeAbility(source)===134&&skill.type==='鋼'||custom==='judgment'||s.gravity||s.miracleEye||[96,121,227].includes(defenseAbility)||[121,223].includes(activeAbility(source))) skill={...skill,effectiveness};
     const effectivenessText=effectiveness>1?' 效果絕佳！':effectiveness<1?' 效果微弱。':'';
     const attackAbility=activeAbility(source);
     const electricBonus=skill.type==='電'&&source.electricCharge?1+source.electricCharge:1;
     if(skill.type==='電') delete source.electricCharge;
+    let criticalHit=false;
     const allies=(side==='player'?s.team:s.foes).filter(mon=>mon.left&&!mon.status&&!mon.burned);
     const count=custom==='tripleKick'?3:custom==='beatUp'?allies.length:
       ['petal','twoHits'].includes(custom)||['DOUBLE_HIT','TWINEEDLE'].includes(skill.effect)?2:
-      custom==='manyHits'||skill.effect==='MULTI_HIT'?pick([2,2,2,3,3,3,4,5]):1;
+      custom==='manyHits'||skill.effect==='MULTI_HIT'?(attackAbility===92?5:pick([2,2,2,3,3,3,4,5])):1;
     for(let hit=0;hit<count&&target.left;hit++){
       if(hit&&custom==='tripleKick'&&Math.random()*100>=skill.accuracy*accuracyFactor) break;
       if(hit) await animateAttack(side,other,skill);
-      const strike=custom==='tripleKick'?{...skill,power:10*(hit+1)}:skill;
+      criticalHit=false;
+      const strike={...skill,power:custom==='tripleKick'?10*(hit+1):skill.power,onCritical:()=>{criticalHit=true;}};
       let raw=custom==='psywave'?Math.max(1,Math.floor(source.level*(.5+Math.random()))):
         damageForMove(s,custom==='beatUp'?allies[hit]:source,target,strike,side);
       const physical=moveDamageCategory(skill)==='物理';
       const thawTarget=target.status==='freeze'&&(skill.type==='火');
       if(custom==='endeavor') raw=target.left>source.left&&raw?target.left-source.left:0;
-      const fixed=['DRAGON_RAGE','GEN5_FINAL_GAMBIT'].includes(skill.effect)||['endeavor','fixed20','psywave'].includes(custom);
+      const fixed=skill.fixedDamage!==undefined||['DRAGON_RAGE','GEN5_FINAL_GAMBIT'].includes(skill.effect)||['endeavor','fixed20','psywave'].includes(custom);
       const camouflage=target.moves.includes('保護色')&&target.type.some(type=>source.type.includes(type));
       const charge=source.nextDamage&&raw>0&&!target.counterGuard;
       if(charge) source.nextDamage=false;
@@ -3955,6 +4153,14 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       const alreadyActed=side==='player'?s.enemyTurns:s.spins;
       const sinnohFactor=(attackAbility===112?2:1)*(custom==='retaliate'?2:custom==='sucker'&&alreadyActed?1.5:custom==='meFirst'&&!alreadyActed?1.2:1);
       let amount=raw*factor*sinnohFactor*strength*grace*fat*(lens?1.5:1)*(other==='player'?resistanceBerryFactor(s,skill.type):1-.1*Math.min(5,enemyItemCount(s,resistanceBerryByType[skill.type])));
+      if(attackAbility===79&&source.gender&&target.gender) amount*=source.gender===target.gender?1.25:.75;
+      if(attackAbility===110&&effectiveness<1) amount*=2;
+      if(attackAbility===137&&physical&&['poison','toxic'].includes(source.status)||attackAbility===138&&!physical&&source.status==='burn') amount*=1.5;
+      if(attackAbility===94&&!physical&&s.weather?.kind==='sun') amount*=1.5;
+      if(attackAbility===159&&s.weather?.kind==='sand'&&['地面','岩石','鋼'].includes(skill.type)) amount*=1.3;
+      if([111,116].includes(defenseAbility)&&effectiveness>1) amount*=.75;
+      if(defenseAbility===136&&target.left===target.hp) amount*=.5;
+      if(skill.type==='火'&&[85,87].includes(defenseAbility)) amount*=defenseAbility===85?.5:1.25;
       if(defenseAbility===132) amount*=.85;
       if(defenseAbility===135&&skill.type==='鋼') amount*=.75;
       if(defenseAbility===161&&target.left*2<target.hp) amount*=1.25;
@@ -3981,9 +4187,17 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       const broken=damage&&target.bossShieldLayers&&bossShieldThresholds(target).filter(hp=>hp<target.left&&hp>=target.left-damage).length;
       if(broken) s.log.unshift(musicLabel(target.name+'的首領護盾破了 '+broken+' 層。',displayPokemon(target)+' lost '+broken+' boss shield(s).'));
       target.left-=damage;
+      if(damage){
+        if(!target.left&&attackAbility===153) changeStage(source,1,1);
+        if(target.left&&defenseAbility===83&&criticalHit) target.stages[1]=6;
+        if(target.left&&defenseAbility===154&&skill.type==='惡') changeStage(target,1,1);
+        if(target.left&&defenseAbility===155&&['蟲','幽靈','惡'].includes(skill.type)) changeStage(target,5,1);
+        if(target.left&&defenseAbility===133&&physical){changeStage(target,2,-1);changeStage(target,5,1);}
+        if(target.left&&defenseAbility===130&&Math.random()<.3) source.blockedMove=name;
+      }
       if(damage&&(thawTarget||target.status==='sleep'&&['WAKE_UP_SLAP','GEN4_WAKE_UP_SLAP'].includes(skill.effect))) cureBattleStatus(s,target);
       inflicted+=damage;
-      if(damage) target.lastHurtSpin=s.spins;
+      if(damage){target.lastHurtSpin=s.spins;target.lastMoveDamage={spin:s.spins,physical,damage:inflicted};}
       if(damage&&side==='player'&&itemCount(s,'razor-claw')&&hasStealableEnemyItem(s,target)&&Math.random()<.1) borrowEnemyItem(s,target);
       if(damage&&side==='enemy'&&enemyItemCount(s,'razor-claw')&&activeAbility(target)!==60&&Math.random()<.1){
         const options=Object.keys(s.items??{}).filter(id=>itemCatalog[id]&&(s.items[id]??0)>(s.enemyStolenItems?.[id]??0));
@@ -4008,6 +4222,15 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
           if(!source.left) break;
         }
       }
+    }
+    if(skill.effect==='SPIT_UP') clearStockpiles(source);
+    if(inflicted&&skill.effect==='ROLLOUT') source.rolloutStreak=((source.rolloutStreak??0)+1)%5;
+    if(inflicted&&skill.effect==='FURY_CUTTER') source.furyStreak=Math.min(5,(source.furyStreak??0)+1);
+    if(inflicted&&skill.effect==='SECRET_POWER'&&target.left&&Math.random()<.3*potency) giveStatus(s,target,'sleep',true);
+    if(inflicted&&skill.effect==='RAMPAGE'){
+      const remaining=source.rampage?.remaining??(1+randomIndex(2));
+      if(source.rampage&&remaining===1){delete source.rampage;confuseTarget(s,source,1);}
+      else source.rampage={name,remaining:source.rampage?remaining-1:remaining};
     }
     if(!inflicted) return false;
     if(activeAbility(source)===152&&moveDamageCategory(skill)==='物理') changeOpposingStage(source,target,2,-1);
@@ -4051,12 +4274,13 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     if(bells&&inflicted) healMon(s,source,side,Math.max(1,Math.floor(inflicted*bells/10)));
     if(custom) return applyCustomMove(s,source,target,skill,side,{support,full,inflicted,depth,potency,giftBerry});
     if(['ABSORB','DREAM_EATER'].includes(skill.effect)) healMon(s,source,side,Math.max(1,Math.floor(inflicted/2)));
-    if(['RECOIL','DOUBLE_EDGE','EXPLOSION'].includes(skill.effect)){
-      source.left=Math.max(0,source.left-(skill.effect==='EXPLOSION'?source.left:Math.max(1,Math.floor(inflicted/(skill.effect==='DOUBLE_EDGE'?3:4)))));
+    if(['RECOIL','DOUBLE_EDGE','EXPLOSION','GEN4_FLARE_BLITZ','GEN4_HEAD_SMASH'].includes(skill.effect)){
+      source.left=Math.max(0,source.left-(skill.effect==='EXPLOSION'?source.left:activeAbility(source)===98?0:Math.max(1,Math.floor(inflicted/(skill.effect==='GEN4_HEAD_SMASH'?2:['DOUBLE_EDGE','GEN4_FLARE_BLITZ'].includes(skill.effect)?3:4)))));
       updateHp(side+'Hp',source);
       s.log.unshift(source.name+'受到反作用力。');
     }
     if(skill.effect==='RECHARGE') source.recharge=true;
+    if(target.left&&skill.effect==='GEN4_FLARE_BLITZ'&&Math.random()<.1*potency) giveStatus(s,target,'burn',true);
     const fangStatus={GEN4_FIRE_FANG:'burn',GEN4_ICE_FANG:'freeze',GEN4_THUNDER_FANG:'paralysis'}[skill.effect];
     if(fangStatus&&target.left){
       if(Math.random()<.1*potency) giveStatus(s,target,fangStatus,true);
@@ -4080,6 +4304,27 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       if(!source.gender||!target.gender||source.gender===target.gender||activeAbility(target)===12) return false;
       target.attractedTo=source.personality;
       return noteEffect(s,target,'著迷了。');
+    case 'NIGHTMARE':
+      if(target.status!=='sleep'||target.nightmare) return false;
+      target.nightmare=true;
+      return noteEffect(s,target,'開始做惡夢。');
+    case 'ROLE_PLAY':{
+      const copied=activeAbility(target);
+      if(!copied||copied===activeAbility(source)) return false;
+      source.copiedAbility=copied;
+      updateWeatherAbilities(s);
+      return true;
+    }
+    case 'SKILL_SWAP':{
+      const own=activeAbility(source),opposing=activeAbility(target);
+      if(!own||!opposing||own===opposing) return false;
+      source.copiedAbility=opposing;
+      target.copiedAbility=own;
+      updateWeatherAbilities(s);
+      return true;
+    }
+    case 'TRICK':return swapBattleHeldItems(s);
+
     case 'GEN5_GUARD_SPLIT':case 'GEN5_POWER_SPLIT':{
       const stats=skill.effect==='GEN5_GUARD_SPLIT'?[2,4]:[1,3];
       for(const index of stats){
@@ -4120,7 +4365,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     target.drowsyUntil=s.spins+1;
     return noteEffect(s,target,'開始昏昏欲睡。');
   }
-  if(directStatuses[skill.effect]&&!giveStatus(s,target,directStatuses[skill.effect])) return moveFailure(s,action+'，但對目標無效。');
+  if(target.left&&directStatuses[skill.effect]&&!giveStatus(s,target,directStatuses[skill.effect])) return moveFailure(s,action+'，但對目標無效。');
   if(skill.effect==='CONFUSE'||(skill.effect==='CONFUSE_HIT'&&Math.random()*100<skill.secondaryChance*potency)){
     confuseTarget(s,target,1,Boolean(skill.power));
   }
@@ -4161,10 +4406,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     }
   }
   if(skill.effect==='TRANSFORM'){
-    if(source.transformOriginal||target.transformOriginal) return false;
-    source.transformOriginal={type:source.type,stats:source.stats,moves:source.moves,stages:source.stages};
-    source.type=target.type.slice();source.stats=[source.hp,...target.stats.slice(1)];
-    source.moves=target.moves.slice();source.stages=target.stages.slice();source.displayId=target.id;
+    if(!transformInto(source,target)) return false;
     s.log.unshift(source.name+'變成了'+target.name+'的樣子。');
     render(false);
   }
@@ -4175,18 +4417,42 @@ async function afterPhysicalHit(run,source,target,side,attackAbility,defenseAbil
   if(attackAbility===69&&Math.random()<.1) confuseTarget(run,target,1);
   if(!source.left) return;
   if(defenseAbility===24) await abilityDamage(run,source,side,.1,'粗糙皮膚');
+  if(defenseAbility===160) await abilityDamage(run,source,side,1/8,'鐵刺');
+  if(defenseAbility===106&&!target.left) await abilityDamage(run,source,side,1/4,'引爆');
+  if(attackAbility===143&&target.left&&Math.random()<.3) giveStatus(run,target,'poison',true);
+  if(defenseAbility===124&&target.left){
+    const targetSide=side==='player'?'enemy':'player';
+    if(itemTotal(run,targetSide)===0) transferBattleItem(run,side);
+  }
   if([9,27,38,49,56].includes(defenseAbility)&&Math.random()<.5){
     if(defenseAbility===56) confuseTarget(run,source,1);
     else giveStatus(run,source,{9:'paralysis',27:pick(['poison','paralysis','burn']),38:'poison',49:'burn'}[defenseAbility]);
   }
 }
 async function abilityDamage(run,mon,side,rate,label){
-  if(!mon.left) return;
+  if(!mon.left||activeAbility(mon)===98) return;
   const loss=Math.min(mon.left,Math.max(1,Math.floor(mon.hp*rate)));
   mon.left-=loss;
   updateHp(side+'Hp',mon);
   run.log.unshift(mon.name+'因'+label+'受到 '+loss+' 傷害。');
   await damagePopup(side,loss);
+}
+function transformInto(source,target){
+  if(source.transformOriginal||target.transformOriginal) return false;
+  source.transformOriginal={type:source.type,stats:source.stats,moves:source.moves,stages:source.stages};
+  source.type=target.type.slice();source.stats=[source.hp,...target.stats.slice(1)];
+  source.moves=target.moves.slice();source.stages=target.stages.slice();source.displayId=target.id;
+  return true;
+}
+function clearStockpiles(mon){
+  const count=mon.stockpiles??0;
+  delete mon.stockpiles;
+  if(count){changeStage(mon,2,-count);changeStage(mon,4,-count);}
+}
+function movePriority(name){
+  const effect=skillDetails[name]?.effect;
+  return effect==='QUICK_ATTACK'||effect==='GEN4_FEINT'?1:
+    ['VITAL_THROW','FOCUS_PUNCH','REVENGE','COUNTER','MIRROR_COAT'].includes(effect)?-1:0;
 }
 function undoTransform(p){
   if(!p.transformOriginal) return;
@@ -4249,6 +4515,7 @@ async function finishStage(s,message){
   s.enemyStolenItems={};
   for(const foe of s.foes??[]){if(foe.borrowedItem){foe.heldItem=foe.borrowedItem;delete foe.borrowedItem;}}
   for(const member of s.team){
+    if(member.left) member.friendship=Math.min(255,(member.friendship??70)+2);
     undoTransform(member);
     if(recalculates) setBattleLevel(member,member.level,s);
   }
@@ -4294,16 +4561,18 @@ function typeMultiplier(type,target){
 function moveTypeImpact(type,target,source,run,custom){
   const defenseTypes=new Set(run?.gravity?target.type.map(value=>value==='飛行'?'地面':value):target.grounded?target.type.filter(value=>value!=='飛行'):target.type);
   const baseEffectiveness=activeAbility(target)===227?.5:custom==='judgment'?2:activeAbility(target)===121||activeAbility(source)===121?.5:activeAbility(target)===96?1:
-    [...defenseTypes].reduce((factor,value)=>factor*((matchup[type]?.[value]===0&&type==='超能力'&&run?.miracleEye)?1:matchup[type]?.[value]??1),1);
+    [...defenseTypes].reduce((factor,value)=>factor*((matchup[type]?.[value]===0&&(type==='超能力'&&run?.miracleEye||value==='幽靈'&&['普通','格鬥'].includes(type)&&activeAbility(source)===113))?1:matchup[type]?.[value]??1),1);
   const steelBoost=type==='鋼'&&activeAbility(source)===134&&baseEffectiveness>0&&baseEffectiveness<1;
   const effectiveness=steelBoost?1:type==='超能力'&&activeAbility(source)===223&&baseEffectiveness>0&&baseEffectiveness<1&&activeAbility(target)!==227?1:baseEffectiveness;
-  const defenseAbility=activeAbility(target);
-  const absorb=(type==='電'&&defenseAbility===10)||(type==='水'&&defenseAbility===11);
+  const defenseAbility=activeAbility(source)===104?0:activeAbility(target);
+  const absorb=(type==='電'&&defenseAbility===10)||(type==='水'&&[11,87].includes(defenseAbility));
   const boost=(type==='火'&&defenseAbility===18)||(type==='電'&&defenseAbility===31);
   const waterBoost=type==='水'&&defenseAbility===114;
-  const immune=absorb||boost||waterBoost||type==='地面'&&target.magnetRise||!effectiveness||(defenseAbility===25&&effectiveness<=1)||
+  const speedBoost=type==='電'&&defenseAbility===78;
+  const grassBoost=type==='草'&&defenseAbility===157;
+  const immune=absorb||boost||waterBoost||speedBoost||grassBoost||type==='地面'&&target.magnetRise||!effectiveness||(defenseAbility===25&&effectiveness<=1)||
     (defenseAbility===26&&type==='地面'&&!target.grounded)||(defenseAbility===43&&specialTypes.includes(type));
-  return {effectiveness,defenseAbility,absorb,boost,waterBoost,immune};
+  return {effectiveness,defenseAbility,absorb,boost,waterBoost,speedBoost,grassBoost,immune};
 }
 function attackMoveTypes(run,mon,skill,custom){
   if(custom==='hiddenPower') return [hiddenPowerFor(mon).type];
@@ -4391,6 +4660,19 @@ async function applySpillDamage(s,side){
   updateHp(side+'Hp',mon);
   s.log.unshift(mon.name+'受到烈焰濺射的 '+loss+' 點溢出傷害。');
   await damagePopup(side,loss);
+}
+async function releaseDeferredMoves(s){
+  for(const side of ['player','enemy']){
+    const source=side==='player'?s.team[s.active]:s.enemy;
+    const target=side==='player'?s.enemy:s.team[s.active];
+    const pending=source.deferredMove;
+    if(!source.left||!target.left||!pending||pending.at>s.spins) continue;
+    delete source.deferredMove;
+    delete source.semiInvulnerable;
+    s.actionFlags.releasingDeferred=true;
+    try{await executeMove(s,source,target,pending.name,side,false,'',pending.scale,[],1,pending.potency);}
+    finally{delete s.actionFlags.releasingDeferred;}
+  }
 }
 async function releaseSkyDrop(s){
   const pending=s.skyDrop;
@@ -4507,7 +4789,7 @@ function abilityBoard(run,original){
   const mon=run.team[run.active];
   if(!mon?.left) return board;
   const ability=activeAbility(mon);
-  if([201,202,203,204,205,206,215,216,224,225,226].includes(ability)){
+  if([201,202,203,204,205,206,215,216,224,225,226,230].includes(ability)){
     const linked=matchingLines(board);
     const occupied=new Set(linked.flatMap(line=>line.cells));
     const candidates=board.flatMap((symbol,i)=>symbol!==wildReelType?[i]:[]);
@@ -4522,6 +4804,8 @@ function abilityBoard(run,original){
     }else if(ability===201||ability===216){
       const type=ability===201?wildReelType:'超能力';
       for(const cell of shuffle(unlinked.filter(i=>board[i]!==type)).slice(0,ability===201?3:5)) change(cell,type);
+    }else if(ability===230){
+      for(const cell of unlinked) change(cell,pick(['飛行','電','地面']));
     }else if(ability===203){
       const typesInPlay=Object.keys(types).filter(type=>type!==wildReelType);
       for(const cell of unlinked) change(cell,pick(typesInPlay));
@@ -4583,6 +4867,16 @@ async function animatePsychicConversion(before,after){
     return before[i]!==type&&target?[flyLineIcon(template.content.firstElementChild,origin,target)]:[];
   }));
 }
+function growSignatureReel(run,mon){
+  const type={163:'火',164:'電'}[activeAbility(mon)];
+  if(!type||!mon.left) return;
+  const count=run.reels.reduce((total,reel)=>total+reel.filter(symbol=>symbol===type).length,0);
+  if(count>=30) return;
+  const column=randomIndex(run.reels.length);
+  run.reels=run.reels.map((reel,index)=>index===column?[...reel,type]:reel);
+  run.reelsPhysical=true;
+  noteEffect(run,mon,'的'+abilityNames[activeAbility(mon)]+'讓圖庫增加 1 個'+type+'圖案。');
+}
 async function resolveSpinCore(s,board,settledTracks=null){
   if(s.result) return;
   if(s.tutorial&&s.stage===3){
@@ -4612,6 +4906,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
     return;
   }
   const modified=abilityBoard(s,board);
+  growSignatureReel(s,s.team[s.active]);
   if(modified!==board){
     if(activeAbility(s.team[s.active])===216) await animatePsychicConversion(board,modified);
     settledTracks=null;
@@ -4646,7 +4941,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
   if(itemCount(s,'razor-fang')&&Math.random()<.1){alterSpinDelay(s,'player',1);s.log.unshift('銳利之牙增加 1 次可拉霸機會。');}
   renderBattleProgress(s);
   const p=s.team[s.active];
-  const matched=matchingLines(board,false,activeAbility(p)===100);
+  const matched=matchingLines(board,false,activeAbility(p)===100,activeAbility(p)===230);
   if(activeAbility(p)===140&&Math.random()<.5){
     const pool=enemyUsableMoves(s);
     if(pool.length){
@@ -4687,6 +4982,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
     s.log.unshift([summary,...details].join(' · '));
   }
   await releaseSkyDrop(s);
+  await releaseDeferredMoves(s);
   if(!s.enemy.left){await winBattle(s,p);return;}
   if(!p.left){await replaceFainted(s);return;}
   if(s.actionFlags.skipPlayerMoves) attacks=[];
@@ -4708,6 +5004,8 @@ async function resolveSpinCore(s,board,settledTracks=null){
     }
   }
   if(!attacks.length&&!itemCount(s,'wide-lens')) s.log.unshift('這次沒有觸發招式。');
+  if(p.rampage) attacks=[{name:p.rampage.name,supports:matched,minimum:0,half:false}];
+  attacks.sort((a,b)=>movePriority(b.name)-movePriority(a.name));
   const afterYou=attacks.findIndex(attack=>moveRules[attack.name]?.effect==='retaliateFirst');
   if(afterYou>0) attacks.unshift(...attacks.splice(afterYou,1));
   s.actionFlags.playerMoveTypes=attacks.map(attack=>skillDetails[attack.name].type);
@@ -4769,13 +5067,13 @@ async function resolveSpinCore(s,board,settledTracks=null){
   if(enemyLeftovers) healMon(s,s.enemy,'enemy',Math.max(1,Math.floor(s.enemy.hp*enemyLeftovers/20)));
   for(const [mon,side,opponent,opponentSide] of [[active,'player',s.enemy,'enemy'],[s.enemy,'enemy',active,'player']]){
     if(mon.left&&mon.rooted&&s.spins>=(mon.rootStart??0)) healMon(s,mon,side,Math.max(1,Math.floor(mon.hp*mon.rooted)));
-    if(mon.left&&mon.seeded&&s.spins>=(mon.seedStart??0)){
+    if(mon.left&&activeAbility(mon)!==98&&mon.seeded&&s.spins>=(mon.seedStart??0)){
       const loss=Math.min(mon.left,Math.max(1,Math.floor(mon.hp*(mon.seedRate??.03))));
       await applyResidualHit(mon,side,loss,'寄生種子','razor_leaf');
       healMon(s,opponent,opponentSide,loss);
       s.log.unshift(mon.name+'被寄生種子吸走 '+loss+' HP。');
     }
-    if(mon.left&&mon.spinDrain&&s.spins>=mon.drainStart){
+    if(mon.left&&activeAbility(mon)!==98&&mon.spinDrain&&s.spins>=mon.drainStart){
       const drain=Math.min(mon.left,Math.max(1,Math.floor(mon.hp*mon.spinDrain)));
       const name=mon.drainMove??'束縛';
       await applyResidualHit(mon,side,drain,name);
@@ -4787,6 +5085,29 @@ async function resolveSpinCore(s,board,settledTracks=null){
   await replaceFainted(s);
 }
 async function applyMajorStatusTurnEnd(run,mon,side){
+  if(!mon.left) return;
+  const weather=run.weather?.kind,weatherAbility=activeAbility(mon);
+  const weatherImmune=weather==='sand'&&(mon.type.some(type=>['岩石','地面','鋼'].includes(type))||[146,159].includes(weatherAbility))||
+    weather==='hail'&&(mon.type.includes('冰')||[81,115].includes(weatherAbility));
+  if(['sand','hail'].includes(weather)&&!weatherImmune&&weatherAbility!==142) await abilityDamage(run,mon,side,1/16,weather==='hail'?'冰雹':'沙暴');
+  if(mon.left&&mon.status==='sleep'&&mon.nightmare&&weatherAbility!==98){
+    const loss=Math.min(mon.left,Math.max(1,Math.floor(mon.hp/4)));
+    await applyResidualHit(mon,side,loss,'惡夢','gray_smoke');
+    noteEffect(run,mon,'因惡夢損失 '+loss+' HP。');
+  }
+  if(weather==='rain'&&weatherAbility===93&&mon.status) cureBattleStatus(run,mon);
+  if(weather==='rain'&&weatherAbility===87) healMon(run,mon,side,Math.max(1,Math.floor(mon.hp/8)));
+  if(weather==='hail'&&weatherAbility===115) healMon(run,mon,side,Math.max(1,Math.floor(mon.hp/16)));
+  if(weather==='sun'&&[87,94].includes(weatherAbility)) await abilityDamage(run,mon,side,1/8,abilityNames[weatherAbility]);
+  if(weatherAbility===131&&Math.random()<.3){
+    const reserve=(side==='player'?run.team:run.foes).filter(member=>member!==mon&&member.left&&member.status);
+    if(reserve.length) clearMajorStatus(pick(reserve));
+  }
+  if(weatherAbility===141){
+    const increase=pick([1,2,3,4,5,6,7]);
+    const decrease=pick([1,2,3,4,5,6,7].filter(index=>index!==increase));
+    changeStage(mon,increase,2);changeStage(mon,decrease,-1);
+  }
   if(!mon.left) return;
   if(mon.drowsyUntil&&run.spins>=mon.drowsyUntil){
     delete mon.drowsyUntil;
@@ -5084,6 +5405,8 @@ async function enemyActCore(s,random,switching,prepared){
     actions[0]=forecast;
     counterForecasts.delete(s);
   }
+  if(acting.rampage) actions=[acting.rampage.name];
+  if(actions.length>1&&!forecast) actions.sort((a,b)=>movePriority(b)-movePriority(a));
   if(switching) actions=actions.slice(0,1);
   (s.actionFlags??={}).enemyMoveTypes=actions.map(name=>skillDetails[name].type);
   for(const [i,move] of actions.entries()){
@@ -5506,6 +5829,9 @@ function updateMarkup(element,html,identity){
   renderedMarkup.set(element,{html,identity});
 }
 function render(refreshBoard=true){
+  syncGeneLoad(state);
+  applyKyuremType(state,state.team[state.active]);
+  applyKyuremType(state,state.enemy);
   const p=state.team[state.active];
   updateMarkup($('player'),panel(p,true),p);
   updateMarkup($('enemy'),panel(state.enemy,false),state.enemy);
@@ -5656,7 +5982,7 @@ function boardAt(reels,positions){
   }
   return board;
 }
-function matchingLines(board,countOnly=false,normalIsWild=false){
+function matchingLines(board,countOnly=false,normalIsWild=false,flyingIsWild=false){
   const matched=countOnly?null:[];
   let count=0;
   for(const cells of lines){
@@ -5664,7 +5990,7 @@ function matchingLines(board,countOnly=false,normalIsWild=false){
     let valid=true;
     for(const cell of cells){
       const symbol=board[cell];
-      if(symbol===wildReelType||normalIsWild&&symbol==='普通') continue;
+      if(symbol===wildReelType||normalIsWild&&symbol==='普通'||flyingIsWild&&symbol==='飛行') continue;
       if(!Object.hasOwn(types,symbol)||type!==wildReelType&&symbol!==type){valid=false;break;}
       type=symbol;
     }
@@ -5694,7 +6020,7 @@ function moveLineMinimum(name,mon){
   const reachesHighPower=power>=150||skill.effect==='FLAIL';
   const attackMinimum=reachesHighPower?5:power>=100?4:power>=80?3:1;
   const base=Math.max(rule?.min||1,attackMinimum);
-  const added=Number(isSupportMove(name))+(rule?.effect==='trump'?(mon?.trumpUses??0):0);
+  const added=Number(isSupportMove(name))+Number(name==='唱歌'&&ability===232)+(rule?.effect==='trump'?(mon?.trumpUses??0):0);
   return Math.max(1,base+added-Number(discount));
 }
 function moveQueue(moves,matched,mon){
@@ -6753,6 +7079,15 @@ for(const field of musicStyleFields){
 }
 $('settingsOpen').onclick=()=>$('settingsDialog').showModal();
 const releaseNotes=[
+  {version:'0.6.0',date:'2026-11-17',changes:[
+    ['收錄合眾地區寶可夢／技能／特性','Added Unova Pokémon, moves, and abilities'],
+    ['開放合眾地區挑戰關卡','Opened the Unova adventure'],
+    ['開放合眾地區音樂風格自訂','Added Black/White music customization'],
+    ['調整技能連線觸發機制','Updated how slot lines trigger moves'],
+    ['遊戲中後期強度平衡及數值調整','Rebalanced mid- and late-game difficulty and stats'],
+    ['部分道具平衡','Rebalanced selected items'],
+    ['新增幸運數值','Added the Luck stat']
+  ]},
   {version:'0.5.0',date:'2026-11-15',changes:[
     ['收錄神奧地區 寶可夢/技能/特性','Added Sinnoh Pokémon, moves, and abilities'],
     ['開放神奧地區 挑戰關卡','Opened the Sinnoh adventure'],
@@ -6847,7 +7182,7 @@ Object.assign(englishNames.moves,unovaData.moveEnglish);
 function displayPokemon(mon){return settings.language==='en'?englishNames.pokemon[mon.id]??mon.name:mon.name;}
 for(const [,id,,english] of legendaryAbilityDefs) englishNames.abilities[id]=english;
 Object.assign(englishNames.abilities,{"124":"Pickpocket","125":"Sheer Force","126":"Contrary","127":"Unnerve","128":"Defiant","129":"Defeatist","130":"Cursed Body","131":"Healer","132":"Friend Guard","133":"Weak Armor","134":"Heavy Metal","135":"Light Metal","136":"Multiscale","137":"Toxic Boost","138":"Flare Boost","139":"Harvest","140":"Telepathy","141":"Moody","142":"Overcoat","143":"Poison Touch","144":"Regenerator","145":"Big Pecks","146":"Sand Rush","147":"Wonder Skin","148":"Analytic","149":"Illusion","150":"Imposter","151":"Infiltrator","152":"Mummy","153":"Moxie","154":"Justified","155":"Rattled","156":"Magic Bounce","157":"Sap Sipper","158":"Prankster","159":"Sand Force","160":"Iron Barbs","161":"Zen Mode","162":"Victory Star","163":"Turboblaze","164":"Teravolt"});
-function displayAbility(id){return musicLabel(abilityNames[id],englishNames.abilities[id]??abilityNames[id]);}
+function displayAbility(id){return musicLabel(abilityNames[id]??'無特性',englishNames.abilities[id]??abilityNames[id]??'No Ability');}
 function displayMove(name){
   const move=skillDetails[name];
   return settings.language==='en'?englishNames.moves[move?.id]??name:name;
@@ -6883,7 +7218,7 @@ function drawGachaEgg(machine){
 function ensureShopWallet(wallet){
   if(!Array.isArray(wallet.shopEggs)) wallet.shopEggs=profile.eggs.map(egg=>{
     const mon=speciesById(egg.id);
-    return {...egg,legendary:egg.legendary??legendarySpeciesIds.has(egg.id),natureId:egg.natureId??1,abilityId:egg.abilityId??speciesAbilities[mon.id].common[0]};
+    return {...egg,legendary:egg.legendary??legendarySpeciesIds.has(egg.id),natureId:egg.natureId??1,abilityId:normalizeSpeciesAbility(mon.id,egg.abilityId??speciesAbilities[mon.id].common[0])};
   });
   wallet.gachaTickets??=Math.max(0,Math.trunc(profile.tickets));
   wallet.championTickets??=0;
@@ -6910,7 +7245,7 @@ function applyHatchedEggs(eggs){
     const base=baseSpeciesId(egg.id);
     unlock(base);
     if(!profile.seen.includes(egg.id)) profile.seen.push(egg.id);
-    unlockTraits(base,egg);
+    unlockTraits(base,{...egg,abilityId:normalizeSpeciesAbility(egg.id,egg.abilityId)});
     if(egg.shiny&&!profile.shinyUnlocked.includes(base)) profile.shinyUnlocked.push(base);
   }
   if(eggs.length) saveProfile();
@@ -6933,7 +7268,7 @@ function eggCard(egg,index,interactive=false,showProgress=true){
 }
 function hatchTraits(egg){
   return '<span class="hatch-traits"><span class="hatch-nature"><b>'+musicLabel('性格','Nature')+'</b> '+natureLabel(egg.natureId)+'</span>'+
-    '<span class="hatch-ability"><b>'+musicLabel('特性','Ability')+'</b> '+(displayAbility(egg.abilityId)??'—')+'</span></span>';
+    '<span class="hatch-ability"><b>'+musicLabel('特性','Ability')+'</b> '+(displayAbility(normalizeSpeciesAbility(egg.id,egg.abilityId))??'—')+'</span></span>';
 }
 function openEggShow(mode,title){
   const dialog=$('eggShow'),scene=$('eggShowScene'),image=$('eggShowSprite'),machine=$('eggShowMachine'),message=$('eggShowMessage'),next=$('eggShowNext');
@@ -7329,7 +7664,7 @@ function abilityBag(mon,root,preview){
   const unlocked=profile.traitUnlocks[root]?.abilities??[];
   const chosen=preview?0:selectedTraits.get(root)?.abilitySlot??0;
   const signature=signatureAbilities.get(mon.id);
-  const options=[...(!preview?[0]:[]),...common,...(hidden?[hidden]:[]),...(signature?[signature]:[])];
+  const options=[...(!preview?[0]:[]),...common,...(hidden?[hidden]:[]),...(signature&&!common.includes(signature)&&signature!==hidden?[signature]:[])];
   const list=options.map(id=>{
     const locked=preview||id!==0&&!unlocked.includes(id);
     const caption=id===0?musicLabel('隨機','Random'):displayAbility(id)+(id===signature?musicLabel(' · 專屬',' · Signature'):'');
@@ -8368,6 +8703,16 @@ function berryTotal(run,side){
   const count=side==='player'?itemCount:enemyItemCount;
   return itemKinds(run,side).reduce((total,id)=>total+(isBattleBerry(id)?count(run,id):0),0);
 }
+function swapBattleHeldItems(run){
+  const own=pick(Object.keys(run.items).filter(id=>run.items[id]>(run.enemyStolenItems?.[id]??0)&&!statBoosterIds.includes(id)));
+  const enemy=run.enemyItems??Object.fromEntries(run.enemy.heldItem?[[run.enemy.heldItem,1]]:[]);
+  const other=pick(Object.keys(enemy).filter(id=>enemy[id]>0&&!statBoosterIds.includes(id)));
+  if((!own&&!other)||activeAbility(run.enemy)===60||activeAbility(run.team[run.active])===60) return false;
+  run.enemyItems=enemy;
+  if(own){run.items[own]--;enemy[own]=(enemy[own]??0)+1;}
+  if(other){enemy[other]--;run.items[other]=(run.items[other]??0)+1;}
+  return true;
+}
 function transferBattleItem(run,side){
   const own=side==='player'?run.items:run.enemyItems;
   const held=!own&&side==='enemy'?run.enemy.heldItem:null;
@@ -8807,7 +9152,7 @@ function migrateRun(run){
     const mon=speciesById(p.id);
     if(run.kind&&!run.enemyItems&&run.foes.includes(p)&&p.heldItem===undefined&&!p.borrowedItem) equipEnemy(p);
     p.natureId??=1;
-    p.abilityId??=speciesAbilities[p.id]?.common[0];
+    p.abilityId=normalizeSpeciesAbility(p.id,p.abilityId??speciesAbilities[p.id]?.common[0]);
     if(!p.temporaryMoveType) p.type=mon.type;
     p.base=mon.base;p.evol=mon.evol;p.yield=mon.yield;p.growth=mon.growth;
     p.stages??=neutralStages();

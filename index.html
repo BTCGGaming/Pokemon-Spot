@@ -1365,7 +1365,7 @@ button.egg-card:not(:disabled):hover{background:#fff8c9;border-color:#675937}
 <div class="summary-mon"><h2 id="combatStatTitle"></h2><img id="combatStatSprite" alt=""><div id="combatStatTypes" class="summary-types"></div><span id="combatStatHp"></span></div>
 <div id="combatSummaryContent" class="summary-content" role="tabpanel"></div>
 <form method="dialog" class="summary-actions"><button type="button" id="combatSwap" hidden>換上場</button><button>關閉</button></form></div></dialog><dialog id="reference" aria-label="圖鑑與試玩規則"><details id="dex"><summary>全國圖鑑 001–386</summary><p><label>寶可夢 <select id="dexSpecies"></select></label> <label>預覽等級 <input id="dexLevel" type="number" min="1" max="100" value="5"></label></p><div id="dexInfo"></div></details><details><summary>試玩規則與暫定數值</summary>
-<p>試玩與正式模式皆由 Lv. 5 開始。永久增強會套用於新開的正式局。正式局通關可累積金幣，結算時入帳。開局會帶上截至該等級已能習得的招式。普通系能由任一屬性連線觸發，其他招式需要同屬性。同一招每次拉霸最多因連線發動一次，所有成線累加這次的傷害倍率。每條線必須由五個同屬性圖案構成。普通線可代替其他屬性的指定線型；只有靠普通線才能達標的招式，效果為 50%。五個輪盤各有六個固定格位，每次先依攜帶屬性數的試玩權重抽出中線數，再從輪盤可達成的停點組合中隨機選一組，畫面顯示每輪連續五格。三屬性各占兩格，五屬性各一格且每輪隨機重複一種，六屬性各占一格。盤面為 5×5。五條橫線、五條直線與兩條主對角線皆可中獎。部分中線結果使用同色堆疊輪帶，讓直線能實際停出。0–1／2／3／4／5 條線分別為 ×1.0／×1.2／×1.5／×1.8／×2.0，之後每多一條加 0.1 倍，上限 ×2.5。試玩可重複挑戰至 Lv. 13。正式關都挑戰共 100 關，等級上限為 100。野生寶可夢依原作的等級進化，進化道具與交換型態在野外採試玩門檻。訓練家關有備戰隊伍。對手倒下後會優先派出克制當前寶可夢的隊員。招式依原作升級習得。試玩個體設定為中性性格、個體值與努力值為 0。圖鑑可預覽等級與進化能力值。連線負責觸發招式，招式再判定命中率。灼傷使物理傷害減半，每次拉霸結算扣 1/16 最大 HP。中毒扣 1/8，劇毒從 1/16 開始逐次增加。睡眠與冰凍在嘗試出招時判定。麻痺使速度減半，出招時有 12.5% 機率無法行動；混亂時有 1/3 機率傷到自己。</p>
+<p>試玩與正式模式皆由 Lv. 5 開始。永久增強會套用於新開的正式局。正式局通關可累積金幣，結算時入帳。開局會帶上截至該等級已能習得的招式。普通系能由任一屬性連線觸發，其他招式需要同屬性。同一招每次拉霸最多因連線發動一次，所有成線累加這次的傷害倍率。每條線必須由五個同屬性圖案構成。所有屬性的連線都可用來發動招式。對應屬性與萬能連線合計達到門檻時，攻擊招式有全威力。對應連線不足時，攻擊威力減半，普通系也同樣適用。輔助招式只看總連線數。五個輪盤各有六個固定格位，每次先依攜帶屬性數的試玩權重抽出中線數，再從輪盤可達成的停點組合中隨機選一組，畫面顯示每輪連續五格。三屬性各占兩格，五屬性各一格且每輪隨機重複一種，六屬性各占一格。盤面為 5×5。五條橫線、五條直線與兩條主對角線皆可中獎。部分中線結果使用同色堆疊輪帶，讓直線能實際停出。0–1／2／3／4／5 條線分別為 ×1.0／×1.2／×1.5／×1.8／×2.0，之後每多一條加 0.1 倍，上限 ×2.5。試玩可重複挑戰至 Lv. 13。正式關都挑戰共 100 關，等級上限為 100。野生寶可夢依原作的等級進化，進化道具與交換型態在野外採試玩門檻。訓練家關有備戰隊伍。對手倒下後會優先派出克制當前寶可夢的隊員。招式依原作升級習得。試玩個體設定為中性性格、個體值與努力值為 0。圖鑑可預覽等級與進化能力值。連線負責觸發招式，招式再判定命中率。灼傷使物理傷害減半，每次拉霸結算扣 1/16 最大 HP。中毒扣 1/8，劇毒從 1/16 開始逐次增加。睡眠與冰凍在嘗試出招時判定。麻痺使速度減半，出招時有 12.5% 機率無法行動；混亂時有 1/3 機率傷到自己。</p>
 <p>試玩球不限數量，正式模式初始有 5 顆神奇寶貝球。訓練家關卡無法捕捉。</p>
 <p>每次拉霸先結算我方所有相符招式。若至少一招成功且對手仍在場，對手才隨機反擊一招。確認換人後，對手最多使用一招。正式模式的致命招式會先預告，下一次拉霸或換人後才發動。換人不消耗拉霸次數，也不回復血量。場上寶可夢倒下時由存活隊友自動接替。對手倒下即過關，我方全倒即失敗。血量、攻擊、技能與連線都是本關測試設定。</p>
 <small>道具圖案參考 <a href="https://wiki.52poke.com/zh-hant/%E9%81%93%E5%85%B7%E5%88%97%E8%A1%A8">神奇寶貝百科</a> · 寶可夢像素圖來源 <a href="https://github.com/PokeAPI/sprites/tree/master/sprites/pokemon/versions/generation-iii/emerald">PokeAPI · Emerald</a></small></details>
@@ -1767,7 +1767,7 @@ const elementalDescriptions={
  sun:'雙方火系傷害提高 25%，直到對手下一次行動結束。',rain:'雙方水系傷害提高 25%，火系降低 25%，直到對手下一次行動結束。',
  waterSport:'對方火系傷害降低 25%，直到對手下一次行動結束。',mudSport:'己方暫時免疫電系傷害，直到對手下一次行動結束。',
  always:'此招式必定命中。',guard:'免疫對手此次反擊傷害。',mimic:'隨機使用對手的一個招式。',fissure:'目標等級高於使用者或免疫地面系時無效。命中率為 30% 加上雙方等級差，命中時使目標氣竭。',
- twoHits:'命中兩次。',manyHits:'命中 2–5 次。',spikes25:'對方換人時，上場寶可夢扣除 25% 最大 HP。',magnitude:'基礎威力 40，每多一條符合線型的線，威力增加 20。',spinThree:'有 20% 機率延後對手行動一次拉霸，每關最多觸發三次。',
+ twoHits:'命中兩次。',manyHits:'命中 2–5 次。',spikes25:'對方換人時，上場寶可夢扣除 25% 最大 HP。',magnitude:'基礎威力 40，每多一條有效連線，威力增加 20。',spinThree:'有 20% 機率延後對手行動一次拉霸，每關最多觸發三次。',
  drain5:'從下一次拉霸起，目標每次損失 5% 最大 HP。',drain10:'從下一次拉霸起，目標每次損失 10% 最大 HP。'
 };
 for(const [id,shapes,min,effect] of elementalRules){
@@ -1826,49 +1826,36 @@ for(const [id,[min,effect,description,,lineType]] of Object.entries(sinnohMoveRu
 for(const id of [56,59,76,87,126,177]){
   moveRules[emeraldData.ms[id].name].min=2;
 }
+for(const rule of Object.values(moveRules)){
+  if(rule.shapes!=='P'&&rule.min>=3) rule.min=Math.min(4,rule.min-1);
+}
 if(skillDetails['詛咒']) skillDetails['詛咒'].type='幽靈';
 function lineShape(cells){
   const first=cells[0],last=cells.at(-1);
   return first%boardSize===last%boardSize?'V':Math.floor(first/boardSize)===Math.floor(last/boardSize)?'H':'D';
 }
-function lineSupportsType(line,moveType,ability){
+function lineMatchesMoveType(line,moveType,ability){
   const type=line.type;
-  if((ability===207&&type==='水'||ability===208&&type==='火')&&['超能力','飛行'].includes(moveType)) return 1;
-  if(ability===211&&['龍','超能力'].includes(type)&&['龍','超能力'].includes(moveType)) return 1;
-  if(ability===217&&moveType==='超能力'||ability===214&&type==='普通') return 1;
-  if(ability===220&&type==='火'&&['地面','岩石'].includes(moveType)||ability===222&&type==='幽靈'&&!['普通','幽靈'].includes(moveType)) return .5;
-  if(line.type===wildReelType||moveType==='普通'||line.type===moveType) return 1;
-  return line.type==='普通'?.5:0;
-}
-function supportedLines(name,matched,ability){
-  const skill=skillDetails[name],rule=moveRules[name];
-  if(rule?.shapes==='P') return [];
-  return matched.filter(line=>lineSupportsType(line,rule?.lineType??skill.type,ability)>0&&
-    (!rule||rule.shapes.includes(lineShape(line.cells))));
+  return type===wildReelType||type===moveType||
+    ((ability===207&&type==='水'||ability===208&&type==='火')&&['超能力','飛行'].includes(moveType))||
+    (ability===211&&['龍','超能力'].includes(type)&&['龍','超能力'].includes(moveType))||
+    (ability===217&&moveType==='超能力')||(ability===214&&type==='普通');
 }
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let rolling = false;
-function triggerDiagrams(type,rule){
-  if(rule?.shapes==='P') return '<div class="trigger-rules"><strong>被動效果</strong><p>攜帶此招式時自動生效。</p></div>';
-  const patterns=[
-    ['橫線',12,32,88,32],['直線',50,7,50,57],
-    ['左上到右下',18,8,82,56],['右上到左下',82,8,18,56]
-  ];
-  const diagrams=patterns.filter((_,i)=>!rule||rule.shapes.includes(['H','V','D','D'][i])).map(([label,x1,y1,x2,y2])=>{
-    const dots=Array.from({length:matchLength},(_,i)=>{
-      const t=i/(matchLength-1);
-      return '<span class="trigger-dot" style="left:'+(x1+(x2-x1)*t)+'%;top:'+((y1+(y2-y1)*t)/64*100)+'%">'+typeIcon(type)+'</span>';
-    }).join('');
-    return '<figure><div class="trigger-graphic"><svg viewBox="0 0 100 64" aria-hidden="true"><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'"/></svg>'+dots+'</div><figcaption>'+label+'</figcaption></figure>';
-  }).join('');
-  return '<div class="trigger-rules"><strong>可觸發圖形</strong><p>'+(rule?'至少 '+rule.min+' 條指定線型。':'至少 1 條有效線。')+(type==='普通'?' 任意屬性。':' '+type+' 能量，或使用五個普通圖案構成的同線型代替。只有靠普通線達標時，效果為 50%。')+'</p><div class="trigger-diagrams" style="--trigger-color:'+(types[type]||'#ffdf8c')+'">'+diagrams+'</div></div>';
+function triggerRequirements(type,rule,mon,name){
+  if(rule?.shapes==='P') return '<div class="trigger-rules"><strong>'+musicLabel('被動效果','Passive effect')+'</strong><p>'+musicLabel('攜帶此招式時自動生效。','Active while this move is known.')+'</p></div>';
+  const minimum=moveLineMinimum(name,mon);
+  const requirement=musicLabel('任意 '+minimum+' 條連線即可發動。','Match any '+minimum+' lines to activate.');
+  const substitute=isSupportMove(name)?'<p>'+musicLabel('任意屬性達標後，輔助效果完整生效。','Any types count toward the full support effect.')+'</p>':'<p>'+typeIcon(type)+' '+musicLabel('達到 '+minimum+' 條'+dexTypeName(type)+'連線才有全威力，萬能線也計入；不足時威力減半。','Match '+minimum+' '+dexTypeName(type)+' or Wild lines for full power. Otherwise, power is halved.')+'</p>';
+  return '<div class="trigger-rules"><strong>'+musicLabel('觸發條件','Trigger requirement')+'</strong><p>'+requirement+'</p>'+substitute+'</div>';
 }
 function showSkill(p, name, trigger){
   const skill=skillDetails[name];
   const rule=moveRules[name];
   const art=typeIcon(skill.type);
   $('skillBody').innerHTML='<div class="skill-art">'+art+'<small>'+skill.type+'</small><strong>'+displayMove(name)+'</strong></div>'+
-    '<div class="skill-info">'+(trigger?triggerDiagrams(rule?.lineType??trigger,rule&&p?{...rule,min:moveLineMinimum(name,p)}:rule):'')+
+    '<div class="skill-info">'+(trigger?triggerRequirements(rule?.lineType??trigger,rule,p,name):'')+
     '<p><strong>'+musicLabel('威力','Power')+'</strong>'+movePowerText(name,p)+'</p>'+
     '<p><strong>'+musicLabel('命中率','Accuracy')+'</strong>'+skill.accuracy+'%</p><p><strong>'+musicLabel('技能敘述','Effect')+'</strong>'+moveEffectText(name)+'</p></div>';
   $('skill').showModal();
@@ -2321,7 +2308,7 @@ function moveEffectText(name){
   const descriptions={
     MULTI_HIT:'連續攻擊 2 至 5 次。',DOUBLE_HIT:'連續攻擊 2 次。',
     LEVEL_DAMAGE:'造成等同使用者等級的傷害。',SUPER_FANG:'扣除目標目前 HP 的一半。',
-    OHKO:'目標等級高於使用者時無效，命中時使其氣竭。',FALSE_SWIPE:'命中時至少留下目標 1 HP。',
+    OHKO:'目標等級高於使用者時無效。命中時以目前 HP 計算傷害，全威力命中可使目標氣竭。',FALSE_SWIPE:'命中時至少留下目標 1 HP。',
     HIGH_CRITICAL:'較容易擊中要害。',ABSORB:'恢復相當於造成傷害一半的 HP。',
     DREAM_EATER:'只對睡眠中的目標有效，恢復相當於傷害一半的 HP。',
     RECOIL:'自身受到相當於傷害 1/4 的反作用力。',DOUBLE_EDGE:'自身受到相當於傷害 1/3 的反作用力。',
@@ -2392,17 +2379,9 @@ function chooseForgottenMove(p,name){
   $('learnTitle').textContent=displayPokemon(p)+' 想學會 '+displayMove(name);
   const details=move=>{
     const skill=skillDetails[move],rule=moveRules[move],type=rule?.lineType??skill.type;
-    const shapes=[['H',2,12,22,12],['V',12,2,12,22],['D',3,3,21,21],['D',3,21,21,3]];
-    const diagrams=shapes.filter(([shape])=>(rule?.shapes??'HVD').includes(shape)).map(([shape,x,y,endX,endY])=>{
-      const dots=Array.from({length:matchLength},(_,i)=>{
-        const t=i/(matchLength-1);
-        return '<circle cx="'+(x+(endX-x)*t)+'" cy="'+(y+(endY-y)*t)+'" r="1.8" fill="currentColor"/>';
-      }).join('');
-      const label={H:musicLabel('橫線','Horizontal'),V:musicLabel('直線','Vertical'),D:musicLabel('斜線','Diagonal')}[shape];
-      return '<svg viewBox="0 0 24 24" role="img" aria-label="'+label+'"><line x1="'+x+'" y1="'+y+'" x2="'+endX+'" y2="'+endY+'" stroke="currentColor"/>'+dots+'</svg>';
-    }).join('');
     const requirement=rule?.shapes==='P'?musicLabel('被動，無需連線','Passive · no lines'):
-      moveLineMinimum(move,p)+musicLabel(' 條 · ',' line(s) · ')+(type==='普通'?musicLabel('任意屬性','Any type'):typeIcon(type)+type)+diagrams;
+      moveLineMinimum(move,p)+musicLabel(' 條連線 · ',' line(s) · ')+(isSupportMove(move)?musicLabel('任意屬性皆可','Any type'):
+      typeIcon(type)+' '+dexTypeName(type)+musicLabel('達標才有全威力',' for full power'));
     return '<strong>'+displayMove(move)+'</strong><span class="learn-meta">'+summaryType(skill.type)+' '+skill.type+' · '+musicLabel('威力','Power')+' '+movePowerText(move,p)+'</span><span>'+moveEffectText(move)+'</span><span class="learn-lines">'+requirement+'</span>';
   };
   form.innerHTML='<div class="learn-layout"><div class="battle-choice-list"><h3>'+musicLabel('原有招式','Current moves')+'</h3><div class="learn-grid">'+
@@ -3649,7 +3628,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       let amount=raw*factor*sinnohFactor*strength*grace*fat*(lens?1.5:1)*(other==='player'?resistanceBerryFactor(s,skill.type):1-.1*Math.min(5,enemyItemCount(s,resistanceBerryByType[skill.type])));
       if(defenseAbility===5&&target.left===target.hp) amount*=.25;
       if([4,75].includes(defenseAbility)&&amount>target.hp*.5) amount*=.5;
-      if(skill.effect==='OHKO') amount=target.left;
+      if(skill.effect==='OHKO') amount=target.left*potency;
       let damage=target.counterGuard||amount<=0?0:Math.min(target.left,Math.max(1,Math.floor(amount))); 
       if(lens&&damage) s.log.unshift('焦點鏡提高了本次傷害。');
       if(skill.effect==='FALSE_SWIPE') damage=Math.min(damage,Math.max(0,target.left-1));
@@ -4308,7 +4287,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
   if(!attacks.length&&!itemCount(s,'wide-lens')) s.log.unshift('這次沒有觸發招式。');
   for(const [i,attack] of attacks.entries()){
     const sequence=attacks.length>1?'　'+(i+1)+' / '+attacks.length:'';
-    if(attack.half) s.log.unshift(attack.name+'由替代連線觸發，效果為 50%。');
+    if(attack.half) s.log.unshift(musicLabel(attack.name+'的對應屬性連線不足，威力減半。',displayMove(attack.name)+' has half power due to insufficient matching-type lines.'));
     await executeMove(s,p,s.enemy,attack.name,'player',false,sequence,multiplier,attack.supports,0,attack.half?0.5:1);
     if(s.skipWild){s.skipWild=false;await playWeather(s.weather?.kind);await finishStage(s,'過關！');return;}
     if(!s.enemy.left){healLeftovers(s);await playWeather(s.weather?.kind);await winBattle(s,p);return;}
@@ -5039,7 +5018,7 @@ function renderTutorialHint(){
   hint.hidden=true;
   const messages={
     1:state.spins===0?['','拉一下']:
-      state.spins<5?['② 快轉看對手行動','萬能球可補任意屬性。用普通線替代其他屬性時，招式效果減半。每次拉霸後，對手都會嘗試反擊。再拉一次，快轉到第 5 次看對手完整行動。']:
+      state.spins<5?[musicLabel('② 連線與招式威力','② Lines and move power'),musicLabel('任何屬性的連線都能發動招式。攻擊需要湊夠對應屬性或萬能線才有全威力。輔助招式只看總條數。再拉一次看對手行動。','Lines of any type can trigger moves. Attack moves need enough matching-type or Wild lines for full power. Support moves only count total lines. Pull again to see the opponent act.')]:
       ['② 結束練習戰','對手已完成一輪行動。再按一次把手，擊敗練習對手。'],
     2:['④ 捕捉野生寶可夢','點右下方「收服」，再點寶可夢球。目標血量越低，通常越容易捕捉。'],
     3:['⑤ 冠軍決戰','確認冠軍台詞後，拉一次把手。噴火龍會使出四招，擊敗冠軍最後一隻寶可夢。']
@@ -5251,20 +5230,23 @@ function matchingLines(board,countOnly=false,normalIsWild=false){
   }
   return countOnly?count:matched;
 }
+function isSupportMove(name){
+  return !skillDetails[name].power&&!['fling','bide'].includes(moveRules[name]?.effect);
+}
 function moveLineMinimum(name,mon){
   const ability=activeAbility(mon),type=skillDetails[name].type,rule=moveRules[name];
   const discount=ability===212&&['水','冰'].includes(type)||ability===213&&['火','地面'].includes(type);
-  return Math.max(1,(rule?.min||1)+(rule?.effect==='trump'?(mon?.trumpUses??0):0)-Number(discount));
+  return Math.max(1,(rule?.min||1)+Number(isSupportMove(name))+(rule?.effect==='trump'?(mon?.trumpUses??0):0)-Number(discount));
 }
 function moveQueue(moves,matched,mon){
   return [...new Set(moves)].flatMap(name=>{
     const skill=skillDetails[name],rule=moveRules[name];
-    const ability=activeAbility(mon);
-    const supports=supportedLines(name,matched,ability);
+    if(rule?.shapes==='P') return [];
     const minimum=moveLineMinimum(name,mon);
-    if(supports.length<minimum) return [];
-    const full=supports.filter(line=>lineSupportsType(line,rule?.lineType??skill.type,ability)===1);
-    return [{name,supports,minimum,half:full.length<minimum}];
+    if(matched.length<minimum) return [];
+    const ability=activeAbility(mon);
+    const half=!isSupportMove(name)&&matched.filter(line=>lineMatchesMoveType(line,rule?.lineType??skill.type,ability)).length<minimum;
+    return [{name,supports:matched,minimum,half}];
   });
 }
 function stopGroups(reels){
@@ -6693,7 +6675,7 @@ function openDexTypeFilter(filter,refresh){
 $('dexTypeClear').onclick=()=>$('dexTypeChoices').querySelectorAll(':checked').forEach(input=>{input.checked=false;});
 const dexRegionEnds=[151,251,386,493,649,721,809];
 function renderSetup(){
-  energyRule.textContent=musicLabel('默認10個萬用屬性圖案,普通系能觸發其他屬性50%效果','Starts with 10 Wild symbols. Normal lines trigger other types at 50% effect.');
+  energyRule.textContent=musicLabel('任意屬性可觸發，對應屬性或萬能線達標才有全威力','Any type can trigger moves. Match the required type or Wild lines for full power.');
   const pickingStarter=mode==='formal'&&!profile.starter;
   $('setupTitle').textContent=mode==='trial'?musicLabel('新手教學 · 1 / 6','Tutorial · 1 / 6'):musicLabel('開始冒險 · 組隊','Start Adventure · Team Builder');
   $('starterSetup').hidden=!pickingStarter;

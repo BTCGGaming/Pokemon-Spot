@@ -1318,14 +1318,84 @@ button.egg-card:not(:disabled):hover{background:#fff8c9;border-color:#675937}
 #championTeamParty .champion-member::before{content:"";position:absolute;bottom:-2%;width:77%;height:12%;background:#101c2d91;border-radius:50%;z-index:-1}
 #championTeamParty img{display:block;width:100%;height:90%;object-fit:contain;object-position:center bottom;image-rendering:pixelated;filter:drop-shadow(2px 3px #1122359e)}
 #championTeamConfirm{position:absolute;right:5.5%;bottom:4.5%;background:#f4d88a;color:#302538;border:3px solid #282333;box-shadow:inset 0 0 0 2px #fff6cf,3px 3px #161820aa;padding:.35em 1.2em;font-size:clamp(14px,2cqw,26px)}
+
+#combatStats .summary-stats{top:37%;column-gap:1.2cqw;font-size:clamp(10px,2.15cqw,26px)}
+#combatStats .summary-stats>div{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:.65cqw}
+#combatStats .summary-stat-value{display:grid;grid-template-columns:3ch 4.5ch;gap:.35cqw;text-align:right;font-variant-numeric:tabular-nums}
+#combatStats .summary-stat-value b{grid-column:1}
+#combatStats .summary-stat-value .summary-stage{grid-column:2}
+#combatStats .summary-move-row{display:flex;min-width:0;align-items:stretch}
+#combatStats .summary-move-row [data-summary-move]{flex:1;min-width:0}
+#combatStats .summary-move-row .summary-reorder{flex:none;padding:0 .6cqw;background:#ffe89a;color:#252137;font-size:clamp(9px,1.6cqw,20px);white-space:nowrap}
+#setup .departure-controls :is(#setupReorder,#setupRemove){width:100%;margin:0;padding:.32em .45em;font-size:clamp(8px,1.05cqw,18px);white-space:nowrap}
+
+#stageResupply{width:min(96vw,940px);max-height:92dvh;overflow:auto;background:#ede6cb;color:#223830;border:4px solid #203e35;box-shadow:inset 0 0 0 3px #9a9b72,5px 5px #121d18;padding:clamp(10px,1.8vw,24px);font-size:clamp(12px,1.55vw,20px)}
+#stageResupply::backdrop{background:#0008}
+#stageResupplyTitle{margin:0 0 .6em;padding:.38em .6em;text-align:left;background:#244e43;color:#fff1c9;border:2px solid #183b32;box-shadow:inset 0 0 0 2px #83aa86;font-size:1.34em}
+#stageResupplyTeam{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.4em;margin-bottom:.8em}
+#stageResupplyTeam article{min-width:0;display:grid;place-items:center;align-content:start;gap:.24em;text-align:center;background:#faf3dc;border:2px solid #8b956c;box-shadow:inset 0 0 0 2px #d9cda1;padding:.35em .12em;font-size:.8em}
+#stageResupplyTeam img{width:min(100%,4.8em);height:clamp(44px,8vw,82px);object-fit:contain;image-rendering:pixelated}
+#stageResupplyTeam .resupply-member-name{font-size:1.08em;line-height:1.15;overflow-wrap:anywhere}
+#stageResupplyTeam .resupply-hp{width:83%;height:.32em;accent-color:#3d8e5d}
+#stageResupplyTeam .resupply-hp-text{font-size:.9em;white-space:nowrap}
+#resupplyWorkbench{background:#e5efd8;border:2px solid #668578;box-shadow:inset 0 0 0 2px #aec09b;padding:.55em .65em}
+#stageResupplyReelTitle{margin:0 0 .42em;color:#23473e;font-size:1.08em}
+#stageResupplyPool,#stageResupplyReels{display:flex;flex-wrap:wrap;align-items:center;gap:.5em}
+#stageResupplyPool{margin-bottom:.58em}
+#stageResupplyPool span{display:inline-flex;align-items:center;gap:.25em}
+#stageResupplyPool>span{background:#f9f5e2;border:1px solid #87936c;padding:.18em .4em;white-space:nowrap}
+#stageResupplyPool img,#stageResupplyPool svg{width:1.2em;height:1.2em;object-fit:contain}
+#stageResupplyReels label{display:flex;flex:1 1 auto;align-items:center;gap:.35em}
+#stageResupplyReels select{font:inherit;color:inherit;min-width:5em;max-width:100%;flex:1;background:#fcf7e3;border:2px solid #748b72;padding:.27em .22em}
+#stageResupply select:focus-visible,#stageResupply button:focus-visible{outline:2px solid #805b26;outline-offset:2px}
+#stageResupply button{font:inherit}
+#resupplyStatus{margin:.45em 0 0}
+#resupplyStatus:empty{display:none}
+#stageResupply form[method="dialog"]{display:flex;justify-content:flex-end;margin-top:.6em}
+@media(max-width:620px) and (orientation:portrait){#stageResupplyTeam{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-height:480px){#stageResupplyTeam img{height:42px}}
+#rewardDialog{width:min(94vw,1050px);max-height:93dvh;text-align:center;background:transparent;color:white;border:0;box-shadow:none;overflow:auto;padding:.6em;overscroll-behavior:contain}
+#rewardDialog::backdrop{background:rgba(0,0,0,.75);animation:reward-dim .55s ease-out both}
+#rewardTitle,#rewardPreview{color:white;text-shadow:0 2px 2px #000,0 0 6px #000}
+#rewardChoices{display:flex;justify-content:center;align-items:stretch;flex-wrap:wrap;gap:clamp(6px,1.2vw,18px);margin:.75em 0 .35em}
+#rewardChoices .tutorial-dialog-next{flex:0 0 100%;text-align:center}
+#rewardChoices .reward-drop{flex:1 0 clamp(84px,14%,135px);max-width:175px;min-width:0;background:#171429dd;color:white;display:grid;place-items:center;grid-template-rows:auto minmax(2lh,1fr);gap:.1em;padding:.25em .25em .35em;border:2px solid var(--rarity);box-shadow:inset 0 0 12px #0009;text-align:center;font-size:clamp(13px,1.4vw,24px);animation:reward-land .52s var(--drop-delay) cubic-bezier(.23,.76,.26,1) both}
+#rewardChoices .reward-drop:is(:hover,:focus-visible,[aria-pressed="true"]){outline:2px solid white;outline-offset:2px;background:#343047}
+.reward-drop .item-stack-art{display:grid;place-items:center;width:min(100%,clamp(64px,8vw,118px));height:clamp(62px,8vw,118px);background:radial-gradient(closest-side,color-mix(in srgb,var(--rarity) 55%,transparent),transparent);font-size:1.5em}
+#rewardChoices .reward-drop .item-stack-art :is(img,svg){width:86%;height:86%;max-width:none;max-height:none;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 0 5px var(--rarity))}
+#rewardChoices .reward-drop .item-stack-count{bottom:.05em;right:.12em}
+#rewardChoices .reward-drop>strong{align-self:end;width:100%;min-height:1.55em;display:grid;place-items:center;padding:.15em .08em;background:#0c0a18b3;line-height:1.15;overflow-wrap:anywhere}
+#rewardChoices .reward-skip{flex-basis:100%;max-width:24em;align-self:center}
+#rewardPreview{min-height:2lh;margin:.3em auto;max-width:40em;font-size:clamp(12px,1.4vw,21px)}
+#rewardConfirm[hidden]{display:none}
+@keyframes reward-dim{from{opacity:0}to{opacity:1}}
+@keyframes reward-land{from{transform:translateY(-55vh);opacity:0}to{transform:translateY(0);opacity:1}}
+@media(prefers-reduced-motion:reduce){#rewardDialog::backdrop,#rewardChoices .reward-drop{animation:none}}
+@media(max-height:460px){#rewardChoices{margin:.25em 0}#rewardTitle{margin:.2em 0}#rewardPreview{min-height:1lh}.reward-drop .item-stack-art{width:66px;height:66px}#rewardChoices .reward-drop{grid-template-rows:auto minmax(1.6lh,1fr)}}
+
 </style>
 <main>
 <div id="championBlackout" hidden aria-hidden="true"></div>
+<dialog id="stageResupply" aria-labelledby="stageResupplyTitle">
+  <h2 id="stageResupplyTitle"></h2>
+  <div id="stageResupplyTeam"></div>
+  <section id="resupplyWorkbench" aria-labelledby="stageResupplyReelTitle">
+  <h3 id="stageResupplyReelTitle"></h3>
+  <div id="stageResupplyPool"></div>
+  <form id="stageResupplyReels">
+    <label><span id="resupplySourceLabel"></span><select id="resupplySource"></select></label>
+    <label><span id="resupplyTargetLabel"></span><select id="resupplyTarget"></select></label>
+    <button id="resupplyConvert" type="submit"></button>
+  </form>
+  <p id="resupplyStatus" role="status"></p>
+  </section>
+  <form method="dialog"><button id="resupplyContinue"></button></form>
+</dialog>
 <section id="championTeam" hidden role="dialog" aria-modal="true" aria-label="冠軍隊伍"><div id="championTeamParty"></div><button id="championTeamConfirm" type="button">確認</button></section>
 <div id="championCredits" hidden aria-hidden="true"><img alt=""></div>
 <section id="menu" class="screen" style="position:relative">
   <div class="menu-scenery" aria-hidden="true"><img src="data:image/png;base64,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" alt=""></div><button id="changelogOpen" type="button">更新日誌</button><div class="menu-controls"><button id="musicToggle" type="button">播放音樂</button><button id="settingsOpen" type="button">⚙ 設定</button><button class="mobile-fullscreen-control" type="button">全螢幕橫向</button><span id="musicStatus" role="status"></span></div><h1>寶可夢拉霸</h1><p>POKEMON SLOT</p><nav><button id="trialMode">新手教學</button><button id="formalMode">正式遊戲</button><button id="continueMode">繼續遊戲</button><button id="shopMode">商店</button><button id="collectionMode">圖鑑</button><button id="upgradeMode">增強</button></nav></section>
-<section id="setup" class="screen" hidden><h1 id="setupTitle"></h1><div id="starterSetup" hidden><p>選擇你的第一隻寶可夢</p><div id="starterCards" class="mon-cards"></div></div><div id="partySetup"><div id="partyHelp"></div><div id="teamCards" class="mon-cards" aria-label="圖鑑隊員清單"></div><div class="setup-footer"><div class="energy-panel"><div class="energy-header"><label>攜帶屬性 <select id="typeCount"><option>2</option><option>4</option><option>5</option></select></label><span id="energyRule"></span><span id="setupStatus" role="status"></span></div><div id="typeChoices"></div></div><div class="party-confirm"><div id="teamSelection"></div><div class="departure-controls"><span id="setupLuck" aria-live="polite" hidden></span><button id="startBattle">確定開始</button></div></div></div></div><button class="home">返回主畫面</button></section>
+<section id="setup" class="screen" hidden><h1 id="setupTitle"></h1><div id="starterSetup" hidden><p>選擇你的第一隻寶可夢</p><div id="starterCards" class="mon-cards"></div></div><div id="partySetup"><div id="partyHelp"></div><div id="teamCards" class="mon-cards" aria-label="圖鑑隊員清單"></div><div class="setup-footer"><div class="energy-panel"><div class="energy-header"><label>攜帶屬性 <select id="typeCount"><option>2</option><option>4</option><option>5</option></select></label><span id="energyRule"></span><span id="setupStatus" role="status"></span></div><div id="typeChoices"></div></div><div class="party-confirm"><div id="teamSelection"></div><div class="departure-controls"><span id="setupLuck" aria-live="polite" hidden></span><button id="setupReorder" type="button">更改順序</button><button id="setupRemove" type="button">移出隊伍</button><button id="startBattle">確定開始</button></div></div></div></div><button class="home">返回主畫面</button></section>
 <section id="shop" class="screen shop-layout" hidden>
 <header class="shop-header"><h1 id="shopTitle">扭蛋商店</h1><p id="shopGold"></p><img id="shopTicketArt" alt=""><p id="shopTickets"></p></header>
 <nav class="shop-tabs"><button id="shopMachineTab" type="button">扭蛋機</button><button id="shopEggTab" type="button">蛋庫</button><button id="buyShopTickets" type="button">購買扭蛋券</button><button id="shopHome" class="home">返回主畫面</button></nav>
@@ -1785,7 +1855,7 @@ function showDex(){
 function summaryType(type){
   return '<img alt="'+type+'" src="'+(ndsBattleArt.types[type]??ndsBattleArt.types['未知'])+'">';
 }
-function renderCombatSummary(mon,page){
+function renderCombatSummary(mon,page,selectedMove=0){
   const body=$('combatStatBody'),content=$('combatSummaryContent');
   body.dataset.page=page;
   body.querySelectorAll('[data-summary-page]').forEach(button=>
@@ -1814,16 +1884,41 @@ function renderCombatSummary(mon,page){
     }).join('')+'</div><p class="summary-exp">經驗值　'+(mon.exp??experienceAt(mon,mon.level))+'<br>距離升級　'+Math.max(0,mon.level>=100?0:experienceAt(mon,mon.level+1)-(mon.exp??experienceAt(mon,mon.level)))+'</p>';
   }else{
     content.innerHTML='<div class="summary-moves">'+mon.moves.map((name,index)=>
-      '<button type="button" data-summary-move="'+index+'">'+summaryType(skillDetails[name].type)+name+'</button>'
+      '<div class="summary-move-row"><button type="button" data-summary-move="'+index+'">'+summaryType(skillDetails[name].type)+name+'</button></div>'
     ).join('')+'</div><p id="combatMoveDescription"></p>';
+    const rows=[...content.querySelectorAll('[data-summary-move]')];
+    const canReorder=state.team.includes(mon)&&rows.length>1;
+    let source=null;
     const select=button=>{
-      const name=mon.moves[Number(button.dataset.summaryMove)],skill=skillDetails[name];
+      const index=Number(button.dataset.summaryMove);
+      const name=mon.moves[index],skill=skillDetails[name];
+      content.querySelector('.summary-reorder')?.remove();
+      if(canReorder){
+        const reorder=document.createElement('button');
+        reorder.type='button';
+        reorder.className='summary-reorder';
+        reorder.textContent=source===null?musicLabel('更換順序','Reorder'):musicLabel('取消','Cancel');
+        reorder.onclick=()=>{
+          source=source===null?index:null;
+          select(button);
+          content.querySelector('.summary-reorder')?.focus();
+        };
+        button.parentElement.append(reorder);
+      }
       content.querySelectorAll('[data-summary-move]').forEach(row=>row.setAttribute('aria-current',String(row===button)));
-      $('combatMoveDescription').textContent=(skill.power?'威力 '+skill.power+'　':'')+moveEffectText(name);
+      $('combatMoveDescription').textContent=source===null
+        ?(skill.power?'威力 '+skill.power+'　':'')+moveEffectText(name)
+        :musicLabel('選擇另一個招式交換位置。','Choose another move to swap positions.');
     };
-    for(const button of content.querySelectorAll('[data-summary-move]')) button.onclick=()=>select(button);
-    const first=content.querySelector('[data-summary-move]');
-    if(first?.dataset.summaryMove!==undefined) select(first);
+    rows.forEach((button,index)=>button.onclick=()=>{
+      if(source===null||source===index){select(button);return;}
+      [mon.moves[source],mon.moves[index]]=[mon.moves[index],mon.moves[source]];
+      render(false);
+      autoSave(state);
+      renderCombatSummary(mon,page,index);
+      content.querySelector('[data-summary-move="'+index+'"]')?.focus();
+    });
+    if(rows[selectedMove]) select(rows[selectedMove]);
   }
 }
 function showCombatStats(mon,index=null){
@@ -1842,7 +1937,7 @@ function showCombatStats(mon,index=null){
   swap.onclick=async()=>{
     if(index===null||state.team[index]!==mon||!canSwap(index)) return;
     $('combatStats').close();
-    await openPartySwitch(index);
+    await switchPartyMember(index);
   };
   $('combatStats').showModal();
 }
@@ -5930,6 +6025,10 @@ async function openPartySwitch(preselected=null){
     if(preselected!==null) $('playerParty').querySelector('[data-slot="'+preselected+'"]')?.focus({preventScroll:true});
     return;
   }
+  await switchPartyMember(index);
+}
+async function switchPartyMember(index){
+  if(!canSwap(index)) return;
   transferAbilityDebuffs(state.team[state.active],state.team[index],state.enemy);
   undoTransform(state.team[state.active]);
   leaveAbility(state.team[state.active]);
@@ -6365,10 +6464,11 @@ function healAtStageEntry(run){
   }
 }
 $('nextBattle').onclick=advanceStage;
-function advanceStage(){
+async function advanceStage(){
   if(rolling||!state.won||state.rewardPending||state.finished) return;
   const stage=state.stage+1;
-  const heal=mode==='trial'||(stage>1&&stage<=91&&stage%10===1);
+  const resupply=mode==='formal'&&stage>=11&&stage<=91&&stage%10===1;
+  const heal=mode==='trial'||resupply;
   for(const p of state.team){
     undoTransform(p);
     leaveAbility(p,false);
@@ -6388,13 +6488,82 @@ function advanceStage(){
   for(const mon of state.team){
     for(const flag of ['embargo','magnetRise','abilitySuppressed','flowerGift','trumpUses','roundUses','echoedVoiceUses','attacksOnly','usedMoves','healBlocked','lastHurtSpin','rooted','rootStart']) delete mon[flag];
   }
+  if(resupply){
+    rolling=true;
+    try{await showStageResupply(state);}
+    finally{rolling=false;}
+  }
   const previousLog=state.log;
   state=fresh(stage,state.team,state.reels,state);
   state.log=previousLog;
   state.log.unshift('第 '+stage+' 關開始。');
   if(heal&&mode==='formal') state.log.unshift('階段補給：全隊 HP 已恢復。');
   if(mode==='formal') healAtStageEntry(state);
+  if(resupply) autoSave(state);
   openBattleStage(true,false);
+}
+async function showStageResupply(run){
+  const dialog=$('stageResupply'), blackout=$('championBlackout');
+  $('stageResupplyTitle').textContent=musicLabel('整裝階段','Resupply');
+  $('stageResupplyReelTitle').textContent=musicLabel('重新調整圖庫','Adjust Symbol Pool');
+  $('resupplySourceLabel').textContent=musicLabel('現有屬性','Owned type');
+  $('resupplyTargetLabel').textContent=musicLabel('圖庫沒有的屬性','Type absent from pool');
+  $('resupplyConvert').textContent=musicLabel('全部轉換','Convert All');
+  $('resupplyContinue').textContent=musicLabel('前往第 '+(run.stage+1)+' 關','Continue to Stage '+(run.stage+1));
+  $('resupplyStatus').textContent='';
+  $('stageResupplyTeam').innerHTML=run.team.map(mon=>'<article><img src="'+sprite(mon)+'" alt=""><strong class="resupply-member-name">'+displayPokemon(mon)+'</strong><span>Lv. '+mon.level+'</span>'+
+    '<progress class="resupply-hp" max="'+mon.hp+'" value="'+mon.left+'" aria-label="HP"></progress><span class="resupply-hp-text">HP '+mon.left+' / '+mon.hp+'</span></article>').join('');
+  const updatePool=()=>{
+    const counts=new Map();
+    for(const reel of run.reels) for(const type of reel) counts.set(type,(counts.get(type)??0)+1);
+    $('stageResupplyPool').innerHTML=[...counts].map(([type,count])=>'<span>'+typeIcon(type)+' ×'+count+'</span>').join('');
+    for(const [id,present] of [['resupplySource',true],['resupplyTarget',false]]){
+      $(id).replaceChildren(...Object.keys(types).filter(type=>counts.has(type)===present).map(type=>new Option(type,type)));
+    }
+    const disabled=!$('resupplySource').length||!$('resupplyTarget').length;
+    $('resupplyConvert').disabled=disabled;
+  };
+  updatePool();
+  $('stageResupplyReels').onsubmit=event=>{
+    event.preventDefault();
+    const from=$('resupplySource').value,to=$('resupplyTarget').value;
+    if(run.reels.some(reel=>reel.includes(to))||!convertReelType(run,from,to)) return;
+    $('resupplyStatus').textContent=musicLabel(from+' → '+to+'，已轉換全部圖案。','Converted all '+from+' symbols to '+to+'.');
+    updatePool();
+    autoSave(run);
+  };
+  dialog.oncancel=event=>event.preventDefault();
+  const resumeMusic=musicPlayer&&!musicPlayer.paused;
+  blackout.hidden=false;
+  try{
+    await fadeChampionScene(blackout,0,1);
+    if(resumeMusic) musicPlayer.pause();
+    await playCenterRecovery();
+    const closed=new Promise(resolve=>dialog.addEventListener('close',resolve,{once:true}));
+    dialog.showModal();
+    await fadeChampionScene(dialog,0,1);
+    blackout.hidden=true;
+    await closed;
+  }finally{
+    blackout.hidden=true;
+    if(resumeMusic) musicPlayer.play().catch(()=>{});
+  }
+}
+async function playCenterRecovery(){
+  const audio=playGameSound('center-recovery');
+  if(!audio) return;
+  await new Promise(resolve=>{
+    const finish=()=>{
+      clearTimeout(timeout);
+      audio.removeEventListener('ended',finish);
+      audio.removeEventListener('error',finish);
+      resolve();
+    };
+    const timeout=setTimeout(()=>{audio.pause();finish();},6500);
+    audio.addEventListener('ended',finish);
+    audio.addEventListener('error',finish);
+    if(audio.error) finish();
+  });
 }
 $('reset').onclick=()=>{if(!rolling){$('items').close();state=state.testStartStage?createDeveloperRun(state.testStartStage):fresh(1,undefined,undefined,undefined,state.tutorial,state.adventure?.region??(state.adventure?.national?'national':'kanto'));openBattleStage(true);}};
 $('showReference').onclick=()=>{$('items').close();$('reference').showModal();};
@@ -6770,7 +6939,7 @@ function prepareHitSounds(){
 }
 function playGameSound(cue){
   if(typeof Audio==='undefined'||settings.effectsVolume===0) return;
-  const clip=progressionSounds[cue]??gameSounds[cue];
+  const clip=cue==='center-recovery'?'./assets/sfx/center-recovery.mp3':progressionSounds[cue]??gameSounds[cue];
   if(!clip) return;
   const pool=hitSoundPools.get(cue);
   const ready=pool?.find(audio=>audio.paused||audio.ended);
@@ -6783,11 +6952,17 @@ function playGameSound(cue){
 }
 const clickAudio=typeof Audio==='undefined'?null:new Audio(gameSounds['0005']);
 if(clickAudio){clickAudio.preload='auto';clickAudio.volume=.22;}
-document.addEventListener('click',event=>{
-  if(!clickAudio||settings.muteClick||settings.clickVolume===0||!event.target.closest?.('button:not(:disabled), select, summary, [role="button"]')) return;
+function playClickSound(){
+  if(!clickAudio||settings.muteClick||settings.clickVolume===0) return;
   clickAudio.currentTime=0;
   clickAudio.play().catch(()=>{});
-});
+}
+document.addEventListener('pointerdown',event=>{
+  if(event.pointerType==='mouse'&&(event.button===0||event.button===2)) playClickSound();
+},true);
+document.addEventListener('click',event=>{
+  if(event.pointerType!=='mouse'&&event.target.closest?.('button:not(:disabled), select, summary, [role="button"]')) playClickSound();
+},true);
 const musicStatus=$('musicStatus');
 const musicStartupGesture=new AbortController();
 function createMusicPlayer(){
@@ -7739,7 +7914,7 @@ function renderSetup(){
     const shiny=canShine&&selectedShiny.has(mon.id);
     const art='<img src="'+sprite({...mon,shiny})+'" alt="'+mon.name+'">';
     if(mode==='trial') return '<span class="selection-slot" title="'+mon.name+'">'+art+'</span>';
-    return '<button type="button" class="selection-slot shiny-option" data-configure="'+mon.id+'" aria-pressed="'+(focused===mon.id)+'" aria-label="移出隊伍：'+mon.name+'" title="點擊移出隊伍">'+art+(shiny?'<span aria-hidden="true">★</span>':'')+'</button>';
+    return '<button type="button" class="selection-slot shiny-option" data-configure="'+mon.id+'" aria-pressed="'+(focused===mon.id)+'" aria-label="'+musicLabel('選擇 ','Select ')+mon.name+'">'+art+(shiny?'<span aria-hidden="true">★</span>':'')+'</button>';
   }).join('')+'</span>');
   const count=Number($('typeCount').value);
   const choices=$('typeChoices');
@@ -7754,11 +7929,35 @@ function renderSetup(){
   $('setupStatus').textContent=selectedTypes.length+' / '+count;
   $('startBattle').textContent=mode==='formal'?musicLabel('出發','Depart'):musicLabel('開始教學','Start Tutorial');
   $('setupLuck').hidden=mode!=='formal';
+  const hasSelection=selectedTeam.includes(focusedTeamMember);
+  $('setupReorder').disabled=!hasSelection||selectedTeam.length<2;
+  $('setupReorder').textContent=setupSwapSource===null?musicLabel('更改順序','Reorder'):musicLabel('取消排序','Cancel reorder');
+  $('setupRemove').textContent=musicLabel('移出隊伍','Remove');
+  $('setupRemove').disabled=!hasSelection;
+  for(const id of ['setupReorder','setupRemove']) $(id).hidden=mode!=='formal';
   $('setupLuck').textContent=musicLabel('運氣','Luck')+' '+luckRank(luckValue(selectedTeam.map(id=>({shiny:selectedShiny.has(id)&&profile.shinyUnlocked.includes(id)})),{},upgradeEffect(readWallet(),'luck')));
   $('startBattle').disabled=selectedTypes.length!==count||!selectedTeam.length;
   $('startBattle').classList.toggle('tutorial-target',mode==='trial'&&!$('startBattle').disabled);
 }
+let setupSwapSource=null;
 let configuringMember;
+function focusSetupMember(id){
+  const target=selectedTeam.indexOf(id);
+  if(target<0) return;
+  if(setupSwapSource!==null&&setupSwapSource!==id){
+    const source=selectedTeam.indexOf(setupSwapSource);
+    if(source>=0) [selectedTeam[source],selectedTeam[target]]=[selectedTeam[target],selectedTeam[source]];
+    setupSwapSource=null;
+  }
+  focusedTeamMember=id;
+  renderSetup();
+}
+$('setupReorder').onclick=()=>{
+  if(!selectedTeam.includes(focusedTeamMember)) return;
+  setupSwapSource=setupSwapSource===null?focusedTeamMember:null;
+  renderSetup();
+};
+$('setupRemove').onclick=()=>removeTeamMember(focusedTeamMember);
 let memberEvolutionPath=[];
 let focusedTeamMember;
 let memberTab='moves';
@@ -7963,6 +8162,7 @@ function removeTeamMember(id){
   const index=selectedTeam.indexOf(id);
   if(index<0) return;
   selectedTeam.splice(index,1);
+  setupSwapSource=null;
   if(focusedTeamMember===id) focusedTeamMember=selectedTeam[index]??selectedTeam[index-1]??null;
   renderSetup();
 }
@@ -7988,7 +8188,7 @@ $('teamSelection').onclick=event=>{
   }
   const button=event.target.closest('[data-configure]');
   if(!button) return;
-  removeTeamMember(Number(button.dataset.configure));
+  focusSetupMember(Number(button.dataset.configure));
 };
 $('partyHelp').onclick=event=>{
   const button=event.target.closest('[data-dex-region]');
@@ -8005,6 +8205,7 @@ function openSetup(nextMode){
   selectedShiny.clear();
   selectedTraits.clear();
   focusedTeamMember=null;
+  setupSwapSource=null;
   mode=nextMode;
   if(mode==='formal'){
     for(const [key,pref] of Object.entries(profile.teamPreferences)){
@@ -8090,16 +8291,10 @@ $('teamCards').onclick=event=>{
     selectedTeam.push(id);
     playSpeciesCry({id},.161);
   }
-  focusedTeamMember=id;
-  renderSetup();
+  focusSetupMember(id);
 };
 $('teamCards').oncontextmenu=event=>{
-  const card=event.target.closest('[data-member]');
-  if(mode!=='formal'||!card) return;
-  const id=Number(card.dataset.member);
-  if(!selectedTeam.includes(id)) return;
-  event.preventDefault();
-  removeTeamMember(id);
+  if(mode==='formal'&&event.target.closest('[data-member]')) event.preventDefault();
 };
 $('typeCount').onchange=()=>{
   selectedTypes=selectedTypes.slice(0,Number($('typeCount').value));
@@ -8770,7 +8965,7 @@ const itemCatalog=Object.fromEntries([
   ['strawberry-sweet','草莓糖飾',1,'使你運氣變好一點。'],
   ['love-sweet','愛心糖飾',2,'使你運氣變非常好。'],
   ['up-grade','升級資料',1,'讓一名隊員回憶一個本局曾遺忘的招式。',true],
-  ...Object.keys(gemNames).map(type=>['reel-stone:'+type,type+'屬性石頭',0,'在 3 個不同輪盤各加入 1 個'+type+'屬性圖案，永久生效。',true]),
+  ...Object.keys(gemNames).map(type=>['reel-stone:'+type,type+'屬性石頭',0,'將 3 個 '+type+'屬性圖案增加進圖庫。',true]),
   ...Object.entries(technicalMachines).map(([id,tm])=>[id,id.slice(0,2).toUpperCase()+id.slice(3)+' '+tm.name,tm.tier,'教相容的寶可夢學會'+tm.name+'。'+(tm.power>1?'威力 '+tm.power+'。':''),true]),
   ...Object.entries(healingBerries).map(([id,[name,tier,fraction]])=>[
     id,name,tier,'拉霸結算後，若我方場上寶可夢低於 50% HP，自動消耗並恢復 '+Math.round(fraction*100)+'% 最大 HP。每次拉霸最多觸發一種補血樹果，優先使用恢復量最高的樹果。'
@@ -9019,8 +9214,49 @@ async function chooseReward(s){
   const options=rewardOptions(s);
   const tiers=settings.language==='en'?['Common','Uncommon','Epic','Legendary']:rarityNames;
   if(s.tutorial&&canApplyItem(s,'potion')&&!options.includes('potion')) options[0]='potion';
+  if(!$('rewardPreview')){
+    $('rewardChoices').insertAdjacentHTML('afterend','<p id="rewardPreview" aria-live="polite"></p><button type="button" id="rewardConfirm" hidden></button>');
+  }
   $('rewardTitle').textContent=s.tutorial?'③ 選道具 · 點一件領取，接著練習捕捉':musicLabel('第 '+s.stage+' 關獎勵 · 從 '+options.length+' 件道具中選一件或領取金幣','Stage '+s.stage+' Reward · Choose an Item or Gold');
-  $('rewardChoices').innerHTML=(s.tutorial?'<p class="tutorial-dialog-next">↓ 點任一件道具。一次性道具會立刻使用，再進入捕捉練習。</p>':'')+options.map((id,i)=>itemButton(rewards[id],'value="'+i+'"',(i+1)+' · '+rewards[id].name+' · '+tiers[rewards[id].tier]+(immediateReward(id)?musicLabel(' · 立即使用',' · Use Now'):''),rewards[id].quantity??1)).join('')+(s.tutorial?'':'<button value="coins" style="grid-column:1/-1">'+musicLabel(''+(options.length+1)+' · 跳過道具 · +20 金幣', (options.length+1)+' · Skip Item · +20 Gold')+'</button>');
+  const choices=$('rewardChoices');
+  const preview=$('rewardPreview');
+  const confirm=$('rewardConfirm');
+  preview.textContent='';
+  confirm.hidden=true;
+  confirm.textContent=musicLabel('確認領取','Claim Item');
+  choices.innerHTML=(s.tutorial?'<p class="tutorial-dialog-next">↓ 點任一件道具，接著練習捕捉。</p>':'')+options.map((id,i)=>{
+    const item=rewards[id], quantity=item.quantity??1;
+    return '<button type="submit" class="reward-drop" value="'+i+'" style="--rarity:'+rarityColors[item.tier]+';--drop-delay:'+(320+i*55)+'ms">'+
+      itemStackArt(item.sprite,quantity)+'<strong>'+item.name+'</strong></button>';
+  }).join('')+(s.tutorial?'':'<button class="reward-skip" type="submit" value="coins">'+musicLabel('跳過道具 · +20 金幣','Skip Item · +20 Gold')+'</button>');
+  let pending=null;
+  let touchSelection=false;
+  choices.onpointerdown=event=>{touchSelection=event.pointerType==='touch';};
+  function describe(button){
+    const item=rewards[options[Number(button.value)]];
+    preview.textContent=item?item.name+' · '+tiers[item.tier]+' · '+item.description:'';
+  }
+  choices.onpointerover=event=>{
+    const button=event.target.closest('.reward-drop');
+    if(event.pointerType==='mouse'&&button&&pending===null) describe(button);
+  };
+  choices.onfocusin=event=>{
+    if(event.target.matches('.reward-drop')&&pending===null) describe(event.target);
+  };
+  choices.onsubmit=event=>{
+    event.preventDefault();
+    const button=event.submitter;
+    if(!button) return;
+    if(button.value==='coins'||(!touchSelection&&!matchMedia('(hover: none), (pointer: coarse)').matches)){
+      dialog.close(button.value);
+      return;
+    }
+    pending=button.value;
+    describe(button);
+    confirm.hidden=false;
+    for(const item of choices.querySelectorAll('.reward-drop')) item.setAttribute('aria-pressed',String(item===button));
+  };
+  confirm.onclick=()=>{if(pending!==null) dialog.close(pending);};
   dialog.oncancel=event=>event.preventDefault();
   let selected;
   while(true){
@@ -9031,6 +9267,10 @@ async function chooseReward(s){
     });
     if(!immediateReward(selected)) break;
     if(await applyUsableItem(s,selected,true)) return;
+    pending=null;
+    confirm.hidden=true;
+    preview.textContent='';
+    for(const item of choices.querySelectorAll('.reward-drop')) item.removeAttribute('aria-pressed');
   }
   if(selected==='coins'){
     s.coins=(s.coins??0)+20;

@@ -486,21 +486,15 @@ main{container-type:inline-size;min-width:0;margin:0;position:relative}
 @media(prefers-reduced-motion:reduce){.trainer-ball.flying{animation-duration:.24s}}
 .item-tooltip{position:fixed;z-index:20;max-width:min(30em,calc(100vw - 16px));padding:.55em .8em;color:#fff2cf;background:#453853;border:3px solid #2c2439;box-shadow:inset 0 0 0 2px #9985a5,4px 4px #241d2b;line-height:1.35;font-size:.82em;pointer-events:none}
 
-#upgradeScreen h1,#settlementScreen h1{font-size:3.2cqw}
-#walletBalance,#settlementGold{color:#372446;background:#ffe6a1;border:2px solid #6c4c58;padding:.35em;font-weight:bold}
+#upgradeScreen h1{font-size:3.2cqw}
+#walletBalance{color:#372446;background:#ffe6a1;border:2px solid #6c4c58;padding:.35em;font-weight:bold}
 #upgradeCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6cqw}
 #upgradeCards button{display:grid;justify-items:center;align-content:center;gap:.22cqw;min-width:0;min-height:9.8cqw;padding:.35cqw;font-size:1.25cqw}
-#upgradeCards img,#settlementItems img{width:2.9cqw;height:2.9cqw;object-fit:contain;image-rendering:pixelated}
+#upgradeCards img{width:2.9cqw;height:2.9cqw;object-fit:contain;image-rendering:pixelated}
 #upgradeCards small{color:#563b61}
 #upgradeDialog{background:#d6cfd9;color:#302941;border:4px solid #302a43;box-shadow:inset 0 0 0 3px #706880,6px 6px #181424}
-.settlement-grid{display:grid;grid-template-columns:1.15fr 1fr;grid-template-rows:12cqw 12cqw;gap:.6cqw;text-align:left}
-.settlement-grid>section{padding:.45cqw;background:#f0e8ef;border:2px solid #6b5b7b;box-shadow:none;overflow:auto}
-.settlement-grid h2{margin:0 0 .25em;padding:.22em .35em;background:#453853;color:#fff1cf;font-size:1.4cqw}
-.settlement-mons,#settlementItems{display:flex;flex-wrap:wrap;gap:.4cqw}
 .settlement-mon{display:grid;justify-items:center;min-width:4.8cqw;padding:.22cqw;font-size:1.04cqw;background:#ded4e3;border:1px solid #827291}
 .settlement-mon img{width:3.45cqw;height:3.45cqw;object-fit:contain;image-rendering:pixelated}
-#settlementItems .item-card{font-size:1.1cqw;padding:.2cqw .35cqw}
-#settlementItems img{width:1.5cqw;height:1.5cqw}
 .settlement-actions{display:flex;justify-content:center;gap:.65cqw}.settlement-actions .home{margin:0}
 #playAgain{background:#ffde78}
 
@@ -1289,7 +1283,6 @@ button.egg-card:not(:disabled):hover{background:#fff8c9;border-color:#675937}
 .hatch-traits{display:flex;flex-wrap:wrap;gap:.3em .8em;margin-top:.35em}
 .hatch-traits .hatch-nature{color:#8b315e}
 .hatch-traits .hatch-ability{color:#1e5480}
-#settlementHatches:empty,#settlementHatchSection[hidden]{display:none}
 /* Align energy and party slots to the same top and bottom edges. */
 #setup .setup-footer{align-items:stretch}
 #setup .energy-panel{display:grid;grid-template-rows:auto minmax(0,1fr);min-width:0}
@@ -1373,6 +1366,60 @@ button.egg-card:not(:disabled):hover{background:#fff8c9;border-color:#675937}
 @media(prefers-reduced-motion:reduce){#rewardDialog::backdrop,#rewardChoices .reward-drop{animation:none}}
 @media(max-height:460px){#rewardChoices{margin:.25em 0}#rewardTitle{margin:.2em 0}#rewardPreview{min-height:1lh}.reward-drop .item-stack-art{width:66px;height:66px}#rewardChoices .reward-drop{grid-template-rows:auto minmax(1.6lh,1fr)}}
 
+
+#settlementScreen{display:grid;grid-template-rows:auto minmax(0,1fr);gap:1.05cqw;padding:1.45cqw 1.75cqw 1.55cqw;color:#17342e;background:#eee7cd;border-color:#213d35;box-shadow:inset 0 0 0 3px #a69d79;font-size:clamp(12px,1.36cqw,23px);overflow:auto}
+#settlementScreen .settlement-banner{margin:0;display:grid;gap:.28em;text-align:center;color:#fff2cd;background:#244a40;border:2px solid #19352d;box-shadow:inset 0 0 0 2px #86a48a,3px 3px #1a3128;padding:.5em}
+#settlementScreen h1{margin:0;padding:0;border:0;background:none;color:inherit;font-size:clamp(22px,2.85cqw,48px);text-shadow:none;letter-spacing:.13em}
+#settlementScreen .settlement-meta{display:flex;justify-content:center;flex-wrap:wrap;gap:.25em .8em;font-size:.72em}
+#settlementScreen :is(#settlementStage,#settlementGold){background:none;border:0;margin:0;padding:0;color:inherit;font-weight:normal}
+#settlementScreen .settlement-layout{min-height:0;display:grid;grid-template-columns:minmax(0,39fr) minmax(0,61fr);gap:1.05cqw}
+#settlementScreen .settlement-column{min-width:0;min-height:0;display:grid;gap:.85cqw}
+#settlementScreen .settlement-column:first-child{grid-template-rows:minmax(0,2.35fr) minmax(0,1fr)}
+#settlementScreen .settlement-column:last-child{grid-template-rows:minmax(0,1.05fr) minmax(0,1fr) auto}
+#settlementTeam{min-height:0;display:grid;grid-template:repeat(2,minmax(0,1fr))/repeat(3,minmax(0,1fr));gap:.65cqw}
+#settlementScreen .settlement-unit{display:grid;position:relative;place-items:center;align-content:center;gap:.2em;min-width:0;min-height:0;margin:0;padding:.2em;background:#fbf3d9;color:inherit;border:2px solid #8b9366;box-shadow:inset 0 0 0 2px #ddd1a3}
+#settlementScreen button.settlement-unit:hover{background:#fff1ac;border-color:#92703d}
+#settlementScreen .settlement-unit img{width:min(100%,7.6cqw);height:7.3cqw;object-fit:contain;image-rendering:pixelated}
+#settlementScreen .settlement-unit small{font-size:.79em;color:#4d5742}
+#settlementScreen .settlement-unit[data-shiny]::before{content:'★';position:absolute;right:.4em;top:.25em;color:#a76419}
+#settlementScreen .settlement-unit.empty{background:#e5ddc2;color:#685f4b;box-shadow:inset 0 0 0 2px #d9cfad}
+#settlementScreen .settlement-panel{min-width:0;min-height:0;padding:0;display:grid;grid-template-rows:auto minmax(0,1fr);background:#faf4df;border:2px solid #87946e;box-shadow:inset 0 0 0 2px #d6caa0}
+#settlementScreen .settlement-panel h2{text-align:left;margin:3px 3px 0;padding:.33em .53em;background:#dce8ca;font-size:1.16em;border-bottom:1px solid #a5af8d}
+#settlementScreen :is(#settlementPool,#settlementItems,#settlementUnlocks){min-height:0;display:grid;align-content:safe center;overflow:auto;padding:.6em;gap:.4em;text-align:left;scrollbar-gutter:stable}
+#settlementScreen #settlementPool{grid-template-columns:repeat(auto-fit,minmax(min(3.8em,100%),1fr))}
+#settlementScreen :is(#settlementItems,#settlementUnlocks){grid-template-columns:repeat(3,minmax(0,1fr))}
+#settlementScreen .settlement-chip{background:#f8f0d8;border:1px solid #b4a778;min-height:2.4em;display:flex;align-items:center;gap:.28em;min-width:0;padding:.23em;font-size:.9em}
+#settlementScreen .settlement-chip span{overflow-wrap:anywhere}
+#settlementScreen .settlement-chip .quantity{margin-inline-start:auto;white-space:nowrap;color:#4e4429}
+#settlementScreen .settlement-chip :is(img,svg,.type-icon){width:1.65em;height:1.65em;object-fit:contain;image-rendering:pixelated;flex:none}
+#settlementPool .settlement-chip{justify-content:center;white-space:nowrap}
+#settlementScreen .settlement-unlocked{display:grid;place-items:center;gap:.18em;min-width:0;background:#f8efd3;border:1px solid #b4a778;padding:.35em;text-align:center}
+#settlementScreen .settlement-unlocked[data-shiny]{background:#ffeab2;border-color:#ab7a39}
+#settlementScreen .settlement-unlocked img{width:min(100%,6.7cqw);height:6.2cqw;object-fit:contain;image-rendering:pixelated}
+#settlementScreen .settlement-unlocked small{color:#86521a}
+#settlementScreen .settlement-empty{grid-column:1/-1;margin:0}
+#settlementScreen .settlement-actions{justify-content:flex-end;gap:.5em}
+#settlementScreen .settlement-actions button,#settlementMember button{margin:0;padding:.44em .68em;background:#fae29a;color:#25352c;border:2px solid #795f35;box-shadow:inset 0 0 0 2px #fff0bf}
+#settlementScreen .settlement-actions .home{background:#f5eed9}
+#settlementMember{width:min(90vw,495px);max-height:90dvh;color:#17342e;background:#f8efd4;border:4px solid #24463b;padding:.7em;overflow:auto;box-shadow:inset 0 0 0 2px #92ac85;font-size:clamp(13px,2.7vmin,21px)}
+#settlementMember::backdrop{background:#101511aa}
+#settlementMember h2{padding:.4em;margin:0;text-align:left;background:#244a40;color:#fff1ca;font-size:1.25em}
+#settlementMember .settlement-member-body{display:grid;grid-template-columns:4.7em minmax(0,1fr);align-items:start;gap:.55em;margin:.55em 0}
+#settlementMember img{width:4.7em;height:4.7em;object-fit:contain;image-rendering:pixelated;background:#e0ebd1;border:2px solid #9ba986}
+#settlementMember dl{display:grid;grid-template-columns:auto 1fr;gap:.32em;margin:0;text-align:left}
+#settlementMember dd{margin:0}
+#settlementMemberMoves{display:grid;gap:.15em}
+#settlementMemberMoves span{background:#e4ebd1;padding:.2em}
+#settlementMember form{text-align:right}
+@media(max-width:740px) and (orientation:portrait){
+ #settlementScreen{height:auto;aspect-ratio:auto;min-height:100dvh}
+ #settlementScreen .settlement-layout{grid-template-columns:1fr}
+ #settlementScreen .settlement-column:is(:first-child,:last-child){grid-template-rows:auto}
+ #settlementScreen :is(.settlement-unit img,.settlement-unlocked img){width:58px;height:55px}
+ #settlementScreen .settlement-unit{min-height:96px}
+ #settlementScreen :is(#settlementItems,#settlementUnlocks){max-height:26dvh}
+}
+
 </style>
 <main>
 <div id="championBlackout" hidden aria-hidden="true"></div>
@@ -1407,12 +1454,27 @@ button.egg-card:not(:disabled):hover{background:#fff8c9;border-color:#675937}
 <section id="upgradeScreen" class="screen" hidden><h1>永久增強</h1><p id="walletBalance" role="status"></p><div id="upgradeCards"></div><button class="home">返回主畫面</button></section>
 <section id="collectionScreen" class="screen" hidden><header class="collection-header"><h1 id="collectionTitle">圖鑑</h1><button type="button" id="collectionBack">返回主畫面</button></header><div class="collection-filters"><p id="collectionCount"></p><div id="collectionFilters"></div></div><div id="collectionCards" class="team-grid"></div></section>
 <dialog id="dexTypeDialog" aria-labelledby="dexTypeTitle"><h2 id="dexTypeTitle"></h2><form method="dialog"><div id="dexTypeChoices"></div><div class="dex-type-actions"><button type="button" id="dexTypeClear"></button><button value="apply" id="dexTypeApply"></button></div></form></dialog>
-<section id="settlementScreen" class="screen" hidden><h1 id="settlementTitle">正式模式結算</h1><div class="settlement-grid">
-<section><h2>此次隊員</h2><div id="settlementTeam" class="settlement-mons"></div></section>
-<section><h2>關卡結果</h2><p id="settlementStage"></p></section>
-<section><h2>持有道具</h2><div id="settlementItems"></div></section>
-<section><h2>捕捉解鎖</h2><div id="settlementUnlocks" class="settlement-mons"></div></section>
-</div><section id="settlementHatchSection" hidden><h2 id="settlementHatchTitle">本局孵化</h2><div id="settlementHatches" class="settlement-mons"></div></section><p id="settlementGold" role="status"></p><div class="settlement-actions"><button class="home">回到主畫面</button><button id="playAgain">再來一局</button></div></section>
+<section id="settlementScreen" class="screen" hidden>
+  <header class="settlement-banner"><h1 id="settlementTitle">遊戲結算</h1><div class="settlement-meta"><p id="settlementStage"></p><p id="settlementGold" role="status"></p></div></header>
+  <div class="settlement-layout">
+    <div class="settlement-column">
+      <div id="settlementTeam" aria-label="本局隊伍"></div>
+      <section class="settlement-panel"><h2 id="settlementPoolTitle"></h2><div id="settlementPool"></div></section>
+    </div>
+    <div class="settlement-column">
+      <section class="settlement-panel"><h2 id="settlementItemsTitle"></h2><div id="settlementItems"></div></section>
+      <section class="settlement-panel"><h2 id="settlementUnlockTitle"></h2><div id="settlementUnlocks"></div></section>
+      <div class="settlement-actions"><button class="home" id="settlementHome">主畫面</button><button id="playAgain">再來一局</button></div>
+    </div>
+  </div>
+</section>
+<dialog id="settlementMember" aria-labelledby="settlementMemberName">
+  <h2 id="settlementMemberName"></h2><div class="settlement-member-body"><img id="settlementMemberArt" alt=""><dl>
+  <dt id="settlementAbilityLabel"></dt><dd id="settlementMemberAbility"></dd>
+  <dt id="settlementNatureLabel"></dt><dd id="settlementMemberNature"></dd>
+  <dt id="settlementMovesLabel"></dt><dd id="settlementMemberMoves"></dd>
+  </dl></div><form method="dialog"><button id="settlementMemberClose">關閉</button></form>
+</dialog>
 <div id="battleScreen" hidden>
 <div class="desktop nds" role="group" aria-label="寶可夢拉霸單打"><div id="arena" aria-hidden="true"></div><div id="enemyHeld" aria-label="對手持有道具"></div><div id="battleProgress"><div id="stageBadge" aria-label="關卡進度"></div><select id="battleSpeed" aria-label="遊戲速度"><option value="1">1X</option><option value="2">2X</option><option value="3">3X</option></select></div>
 <section id="player" aria-label="我方"></section>
@@ -2674,7 +2736,7 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false,start
     usedWildTypes:[...new Set([...(prior?.usedWildTypes??[]),prior?.phaseType,foe.phaseType].filter(Boolean))],redEncountered:Boolean(prior?.redEncountered||prior?.kind===redEncounterKind||foe.kind===redEncounterKind),
     region:mode==='formal'?(adventure.region?adventureLabel(adventure.region):adventure.national?'全國冒險':regions[0]):null,items:prior?.items??{},loveSweetAcquired:Boolean(prior?.loveSweetAcquired||prior?.items?.["love-sweet"]),balls,used:{},
     reels,positions,active,spins:0,result:'',won:false,board:boardAt(reels,positions),matches:[],log:['第 '+stage+' 關開始。'],
-    runId:prior?.runId??newRunId(),coins:prior?.coins??0,newUnlocks:prior?.newUnlocks??[],upgrades,counterSpins:0,fluteUntil,reelsCustomized:prior?.reelsCustomized??false,universalRules,reelsPhysical:universalRules||Boolean(prior?.reelsPhysical),reelGemCount:prior?.reelGemCount??(prior?.reelsCustomized?1:0)};
+    runId:prior?.runId??newRunId(),coins:prior?.coins??0,newUnlocks:prior?.newUnlocks??[],newShinyUnlocks:prior?.newShinyUnlocks??[],upgrades,counterSpins:0,fluteUntil,reelsCustomized:prior?.reelsCustomized??false,universalRules,reelsPhysical:universalRules||Boolean(prior?.reelsPhysical),reelGemCount:prior?.reelGemCount??(prior?.reelsCustomized?1:0)};
   if(mode==='formal') balanceEnemyTypeItems(run);
   if(mode==='formal') assignBossShields(run);
   if(prior?.testStartStage) run.testStartStage=prior.testStartStage;
@@ -8761,9 +8823,6 @@ $('upgradeDialog').onclose=async()=>{
   });
   openUpgrades(result?'強化完成':'金幣不足或強化狀態已更新');
 };
-function settlementMon(mon,level){
-  return '<div class="settlement-mon"><img src="'+sprite(mon)+'" alt="" onerror="this.hidden=true"><span>'+displayPokemon(mon)+(level?' · Lv. '+level:'')+'</span></div>';
-}
 async function fadeChampionScene(element,from,to){
   if(reducedMotion.matches||!element.animate) return;
   const animation=element.animate([{opacity:from},{opacity:to}],{duration:650,easing:'ease-in-out',fill:'both'});
@@ -8841,6 +8900,66 @@ async function playChampionCredits(){
   }
 }
 const shownSettlements=new WeakSet();
+function showSettlementMember(mon){
+  $('settlementMemberName').textContent=displayPokemon(mon)+' · Lv. '+mon.level+(mon.shiny?' ★':'');
+  $('settlementMemberArt').src=sprite(mon.transformOriginal?{...mon,displayId:null}:mon);
+  $('settlementMemberAbility').textContent=displayAbility(mon.abilityId);
+  $('settlementMemberNature').textContent=natureLabel(mon.natureId);
+  $('settlementAbilityLabel').textContent=musicLabel('特性','Ability');
+  $('settlementNatureLabel').textContent=musicLabel('性格','Nature');
+  $('settlementMovesLabel').textContent=musicLabel('招式','Moves');
+  $('settlementMemberClose').textContent=musicLabel('關閉','Close');
+  const moves=mon.transformOriginal?.moves??mon.moves??[];
+  $('settlementMemberMoves').replaceChildren(...moves.map(name=>
+    Object.assign(document.createElement('span'),{textContent:displayMove(name)})));
+  $('settlementMember').showModal();
+}
+function renderSettlementUnlocks(run,hatched=[]){
+  const unlocked=new Map();
+  for(const id of run.newUnlocks??[]) unlocked.set(id,false);
+  for(const id of run.newShinyUnlocks??[]) unlocked.set(id,true);
+  for(const {id,shiny} of hatched) unlocked.set(id,Boolean(shiny||unlocked.get(id)));
+  const entries=[...unlocked].flatMap(([id,shiny])=>{
+    const mon=speciesById(id);
+    return mon?['<article class="settlement-unlocked" '+(shiny?'data-shiny':'')+'><img src="'+sprite({...mon,shiny})+
+      '" alt=""><b>'+displayPokemon(mon)+'</b>'+(shiny?'<small>★ '+musicLabel('色違','Shiny')+'</small>':'')+'</article>']:[];
+  });
+  $('settlementUnlocks').innerHTML=entries.join('')||'<p class="settlement-empty">'+musicLabel('本局沒有新解鎖','No new Pokémon unlocked')+'</p>';
+}
+function renderSettlementContents(run){
+  $('settlementTitle').textContent=musicLabel('遊戲結算','Run Results');
+  $('settlementPoolTitle').textContent=musicLabel('圖庫圖案','Symbol Pool');
+  $('settlementItemsTitle').textContent=musicLabel('攜帶道具與樹果','Items and Berries');
+  $('settlementUnlockTitle').textContent=musicLabel('解鎖的寶可夢','Pokémon Unlocked');
+  $('settlementHome').textContent=musicLabel('主畫面','Main Menu');
+  $('playAgain').textContent=musicLabel('再來一局','Play Again');
+  $('settlementTeam').innerHTML=Array.from({length:6},(_,i)=>{
+    const mon=run.team[i];
+    return mon?'<button type="button" class="settlement-unit" data-settlement-member="'+i+'" aria-haspopup="dialog" '+(mon.shiny?'data-shiny':'')+
+      '><img src="'+sprite(mon.transformOriginal?{...mon,displayId:null}:mon)+'" alt=""><b>'+displayPokemon(mon)+'</b><small>Lv. '+mon.level+'</small></button>':
+      '<span class="settlement-unit empty">'+musicLabel('空位','Empty')+'</span>';
+  }).join('');
+  $('settlementTeam').onclick=event=>{
+    const card=event.target.closest('[data-settlement-member]');
+    if(card) showSettlementMember(run.team[Number(card.dataset.settlementMember)]);
+  };
+  const pool=new Map();
+  for(const reel of run.reels??[]) for(const type of reel) pool.set(type,(pool.get(type)??0)+1);
+  $('settlementPool').innerHTML=[...pool].map(([type,count])=>'<span class="settlement-chip" aria-label="'+type+' ×'+count+'">'+typeIcon(type)+' ×'+count+'</span>').join('');
+  const held=[];
+  for(const id of new Set([...Object.keys(run.items??{}),...Object.keys(run.stolenItems??{})])){
+    const item=itemCatalog[id];
+    const count=Math.max(0,(run.items?.[id]??0)+(run.stolenItems?.[id]??0)-(run.enemyStolenItems?.[id]??0));
+    if(item&&count) held.push([item,count]);
+  }
+  for(const [id,ball] of Object.entries(ballCatalog)){
+    const count=ballStock(run,id);
+    if(count>0) held.push([ball,count]);
+  }
+  $('settlementItems').innerHTML=held.map(([item,count])=>'<span class="settlement-chip">'+itemArt(item.sprite)+'<span>'+item.name+
+    '</span><span class="quantity">×'+count+'</span></span>').join('')||'<p class="settlement-empty">'+musicLabel('沒有攜帶道具','No items carried')+'</p>';
+  renderSettlementUnlocks(run);
+}
 async function openSettlement(run){
   if(shownSettlements.has(run)) return;
   shownSettlements.add(run);
@@ -8850,17 +8969,12 @@ async function openSettlement(run){
     catch(error){console.error(error);}
     finally{rolling=false;}
   }
-  $('settlementTitle').textContent=run.finished?musicLabel('冠軍挑戰結算','Champion Results'):musicLabel('正式模式結算','Run Results');
+  renderSettlementContents(run);
   $('settlementStage').textContent=settings.language==='en'?(run.finished?'Champion · Cleared stage ':run.surrendered?'Surrendered at stage ':'Defeated at stage ')+run.stage:run.finished?'通過第 '+run.stage+' 關 · 地區冠軍':(run.surrendered?'投降於第 ':'倒在第 ')+run.stage+' 關'+(run.kind?' · '+run.kind:'');
-  $('settlementTeam').innerHTML=run.team.map(p=>settlementMon(p,p.level)).join('');
-  const held=Object.entries(run.items).filter(([id,count])=>itemCatalog[id]&&count);
-  $('settlementItems').innerHTML=held.length?held.map(([id,count])=>'<span class="item-card">'+itemStackArt(itemCatalog[id].sprite,count)+itemCatalog[id].name+'</span>').join(''):'<p>無</p>';
-  $('settlementUnlocks').innerHTML=run.newUnlocks.length?run.newUnlocks.map(id=>settlementMon(speciesById(id))).join(''):'<p>本局沒有新解鎖</p>';
   const totalCoins=run.coins+200*(run.items['amulet-coin']??0);
   $('settlementGold').textContent=musicLabel('本局獲得 '+totalCoins+' 金幣 · 結算中…','Earned '+totalCoins+' gold · Settling…');
   const controls=$('settlementScreen').querySelectorAll('.settlement-actions button');
   if(run.testStartStage){
-    $('settlementHatchSection').hidden=true;
     $('settlementGold').textContent=musicLabel('測試關卡 · 未計入正式進度','Test run · No progress recorded');
     screen('settlementScreen');
     $('playAgain').focus({preventScroll:true});
@@ -8876,13 +8990,18 @@ async function openSettlement(run){
     wallet.gold+=credited;
     if(champion) wallet.championTickets=(wallet.championTickets??0)+1;
     const eggs=creditEggProgress(wallet,prior,run);
-    wallet.settled[run.runId]={coins:Math.max(totalCoins,prior.coins),champion:prior.champion||champion,eggStages:eggs.eggStages,hatched:eggs.hatched};
-    return {credited,champion,balance:wallet.gold,hatched:eggs.hatched,newlyHatched:eggs.newlyHatched};
+    const eggUnlocks=new Map((prior.eggUnlocks??[]).map(({id,shiny})=>[id,shiny]));
+    for(const egg of eggs.newlyHatched){
+      const id=baseSpeciesId(egg.id);
+      const shiny=egg.shiny&&!profile.shinyUnlocked.includes(id);
+      if(shiny||!profile.unlocked.includes(id)) eggUnlocks.set(id,Boolean(shiny||eggUnlocks.get(id)));
+    }
+    const unlocks=[...eggUnlocks].map(([id,shiny])=>({id,shiny}));
+    wallet.settled[run.runId]={coins:Math.max(totalCoins,prior.coins),champion:prior.champion||champion,eggStages:eggs.eggStages,hatched:eggs.hatched,eggUnlocks:unlocks};
+    return {credited,champion,balance:wallet.gold,hatched:eggs.hatched,newlyHatched:eggs.newlyHatched,unlocks};
   });
   applyHatchedEggs(result.hatched);
-  $('settlementHatchSection').hidden=!result.hatched.length;
-  $('settlementHatchTitle').textContent=musicLabel('本局孵化','Hatched this run');
-  $('settlementHatches').innerHTML=result.hatched.map(egg=>settlementMon({...speciesById(egg.id),shiny:egg.shiny})).join('');
+  renderSettlementUnlocks(run,result.unlocks);
   $('settlementGold').textContent=musicLabel('本局獲得 '+totalCoins+' 金幣 · 本次入帳 '+result.credited+' · 持有 '+result.balance+(result.champion?' · 扭蛋券 ×1':''),'Earned '+totalCoins+' gold · Credited '+result.credited+' · Balance '+result.balance+(result.champion?' · Ticket ×1':''));
   await showHatchAnimations(result.newlyHatched);
   }catch(error){
@@ -9497,7 +9616,7 @@ function migrateRun(run){
   run.items??={};run.used??={};
   run.log??=[];
   run.matches??=[];
-  run.coins??=0;run.newUnlocks??=[];run.upgrades??={};
+  run.coins??=0;run.newUnlocks??=[];run.newShinyUnlocks??=[];run.upgrades??={};
   run.counterSpins??=itemCount(run,'quick-claw')?run.spins%6:0;
   if(!run.runId){
     run.runId=legacyRunId(run);
@@ -9772,6 +9891,7 @@ async function acceptCapture(s){
   unlockTraits(baseId,mon);
   if(mon.shiny&&!profile.shinyUnlocked.includes(baseId)){
     profile.shinyUnlocked.push(baseId);
+    if(mode==='formal') (s.newShinyUnlocks??=[]).push(baseId);
     s.log.unshift(speciesById(baseId).name+'的色違版本已解鎖。');
   }
   s.log.unshift((species[baseId-1]?.name??mon.name)+'已在正式組隊名單解鎖。');

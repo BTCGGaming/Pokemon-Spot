@@ -1,23 +1,18 @@
 {
-  "id": "./",
   "name": "寶可夢拉霸 POKEMON SLOT",
   "short_name": "POKEMON SLOT",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "landscape",
-  "background_color": "#101626",
-  "theme_color": "#101626",
+  "background_color": "#18352d",
+  "theme_color": "#18352d",
   "icons": [
     {
-      "src": "./assets/mobile/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./assets/mobile/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "assets/share-preview.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

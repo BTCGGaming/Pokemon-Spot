@@ -1420,6 +1420,7 @@ button.egg-card:not(:disabled):hover{background:#fff8c9;border-color:#675937}
  #settlementScreen :is(#settlementItems,#settlementUnlocks){max-height:26dvh}
 }
 
+#mobileFullscreenStatus{position:fixed;left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));z-index:150;margin:0;padding:.5em .65em;background:#fff3d7;color:#24372d;border:2px solid #355443;font-size:clamp(12px,2.5vmin,18px);pointer-events:none;text-align:center}#mobileFullscreenStatus[hidden]{display:none}
 </style>
 <main>
 <div id="championBlackout" hidden aria-hidden="true"></div>
@@ -1549,7 +1550,7 @@ button.egg-card:not(:disabled):hover{background:#fff8c9;border-color:#675937}
   <form method="dialog"><button type="button" id="teamMemberToggle"></button><button>關閉</button></form>
 </dialog><dialog id="settingsDialog" aria-labelledby="settingsTitle">
   <h2 id="settingsTitle">設定</h2>
-  <div class="settings-rows">
+  <div class="settings-rows">    <div class="settings-row"><label for="settingsBattleSpeed" id="settingsBattleSpeedLabel">戰鬥速度</label><select id="settingsBattleSpeed"><option value="1">1X</option><option value="2">2X</option><option value="3">3X</option></select></div>
     <div class="settings-row"><label for="musicVolume" id="musicVolumeLabel">主音量（背景音樂）</label><div class="settings-value"><input id="musicVolume" type="range" min="0" max="200" value="100"><output id="musicVolumeValue" for="musicVolume">100%</output></div></div>
     <div class="settings-row"><label for="clickVolume" id="clickVolumeLabel">按鍵音量</label><div class="settings-value"><input id="clickVolume" type="range" min="0" max="200" value="100"><output id="clickVolumeValue" for="clickVolume">100%</output></div></div>
     <div class="settings-row"><label for="effectsVolume" id="effectsVolumeLabel">特效音量</label><div class="settings-value"><input id="effectsVolume" type="range" min="0" max="200" value="100"><output id="effectsVolumeValue" for="effectsVolume">100%</output></div></div>
@@ -3062,7 +3063,7 @@ async function gainExperience(p,amount){
   while(p.level<trialLevelCap&&p.exp>=experienceAt(p,p.level+1)) await levelUp(p,p.level+1,state);
 }
 let battleSpeed=1;
-$('battleSpeed').onchange=event=>{battleSpeed=Number(event.target.value);};
+$('battleSpeed').onchange=event=>setBattleSpeed(event.target.value);
 function syncBattleAnimationSpeed(){
   for(const animation of document.getAnimations?.()??[]){
     if(('animationName' in animation||'transitionProperty' in animation)&&animation.effect?.target?.closest?.('.desktop, #trainerIntro, #evolutionDialog')&&animation.playbackRate!==battleSpeed){
@@ -7079,7 +7080,7 @@ const settings={
   musicVolume:savedVolume(savedSettings?.musicVolume),
   musicPaused:savedSettings?.musicPaused===true,
   clickVolume:savedVolume(savedSettings?.clickVolume),
-  effectsVolume:savedVolume(savedSettings?.effectsVolume),
+  effectsVolume:savedVolume(savedSettings?.effectsVolume),  battleSpeed:[1,2,3].includes(Number(savedSettings?.battleSpeed))?Number(savedSettings.battleSpeed):1,
   language:savedSettings?.language==='en'?'en':'zh-Hant',
   muteClick:savedSettings?.muteClick===true,
   hotkeys:{...savedSettings?.hotkeys},
@@ -7294,7 +7295,17 @@ const audioControls=[
   {key:'clickVolume',inputs:['clickVolume','pauseClickVolume'],label:['按鍵音量','Button Volume']},
   {key:'effectsVolume',inputs:['effectsVolume','pauseEffectsVolume'],label:['特效音量','Sound Effects']}
 ];
+function setBattleSpeed(value){
+  const speed=Number(value);
+  if(![1,2,3].includes(speed)) return;
+  settings.battleSpeed=speed;
+  saveSettings();
+}
+$('settingsBattleSpeed').onchange=event=>setBattleSpeed(event.target.value);
 function applySettings(){
+  battleSpeed=settings.battleSpeed;
+  for(const id of ['settingsBattleSpeed','battleSpeed','pauseSpeed']) $(id).value=String(battleSpeed);
+  $('settingsBattleSpeedLabel').textContent=musicLabel('戰鬥速度','Battle speed');
   for(const [id,labels] of Object.entries(settingsLabels)) $(id).textContent=musicLabel(...labels);
   for(const {key,inputs,label} of audioControls){
     const value=settings[key];
@@ -7378,54 +7389,93 @@ for(const {key,inputs} of audioControls){
 $('gameLanguage').onchange=event=>{settings.language=event.target.value;saveSettings();};
 $('pauseLanguage').onchange=$('gameLanguage').onchange;
 $('pauseMuteClick').onchange=event=>{settings.muteClick=event.target.checked;saveSettings();};
-$('pauseSpeed').onchange=event=>{
-  battleSpeed=Number(event.target.value);
-  $('battleSpeed').value=String(battleSpeed);
-};
+$('pauseSpeed').onchange=event=>setBattleSpeed(event.target.value);
 const mobileFullscreenButtons=document.querySelectorAll('.mobile-fullscreen-control');
+let mobileFullscreenBusy=false;
+function mobileStandalone(){
+  return matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches||Boolean(navigator.standalone);
+}
 function updateMobileFullscreenButtons(){
   const active=Boolean(document.fullscreenElement||document.webkitFullscreenElement);
+  const root=document.documentElement;
+  const supported=Boolean(root.requestFullscreen||root.webkitRequestFullscreen)&&
+    document.fullscreenEnabled!==false&&document.webkitFullscreenEnabled!==false;
   for(const button of mobileFullscreenButtons){
-    button.textContent=active?musicLabel('離開全螢幕','Exit fullscreen'):musicLabel('全螢幕橫向','Landscape fullscreen');
+    button.disabled=mobileFullscreenBusy;
+    button.textContent=active?musicLabel('離開全螢幕','Exit fullscreen'):
+      mobileStandalone()?musicLabel('橫向遊玩','Play in landscape'):
+      supported?musicLabel('全螢幕橫向','Landscape fullscreen'):musicLabel('橫向遊玩','Play in landscape');
+    button.setAttribute('aria-pressed',String(active));
   }
 }
 function showMobileFullscreenHelp(rotateOnly=false){
-  const dialog=$('mobileFullscreenHelp');
-  $('mobileFullscreenTitle').textContent=musicLabel('橫向遊玩','Play in landscape');
-  $('mobileFullscreenMessage').textContent=rotateOnly
-    ?musicLabel('請把手機轉成橫向。若畫面沒有旋轉，請先解除系統的直向鎖定。','Turn your phone sideways and unlock portrait orientation if needed.')
-    :musicLabel('目前的瀏覽器無法直接開啟全螢幕。請在 Safari 或 Chrome 開啟遊戲，從瀏覽器選單加入主畫面，再從圖示啟動並把手機轉成橫向。','This browser cannot enter fullscreen here. Open the game in Safari or Chrome, add it to your Home Screen, then launch it and turn your phone sideways.');
-  $('mobileFullscreenClose').textContent=musicLabel('關閉','Close');
-  dialog.showModal();
+  let status=$('mobileFullscreenStatus');
+  if(!status){
+    status=document.createElement('p');
+    status.id='mobileFullscreenStatus';
+    status.setAttribute('role','status');
+    document.querySelector('main').append(status);
+  }
+  status.textContent=rotateOnly
+    ?musicLabel('請將手機轉為橫向；若未旋轉，請解除手機的直向鎖定。','Turn your phone sideways. Unlock portrait orientation if needed.')
+    :musicLabel('請將手機轉為橫向。要隱藏瀏覽器工具列，可從瀏覽器選單加入主畫面，再從遊戲圖示啟動。','Turn your phone sideways. To hide browser controls, add the game to your Home Screen and launch its icon.');
+  status.hidden=false;
+}
+async function lockMobileLandscape(){
+  try{await window.screen.orientation?.lock?.('landscape');}catch{}
+  if(innerWidth<innerHeight) showMobileFullscreenHelp(true);
 }
 for(const button of mobileFullscreenButtons) button.onclick=async()=>{
-  if(!mobileTouchInput.matches) return;
+  if(mobileFullscreenBusy) return;
+  mobileFullscreenBusy=true;
   const root=document.documentElement;
+  const active=document.fullscreenElement||document.webkitFullscreenElement;
   try{
-    if(document.fullscreenElement||document.webkitFullscreenElement){
-      await (document.exitFullscreen??document.webkitExitFullscreen).call(document);
-      window.screen.orientation?.unlock?.();
+    if(active){
+      const leave=document.exitFullscreen??document.webkitExitFullscreen;
+      if(leave) await leave.call(document);
+      try{window.screen.orientation?.unlock?.();}catch{}
+      if($('mobileFullscreenStatus')) $('mobileFullscreenStatus').hidden=true;
       return;
     }
-    if(matchMedia('(display-mode: standalone)').matches||navigator.standalone){
-      if(innerWidth<innerHeight) showMobileFullscreenHelp(true);
-      return;
-    }
+    if(mobileStandalone()){await lockMobileLandscape();return;}
     const enter=root.requestFullscreen??root.webkitRequestFullscreen;
-    if(!enter){showMobileFullscreenHelp();return;}
-    await enter.call(root);
+    const enabled=document.fullscreenEnabled!==false&&document.webkitFullscreenEnabled!==false;
+    if(!enter||!enabled){showMobileFullscreenHelp();return;}
+    // Invoke directly during the user's tap, before awaiting any other operation.
+    const request=root.requestFullscreen
+      ?root.requestFullscreen({navigationUI:'hide'})
+      :enter.call(root);
+    updateMobileFullscreenButtons();
+    await request;
+    if(document.fullscreenElement||document.webkitFullscreenElement){
+      if($('mobileFullscreenStatus')) $('mobileFullscreenStatus').hidden=true;
+      await lockMobileLandscape();
+    }else if(!root.requestFullscreen){
+      // Older WebKit completes its request through webkitfullscreenchange.
+      showMobileFullscreenHelp(innerWidth<innerHeight);
+    }
   }catch{
-    showMobileFullscreenHelp();
-    return;
-  }
-  try{
-    await window.screen.orientation.lock('landscape');
-  }catch{
-    if(innerWidth<innerHeight) showMobileFullscreenHelp(true);
+    if(document.fullscreenElement||document.webkitFullscreenElement) await lockMobileLandscape();
+    else showMobileFullscreenHelp();
+  }finally{
+    mobileFullscreenBusy=false;
+    updateMobileFullscreenButtons();
   }
 };
-document.addEventListener('fullscreenchange',updateMobileFullscreenButtons);
-document.addEventListener('webkitfullscreenchange',updateMobileFullscreenButtons);
+function mobileFullscreenChanged(){
+  updateMobileFullscreenButtons();
+  if(document.fullscreenElement||document.webkitFullscreenElement){
+    if($('mobileFullscreenStatus')) $('mobileFullscreenStatus').hidden=true;
+  }
+}
+document.addEventListener('fullscreenchange',mobileFullscreenChanged);
+document.addEventListener('webkitfullscreenchange',mobileFullscreenChanged);
+matchMedia('(display-mode: standalone)').addEventListener?.('change',updateMobileFullscreenButtons);
+window.addEventListener('orientationchange',()=>{
+  if($('mobileFullscreenStatus')&&innerWidth>=innerHeight) $('mobileFullscreenStatus').hidden=true;
+});
+updateMobileFullscreenButtons();
 applySettings();
 startKantoMusic();
 function screen(id){

@@ -2337,15 +2337,15 @@ const trainerStages={
   70:['道館館主','夏伯','leader_blaine','來試試我的火焰有多熱！',[136,78,6,59,126]],
   80:['道館館主','板木','leader_giovanni','讓我看看你有沒有挑戰我的實力。',[111,105,51,31,34,112]],
   15:['反派組織','火箭隊隊員','rocket_grunt_m','前面由火箭隊看守！',[19,23]],
-  35:['反派組織','火箭隊隊員','rocket_grunt_f','想通過這裡，就先打倒我！',[41,109,110]],
-  45:['反派組織','火箭隊隊員','rocket_grunt_m','居然一路追到這裡！',[20,42,24]],
-  65:['反派組織','火箭隊隊員','rocket_grunt_f','可別以為火箭隊只有這點本事。',[24,42,89]],
-  75:['反派組織幹部','火箭隊幹部','rocket_grunt_m','到此為止了。由我親自對付你。',[42,110,97,89]],
-  86:['反派組織老大','板木','leader_giovanni','你已經妨礙我們夠久了。',[53,31,34,112]],
+  35:['反派組織','火箭隊隊員','rocket_grunt_f','想通過這裡，就先打倒我！',[41,23,110]],
+  45:['反派組織','火箭隊隊員','rocket_grunt_m','居然一路追到這裡！',[20,42,110,24]],
+  65:['反派組織','火箭隊隊員','rocket_grunt_f','可別以為火箭隊只有這點本事。',[20,24,42,110,89]],
+  75:['反派組織幹部','火箭隊幹部','rocket_grunt_m','到此為止了。由我親自對付你。',[24,42,110,97,89]],
+  86:['反派組織老大','板木','leader_giovanni','你妨礙我們夠久了...',[53,31,34,112,115,150]],
   92:['四大天王','科拿','elite_four_lorelei','來看看你能不能突破冰的防線。',[87,91,80,124,131]],
-  94:['四大天王','希巴','elite_four_bruno','讓我看看你和寶可夢一同鍛鍊的成果！',[95,107,106,68]],
-  96:['四大天王','菊子','elite_four_agatha','小朋友，讓我見識你的真本事。',[94,42,93,24]],
-  98:['四大天王','阿渡','elite_four_lance','你走到了這裡。接下來由我試試你的實力。',[130,148,142,149]]
+  94:['四大天王','希巴','elite_four_bruno','讓我看看你和寶可夢一同鍛鍊的成果！',[95,57,107,106,68]],
+  96:['四大天王','菊子','elite_four_agatha','小朋友，讓我見識你的真本事。',[110,42,89,24,94]],
+  98:['四大天王','阿渡','elite_four_lance','你走到了這裡。接下來由我試試你的實力。',[130,6,117,142,149]]
 };
 function trainerFor(stage,starter){
   const lineup=rivalTeams[starter]?.[stage];
@@ -2397,10 +2397,10 @@ const regionalLeague={
    60:['風露','skyla',[528,521,628,567,581],'sharp-beak','來一場高飛的對戰吧！'],
    70:['哈奇庫','brycen',[583,615,461,221,614],'never-melt-ice','讓我看看你的修行成果。'],
    80:['夏卡','drayden',[611,635,373,334,621,612],'dragon-fang','讓我看看你與寶可夢的羈絆。'],
-   92:['婉龍','shauntal',[563,593,623,609],'spell-tag','這場對戰將成為一段故事。'],
-   94:['越橘','grimsley',[560,553,510,625],'black-glasses','出手吧，看看誰能贏。'],
-   96:['嘉德麗雅','caitlin',[579,518,561,576],'twisted-spoon','讓我看看你的實力。'],
-   98:['連武','marshal',[538,539,620,534],'black-belt','用這場比賽驗證你的鍛鍊！'],
+   92:['婉龍','shauntal',[563,593,477,623,609],'spell-tag','這場對戰將成為一段故事。'],
+   94:['越橘','grimsley',[560,553,452,510,625],'black-glasses','出手吧，看看誰能贏。'],
+   96:['嘉德麗雅','caitlin',[579,518,475,561,576],'twisted-spoon','讓我看看你的實力。'],
+   98:['連武','marshal',[538,539,500,620,534],'black-belt','用這場比賽驗證你的鍛鍊！'],
    100:['阿戴克','alder',[617,626,584,589,621,637],'silver-powder','來吧，讓我看看你和夥伴的力量！']
  },
  sinnoh:{
@@ -2451,18 +2451,20 @@ const regionalLeague={
 };
 const villainStages=[15,35,45,65,75,86];
 const regionalVillains={
- unova:{team:'等離子隊',leader:'魁奇思',art:['plasma_grunt_m','plasma_grunt_f','plasma_grunt_m','plasma_grunt_f','plasma_grunt_m','ghetsis'],rosters:[[504,509],[509,551],[505,551,559],[510,552,560],[510,560,553,569],[563,626,537,625,604,635]],gear:['black-glasses','poison-barb','soft-sand','black-belt','black-glasses','dragon-fang']},
- sinnoh:{team:'銀河隊',leader:'赤日',art:['galactic_grunt_m','galactic_grunt_f','galactic_grunt_m','galactic_grunt_f','saturn','cyrus'],rosters:[[431,41],[432,453],[434,454,42],[435,452,169],[432,435,452,169],[229,430,461,169,130]],gear:['poison-barb','black-glasses','poison-barb','black-glasses','spell-tag','black-glasses']},
+ unova:{team:'等離子隊',leader:'魁奇思',art:['plasma_grunt_m','plasma_grunt_f','plasma_grunt_m','plasma_grunt_f','plasma_grunt_m','ghetsis'],rosters:[[504,509],[504,509,551],[505,509,551,559],[505,510,552,569,560],[510,560,537,553,569],[563,626,537,625,604,635]],gear:['black-glasses','poison-barb','soft-sand','black-belt','black-glasses','dragon-fang']},
+ sinnoh:{team:'銀河隊',leader:'赤日',art:['galactic_grunt_m','galactic_grunt_f','galactic_grunt_m','galactic_grunt_f','saturn','cyrus'],rosters:[[431,41],[432,41,453],[432,434,42,454],[432,435,452,169,454],[430,435,452,169,454],[229,430,461,479,169,130]],gear:['poison-barb','black-glasses','poison-barb','black-glasses','spell-tag','black-glasses']},
  johto:{team:'火箭隊',leader:'阿波羅',art:['johto_grunt_m','johto_grunt_f','johto_grunt_m','johto_grunt_f','johto_executive_f','johto_executive_m'],
    rosters:[[19,41],[20,42,109],[24,42,198],[42,110,229],[169,198,229,110],[169,110,229,24,198]],
    gear:['silk-scarf','poison-barb','black-glasses','poison-barb','black-glasses','charcoal']},
  aqua:{team:'海洋隊',leader:'水梧桐',art:['aqua_grunt_m','aqua_grunt_f','aqua_grunt_m','aqua_grunt_f','aqua_admin_m','aqua_leader_archie'],
-   rosters:[[261,318],[262,41,318],[262,42,319],[171,319,42],[262,171,319,169],[262,169,171,319,365]],
+   rosters:[[261,318],[262,41,318],[262,42,171,319],[262,171,89,169,319],[171,89,169,365,319],[262,169,89,171,365,319]],
    gear:['black-glasses','mystic-water','black-glasses','mystic-water','mystic-water','mystic-water']},
  magma:{team:'熔岩隊',leader:'赤焰松',art:['magma_grunt_m','magma_grunt_f','magma_grunt_m','magma_grunt_f','magma_admin','magma_leader_maxie'],
-   rosters:[[261,322],[262,41,322],[262,42,323],[323,42,324],[262,323,324,169],[262,169,324,323,344]],
+   rosters:[[261,322],[262,41,322],[262,42,324,323],[262,110,169,324,323],[324,169,344,110,323],[262,324,169,344,110,323]],
    gear:['black-glasses','charcoal','black-glasses','charcoal','charcoal','soft-sand']}
 };
+const villainBossIntros={"kanto":"你妨礙我們夠久了...","aqua":"寶可夢，人類，所有的生物都依靠海洋生存","magma":"我們人類在陸地上成長。陸地就是一切","sinnoh":"我叫赤日。我將會創造出一個沒有無聊鬥爭的理想世界","unova":"我可是建立了等離子隊的完美的人！是要改變世界的完美的統治者"};
+const villainBossDefeatLines={"leader_giovanni":"希望我們能再次相見……再見了！","hoenn_aqua_leader_archie":"我必須說，你非常有天賦","hoenn_magma_leader_maxie":"什麼？！我，赤焰松，居然被打了個措手不及？","sinnoh_cyrus":"從你身上，我感受到了一顆想要守護什麼，堅強的心……","unova_ghetsis":"……太沒用了！這是何等沒用的結果！"};
 const nationalRivalStages=[5,25,55,85];
 function chooseAdventure(party,region='national'){
   const national=region==='national';
@@ -2493,7 +2495,7 @@ function regionalTrainer(stage,starter,adventure=legacyAdventure){
     const kind=index===5?'反派組織老大':index===4?'反派組織幹部':'反派組織';
     const name=index===5?group.leader:group.team+(index===4?'幹部':'隊員');
     const art=['hoenn','sinnoh','unova'].includes(region)?region+'_'+group.art[index]:group.art[index];
-    return [kind,name,art,index===5?'我們的計畫就由我來守住！':group.team+'可不會讓你輕易通過！',group.rosters[index]];
+    return [kind,name,art,index===5?(villainBossIntros[region==='hoenn'?adventure.organization:region]??'我們的計畫就由我來守住！'):group.team+'可不會讓你輕易通過！',group.rosters[index]];
   }
   const league=regionalLeague[adventure.league]?.[stage];
   if(league){
@@ -2632,8 +2634,8 @@ function specialOpponent(id,level,abilitySlot,luck,evolve=true){
   return mon;
 }
 const bossShieldMarks=[[],[50],[66,33],[75,50,25],[80,60,40,20]];
-const shieldAceSpecies={sinnoh_saturn:452,hoenn_aqua_admin_m:319,hoenn_aqua_leader_archie:319,
-  hoenn_magma_admin:323,hoenn_magma_leader_maxie:323,sinnoh_cyrus:461,sinnoh_flint:467,johto_executive_m:229,unova_marshal:620};
+const shieldAceSpecies={sinnoh_saturn:454,hoenn_aqua_admin_m:319,hoenn_aqua_leader_archie:319,
+  hoenn_magma_admin:323,hoenn_magma_leader_maxie:323,sinnoh_cyrus:130,sinnoh_flint:467,johto_executive_m:229,unova_marshal:534};
 function assignBossShields(run){
   const {trainer,stage,kind,foes}=run;
   const role=trainer?.[0];
@@ -4653,7 +4655,8 @@ function victoryGold(run){
   return 20+10*Math.floor((run.stage-1)/10)+upgradeEffect(run,'gold');
 }
 function trainerDefeatLine(run){
-  const [kind,name]=run.trainer;
+  const [kind,name,art]=run.trainer;
+  if(kind==='反派組織老大'&&villainBossDefeatLines[art]) return villainBossDefeatLines[art];
   if(kind===redEncounterKind) return '...';
   const lines={
     小茂:'這次是你贏了……下次我會贏回來！',

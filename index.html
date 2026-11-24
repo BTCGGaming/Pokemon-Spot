@@ -1524,7 +1524,7 @@ button.ui-pressed,summary.ui-pressed,[role="button"].ui-pressed{scale:.96;transl
 .nds #spinPromptArrow{z-index:2}
 @media(prefers-reduced-motion:reduce){.nds button.shell-control.ui-pressed .shell-control-face{scale:1;translate:0 0}}
 /* Treat the game as an interactive surface, not a selectable document. */
-html,body,body *,body *::before,body *::after{user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none}
+html,body{user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none}
 body :is(input,textarea,[contenteditable="true"]),body [contenteditable="true"] *{user-select:text!important;-webkit-user-select:text!important;-webkit-touch-callout:default}
 body :is(img,svg,canvas){-webkit-user-drag:none}
 </style>
@@ -2679,7 +2679,7 @@ function wildPool(stage,region){
   const level=Math.min(100,stage+enemyStartingLevel-1);
   const dex=regionalDex[region];
   const first=dex?.first??1;
-  const last=stage<=10&&first===1?26:dex?.last??species.length;
+  const last=dex?.last??species.length;
   const pool=[...new Set(species.slice(first-1,last).filter(mon=>!legendarySpeciesIds.has(mon.id)&&mon.id!==292)
     .map(mon=>wildForm(mon.id,level).id).filter(id=>id>=first&&id<=last))].map(speciesById);
   wildPoolCache.set(key,pool);
@@ -2690,6 +2690,19 @@ function legendaryPool(adventure){
 }
 const redEncounterKind='RED 彩蛋關';
 const redTrainer=[redEncounterKind,'RED','red','...',[25,131,143,3,6,9]];
+function recentWildEncounters(run){
+  const history=Array.isArray(run?.recentWildSpecies)?run.recentWildSpecies.filter(id=>Number.isInteger(id)&&id>0):[];
+  // Old saves have no history; retain at least their current wild encounter.
+  if(!history.length&&run?.enemy&&!run.trainer&&!run.kind)history.push(run.enemy.id);
+  return history.slice(-3);
+}
+function pickWildEncounter(pool,prior){
+  const recent=recentWildEncounters(prior);
+  let eligible=pool.filter(mon=>!recent.includes(mon.id));
+  // Small regional/type pools still work: relax the oldest exclusion first.
+  while(!eligible.length&&recent.length){recent.shift();eligible=pool.filter(mon=>!recent.includes(mon.id));}
+  return pick(eligible.length?eligible:pool);
+}
 function formalEncounter(stage,prior,rivalStarter,adventure=legacyAdventure,luck=0){
   const phase=Math.floor((stage-1)/10);
   const region=adventure.national?undefined:adventure.region;
@@ -2709,7 +2722,7 @@ function formalEncounter(stage,prior,rivalStarter,adventure=legacyAdventure,luck
   if(stage>=81&&stage<=100&&type==='冰'&&!prior?.redEncountered&&prior?.kind!==redEncounterKind&&Math.random()<.25){
     return {id:redTrainer[4][0],kind:redEncounterKind,phase,phaseType:type,trainer:redTrainer};
   }
-  return {id:pick(type?pool.filter(mon=>mon.type.includes(type)):pool).id,kind:'',phase,phaseType:type};
+  return {id:pickWildEncounter(type?pool.filter(mon=>mon.type.includes(type)):pool,prior).id,kind:'',phase,phaseType:type};
 }
 function trainerLearnedMoves(id,level){
   const moves=new Set();
@@ -2873,6 +2886,7 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false,start
   if(foe.kind&&!enemyItems) for(const mon of foes) equipEnemy(mon);
   for(const mon of foes) applyEnemyBoosters(mon,stage,enemyItems);
   const run={tutorial,team:party,enemy:foes[0],foes,foeIndex:0,rivalStarter,adventure,enemyItems,trainer:foe.trainer??null,introSeen:!foe.kind&&!foes[0].shiny,stage,kind:foe.kind,phase:foe.phase,phaseType:foe.phaseType,
+    recentWildSpecies:[...recentWildEncounters(prior),...(!foe.kind&&!foe.trainer?[foe.id]:[])].slice(-3),
     usedWildTypes:[...new Set([...(prior?.usedWildTypes??[]),prior?.phaseType,foe.phaseType].filter(Boolean))],redEncountered:Boolean(prior?.redEncountered||prior?.kind===redEncounterKind||foe.kind===redEncounterKind),
     region:mode==='formal'?(adventure.region?adventureLabel(adventure.region):adventure.national?'全國冒險':regions[0]):null,items:prior?.items??{},loveSweetAcquired:Boolean(prior?.loveSweetAcquired||prior?.items?.["love-sweet"]),balls,used:{},
     reels,positions,active,spins:0,result:'',won:false,board:boardAt(reels,positions),matches:[],log:['第 '+stage+' 關開始。'],
@@ -3204,24 +3218,16 @@ async function gainExperience(p,amount){
 }
 let battleSpeed=1;
 $('battleSpeed').onchange=event=>setBattleSpeed(event.target.value);
-function syncBattleAnimationSpeed(){
-  for(const animation of document.getAnimations?.()??[]){
-    if(('animationName' in animation||'transitionProperty' in animation)&&animation.effect?.target?.closest?.('.desktop, #trainerIntro, #evolutionDialog')&&animation.playbackRate!==battleSpeed){
-      animation.updatePlaybackRate(battleSpeed);
-    }
+function syncBattleAnimationSpeed(target){
+  const roots=target?[target]:[$('battleScreen'),$('trainerIntro'),$('evolutionDialog')].filter(Boolean);
+  for(const root of roots)for(const animation of root.getAnimations?.({subtree:!target})??[]){
+    if(('animationName' in animation||'transitionProperty' in animation)&&animation.effect?.target?.closest?.('.desktop, #trainerIntro, #evolutionDialog')&&animation.playbackRate!==battleSpeed)animation.updatePlaybackRate(battleSpeed);
   }
 }
-let battleAnimationSyncPending=false;
-const wait=ms=>{
-  if(battleSpeed!==1&&!battleAnimationSyncPending){
-    battleAnimationSyncPending=true;
-    requestAnimationFrame(()=>{
-      battleAnimationSyncPending=false;
-      syncBattleAnimationSpeed();
-    });
-  }
-  return new Promise(resolve=>setTimeout(resolve,ms/battleSpeed));
-};
+for(const event of ['animationstart','transitionrun'])document.addEventListener(event,event=>{
+ if(battleSpeed!==1&&event.target.closest?.('.desktop, #trainerIntro, #evolutionDialog'))syncBattleAnimationSpeed(event.target);
+});
+const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms/battleSpeed));
 const battleBallArt={"ultra":"iVBORw0KGgoAAAANSUhEUgAAABAAAAAwCAYAAAAYX/pXAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEGSURBVEhL7ZTLDcIwEERTAsccaYESXB/XlMGRNtIGR1owetIOWRt/COKAhJ80IvHOTAzImX6XEEL0suU+CqyXY6K3ijBcz4d4W09xWZY4z/NTlDBrljAkHO8hgi/xOzF7CgOMFNR2gLgulrCoHSAZVby7gGt9Da5VIJ/FNhSQARFWgV/j02IpDDw+5MvM/orMHh/uFkDpqQp2wx4FdgcHX+Tjf0GB/P+XzFYGg14onDovDtLbL5TWca4WyKijjHQWdE+Bii22waKGbFXbze+rBSCzgrk0M3sKg9Kvnksei22wCN5cUrUAGAgf0nozDAwxebj3ahaAnlgKdsMeBXYHB4PBnzJND+tB+uG17XbiAAAAAElFTkSuQmCC","master":"iVBORw0KGgoAAAANSUhEUgAAABAAAAAwCAYAAAAYX/pXAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEMSURBVEhL7ZSxDcIwFEQzAmswRtagZAXGoHVJSZkVUlJSMo/Ri3xwCXYcEAUSOemE8n3vHIQ+ze+qbdvoTuO6BBy33ciLigjE0MW4P8Z+d43nth9MATM8WzLA+HKLyEtUgFN8rOH2FABwGB82p8d59i0Y6vsKYuZzTFGxADuMQgiPEsE4YU8JUAADq8BnfCZsLA5cDnlZir9KYZfD1QKUu1VgFXYJeBtc9UV9/CsIYBt9IxcVEeD/YLrKmGUqrrLEoQO6lS3UOhcLBDuoXdAzRbP/BxRMg9PnYgHyQM5V2F+3ZGUS9hRD5OGciwWIA8khzWdhxCEhF8/u2QKkG3NgFXYJeBtctWrVn6pp7oeZG3DaX9K5AAAAAElFTkSuQmCC","poke":"iVBORw0KGgoAAAANSUhEUgAAABAAAAAwCAYAAAAYX/pXAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADrSURBVEhL7ZTBDYMwEATdDmVQV55pgWdKSDuph2iRBxawOYjyiBSPdALbN3tIkZN+l77vR6+8HYPwTGlVp4IQX103jo/b9FQRcs9BuX2PDpEnCiHVAJ9OCO8eUP0Kpntpj+BTAR6idzEMwxyCrMraAgINKskE+J6eWVujA8clD8vte2h2XA4DRGkqYig7CJfFxhf5+FdAmK603chTQSWR4jYehujQBabqFoYByC5yF1grKPxD2TZu19UA4Q2lCmX/3FrRk7UFbQpvLlU1QOgAXGL/UBY6VJOjtddhgGBiSQxlB+Gy2Gg0/pSU3nEW7hYagCu0AAAAAElFTkSuQmCC","great":"iVBORw0KGgoAAAANSUhEUgAAABAAAAAwCAYAAAAYX/pXAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEASURBVEhL7ZTBDYIwGIVZxzFYwyMreHQErhwdg6sjuAJH16j5SJ88tLRgPJjIl/xR2ve9kpha/S51XQefuFxGwvkyzGZVEYGhPo3T3+6h64dxKGDtejjmSwgQDE0bwEtUTCbG5+i1FXTZC5q2T78Fiy4wrKlYky3wEr5D13XPEslM1CYkKMAgq8DX+IzaHDYcl7wsxt9R2HG5WACpUyUWZUfCZnHni3z8K0jgNvqNXFWUEjW6jdkSNl3QqdzCYoFkF3UX9ExR8Q/lNfj6vFgAHkhNUfbXXRplojbBIng4NYsFwIZwSetZGdgk5PDsky0AnZgSi7IjYbO4s7Pzp1TVAw5iMvhL0wZ5AAAAAElFTkSuQmCC","open":"iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACbSURBVDhPjZDRDYAgEENZxzGYy09X4NMRXMd50CZXU7CgTfpz11dO00h1X6s6xt86l6XCOefGnEfMS8HtPkKtRRF/y4G9kYl4KzQ7wNlewdePLqzmzl6hBa5E58PPYIkCCk5hCgEtUvAXXEp5wr25i3grLCAFnIclGP4pYCawVgxACvXziL+FJU50wnz6Dyi+SEDBT1hFYA6mdAHFXyw4gK62DQAAAABJRU5ErkJggg=="};
 function prepareBall(ball,id){
   const src=globalThis.pokerogueArt?.ball(id)??'data:image/png;base64,'+battleBallArt[id];
@@ -3405,7 +3411,6 @@ async function damagePopup(side,damage,effectiveness,half=false){
   const portrait=$(side).querySelector('.portrait');
   portrait.classList.remove('impact-number','confirmed-hit');
   portrait.dataset.damage=damage?(half?half+' (-50%)':'−'+damage):'無效';
-  void portrait.offsetWidth;
   portrait.classList.add('impact-number');
   if(hitCue){
     portrait.classList.add('confirmed-hit');
@@ -6192,6 +6197,7 @@ function updateHp(id,p){
 let renderedLog;
 let renderedLogCount=0;
 function renderLog(){
+  if($('log').hidden)return;
   const entries=state.log;
   const sameLog=renderedLog===entries&&renderedLogCount<=entries.length;
   if(sameLog&&renderedLogCount===entries.length) return;
@@ -6649,6 +6655,7 @@ function weightedStops(reels,count){
 }
 function pullLever(){
   const button=$('spin');
+  if(button.closest('.nds'))return; // This layout uses the visible shell-control press instead.
   const ball=button.querySelector('.lever-ball');
   if(typeof ball?.animate!=='function'){
     button.classList.remove('pulled');
@@ -6694,9 +6701,7 @@ $('spin').onclick=async()=>{
   }
   $('notice').textContent='轉動中…';
   pullLever();
-  for(const mon of [state.team[state.active],state.enemy]){
-    for(const move of mon.moves) globalThis.pokerogueArt?.preload(skillDetails[move]?.id);
-  }
+
   const customized=state.reelsCustomized||state.reelsPhysical;
   const ready=!customized||state.tutorial?preloadReelGroups(state.reels,!state.tutorial):null;
   await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
@@ -6735,7 +6740,7 @@ $('spin').onclick=async()=>{
   });
   grid.innerHTML=strips.map(strip=>reelMarkup(strip)).join('');
   const tracks=grid.querySelectorAll('.reel-strip');
-  const lead=reducedMotion.matches?140:350;
+  const lead=0;
   const animations=Array.from(tracks,(track,column)=>{
     const distance=(strips[column].length-boardSize)/strips[column].length*100;
     const duration=stops[column];
@@ -6747,6 +6752,7 @@ $('spin').onclick=async()=>{
     })];
     return track.animate?.(frames,{duration:duration/(fastForward?Math.max(2.5,battleSpeed):battleSpeed),fill:'forwards'});
   });
+  setTimeout(()=>{for(const mon of [state.team[state.active],state.enemy])for(const move of mon.moves)globalThis.pokerogueArt?.preload(skillDetails[move]?.id);},0);
   await Promise.allSettled(animations.map(animation=>animation?.finished));
   tracks.forEach((track,column)=>{
     track.style.transform='translate3d(0,0,0)';
@@ -6779,7 +6785,7 @@ $('spin').onclick=async()=>{
     render(false);
   }
   if(state.won&&!state.finished){advanceStage();return;}
-  if(!$('skill').open) $(state.won&&!state.finished?'nextBattle':state.result?'exitBattle':'spin').focus();
+  if(!$('skill').open) $(state.won&&!state.finished?'nextBattle':state.result?'exitBattle':'spin').focus({preventScroll:true});
 };
 function healAtStageEntry(run){
   const amount=upgradeEffect(run,'healing');
@@ -7650,6 +7656,7 @@ function setBattleSpeed(value){
   if(![1,2,3].includes(speed)) return;
   settings.battleSpeed=speed;
   saveSettings();
+  syncBattleAnimationSpeed();
 }
 $('settingsBattleSpeed').onchange=event=>setBattleSpeed(event.target.value);
 function applySettings(){
@@ -10073,6 +10080,7 @@ function migrateRun(run){
     }
     run.region??=regions[0];
     if(run.stage<=10) run.phaseType=null;
+    run.recentWildSpecies=recentWildEncounters(run);
     run.usedWildTypes=[...new Set([...(Array.isArray(run.usedWildTypes)?run.usedWildTypes:[]),run.phaseType].filter(type=>Object.hasOwn(types,type)))];
     run.redEncountered=Boolean(run.redEncountered||run.trainer?.[0]===redEncounterKind);
     run.kind??=run.trainer?.[0]??(run.stage===90?'神獸':'');
@@ -10171,7 +10179,7 @@ $('logControl').onclick=()=>{
   const log=$('log');
   log.hidden=!log.hidden;
   $('logControl').setAttribute('aria-expanded',String(!log.hidden));
-  if(!log.hidden) log.scrollTop=log.scrollHeight;
+  if(!log.hidden){renderLog();log.scrollTop=log.scrollHeight;}
 };
 for(const event of ['mouseover','focusin']){
   $('lowerContent').addEventListener?.(event,e=>{
@@ -11012,5 +11020,5 @@ state=fresh();
 render();
 
 </script>
-<script src="./assets/ui-language.js?v=20261124-2"></script>
+<script src="./assets/ui-language.js?v=20261124-perf"></script>
 </html>

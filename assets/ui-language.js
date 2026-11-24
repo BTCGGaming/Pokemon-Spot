@@ -148,7 +148,15 @@
   for(const [key,value]of Object.entries(shortPhrases))if(!dictionary[key.trim()])dictionary[key.trim()]=value.trim();
   const shortPattern=new RegExp(Object.keys(shortPhrases).sort((a,b)=>b.length-a.length).map(escape).join("|"),"g");
   const allRules=[...logRules,...replacements];
+  const translationCache=new Map();
   function translate(text){
+    if(!cjk.test(text))return translateUncached(text);
+    if(translationCache.has(text))return translationCache.get(text);
+    const result=translateUncached(text);
+    if(translationCache.size>=4096)translationCache.delete(translationCache.keys().next().value);
+    translationCache.set(text,result);return result;
+  }
+  function translateUncached(text){
     if(!cjk.test(text))return text.replace(/。/g,'.').replace(/，/g,', ').replace(/！/g,'!').replace(/？/g,'?');
     const lead=text.match(/^\s*/)[0],tail=text.match(/\s*$/)[0],trim=text.trim();
     if(dictionary[trim])return lead+dictionary[trim]+tail;
@@ -194,11 +202,19 @@
     const walker=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT,{acceptNode(node){return node.nodeType===Node.ELEMENT_NODE&&node.matches('script,style,textarea')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT;}});
     while(walker.nextNode()){const node=walker.currentNode;if(node.nodeType===Node.TEXT_NODE)updateText(node);else updateAttributes(node);}
   }
-  function flush(){frame=0;const roots=[...pending];pending.clear();for(const root of roots)if(root.isConnected)walk(root);}
+  function flush(){
+    frame=0;const roots=pending;pending=new Set();
+    if(settings.language!=='en')return;
+    for(const root of roots){
+      if(!root.isConnected)continue;
+      let covered=false;for(let parent=root.parentNode;parent;parent=parent.parentNode)if(roots.has(parent)){covered=true;break;}
+      if(!covered)walk(root);
+    }
+  }
   function schedule(node){pending.add(node);if(!frame)frame=requestAnimationFrame(flush);}
   globalThis.gameEnglishText=translate;
   let lastLanguage;
   globalThis.refreshGameLanguage=()=>{if(lastLanguage===settings.language)return;const first=lastLanguage===undefined;lastLanguage=settings.language;document.documentElement.lang=settings.language;if(!first||settings.language==='en')walk(document.body);};
-  new MutationObserver(records=>{for(const record of records){if(record.type==='childList'){for(const node of record.addedNodes)schedule(node);}else schedule(record.target);}}).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['title','aria-label','placeholder','alt']});
+  new MutationObserver(records=>{if(settings.language!=='en')return;for(const record of records){if(record.type==='childList'){for(const node of record.addedNodes)schedule(node);}else if(record.type!=='characterData'||texts.get(record.target)?.rendered!==record.target.nodeValue)schedule(record.target);}}).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['title','aria-label','placeholder','alt']});
   refreshGameLanguage();
 })();

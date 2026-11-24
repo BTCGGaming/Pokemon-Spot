@@ -86,12 +86,14 @@
     const from = point(frameUser);
     const to = point(frameTarget);
     const layers = new Map();
+    // Read geometry once, before frame updates write battler styles.
+    const layerRects = new Map([...new Set([rear, between, overlay])].map(layer => [layer, layer.getBoundingClientRect()]));
     function context(layer) {
       if (layers.has(layer)) return layers.get(layer);
       const canvas = document.createElement('canvas');
       canvas.width = 320;
       canvas.height = 144;
-      const parent = layer.getBoundingClientRect();
+      const parent = layerRects.get(layer);
       Object.assign(canvas.style, {
         position: 'absolute', left: (field.left - parent.left) + 'px', top: (field.top - parent.top) + 'px',
         width: field.width + 'px', height: field.height + 'px', imageRendering: 'pixelated',

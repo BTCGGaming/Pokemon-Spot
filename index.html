@@ -2706,21 +2706,47 @@ function pickWildEncounter(pool,prior){
   while(!eligible.length&&recent.length){recent.shift();eligible=pool.filter(mon=>!recent.includes(mon.id));}
   return pick(eligible.length?eligible:pool);
 }
-function formalEncounter(stage,prior,rivalStarter,adventure=legacyAdventure,luck=0){
+function openingAttackOptions(party){
+  return party.filter(mon=>mon.left>0).flatMap(mon=>mon.moves.flatMap(name=>{
+    const skill=skillDetails[name],custom=moveRules[name]?.effect;
+    return skill&&moveRules[name]?.shapes!=='P'&&(skill.power>0||custom==='fling'||name==='唱歌'&&activeAbility(mon)===232)?[{mon,skill,custom}]:[];
+  }));
+}
+function openingOpponentAllowed(id,attacks){
+  if(!attacks.length)return true; // A support-only party cannot be fixed by changing opponents.
+  const target={...speciesById(id),left:1,abilityId:0};
+  return attacks.some(({mon,skill,custom})=>{
+    const run={team:[mon],active:0,enemy:target};
+    const adjusted={...skill,type:kalosMoveType(run,mon,skill,target)};
+    return attackMoveTypes(run,mon,adjusted,custom).some(type=>moveTypeImpact(type,target,mon,run,custom).effectiveness>0);
+  });
+}
+function formalEncounter(stage,prior,rivalStarter,adventure=legacyAdventure,luck=0,party=prior?.team??[]){
   const phase=Math.floor((stage-1)/10);
   const region=adventure.national?undefined:adventure.region;
-  const pool=wildPool(stage,region);
+  const attacks=stage<=5?openingAttackOptions(party):[];
+  const originalPool=wildPool(stage,region);
+  const safePool=attacks.length?originalPool.filter(mon=>openingOpponentAllowed(mon.id,attacks)):originalPool;
+  const pool=safePool.length?safePool:originalPool;
   // Pick a type available throughout the entire block so a phase never needs an off-type fallback.
   const usedWildTypes=new Set(prior?.usedWildTypes??[]);
   if(prior?.phaseType) usedWildTypes.add(prior.phaseType);
   const type=stage<=10?null:prior?.phase===phase?prior.phaseType??null:pick(Object.keys(types).filter(type=>
     !usedWildTypes.has(type)&&Array.from({length:10},(_,i)=>phase*10+i+1).every(n=>wildPool(n,region).some(mon=>mon.type.includes(type)))))??null;
-  const trainer=regionalTrainer(stage,rivalStarter,adventure);
+  let trainer=regionalTrainer(stage,rivalStarter,adventure);
+  if(trainer&&attacks.length){
+    const alternatives=wildPool(stage,adventure.rival).filter(mon=>openingOpponentAllowed(mon.id,attacks));
+    if(alternatives.length&&trainer[4].some(id=>!openingOpponentAllowed(id,attacks))){
+      const used=new Set(trainer[4].filter(id=>openingOpponentAllowed(id,attacks)));
+      const roster=trainer[4].map(id=>{if(openingOpponentAllowed(id,attacks))return id;const choices=alternatives.filter(mon=>!used.has(mon.id));const replacement=pick(choices.length?choices:alternatives).id;used.add(replacement);return replacement;});
+      trainer=[...trainer.slice(0,4),roster];
+    }
+  }
   if(trainer) return {id:trainer[4][0],kind:trainer[0],phase,phaseType:type,trainer};
   if(stage===90||(stage<90&&Math.random()<.005*(1+itemCount(prior??{},'lure'))+.001*luck)){
-    const legends=legendaryPool(adventure);
+    const legends=legendaryPool(adventure).filter(id=>!attacks.length||openingOpponentAllowed(id,attacks));
     const preview=prior?.stage===89&&stage===90?prior.stage90Legendary:undefined;
-    return {id:legends.includes(preview)?preview:pick(legends),kind:'神獸',phase,phaseType:type};
+    if(legends.length)return {id:legends.includes(preview)?preview:pick(legends),kind:'神獸',phase,phaseType:type};
   }
   if(stage>=81&&stage<=100&&type==='冰'&&!prior?.redEncountered&&prior?.kind!==redEncounterKind&&Math.random()<.25){
     return {id:redTrainer[4][0],kind:redEncounterKind,phase,phaseType:type,trainer:redTrainer};
@@ -2866,7 +2892,7 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false,start
   const adventure=mode==='formal'?(prior?.adventure??(prior?legacyAdventure:chooseAdventure(party,startRegion))):null;
   const rivalStarter=mode==='formal'?(prior?.rivalStarter??adventure.starter??selectRivalStarter(party)):null;
   const luck=mode==='formal'?luckValue(party,prior?.items,upgradeEffect({upgrades},'luck')):0;
-  const foe=mode==='formal'?formalEncounter(stage,prior,rivalStarter,adventure,luck):tutorial&&stage===3
+  const foe=mode==='formal'?formalEncounter(stage,prior,rivalStarter,adventure,luck,party):tutorial&&stage===3
     ?{id:9,kind:'地區冠軍',trainer:['地區冠軍','冠軍','champion_rival','沒想到啊 如今的你也能與我奮戰到這一刻',[9]]}:{id:tutorial&&stage===2?16:1,kind:''};
   const level=mode==='formal'?Math.min(100,enemyStartingLevel+stage-1):Math.max(...party.map(mon=>mon.level));
   const universalRules=prior?.universalRules??(oldReels?false:selectableEnergyCounts.includes(selectedTypes.length));

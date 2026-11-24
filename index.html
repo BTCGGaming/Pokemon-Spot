@@ -9701,14 +9701,14 @@ async function chooseReward(s){
   if(!$('rewardPreview')){
     $('rewardChoices').insertAdjacentHTML('afterend','<p id="rewardPreview" aria-live="polite"></p><button type="button" id="rewardConfirm" hidden></button>');
   }
-  $('rewardTitle').textContent=s.tutorial?'③ 選道具 · 點一件領取，接著練習捕捉':musicLabel('第 '+s.stage+' 關獎勵 · 從 '+options.length+' 件道具中選一件或領取金幣','Stage '+s.stage+' Reward · Choose an Item or Gold');
+  $('rewardTitle').textContent=s.tutorial?musicLabel('③ 選道具 · 點一件領取，接著練習捕捉','③ Choose an item · Claim one, then practice catching Pokémon'):musicLabel('第 '+s.stage+' 關獎勵 · 從 '+options.length+' 件道具中選一件或領取金幣','Stage '+s.stage+' Reward · Choose an Item or Gold');
   const choices=$('rewardChoices');
   const preview=$('rewardPreview');
   const confirm=$('rewardConfirm');
   preview.textContent='';
   confirm.hidden=true;
   confirm.textContent=musicLabel('確認領取','Claim Item');
-  choices.innerHTML=(s.tutorial?'<p class="tutorial-dialog-next">↓ 點任一件道具，接著練習捕捉。</p>':'')+options.map((id,i)=>{
+  choices.innerHTML=(s.tutorial?'<p class="tutorial-dialog-next">'+musicLabel('↓ 點任一件道具，接著練習捕捉。','↓ Choose any item, then practice catching Pokémon.')+'</p>':'')+options.map((id,i)=>{
     const item=rewards[id], quantity=item.quantity??1;
     return '<button type="submit" class="reward-drop" value="'+i+'" style="--rarity:'+rarityColors[item.tier]+';--drop-delay:'+(320+i*55)+'ms">'+
       itemStackArt(item.sprite,quantity)+'<strong>'+item.name+'</strong></button>';
@@ -10941,5 +10941,5 @@ state=fresh();
 render();
 
 </script>
-<script src="./assets/ui-language.js"></script>
+<script src="./assets/ui-language.js?v=20261124-2"></script>
 </html>

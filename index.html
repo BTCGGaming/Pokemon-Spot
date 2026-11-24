@@ -6598,6 +6598,18 @@ function selectSpinStops(draw,reels,normalIsWild){
   }
   return result;
 }
+function selectUnmodifiedSpinStops(draw,reels,normalIsWild){
+  // Only redirect some blank outcomes to one/two lines. Existing wins stay intact.
+  const result=selectSpinStops(draw,reels,normalIsWild);
+  const count=stop=>matchingLines(boardAt(stackLayout(reels,stop.mask),stop.positions),false,normalIsWild).length;
+  if(count(result)!==0||Math.random()<.35) return result;
+  for(let attempt=0;attempt<24;attempt++){
+    const candidate=selectSpinStops(draw,reels,normalIsWild);
+    const lines=count(candidate);
+    if(lines===1||lines===2) return candidate;
+  }
+  return result;
+}
 function physicalStops(reels){
   return {mask:0,positions:reels.map(reel=>randomIndex(reel.length))};
 }
@@ -6685,7 +6697,9 @@ $('spin').onclick=async()=>{
   }
   const draw=()=>customized?physicalStops(state.reels):weightedStops(state.reels,selectedTypes.length+Number(Boolean(state.universalRules)));
   const normalIsWild=activeAbility(state.team[state.active])===100;
-  const {mask:layoutMask,positions}=guided?{mask:0,positions:guided.positions}:selectSpinStops(draw,state.reels,normalIsWild);
+  const initialLibrary=!state.tutorial&&!state.reelsCustomized&&state.reels.every(reel=>reel.length===6);
+  const stopSelector=initialLibrary?selectUnmodifiedSpinStops:selectSpinStops;
+  const {mask:layoutMask,positions}=guided?{mask:0,positions:guided.positions}:stopSelector(draw,state.reels,normalIsWild);
   const layout=stackLayout(state.reels,layoutMask);
   const finalBoard=boardAt(layout,positions);
   const stops=Array.from({length:boardSize},(_,column)=>2000+column*1000/(boardSize-1));

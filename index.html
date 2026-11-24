@@ -1527,6 +1527,9 @@ button.ui-pressed,summary.ui-pressed,[role="button"].ui-pressed{scale:.96;transl
 html,body{user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none}
 body :is(input,textarea,[contenteditable="true"]),body [contenteditable="true"] *{user-select:text!important;-webkit-user-select:text!important;-webkit-touch-callout:default}
 body :is(img,svg,canvas){-webkit-user-drag:none}
+/* Filter hit areas stay fixed beneath a finger; retain brightness feedback. */
+#setup #typeChoices button,#setupFilterClear,#collectionFilters button,#dexTypeApply,#dexTypeClear{touch-action:manipulation;scale:1!important;translate:0 0!important}
+#setup #typeChoices button[aria-pressed=true]{background:#ffe18b!important;box-shadow:inset 0 0 0 .16cqw #895d20!important}
 </style>
 <main>
 <div id="championBlackout" hidden aria-hidden="true"></div>
@@ -4318,6 +4321,7 @@ function isCounterProtectionMove(name){
   return ['guard','protectCounter','substitute','shadowForce','quickGuard','wish'].includes(moveRules[name]?.effect)||skillDetails[name]?.effect==='PROTECT'||[561,588,596].includes(Number(skillDetails[name]?.id));
 }
 async function executeMoveCore(s,source,target,name,side,counter=false,sequence='',scale=1,support=[],depth=0,potency=1){
+  if(!source||!target||source.left<=0||target.left<=0)return false;
   const original=skillDetails[name];
   if(!original) return false;
   if(activeAbility(target)===171&&/[球跳彈]/.test(name)) return moveFailure(s,target.name+'的防彈擋下了這招。');
@@ -5132,11 +5136,19 @@ function reviveTimeMaster(run,mon,side){
   return true;
 }
 async function winBattle(s,p){
-  if(reviveTimeMaster(s,s.enemy,'enemy')) return;
+  if(s.result||s.won)return;
+  if(reviveTimeMaster(s,s.enemy,'enemy')){await replaceFainted(s);return;}
   if(s.enemy.left) delete s.spillDamage?.enemy;
   if(!s.enemy.left){
     delete s.enemyWarning;
     await animateFaint('enemy',s.enemy);
+  }
+  // Recoil, Explosion and Destiny Bond can knock out both sides together.
+  // Resolve our faint before an enemy replacement or stage reward can return early.
+  if(s.team[s.active].left<=0){
+    await replaceFainted(s);
+    if(s.result)return;
+    p=s.team[s.active];
   }
   if(s.trainer){
     const reserve=s.foes.find(mon=>mon!==s.enemy&&!mon.left);
@@ -5192,6 +5204,10 @@ async function resolveSpin(s,board,settledTracks=null){
   spinShieldBudgets.set(s,new WeakMap());
   try{
     await resolveSpinCore(s,board,settledTracks);
+    if(!s.result&&!s.won){
+      if(s.enemy.left<=0)await winBattle(s,s.team[s.active]);
+      else if(s.team[s.active].left<=0)await replaceFainted(s);
+    }
     if(warning&&s.enemyWarning===warning&&!s.result){
       await enemyAct(s);
       if(!s.enemy.left&&!s.result) await winBattle(s,s.team[s.active]);
@@ -5664,7 +5680,8 @@ async function animatePlayerSendOut(run,opening=false){
 }
 async function replaceFainted(s){
   const p=s.team[s.active];
-  if(p.left||reviveTimeMaster(s,p,'player')) return;
+  if(s.result||p.left>0||reviveTimeMaster(s,p,'player')) return;
+  p.left=0;
   await animateFaint('player',p);
   s.log.unshift(p.name+'倒下了。');
   undoTransform(p);
@@ -6291,7 +6308,7 @@ function render(refreshBoard=true){
   for(const [id,mon] of [['player',p],['enemy',state.enemy]]){
     const display=$(id).querySelector('.portrait');
     if(mon.left) mon.faintShown=false;
-    display.classList.toggle('gone',!mon.left&&Boolean(mon.faintShown));
+    display.classList.toggle('gone',mon.left<=0&&(Boolean(mon.faintShown)||!rolling));
     display.tabIndex=0;display.setAttribute('role','button');display.setAttribute('aria-label','查看'+mon.name+'詳細數值');
     display.onclick=()=>showCombatStats(mon);
     display.onkeydown=event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();showCombatStats(mon);}};
@@ -6367,6 +6384,7 @@ async function switchPartyMember(index){
     if(guarded) delete state.quickGuard.player;
     if(!guarded&&!state.result&&(state.active===index||state.enemyWarning)) await enemyAct(state,false,true);
     if(!state.enemy.left&&!state.result) await winBattle(state,state.team[state.active]);
+    if(!state.result&&state.team[state.active].left<=0)await replaceFainted(state);
   }finally{
     state.playerSending=false;
     $('playerSendBall').hidden=true;
@@ -6677,6 +6695,12 @@ function pullLever(){
 }
 $('spin').onclick=async()=>{
   if(rolling||state.result) return;
+  if(state.team[state.active].left<=0||state.enemy.left<=0){
+    rolling=true;
+    try{if(state.enemy.left<=0)await winBattle(state,state.team[state.active]);else await replaceFainted(state);}
+    finally{rolling=false;render(false);}
+    return;
+  }
   rolling=true;
   try{
   $('ballBox').disabled=true;
@@ -8393,7 +8417,8 @@ function renderSetup(){
   }).join('')+'</span>');
   const count=2;
   $('setupFilterTitle').textContent=musicLabel('寶可夢屬性篩選','Filter Pokémon types');
-  $('setupFilterNote').textContent=musicLabel('可複選，符合任一屬性即顯示','Select any matching types');
+  const shownCount=$('teamCards').querySelectorAll('[data-member]').length;
+  $('setupFilterNote').textContent=teamDexTypes.size?musicLabel('已選 '+teamDexTypes.size+' 種屬性 · 顯示 '+shownCount+' 隻','Selected '+teamDexTypes.size+' type(s) · '+shownCount+' Pokémon'):musicLabel('可複選，符合任一屬性即顯示','Select any matching types');
   $('setupFilterClear').textContent=musicLabel('全部屬性','All types');
   const choices=$('typeChoices');
   if(!choices.innerHTML){
@@ -8779,7 +8804,34 @@ $('teamCards').oncontextmenu=event=>{
   if(mode==='formal'&&event.target.closest('[data-member]')) event.preventDefault();
 };
 $('setupFilterClear').onclick=()=>{teamDexTypes.clear();$('teamCards').scrollTop=0;renderSetup();};
-$('typeChoices').onclick=event=>{const button=event.target.closest('[data-type]');if(!button)return;const type=button.dataset.type;if(teamDexTypes.has(type))teamDexTypes.delete(type);else teamDexTypes.add(type);$('teamCards').scrollTop=0;renderSetup();};
+function toggleSetupType(type){
+  if(!Object.hasOwn(types,type))return;
+  if(teamDexTypes.has(type))teamDexTypes.delete(type);else teamDexTypes.add(type);
+  $('teamCards').scrollTop=0;renderSetup();
+}
+let setupFilterTouch=null,lastSetupFilterTouch=null;
+$('typeChoices').addEventListener('pointerdown',event=>{
+  if(event.pointerType!=='touch')return;
+  const button=event.target.closest('[data-type]');
+  setupFilterTouch=button?{id:event.pointerId,button,x:event.clientX,y:event.clientY}:null;
+},{passive:true});
+$('typeChoices').addEventListener('pointermove',event=>{
+  if(setupFilterTouch?.id===event.pointerId&&Math.hypot(event.clientX-setupFilterTouch.x,event.clientY-setupFilterTouch.y)>10)setupFilterTouch=null;
+},{passive:true});
+$('typeChoices').addEventListener('pointercancel',()=>{setupFilterTouch=null;});
+$('typeChoices').addEventListener('pointerup',event=>{
+  const touch=setupFilterTouch;setupFilterTouch=null;
+  if(!touch||touch.id!==event.pointerId||!touch.button.isConnected)return;
+  const box=touch.button.getBoundingClientRect();
+  if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)return;
+  lastSetupFilterTouch={type:touch.button.dataset.type,at:performance.now()};
+  toggleSetupType(lastSetupFilterTouch.type);
+});
+$('typeChoices').onclick=event=>{
+  const button=event.target.closest('[data-type]');if(!button)return;
+  if(event.detail>0&&lastSetupFilterTouch?.type===button.dataset.type&&performance.now()-lastSetupFilterTouch.at<700&&event.pointerType!=='mouse')return;
+  toggleSetupType(button.dataset.type);
+};
 async function sparkleShiny(side,mon){
   if(!mon.shiny) return;
   const portrait=$(side).querySelector('.portrait');

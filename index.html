@@ -7666,7 +7666,7 @@ function openPromotionSymbols(){
   if(!promotionDraft||!selectedTeam.length||promotionStarting)return;
   if(!promotionDraft.counts){const candidates=[...new Set(selectedTeam.flatMap(id=>speciesById(id).type))];promotionDraft.counts=Object.fromEntries([...Object.keys(types),wildReelType].map(type=>[type,type===wildReelType?10:type===candidates[0]?15:type===(candidates[1]??Object.keys(types).find(t=>t!==candidates[0]))?8:0]));}
   $('promotionSymbolsTitle').textContent=musicLabel('宣傳用測試 · 自訂圖案數量','Promotional Test · Customize Symbol Counts');
-  $('promotionSymbolsHelp').textContent=musicLabel('隊員等級 100；道具依原測試關卡規則自動配置。圖案合計需為 30～500 個。','Level 100 team; items are assigned using the existing test-stage rules. Choose 30–500 symbols in total.');
+  $('promotionSymbolsHelp').textContent=musicLabel('隊員等級 100，可 MEGA 進化者直接以 MEGA 進場，多型態預設 X。道具自動配置；圖案合計需為 30～500 個。','Level 100 team; eligible Pokémon enter Mega Evolved (X form by default). Items are assigned automatically. Choose 30–500 symbols in total.');
   $('promotionSymbolsBack').textContent=musicLabel('返回組隊','Back to Team');$('promotionBegin').textContent=musicLabel('開始對戰','Start Battle');
   $('promotionSymbolCounts').innerHTML=[...Object.keys(types),wildReelType].map(type=>'<label>'+typeIcon(type)+'<span>'+ (type===wildReelType?musicLabel('萬能','Wild'):dexTypeName(type))+'</span><input type="number" inputmode="numeric" min="0" max="200" step="1" required data-promotion-count="'+type+'" value="'+(promotionDraft.counts[type]??0)+'"></label>').join('');
   $('promotionSymbolError').textContent='';updatePromotionTotal();$('promotionSymbols').showModal();
@@ -7687,6 +7687,11 @@ function createPromotionRun(config){
   const adventure={region:'national',national:true,rival:config.region,league:config.region,villain:config.region,starter,championStarter:starter,organization:'aqua'};
   const run=fresh(100,team,reels,{adventure,rivalStarter:starter},false,'national');
   run.universalRules=true;run.reelsPhysical=true;run.reelsCustomized=true;run.testStartStage=100;run.promotionConfig=structuredClone(config);
+  for(const mon of run.team){
+    const forms=kalosData.mega.filter(form=>form.id===mon.id);
+    const form=forms.find(form=>form.key.endsWith('-x'))??forms[0];
+    if(form)applyMegaForm(mon,form,run);
+  }
   return equipDeveloperItems(run,100);
 }
 $('promotionSymbolsForm').onsubmit=event=>{

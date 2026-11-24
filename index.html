@@ -1514,6 +1514,19 @@ html[lang=en] #combatStats .summary-stage{font-size:.65em}
 #menu>h1.menu-logo{position:relative;width:46cqw;height:8.8cqw;flex:none;padding:0;margin:0 0 .1cqw -.7cqw;background:none;border:0;box-shadow:none;overflow:hidden}
 #menu .menu-logo img{display:block;position:absolute;top:-3.65cqw;left:0;width:100%;height:auto;max-width:none;image-rendering:auto}
 #menu>p.menu-subtitle{font-size:2.35cqw;line-height:1.2;font-weight:bold;letter-spacing:.16em;margin:.05cqw 0 .4cqw;color:#fff1c3;text-shadow:.12cqw .16cqw #27233c}
+button.ui-pressed,summary.ui-pressed,[role="button"].ui-pressed{scale:.96;translate:0 2px;filter:brightness(1.16);outline:2px solid #ffe492;outline-offset:-3px}
+@media(prefers-reduced-motion:reduce){button.ui-pressed,summary.ui-pressed,[role="button"].ui-pressed{scale:1;translate:0 0}}
+.nds button.shell-control{background:#fff!important;overflow:visible}
+.nds button.shell-control::before{content:'';position:absolute;inset:7%;border-radius:50%;background:#636869;box-shadow:0 .3cqw 0 #777c7d;pointer-events:none}
+.nds :is(#spin,#itemBox,#ballBox,#exitBattle)>.shell-control-face{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;border-radius:50%;background-image:var(--nds-shell);background-size:1538.461538% 990.09901%;background-repeat:no-repeat;image-rendering:pixelated;pointer-events:none}
+.nds button.shell-control.ui-pressed{scale:1!important;translate:0 0!important;filter:none!important;outline:0!important}
+.nds button.shell-control.ui-pressed .shell-control-face{scale:.90;translate:0 .38cqw;filter:brightness(.68)}
+.nds #spinPromptArrow{z-index:2}
+@media(prefers-reduced-motion:reduce){.nds button.shell-control.ui-pressed .shell-control-face{scale:1;translate:0 0}}
+/* Treat the game as an interactive surface, not a selectable document. */
+html,body,body *,body *::before,body *::after{user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none}
+body :is(input,textarea,[contenteditable="true"]),body [contenteditable="true"] *{user-select:text!important;-webkit-user-select:text!important;-webkit-touch-callout:default}
+body :is(img,svg,canvas){-webkit-user-drag:none}
 </style>
 <main>
 <div id="championBlackout" hidden aria-hidden="true"></div>
@@ -7295,6 +7308,64 @@ function playGameSound(cue){
 }
 const clickAudio=typeof Audio==='undefined'?null:new Audio(gameSounds['0005']);
 if(clickAudio){clickAudio.preload='auto';clickAudio.volume=.22;}
+// The shell artwork contains these controls; duplicate the exact crop as a movable face.
+const shellControlPositions={spin:[79.95,71.2],itemBox:[85.1,61.2],ballBox:[90.5,71.2],exitBattle:[85.1,80.3]};
+for(const [id,[x,y]]of Object.entries(shellControlPositions)){
+ const button=$(id),face=document.createElement('span');face.className='shell-control-face';face.setAttribute('aria-hidden','true');
+ face.style.backgroundPosition=(x/(100-6.5)*100)+'% '+(y/(100-10.1)*100)+'%';button.prepend(face);button.classList.add('shell-control');
+}
+document.addEventListener('dragstart',event=>{
+  if(!event.target.closest?.('input,textarea,[contenteditable="true"]'))event.preventDefault();
+});
+// Also clear selections that begin outside the game or travel in reverse.
+function clearGameSelection(){
+  const selection=window.getSelection();if(!selection?.rangeCount||selection.isCollapsed)return;
+  const editable=node=>(node?.nodeType===1?node:node?.parentElement)?.closest?.('input,textarea,[contenteditable="true"]');
+  if(editable(selection.anchorNode)&&editable(selection.focusNode))return;
+  selection.removeAllRanges();
+}
+document.addEventListener('selectionchange',clearGameSelection);
+clearGameSelection();
+document.addEventListener('selectstart',event=>{
+  if(!event.target.closest?.('input,textarea,[contenteditable="true"]'))event.preventDefault();
+});
+// Delegated visual feedback also covers menus created after page load.
+const uiPressAnimations=new WeakMap(),uiPointerPresses=new Map(),uiRecentRelease=new WeakMap();
+function uiPressTarget(event){
+  const node=event.target.closest?.('button,summary,[role="button"]');
+  return node&&!node.matches(':disabled,[aria-disabled="true"]')?node:null;
+}
+function animateUiRelease(node){
+  node.classList.remove('ui-pressed');
+  uiPressAnimations.get(node)?.cancel();
+  if(!node.isConnected)return;
+  const face=node.querySelector('.shell-control-face');
+  const frames=face?(reducedMotion.matches?[{filter:'brightness(.7)'},{filter:'brightness(1)'}]:[{scale:'.90',translate:'0 .38cqw',filter:'brightness(.68)'},{scale:'1.035',translate:'0 -.08cqw',filter:'brightness(1.13)',offset:.65},{scale:'1',translate:'0 0',filter:'brightness(1)'}]):reducedMotion.matches?[{filter:'brightness(1.2)'},{filter:'brightness(1)'}]:[
+    {scale:'.96',translate:'0 2px',filter:'brightness(1.16)'},
+    {scale:'1.015',translate:'0 -1px',filter:'brightness(1.08)',offset:.6},
+    {scale:'1',translate:'0 0',filter:'brightness(1)'}
+  ];
+  const animation=(face??node).animate(frames,{duration:reducedMotion.matches?120:face?320:170,easing:'ease-out'});
+  uiPressAnimations.set(node,animation);
+  animation.finished.catch(()=>{}).finally(()=>{if(uiPressAnimations.get(node)===animation)uiPressAnimations.delete(node);});
+}
+function releaseUiPointer(event){
+  const node=uiPointerPresses.get(event.pointerId);if(!node)return;
+  uiPointerPresses.delete(event.pointerId);uiRecentRelease.set(node,performance.now());animateUiRelease(node);
+}
+document.addEventListener('pointerdown',event=>{
+  if(event.button!==0)return;
+  const node=uiPressTarget(event);if(!node)return;
+  uiPressAnimations.get(node)?.cancel();node.classList.add('ui-pressed');uiPointerPresses.set(event.pointerId,node);
+},true);
+document.addEventListener('pointerup',releaseUiPointer,true);
+document.addEventListener('pointercancel',releaseUiPointer,true);
+window.addEventListener('blur',()=>{for(const node of uiPointerPresses.values())node.classList.remove('ui-pressed');uiPointerPresses.clear();});
+document.addEventListener('click',event=>{
+  const node=uiPressTarget(event);if(!node)return;
+  if(performance.now()-(uiRecentRelease.get(node)??-Infinity)<250)return;
+  animateUiRelease(node);
+},true);
 function playClickSound(){
   if(!clickAudio||settings.muteClick||settings.clickVolume===0) return;
   clickAudio.currentTime=0;

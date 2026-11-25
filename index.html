@@ -1704,7 +1704,7 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
 <script src="./assets/emerald-sprites.js"></script>
 <script src="./assets/pokerogue/manifest.js?v=kalos-mega-1"></script>
 <script src="./assets/pokerogue-player.js?v=status-feedback-1"></script>
-<script>
+<script type="text/plain" id="slotGameSource">
 'use strict';
 const typeColors={毒:'#d69afb'};
 const types = {普通:'#ece4ca',格鬥:'#ed8f79',飛行:'#c8b9ff',毒:'#d69afb',地面:'#dbc388',岩石:'#cfbe86',蟲:'#c3d471',幽靈:'#c9a0db',鋼:'#c9d2df',電:'#f9dc66',超能力:'#f29aba',冰:'#a9e9ee',龍:'#ae9bfb',惡:'#c6a88e',火:'#ff9874',水:'#79d8ff',草:'#a9e780',妖精:'#ef9dc8'};
@@ -6987,16 +6987,16 @@ showDex();
 const profileKey='poke-slot-profile-v1';
 function loadProfile(){
   try{
-    const saved=JSON.parse(localStorage.getItem(profileKey));
+    const saved=JSON.parse(slotAccount.getItem(profileKey));
     if(saved&&Array.isArray(saved.unlocked)&&Array.isArray(saved.eggs)){
-      return {starter:saved.starter,caught:[...new Set((Array.isArray(saved.caught)?saved.caught:saved.unlocked).filter(id=>speciesById(id)))],unlocked:[...new Set(saved.unlocked.filter(id=>species[id-1]?.id===id).map(baseSpeciesId))],seen:[...new Set([...(Array.isArray(saved.seen)?saved.seen:[]),...saved.unlocked].filter(id=>speciesById(id)))],shinyUnlocked:[...new Set((Array.isArray(saved.shinyUnlocked)?saved.shinyUnlocked:[]).filter(id=>speciesById(id)).map(baseSpeciesId))],traitUnlocks:saved.traitUnlocks&&typeof saved.traitUnlocks==='object'?saved.traitUnlocks:{},teamPreferences:saved.teamPreferences&&typeof saved.teamPreferences==='object'?saved.teamPreferences:{},eggs:saved.eggs.filter(egg=>species[egg.id-1]&&Number.isFinite(egg.progress)),tickets:Math.max(0,Number(saved.tickets)||0)};
+      return {playerName:typeof saved.playerName==='string'?Array.from(saved.playerName.trim()).slice(0,16).join(''):'',starter:saved.starter,caught:[...new Set((Array.isArray(saved.caught)?saved.caught:saved.unlocked).filter(id=>speciesById(id)))],unlocked:[...new Set(saved.unlocked.filter(id=>species[id-1]?.id===id).map(baseSpeciesId))],seen:[...new Set([...(Array.isArray(saved.seen)?saved.seen:[]),...saved.unlocked].filter(id=>speciesById(id)))],shinyUnlocked:[...new Set((Array.isArray(saved.shinyUnlocked)?saved.shinyUnlocked:[]).filter(id=>speciesById(id)).map(baseSpeciesId))],traitUnlocks:saved.traitUnlocks&&typeof saved.traitUnlocks==='object'?saved.traitUnlocks:{},teamPreferences:saved.teamPreferences&&typeof saved.teamPreferences==='object'?saved.teamPreferences:{},eggs:saved.eggs.filter(egg=>species[egg.id-1]&&Number.isFinite(egg.progress)),tickets:Math.max(0,Number(saved.tickets)||0)};
     }
   }catch{}
-  return {starter:null,caught:[],unlocked:[],seen:[],shinyUnlocked:[],traitUnlocks:{},teamPreferences:{},eggs:[],tickets:0};
+  return {playerName:'',starter:null,caught:[],unlocked:[],seen:[],shinyUnlocked:[],traitUnlocks:{},teamPreferences:{},eggs:[],tickets:0};
 }
 const profile=loadProfile();
 function saveProfile(){
-  try{localStorage.setItem(profileKey,JSON.stringify(profile));}catch{}
+  try{slotAccount.setItem(profileKey,JSON.stringify(profile));}catch{}
 }
 function completeStage(s,message){
   if(s.won) return;
@@ -7490,7 +7490,7 @@ musicToggle.onclick=()=>{
 
 const settingsKey='poke-slot-settings-v1';
 let savedSettings;
-try{savedSettings=JSON.parse(localStorage.getItem(settingsKey));}catch{}
+try{savedSettings=JSON.parse(slotAccount.getItem(settingsKey));}catch{}
 function savedVolume(value){
   const previous=Number.isFinite(value)?value:savedSettings?.volume;
   return Number.isFinite(previous)?Math.max(0,Math.min(200,previous)):100;
@@ -7840,7 +7840,7 @@ function applySettings(){
 }
 function saveSettings(){
   applySettings();
-  try{localStorage.setItem(settingsKey,JSON.stringify(settings));}catch{}
+  try{slotAccount.setItem(settingsKey,JSON.stringify(settings));}catch{}
 }
 for(const field of musicStyleFields){
   $(field).onchange=event=>{
@@ -9351,7 +9351,7 @@ function legacyRunId(run){
 function readWallet(){
   if(!walletStorageAvailable) return walletFallback;
   try{
-    const stored=JSON.parse(localStorage.getItem(walletKey));
+    const stored=JSON.parse(slotAccount.getItem(walletKey));
     if(stored&&Number.isSafeInteger(stored.gold)&&stored.gold>=0&&stored.upgrades&&stored.settled) return stored;
   }catch{}
   return walletFallback;
@@ -9361,7 +9361,7 @@ function changeWallet(change){
     const wallet=readWallet();
     const result=change(wallet);
     walletFallback=wallet;
-    try{localStorage.setItem(walletKey,JSON.stringify(wallet));}catch{walletStorageAvailable=false;}
+    try{slotAccount.setItem(walletKey,JSON.stringify(wallet));}catch{walletStorageAvailable=false;}
     return result;
   };
   const locks=globalThis.navigator?.locks;
@@ -10552,7 +10552,7 @@ const allSlots=['auto',...manualSlots];
 const modeLabel=(value,run)=>value==='formal'?adventureLabel(run.adventure?.region??(run.adventure?.national?'national':'kanto')):musicLabel('新手教學','Tutorial');
 function readRun(slot){
   try{
-    const save=JSON.parse(localStorage.getItem(savePrefix+slot));
+    const save=JSON.parse(slotAccount.getItem(savePrefix+slot));
     const run=save?.run;
     if(save?.version===1&&['formal','trial'].includes(save.mode)&&
       (run?.universalRules?selectableEnergyCounts:[3,5,6]).includes(save.types?.length)&&
@@ -10566,7 +10566,7 @@ function readRun(slot){
 function writeRun(slot,run){
   if(run.testStartStage) return false;
   try{
-    localStorage.setItem(savePrefix+slot,JSON.stringify({version:1,mode,types:selectedTypes,run}));
+    slotAccount.setItem(savePrefix+slot,JSON.stringify({version:1,mode,types:selectedTypes,run}));
     return true;
   }catch{return false;}
 }
@@ -11187,5 +11187,5 @@ state=fresh();
 render();
 
 </script>
-<script src="./assets/ui-language.js?v=20261124-perf"></script>
+<script defer src="./assets/player-account.js?v=20261125-2"></script>
 </html>

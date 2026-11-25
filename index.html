@@ -1712,7 +1712,7 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
 <script defer src="./assets/site-analytics.js?v=20261125-1"></script>
 <script src="./assets/emerald-sprites.js"></script>
 <script src="./assets/pokerogue/manifest.js?v=kalos-mega-1"></script>
-<script src="./assets/pokerogue-player.js?v=status-feedback-1"></script>
+<script src="./assets/pokerogue-player.js?v=bounded-animation-20261125"></script>
 <script src="./assets/sprite-recovery.js?v=20261125-1"></script>
 <script type="text/plain" id="slotGameSource">
 'use strict';
@@ -4208,12 +4208,13 @@ async function animateStageChanges(run,previous=[]){
           const stat=direction>0?'attack':'speed';
           const portrait=$(side).querySelector('.portrait'),image=portrait?.querySelector('img[data-mon-id]:not([hidden])');
           if(!portrait)continue;
-          if(image&&!image.complete)await image.decode().catch(()=>{});
+          // Artwork loading must never block stat effects or the rest of the turn.
+          const readyImage=image?.complete&&image.naturalWidth>0?image:null;
           const art=globalThis.pokerogueArt?.stat(stat)??emeraldBattleDetails.stats[stat]??emeraldBattleDetails.stats.multiple;
-          const box=(image??portrait).getBoundingClientRect(),parent=portrait.getBoundingClientRect();
+          const box=(readyImage??portrait).getBoundingClientRect(),parent=portrait.getBoundingClientRect();
           const effect=document.createElement('div');effect.className='stat-stage-effect';effect.dataset.direction=direction>0?'up':'down';
           effect.style.cssText='left:'+(box.left-parent.left)+'px;top:'+(box.top-parent.top)+'px;width:'+box.width+'px;height:'+box.height+'px';
-          if(image?.src){effect.style.setProperty('--stage-mask','url('+JSON.stringify(image.src)+')');effect.classList.add('masked');}
+          if(readyImage?.src){effect.style.setProperty('--stage-mask','url('+JSON.stringify(readyImage.src)+')');effect.classList.add('masked');}
           if(art)effect.style.setProperty('--stage-art','url('+JSON.stringify(art)+')');
           const labels=indices.map(index=>index<6?statNames[index]:index===6?musicLabel('命中','Accuracy'):musicLabel('閃避','Evasion'));
           portrait.append(effect);

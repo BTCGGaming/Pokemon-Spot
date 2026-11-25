@@ -171,11 +171,22 @@
       }
     }
 
+    let completed = false, frameRequest, deadline;
     try {
       await new Promise((resolve, reject) => {
+        let settled = false;
+        const finish = error => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(deadline);
+          cancelAnimationFrame(frameRequest);
+          if (error) reject(error); else resolve();
+        };
+        deadline = setTimeout(() => finish(), Math.max(1000, Math.min(15000, animation.frames.length * ms + 2000)));
         const start = performance.now();
         function tick(now) {
-          try { draw(now); } catch (error) { reject(error); }
+          if (settled) return;
+          try { draw(now); } catch (error) { finish(error); }
         }
         function draw(now) {
           const frame = Math.max(0, Math.floor((now - start) / ms));
@@ -191,12 +202,14 @@
             renderFrame(visible);
             lastFrame = visible;
           }
-          if (frame < animation.frames.length && overlay.isConnected) requestAnimationFrame(tick);
-          else resolve();
+          if (frame < animation.frames.length && overlay.isConnected) frameRequest = requestAnimationFrame(tick);
+          else { completed = true; finish(); }
         }
-        requestAnimationFrame(tick);
+        frameRequest = requestAnimationFrame(tick);
       });
     } finally {
+      clearTimeout(deadline);
+      cancelAnimationFrame(frameRequest);
       for (const ctx of layers.values()) ctx.canvas.remove();
       for (const [sprite, transform, opacity, filter] of saved) {
         sprite.style.transform = transform;
@@ -204,7 +217,7 @@
         sprite.style.filter = filter;
       }
     }
-    return true;
+    return completed;
   }
 
   globalThis.pokerogueArt = {

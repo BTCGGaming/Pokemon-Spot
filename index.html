@@ -1550,6 +1550,13 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
 #resupplyAreaChoices .type-icon{width:1.6em;height:1.6em;flex:none}
 #resupplyAreaChoices button:hover,#resupplyAreaChoices button:focus-visible{background:#ffe48c;border-color:#ad6233}
 @media(max-width:480px){#resupplyAreaChoices button{flex-direction:column;font-size:.9em}}
+
+.dex-favorite-star{position:absolute;right:.25em;bottom:2.3em;color:#c78b15;text-shadow:1px 1px #fff4bd;font-size:1.2em;pointer-events:none}
+#teamCards>button,#collectionCards>button{position:relative}
+#setup #teamSelection .team-slot-options{grid-template-rows:repeat(4,minmax(0,1fr))}
+#setup .team-slot-options [data-favorite-filter]{grid-column:1/-1}
+#collectionFilters [data-favorite-filter]{flex-basis:100%;order:9}
+#teamMemberFavorite[aria-pressed=true],[data-favorite-filter][aria-pressed=true]{background:#ffe79c;color:#705016;border-color:#a57625}
 </style>
 <main>
 <div id="championBlackout" hidden aria-hidden="true"></div>
@@ -1639,7 +1646,7 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
   <h2 id="eggShowTitle"></h2>
   <div id="eggShowScene" aria-hidden="true"><img id="eggShowMachine" alt="" hidden><img id="eggShowSprite" alt=""><div id="eggShowParticles"></div></div>
   <p id="eggShowMessage" role="status"></p><div id="eggShowResults" class="egg-card-grid" hidden></div>
-  <form method="dialog"><button id="eggShowNext" autofocus></button></form>
+  <form method="dialog"><button id="eggShowAll" type="button" hidden></button><button id="eggShowNext" autofocus></button></form>
 </dialog>
 <dialog id="developerAuth" aria-labelledby="developerAuthTitle">
   <h2 id="developerAuthTitle">開發工具</h2>
@@ -1678,7 +1685,7 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
     <button type="button" data-member-tab="ability">特性</button><button type="button" data-member-tab="shiny">色違</button>
   </nav>
   <div id="teamMemberDetails"></div>
-  <form method="dialog"><button type="button" id="teamMemberToggle"></button><button>關閉</button></form>
+  <form method="dialog"><button type="button" id="teamMemberFavorite"></button><button type="button" id="teamMemberToggle"></button><button>關閉</button></form>
 </dialog><dialog id="settingsDialog" aria-labelledby="settingsTitle">
   <h2 id="settingsTitle">設定</h2>
   <div class="settings-rows">    <div class="settings-row"><label for="settingsBattleSpeed" id="settingsBattleSpeedLabel">戰鬥速度</label><select id="settingsBattleSpeed"><option value="1">1X</option><option value="2">2X</option><option value="3">3X</option></select></div>
@@ -7039,10 +7046,10 @@ function loadProfile(){
   try{
     const saved=JSON.parse(slotAccount.getItem(profileKey));
     if(saved&&Array.isArray(saved.unlocked)&&Array.isArray(saved.eggs)){
-      return {playerName:typeof saved.playerName==='string'?Array.from(saved.playerName.trim()).slice(0,16).join(''):'',starter:saved.starter,caught:[...new Set((Array.isArray(saved.caught)?saved.caught:saved.unlocked).filter(id=>speciesById(id)))],unlocked:[...new Set(saved.unlocked.filter(id=>species[id-1]?.id===id).map(baseSpeciesId))],seen:[...new Set([...(Array.isArray(saved.seen)?saved.seen:[]),...saved.unlocked].filter(id=>speciesById(id)))],shinyUnlocked:[...new Set((Array.isArray(saved.shinyUnlocked)?saved.shinyUnlocked:[]).filter(id=>speciesById(id)).map(baseSpeciesId))],traitUnlocks:saved.traitUnlocks&&typeof saved.traitUnlocks==='object'?saved.traitUnlocks:{},teamPreferences:saved.teamPreferences&&typeof saved.teamPreferences==='object'?saved.teamPreferences:{},eggs:saved.eggs.filter(egg=>species[egg.id-1]&&Number.isFinite(egg.progress)),tickets:Math.max(0,Number(saved.tickets)||0)};
+      return {favorites:[...new Set((Array.isArray(saved.favorites)?saved.favorites:[]).filter(id=>Number.isInteger(id)&&speciesById(id)))],playerName:typeof saved.playerName==='string'?Array.from(saved.playerName.trim()).slice(0,16).join(''):'',starter:saved.starter,caught:[...new Set((Array.isArray(saved.caught)?saved.caught:saved.unlocked).filter(id=>speciesById(id)))],unlocked:[...new Set(saved.unlocked.filter(id=>species[id-1]?.id===id).map(baseSpeciesId))],seen:[...new Set([...(Array.isArray(saved.seen)?saved.seen:[]),...saved.unlocked].filter(id=>speciesById(id)))],shinyUnlocked:[...new Set((Array.isArray(saved.shinyUnlocked)?saved.shinyUnlocked:[]).filter(id=>speciesById(id)).map(baseSpeciesId))],traitUnlocks:saved.traitUnlocks&&typeof saved.traitUnlocks==='object'?saved.traitUnlocks:{},teamPreferences:saved.teamPreferences&&typeof saved.teamPreferences==='object'?saved.teamPreferences:{},eggs:saved.eggs.filter(egg=>species[egg.id-1]&&Number.isFinite(egg.progress)),tickets:Math.max(0,Number(saved.tickets)||0)};
     }
   }catch{}
-  return {playerName:'',starter:null,caught:[],unlocked:[],seen:[],shinyUnlocked:[],traitUnlocks:{},teamPreferences:{},eggs:[],tickets:0};
+  return {favorites:[],playerName:'',starter:null,caught:[],unlocked:[],seen:[],shinyUnlocked:[],traitUnlocks:{},teamPreferences:{},eggs:[],tickets:0};
 }
 const profile=loadProfile();
 function saveProfile(){
@@ -8176,6 +8183,9 @@ function hatchTraits(egg){
 function openEggShow(mode,title){
   const dialog=$('eggShow'),scene=$('eggShowScene'),image=$('eggShowSprite'),machine=$('eggShowMachine'),message=$('eggShowMessage'),next=$('eggShowNext');
   $('eggShowTitle').textContent=title;
+  $('eggShowAll').hidden=mode!=='hatch';
+  $('eggShowAll').textContent=musicLabel('一鍵孵化','Hatch All');
+  $('eggShowAll').onclick=null;
   scene.hidden=false;
   $('eggShowResults').hidden=true;
   $('eggShowResults').replaceChildren();
@@ -8238,6 +8248,17 @@ async function showHatchAnimations(eggs){
   const {dialog,scene,image,message,next}=openEggShow('hatch',musicLabel('寶可夢蛋孵化','Egg Hatching'));
   const particles=$('eggShowParticles');
   const closed=new Promise(resolve=>dialog.addEventListener('close',()=>resolve(false),{once:true}));
+  let batchMode=false,resolveAll;
+  const allRequested=new Promise(resolve=>{resolveAll=resolve;});
+  $('eggShowAll').onclick=()=>{
+    if(batchMode||!dialog.open)return;batchMode=true;
+    scene.hidden=true;particles.replaceChildren();
+    const results=$('eggShowResults');
+    results.innerHTML=eggs.map(egg=>{const mon={...speciesById(egg.id),shiny:egg.shiny};return '<article class="egg-card"><img src="'+sprite(mon)+'" alt=""><span class="egg-card-detail"><strong>'+displayPokemon(mon)+(egg.shiny?' ★':'')+'</strong>'+hatchTraits(egg)+'</span></article>';}).join('');
+    results.hidden=false;message.textContent=musicLabel('已孵化 '+eggs.length+' 隻寶可夢。','Hatched '+eggs.length+' Pokémon.');
+    $('eggShowAll').hidden=true;next.type='button';next.textContent=musicLabel('繼續','Continue');next.onclick=()=>{if(dialog.open)dialog.close();};
+    resolveAll(false);next.focus({preventScroll:true});
+  };
   for(const [index,egg] of eggs.entries()){
     if(!dialog.open) return;
     const rarity=eggCategory(egg);
@@ -8247,7 +8268,7 @@ async function showHatchAnimations(eggs){
     const count=' ('+(index+1)+' / '+eggs.length+')';
     let skip;
     const skipped=new Promise(resolve=>{skip=()=>resolve(false);});
-    const animateFor=ms=>Promise.race([eggSceneDelay(ms).then(()=>dialog.open),skipped,closed]);
+    const animateFor=ms=>Promise.race([eggSceneDelay(ms).then(()=>dialog.open),skipped,closed,allRequested]);
     scene.dataset.phase='egg';
     image.src=frames[0];
     message.textContent=musicLabel('蛋開始搖動了！','The Egg is moving!')+count;
@@ -8265,6 +8286,7 @@ async function showHatchAnimations(eggs){
       animate=await animateFor(120);
     }
     if(!dialog.open) return;
+    if(batchMode){await closed;return;}
     scene.dataset.phase=animate?'flash':'result';
     if(animate){
       particles.innerHTML=eggAnimationArt.shards.map((src,i)=>
@@ -8277,7 +8299,7 @@ async function showHatchAnimations(eggs){
     const name=displayPokemon(mon);
     message.innerHTML=musicLabel(name+'從蛋裡孵出來了！',name+' hatched from the Egg!')+count+hatchTraits(egg);
     next.textContent=index+1===eggs.length?musicLabel('繼續','Continue'):musicLabel('下一顆','Next Egg');
-    if(!await Promise.race([new Promise(resolve=>{next.onclick=()=>resolve(true);}),closed])) return;
+    if(!await Promise.race([new Promise(resolve=>{next.onclick=()=>resolve(true);}),closed,allRequested])){if(batchMode)await closed;return;}
     particles.replaceChildren();
   }
   dialog.close();
@@ -8471,16 +8493,18 @@ function card(mon,group,selected=false,locked=false,seen=false,caught=false){
   const hidden=locked&&!seen&&!caught;
   const caughtLabel=musicLabel('已捕捉','Caught');
   const badge=caught?'<img class="dex-caught-ball" src="'+ownershipBalls.unlocked+'" alt="'+caughtLabel+'" title="'+caughtLabel+'">':'';
-  const label='NO. '+number+(hidden?musicLabel(' · 未遇過',' · Unseen'):' '+displayPokemon(mon)+(locked?musicLabel(' · 已見過，尚不可編入',' · Seen, unavailable for selection'):''))+' · '+mon.type.map(dexTypeName).join(' / ');
+  const favorite=profile.favorites.includes(mon.id);
+  const label='NO. '+number+(hidden?musicLabel(' · 未遇過',' · Unseen'):' '+displayPokemon(mon)+(locked?musicLabel(' · 已見過，尚不可編入',' · Seen, unavailable for selection'):''))+' · '+mon.type.map(dexTypeName).join(' / ')+(favorite?musicLabel(' · 我的最愛',' · Favorite'):'');
 
   const typeBadges='<span class="dex-card-types" aria-hidden="true">'+
     mon.type.map(type=>dexCardTypeIcons.get(fullType[type]??type)??'').join('')+'</span>';
   const artwork=group==='starter'?'src="'+sprite(mon)+'"':'data-dex-art="'+mon.id+'"';
-  return '<button data-'+group+'="'+mon.id+'" aria-label="'+label+'" title="'+label+'" aria-pressed="'+selected+'" '+(locked?'disabled class="'+(caught?'caught-form':seen?'seen':'locked')+'"':'')+'>'+badge+typeBadges+'<span class="team-card-art"><img '+artwork+' alt="" decoding="async" onerror="this.hidden=true"></span><small>'+number+'</small><span class="card-name">'+(hidden?'???':displayPokemon(mon))+'</span></button>';
+  return '<button data-'+group+'="'+mon.id+'" aria-label="'+label+'" title="'+label+'" aria-pressed="'+selected+'" '+(locked?'disabled class="'+(caught?'caught-form':seen?'seen':'locked')+'"':'')+'>'+badge+typeBadges+(favorite?'<span class="dex-favorite-star" aria-hidden="true">★</span>':'')+'<span class="team-card-art"><img '+artwork+' alt="" decoding="async" onerror="this.hidden=true"></span><small>'+number+'</small><span class="card-name">'+(hidden?'???':displayPokemon(mon))+'</span></button>';
 
 }
 let dexRegion=0;
 let ownedDexOnly=false;
+let setupFavoritesOnly=false,collectionFavoritesOnly=false;
 let collectionOwned=true;
 const teamDexTypes=new Set();
 const collectionDexTypes=new Set();
@@ -8538,14 +8562,14 @@ function renderSetup(){
   {
     const scroll=teamCards.scrollTop;
     const key=JSON.stringify([settings.language,mode,Boolean(promotionDraft),[...teamDexTypes],ownedDexOnly?'owned':dexRegion,
-      profile.unlocked,profile.seen,profile.caught,mode==='trial'?selectedTeam:null]);
+      profile.unlocked,profile.seen,profile.caught,profile.favorites,setupFavoritesOnly,mode==='trial'?selectedTeam:null]);
     if(teamCards.dataset.unlocked!==key){
       const unlocked=new Set(profile.unlocked);
       if(mode==='trial') selectedTeam.forEach(id=>unlocked.add(id));
       const seen=new Set(profile.seen);
       const caught=caughtFamilyIds();
       const lower=dexRegionEnds[dexRegion-1]??0,upper=dexRegionEnds[dexRegion];
-      const regional=species.filter(mon=>(ownedDexOnly?unlocked.has(mon.id)&&baseSpeciesId(mon.id)===mon.id:mon.id>lower&&mon.id<=upper)&&matchesDexTypes(mon,teamDexTypes));
+      const regional=species.filter(mon=>(ownedDexOnly?unlocked.has(mon.id)&&baseSpeciesId(mon.id)===mon.id:mon.id>lower&&mon.id<=upper)&&matchesDexTypes(mon,teamDexTypes)&&(!setupFavoritesOnly||profile.favorites.includes(mon.id)));
       teamCards.innerHTML=regional.length?regional.map(mon=>card(mon,'member',selectedTeam.includes(mon.id),!promotionDraft&&(baseSpeciesId(mon.id)!==mon.id||!unlocked.has(mon.id)),seen.has(mon.id),caught.has(baseSpeciesId(mon.id)))).join(''):'<p class="empty-region">'+musicLabel('沒有符合條件的寶可夢。','No matching Pokémon.')+'</p>';
       teamCards.dataset.unlocked=key;
       teamCards.scrollTop=scroll;
@@ -8564,7 +8588,7 @@ function renderSetup(){
   const memberOptions=mode==='formal'?'<nav class="team-slot-options" aria-label="'+(focused?speciesById(focused).name+'設定':'隊員設定，請先點選隊員')+'">'+
     teamMemberOptions.map(([key,label,en])=>'<button type="button" data-team-option="'+key+'" '+(focused?'':'disabled')+'>'+musicLabel(label,en)+'</button>').join('')+
     '<button type="button" data-owned-filter="yes" aria-pressed="'+ownedDexOnly+'">'+musicLabel('已擁有','Owned')+'</button>'+
-    '<button type="button" data-owned-filter="no" aria-pressed="'+!ownedDexOnly+'">'+musicLabel('未擁有','Full Pokédex')+'</button></nav>':'';
+    '<button type="button" data-owned-filter="no" aria-pressed="'+!ownedDexOnly+'">'+musicLabel('未擁有','Full Pokédex')+'</button><button type="button" data-favorite-filter aria-pressed="'+setupFavoritesOnly+'">★ '+musicLabel('我的最愛','Favorites')+'</button></nav>':'';
   updateMarkup($('teamSelection'),'<span class="team-count">'+musicLabel('隊伍 ','Team ')+selectedTeam.length+' / 6</span>'+memberOptions+'<span class="selected-sprites">'+Array.from({length:6},(_,i)=>{
     const mon=speciesById(selectedTeam[i]);
     if(!mon) return '<span class="selection-slot" title="空位"></span>';
@@ -8703,6 +8727,9 @@ function renderTeamMember(){
   const known=profile.traitUnlocks[browsing?family:root]??{natures:[],abilities:[]};
   const shiny=browsing?profile.shinyUnlocked.includes(family):selectedShiny.has(root);
   $('teamMemberTitle').textContent=mon.name;
+  $('teamMemberFavorite').dataset.favoriteId=String(id);
+  $('teamMemberFavorite').setAttribute('aria-pressed',String(profile.favorites.includes(id)));
+  $('teamMemberFavorite').textContent=profile.favorites.includes(id)?musicLabel('★ 取消最愛','★ Remove favorite'):musicLabel('☆ 加入最愛','☆ Add favorite');
   const details=$('teamMemberDetails');
   if(memberTab==='moves'){
     const evolutions=mon.evol.filter(([next])=>speciesById(next));
@@ -8813,6 +8840,13 @@ $('teamMemberDetails').onclick=event=>{
     renderTeamMember();
   }
 };
+$('teamMemberFavorite').onclick=()=>{
+  const id=Number($('teamMemberFavorite').dataset.favoriteId);if(!speciesById(id))return;
+  profile.favorites=profile.favorites.includes(id)?profile.favorites.filter(value=>value!==id):[...profile.favorites,id];
+  saveProfile();
+  if(musicScreen==='collectionScreen')renderCollection();else if(musicScreen==='setup')renderSetup();
+  renderTeamMember();$('teamMemberFavorite').focus();
+};
 $('teamMemberToggle').onclick=()=>{
   if(musicScreen==='collectionScreen') return;
   const id=configuringMember;
@@ -8829,6 +8863,8 @@ function removeTeamMember(id){
   renderSetup();
 }
 $('teamSelection').onclick=event=>{
+  if(event.target.closest('[data-favorite-filter]')){setupFavoritesOnly=!setupFavoritesOnly;$('teamCards').scrollTop=0;renderSetup();$('teamSelection').querySelector('[data-favorite-filter]')?.focus();return;}
+
   if(event.target.closest('[data-type-filter]')){
     openDexTypeFilter(teamDexTypes,()=>{
       $('teamCards').scrollTop=0;
@@ -8900,11 +8936,11 @@ function renderCollection(){
   $('collectionBack').textContent=musicLabel('返回主畫面','Back to menu');
   const caught=caughtFamilyIds();
   const seen=new Set(profile.seen);
-  const entries=species.filter(mon=>caught.has(baseSpeciesId(mon.id))===collectionOwned&&matchesDexTypes(mon,collectionDexTypes));
+  const entries=species.filter(mon=>caught.has(baseSpeciesId(mon.id))===collectionOwned&&matchesDexTypes(mon,collectionDexTypes)&&(!collectionFavoritesOnly||profile.favorites.includes(mon.id)));
   $('collectionCount').textContent=musicLabel('寶可夢','Pokémon')+' · '+entries.length;
   $('collectionFilters').innerHTML=[true,false].map(owned=>'<button type="button" data-collection-owned="'+owned+
     '" aria-pressed="'+(owned===collectionOwned)+'">'+(owned?musicLabel('已擁有','Owned'):musicLabel('未擁有','Unowned'))+'</button>').join('')+
-    dexTypeFilterButton(collectionDexTypes);
+    dexTypeFilterButton(collectionDexTypes)+'<button type="button" data-favorite-filter aria-pressed="'+collectionFavoritesOnly+'">★ '+musicLabel('我的最愛','Favorites')+'</button>';
   const cards=$('collectionCards');
   cards.innerHTML=entries.map(mon=>card(mon,'caught',false,!collectionOwned,seen.has(mon.id),collectionOwned)).join('')||
     '<p class="empty-region">'+musicLabel('沒有符合條件的寶可夢。','No matching Pokémon.')+'</p>';
@@ -8912,6 +8948,8 @@ function renderCollection(){
   observeDexArtwork(cards);
 }
 $('collectionFilters').onclick=event=>{
+  if(event.target.closest('[data-favorite-filter]')){collectionFavoritesOnly=!collectionFavoritesOnly;renderCollection();$('collectionFilters').querySelector('[data-favorite-filter]')?.focus();return;}
+
   if(event.target.closest('[data-type-filter]')){
     openDexTypeFilter(collectionDexTypes,renderCollection);
     return;

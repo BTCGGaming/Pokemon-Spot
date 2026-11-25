@@ -1700,6 +1700,7 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
   <h2 id="mobileFullscreenTitle"></h2><p id="mobileFullscreenMessage"></p>
   <form method="dialog"><button id="mobileFullscreenClose"></button></form>
 </dialog>
+<script defer src="./assets/site-analytics.js?v=20261125-1"></script>
 <script src="./assets/emerald-sprites.js"></script>
 <script src="./assets/pokerogue/manifest.js?v=kalos-mega-1"></script>
 <script src="./assets/pokerogue-player.js?v=status-feedback-1"></script>
@@ -4967,6 +4968,7 @@ async function finishStage(s,message){
     if(s.stage===3){
       s.finished=true;
       s.result='教學完成！';
+      recordGameAnalytics('game_end',s);
       const dialog=$('tutorialComplete');
       dialog.showModal();
       await advanceNarrative(dialog);
@@ -6741,6 +6743,7 @@ $('spin').onclick=async()=>{
     return;
   }
   rolling=true;
+  recordGameAnalytics('first_spin',state);
   try{
   $('ballBox').disabled=true;
   $('itemBox').disabled=false;
@@ -9256,9 +9259,13 @@ async function openBattleStage(entering=false,playerEnters=entering){
   render(false);
   $('spin').focus();
 }
+function recordGameAnalytics(name,run){
+  try{globalThis.slotAnalytics?.gameEvent(name,run);}catch{}
+}
 function startBattle(region='national'){
   if($('setup').hidden||rolling||selectedTypes.length!==2) return;
   state=fresh(1,undefined,undefined,undefined,mode==='trial',region);
+  recordGameAnalytics('game_start',state);
   screen('battleScreen');
   openBattleStage(true);
 }
@@ -9556,6 +9563,7 @@ function renderSettlementContents(run){
 async function openSettlement(run){
   if(shownSettlements.has(run)) return;
   shownSettlements.add(run);
+  recordGameAnalytics('game_end',run);
   if(run.finished){
     rolling=true;
     try{await playChampionTeam(run);await playChampionCredits();}

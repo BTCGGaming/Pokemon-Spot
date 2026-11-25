@@ -2213,6 +2213,11 @@ const sinnohMoveRules={"356":[3,"gravity","本關飛行系視為地面系",null,
 for(const [id,[,,,power]] of Object.entries(sinnohMoveRules)){
   if(power!==null) emeraldData.ms[id].power=power;
 }
+// Zero base power in later-generation data still denotes an attack for these effects.
+const fixedDamageEffects=new Set(['SONICBOOM','DRAGON_RAGE','LEVEL_DAMAGE','SUPER_FANG','OHKO','COUNTER','MIRROR_COAT','PSYWAVE','ENDEAVOR','GEN5_FINAL_GAMBIT']);
+for(const move of Object.values(emeraldData.ms)){
+  if(!move.power&&fixedDamageEffects.has(move.effect)) move.power=1;
+}
 const skillDetails=Object.fromEntries(Object.entries(emeraldData.ms).map(([id,move])=>{
   const match=move.effect.match(/^(.*)_(UP|DOWN)(?:_(2|HIT))?$/);
   const stat=match&&stageIndex[match[1]];
@@ -4416,7 +4421,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   const returning=['COUNTER','MIRROR_COAT'].includes(skill.effect);
   if(returning){
     const last=source.lastMoveDamage;
-    if(last?.spin!==s.spins||last.physical!==(skill.effect==='COUNTER')) return false;
+    if(last?.spin!==s.spins||last.physical!==(skill.effect==='COUNTER')||!(last.damage>0)) return moveFailure(s,musicLabel(name+'失敗：本次拉霸未受到可反擊的'+(skill.effect==='COUNTER'?'物理':'特殊')+'傷害。',displayMove(name)+' failed: no eligible '+(skill.effect==='COUNTER'?'physical':'special')+' damage was received this spin.'));
     skill={...skill,fixedDamage:2*last.damage};
   }
   if(custom==='trump') skill={...skill,power:skill.power+40*(source.trumpUses??0)};
@@ -4599,7 +4604,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     const {effectiveness,defenseAbility}=impact;
     skill={...skill,effectiveness};
     if(activeAbility(source)===113||activeAbility(source)===134&&skill.type==='鋼'||custom==='judgment'||s.gravity||s.miracleEye||[96,121,227].includes(defenseAbility)||[121,223].includes(activeAbility(source))) skill={...skill,effectiveness};
-    const effectivenessText=effectiveness>1?' 效果絕佳！':effectiveness<1?' 效果微弱。':'';
+    const effectivenessText=fixedDamageEffects.has(skill.effect)||skill.fixedDamage!==undefined?'':effectiveness>1?' 效果絕佳！':effectiveness<1?' 效果微弱。':'';
     const attackAbility=activeAbility(source);
     const electricBonus=skill.type==='電'&&source.electricCharge?1+source.electricCharge:1;
     if(skill.type==='電') delete source.electricCharge;
@@ -4618,7 +4623,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       const physical=moveDamageCategory(skill)==='物理';
       const thawTarget=target.status==='freeze'&&(skill.type==='火');
       if(custom==='endeavor') raw=target.left>source.left&&raw?target.left-source.left:0;
-      const fixed=skill.fixedDamage!==undefined||['DRAGON_RAGE','GEN5_FINAL_GAMBIT'].includes(skill.effect)||['endeavor','fixed20','psywave'].includes(custom);
+      const fixed=skill.fixedDamage!==undefined||fixedDamageEffects.has(skill.effect)||['endeavor','fixed20','psywave'].includes(custom);
       const camouflage=target.moves.includes('保護色')&&target.type.some(type=>source.type.includes(type));
       const charge=source.nextDamage&&raw>0&&!target.counterGuard;
       if(charge) source.nextDamage=false;
@@ -5080,6 +5085,10 @@ function enemyMoveCanAffect(run,mon,target,name){
   if(!skill||moveRules[name]?.shapes==='P') return false;
   if(activeAbility(target)===171&&/[球跳彈]/.test(name))return false;
   if(skill.effect==='OHKO'&&mon.level<target.level) return false;
+  if(['COUNTER','MIRROR_COAT'].includes(skill.effect)){
+    const last=mon.lastMoveDamage;
+    if(last?.spin!==run.spins||last.physical!==(skill.effect==='COUNTER')||!(last.damage>0))return false;
+  }
   if(skill.power||custom==='fling'){
     return attackMoveTypes(run,mon,skill,custom).some(type=>!moveTypeImpact(type,target,mon,run,custom).immune);
   }
@@ -5895,7 +5904,7 @@ async function enemyActCore(s,random,switching,prepared){
     const blocked=pickDisabledMove(acting,blockable.length?blockable:moves);
     moves=moves.filter(name=>name!==blocked);
   }
-  if(!moves.length){delete s.team[s.active].counterGuard;delete s.team[s.active].tempDefense;return;}
+  if(!moves.length){delete s.team[s.active].counterGuard;delete s.team[s.active].tempDefense;return moveFailure(s,musicLabel(acting.name+'目前沒有可生效的招式。',displayPokemon(acting)+' has no usable moves against the current target.'));}
   const alert=$('enemyAlert');
   alert.textContent='對手 · '+s.enemy.name+(random?'要反擊了！':'要出招了！');
   alert.hidden=false;

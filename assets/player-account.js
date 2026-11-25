@@ -19,7 +19,7 @@ async function sdk(){if(!client){await loadScript('./assets/vendor/supabase.js?v
 function ui(){
  if(!$('accountDialog')){
  const style=document.createElement('style');style.textContent=`
- #accountDialog{width:min(640px,94vw);max-height:90dvh;border:4px solid #554966;background:#ece7d4;color:#253c36;padding:1rem;box-shadow:inset 0 0 0 3px #fff8e3;font:inherit}#accountDialog::backdrop{background:#000b}#accountDialog h2{margin:0 0 .8rem;background:#43374f;color:#fff0bc;padding:.6rem}#accountDialog p{overflow-wrap:anywhere}#accountDialog button{font:inherit;min-height:44px;margin:.25rem;padding:.45rem .7rem;border-radius:0}#accountDialog .account-actions{display:flex;gap:.3rem;flex-wrap:wrap}#accountGoogle{background:white;color:#253c36;display:inline-flex;align-items:center;gap:.7rem}#accountGoogle svg{width:24px;height:24px;flex:none}#accountBadge{position:fixed;right:.4rem;bottom:.4rem;z-index:200;background:#fff0bc;color:#322c40;border:2px solid #554966;padding:.3rem;max-width:85vw;font:inherit;font-size:.8rem}#accountStartup{position:fixed;inset:0;z-index:2000;background:#d5cfdd;display:grid;place-content:center;text-align:center;color:#30283c;padding:1rem}#accountStartup[hidden],#accountBadge[hidden]{display:none}#accountControls{position:absolute;left:1.5%;bottom:2%;z-index:3;display:flex;gap:.4em;align-items:stretch;max-width:70%}#accountControls #changelogOpen{position:static;flex:none}#accountControls button{font-size:clamp(10px,1.25cqw,20px);min-height:2.5em;padding:.3em .6em;margin:0;border-radius:0;white-space:nowrap}#accountLanguage{font:inherit}#accountQuickLogout{font:inherit;min-height:44px;margin:0;padding:.4em .7em;font-size:clamp(12px,1.2cqw,20px);border-radius:0}#accountQuickLogout[hidden]{display:none}#accountOpenLabel{max-width:17ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#accountNameSection{border:2px solid #8c8198;background:#fff4cf;padding:.7rem;margin:.7rem 0}#accountNameSection label{display:block;margin-bottom:.4rem}#accountNameInput{font:inherit;width:min(100%,18em);min-height:44px;border:2px solid #554966;border-radius:0;background:#fffef6;color:#253c36;padding:.3rem;user-select:text!important}#accountNameSection[hidden]{display:none}#accountOpen{font:inherit;display:flex;align-items:center;gap:.5em;min-height:44px;margin:0;padding:.4em .7em;font-size:clamp(12px,1.2cqw,20px);border-radius:0}#accountOpen svg{width:24px;height:24px;flex:none}#accountHint{font-size:.9em}#accountMessage{white-space:pre-line}#accountDialog button:focus-visible{outline:3px solid #d79829;outline-offset:2px}
+ #accountDialog,#accountInheritance{width:min(640px,94vw);max-height:90dvh;border:4px solid #554966;background:#ece7d4;color:#253c36;padding:1rem;box-shadow:inset 0 0 0 3px #fff8e3;font:inherit}#accountDialog::backdrop,#accountInheritance::backdrop{background:#000b}#accountDialog h2,#accountInheritance h2{margin:0 0 .8rem;background:#43374f;color:#fff0bc;padding:.6rem}#accountDialog p,#accountInheritance p{overflow-wrap:anywhere}#accountDialog button,#accountInheritance button{font:inherit;min-height:44px;margin:.25rem;padding:.45rem .7rem;border-radius:0}#accountDialog .account-actions,#accountInheritance .account-actions{display:flex;gap:.3rem;flex-wrap:wrap}#accountGoogle{background:white;color:#253c36;display:inline-flex;align-items:center;gap:.7rem}#accountGoogle svg{width:24px;height:24px;flex:none}#accountBadge{position:fixed;right:.4rem;bottom:.4rem;z-index:200;background:#fff0bc;color:#322c40;border:2px solid #554966;padding:.3rem;max-width:85vw;font:inherit;font-size:.8rem}#accountStartup{position:fixed;inset:0;z-index:2000;background:#d5cfdd;display:grid;place-content:center;text-align:center;color:#30283c;padding:1rem}#accountStartup[hidden],#accountBadge[hidden]{display:none}#accountControls{position:absolute;left:1.5%;bottom:2%;z-index:3;display:flex;gap:.4em;align-items:stretch;max-width:70%}#accountControls #changelogOpen{position:static;flex:none}#accountControls button{font-size:clamp(10px,1.25cqw,20px);min-height:2.5em;padding:.3em .6em;margin:0;border-radius:0;white-space:nowrap}#accountLanguage{font:inherit}#accountQuickLogout{font:inherit;min-height:44px;margin:0;padding:.4em .7em;font-size:clamp(12px,1.2cqw,20px);border-radius:0}#accountQuickLogout[hidden]{display:none}#accountOpenLabel{max-width:17ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#accountNameSection{border:2px solid #8c8198;background:#fff4cf;padding:.7rem;margin:.7rem 0}#accountNameSection label{display:block;margin-bottom:.4rem}#accountNameInput{font:inherit;width:min(100%,18em);min-height:44px;border:2px solid #554966;border-radius:0;background:#fffef6;color:#253c36;padding:.3rem;user-select:text!important}#accountNameSection[hidden]{display:none}#accountOpen{font:inherit;display:flex;align-items:center;gap:.5em;min-height:44px;margin:0;padding:.4em .7em;font-size:clamp(12px,1.2cqw,20px);border-radius:0}#accountOpen svg{width:24px;height:24px;flex:none}#accountHint{font-size:.9em}#accountMessage{white-space:pre-line}#accountDialog button:focus-visible{outline:3px solid #d79829;outline-offset:2px}
 @media(max-width:700px){
  #menu>h1.menu-logo{position:absolute;left:4%;top:6%;margin:0;width:46cqw}
  #menu>p.menu-subtitle{position:absolute;left:4%;top:24%;margin:0}
@@ -105,6 +105,41 @@ async function login(){if(busy)return;busy=true;render();try{const c=await sdk()
 async function logout(){if(busy)return;busy=true;render();try{if(pending||request){blocked=false;if(errorKind==='conflict'){blocked=true;return;}if(!await flush())return;}const {error}=await client.auth.signOut({scope:'local'});if(error)throw error;localStorage.removeItem(marker);location.reload();}catch{message=text('無法登出，請稍後重試。','Unable to sign out. Please retry.');}finally{busy=false;render();}}
 function download(){const blob=new Blob([JSON.stringify({version:1,records,revision,unsynced:true},null,2)],{type:'application/json'});const url=globalThis.URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='pokemon-slot-unsynced-backup.json';a.click();setTimeout(()=>globalThis.URL.revokeObjectURL(url),1000);}
 async function importGuest(){if(busy||revision!==0||Object.keys(records).length)return;busy=true;render();try{for(const key of keys){const value=localStorage.getItem(key);if(value!==null)records[key]=value;}pending=true;persist();if(await flush())location.reload();}catch(e){failure(e);}finally{busy=false;render();}}
+function guestSnapshot(){
+ const snapshot={};for(const key of keys){const value=localStorage.getItem(key);if(value!==null)snapshot[key]=value;}return snapshot;
+}
+async function chooseGuestInheritance(){
+ if(!session||revision!==0||Object.keys(records).length||pending||request)return;
+ const guest=guestSnapshot();if(!Object.keys(guest).length)return;
+ const dialog=document.createElement('dialog');dialog.id='accountInheritance';dialog.setAttribute('aria-labelledby','accountInheritanceTitle');
+ const title=document.createElement('h2');title.id='accountInheritanceTitle';title.textContent=text('是否繼承這個網站的現有紀錄？','Keep this website’s existing progress?');
+ const description=document.createElement('p');description.textContent=text('此 Google 帳號尚無雲端進度。你可以繼承這個瀏覽器的圖鑑、金幣、扭蛋、設定與存檔，或建立全新進度。無論選哪一項，原本的訪客紀錄都會保留。','This Google account has no cloud progress yet. Import this browser’s Pokédex, coins, eggs, settings and saves, or start fresh. Your original guest progress stays on this device either way.');
+ const status=document.createElement('p');status.setAttribute('role','status');
+ const actions=document.createElement('div');actions.className='account-actions';
+ const yes=document.createElement('button'),no=document.createElement('button'),reload=document.createElement('button');
+ for(const button of [yes,no,reload])button.type='button';
+ yes.textContent=text('繼承現有紀錄','Keep existing progress');no.textContent=text('不繼承，建立新進度','Start fresh');reload.textContent=text('重新讀取雲端','Reload cloud progress');reload.hidden=true;
+ actions.append(yes,no,reload);dialog.append(title,description,status,actions);document.body.append(dialog);dialog.oncancel=event=>event.preventDefault();
+ try{await new Promise(resolve=>{
+   let chosen=null,working=false;
+   const choose=async inherit=>{
+    if(working||chosen!==null&&chosen!==inherit)return;working=true;yes.disabled=no.disabled=true;reload.hidden=true;
+    status.textContent=text('正在建立帳號進度…','Preparing account progress…');
+    try{
+     if(chosen===null){chosen=inherit;records=inherit?{...guest}:{};pending=true;persist();}
+     if(errorKind==='conflict'){reload.hidden=false;status.textContent=message;return;}
+     blocked=false;
+     if(await flush()){resolve();return;}
+     status.textContent=message;reload.hidden=errorKind!=='conflict';
+    }catch(error){failure(error);status.textContent=message;}
+    finally{working=false;yes.disabled=chosen!==true;no.disabled=chosen!==false;}
+   };
+   yes.onclick=()=>choose(true);no.onclick=()=>choose(false);
+   reload.onclick=()=>{localStorage.removeItem(cacheKey());location.reload();};
+   dialog.showModal();yes.focus();
+  });
+ }finally{dialog.close();dialog.remove();}
+}
 async function boot(){if(booted)return;const script=document.createElement('script');const source=$('slotGameSource');script.textContent=source.textContent;document.body.append(script);source.remove();script.remove();booted=true;const btn=document.createElement('button');btn.id='accountOpen';btn.type='button';btn.onclick=()=>session?open():login();btn.append($('accountGoogle').querySelector('svg').cloneNode(true));const label=document.createElement('span');label.id='accountOpenLabel';btn.append(label);const controls=document.createElement('div');controls.id='accountControls';controls.append($('changelogOpen'),btn);const language=document.createElement('button');language.id='accountLanguage';language.type='button';language.onclick=()=>{settings.language=settings.language==='en'?'zh-Hant':'en';saveSettings();render();};controls.append(language);const signout=document.createElement('button');signout.id='accountQuickLogout';signout.type='button';signout.onclick=logout;controls.append(signout);$('menu').append(controls);$('accountStartup').hidden=true;render();await loadScript('./assets/ui-language.js?v=20261124-perf');if(session&&nameReady&&!nickname()&&!blocked){open();$('accountNameInput').focus();}if(pending&&!blocked)timer=setTimeout(flush,150);}
 const adapter=globalThis.slotAccount={
  getItem(key){return session?(records[key]??null):localStorage.getItem(key);},
@@ -131,6 +166,7 @@ async function start(){ui();render();try{
  await flush();
  }
  const named=await c.rpc('get_player_nickname');if(!named.error&&(named.data?.nickname===null||typeof named.data?.nickname==='string')){registeredName=named.data.nickname||'';nameReady=true;}else{message=text('暱稱功能暫時無法使用，請稍後重新載入。','Nicknames are temporarily unavailable. Reload later.');}
+ await chooseGuestInheritance();
  persist();initialized=true;await boot();
  c.auth.onAuthStateChange((event,next)=>{if(!initialized)return;if((next?.user?.id??null)!==session.user.id){blocked=true;message=text('登入狀態已改變。請重新載入，避免使用錯誤帳號的進度。','Sign-in status changed. Reload to use the correct account progress.');errorKind='auth';$('accountStartup').hidden=false;render();}});
  }catch{errorKind='startup';message=text('無法安全讀取帳號進度。遊戲尚未啟動，訪客紀錄沒有被覆蓋。請重新連線，或登出後玩訪客模式。','Account progress could not be loaded safely. The game has not started and guest progress is unchanged. Reconnect or sign out to play as a guest.');render();}}

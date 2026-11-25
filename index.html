@@ -1541,6 +1541,15 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
 #promotionSymbols footer{display:flex;justify-content:flex-end;gap:.6em}
 #promotionSymbolError{color:#9f2033}
 @media(max-width:600px){#promotionSymbolCounts{grid-template-columns:repeat(2,minmax(0,1fr))}#promotionChampionChoices{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+#resupplyAreaPanel{margin-top:.7em;border-top:2px solid #899873;padding-top:.6em}
+#resupplyAreaTitle{font-size:1.05em;margin:0 0 .5em;color:#23473e}
+#resupplyAreaChoices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5em}
+#resupplyAreaChoices button{display:flex;align-items:center;justify-content:center;gap:.45em;min-width:0;min-height:2.7em;padding:.45em .4em;border:2px solid #748b72;background:#fff2b5;color:#233e35;border-radius:0;line-height:1.25}
+#resupplyAreaChoices button span{overflow-wrap:anywhere}
+#resupplyAreaChoices .type-icon{width:1.6em;height:1.6em;flex:none}
+#resupplyAreaChoices button:hover,#resupplyAreaChoices button:focus-visible{background:#ffe48c;border-color:#ad6233}
+@media(max-width:480px){#resupplyAreaChoices button{flex-direction:column;font-size:.9em}}
 </style>
 <main>
 <div id="championBlackout" hidden aria-hidden="true"></div>
@@ -1557,7 +1566,7 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
   </form>
   <p id="resupplyStatus" role="status"></p>
   </section>
-  <form method="dialog"><button id="resupplyContinue"></button></form>
+  <section id="resupplyAreaPanel" aria-labelledby="resupplyAreaTitle"><h3 id="resupplyAreaTitle"></h3><div id="resupplyAreaChoices"></div></section>
 </dialog>
 <section id="championTeam" hidden role="dialog" aria-modal="true" aria-label="冠軍隊伍"><div id="championTeamParty"></div><button id="championTeamConfirm" type="button">確認</button></section>
 <div id="championCredits" hidden aria-hidden="true"><img alt=""></div>
@@ -2735,6 +2744,11 @@ function openingOpponentAllowed(id,attacks){
     return attackMoveTypes(run,mon,adjusted,custom).some(type=>moveTypeImpact(type,target,mon,run,custom).effectiveness>0);
   });
 }
+function availableWildAreaTypes(stage,adventure=legacyAdventure){
+  const phase=Math.floor((stage-1)/10);
+  const region=adventure.national?undefined:adventure.region;
+  return Object.keys(types).filter(type=>Array.from({length:10},(_,i)=>phase*10+i+1).every(n=>wildPool(n,region).some(mon=>mon.type.includes(type))));
+}
 function formalEncounter(stage,prior,rivalStarter,adventure=legacyAdventure,luck=0,party=prior?.team??[]){
   const phase=Math.floor((stage-1)/10);
   const region=adventure.national?undefined:adventure.region;
@@ -2743,10 +2757,9 @@ function formalEncounter(stage,prior,rivalStarter,adventure=legacyAdventure,luck
   const safePool=attacks.length?originalPool.filter(mon=>openingOpponentAllowed(mon.id,attacks)):originalPool;
   const pool=safePool.length?safePool:originalPool;
   // Pick a type available throughout the entire block so a phase never needs an off-type fallback.
-  const usedWildTypes=new Set(prior?.usedWildTypes??[]);
-  if(prior?.phaseType) usedWildTypes.add(prior.phaseType);
-  const type=stage<=10?null:prior?.phase===phase?prior.phaseType??null:pick(Object.keys(types).filter(type=>
-    !usedWildTypes.has(type)&&Array.from({length:10},(_,i)=>phase*10+i+1).every(n=>wildPool(n,region).some(mon=>mon.type.includes(type)))))??null;
+  const offered=prior?.nextWildArea;
+  const chosen=offered?.stage===stage&&offered.options?.includes(offered.selected)&&availableWildAreaTypes(stage,adventure).includes(offered.selected)?offered.selected:null;
+  const type=stage<=10?null:prior?.phase===phase?prior.phaseType??null:chosen??pick(availableWildAreaTypes(stage,adventure))??null;
   let trainer=regionalTrainer(stage,rivalStarter,adventure);
   if(trainer&&attacks.length){
     const alternatives=wildPool(stage,adventure.rival).filter(mon=>openingOpponentAllowed(mon.id,attacks));
@@ -4950,6 +4963,13 @@ function trainerDefeatLine(run){
   };
   return lines[name]??(kind.startsWith('反派組織')?'可惡，竟然輸給你了！':'這場對戰是你贏了！');
 }
+async function equalizePartyLevels(run){
+  const cap=mode==='formal'?100:trialLevelCap;
+  const highest=Math.min(cap,Math.max(1,...run.team.map(mon=>mon.level)));
+  for(const member of run.team){
+    while(member.level<highest) await levelUp(member,member.level+1,run);
+  }
+}
 async function finishStage(s,message){
   clearMoveHighlights(s);
   delete s.enemyWarning;
@@ -5004,6 +5024,7 @@ async function finishStage(s,message){
     s.log.unshift('本關取得 '+coins+' 金幣。');
   }
   if(champion){
+    await equalizePartyLevels(s);
     delete s.rewardPending;
     s.finished=true;
     s.result=musicLabel('冒險完成！','Adventure completed!');
@@ -5019,6 +5040,7 @@ async function finishStage(s,message){
       while(member.level<finalLevel) await levelUp(member,member.level+1,s);
     }
   }
+  await equalizePartyLevels(s);
   await advanceZygardeForms(s);
   await chooseReward(s);
   delete s.rewardPending;
@@ -6909,7 +6931,24 @@ async function showStageResupply(run){
   $('resupplySourceLabel').textContent=musicLabel('現有屬性','Owned type');
   $('resupplyTargetLabel').textContent=musicLabel('圖庫沒有的屬性','Type absent from pool');
   $('resupplyConvert').textContent=musicLabel('全部轉換','Convert All');
-  $('resupplyContinue').textContent=musicLabel('前往第 '+(run.stage+1)+' 關','Continue to Stage '+(run.stage+1));
+  const nextStage=run.stage+1;
+  const available=availableWildAreaTypes(nextStage,run.adventure??legacyAdventure);
+  if(run.nextWildArea?.stage!==nextStage||!Array.isArray(run.nextWildArea.options)||run.nextWildArea.options.length!==Math.min(3,available.length)||new Set(run.nextWildArea.options).size!==run.nextWildArea.options.length||!run.nextWildArea.options.every(type=>available.includes(type))){
+    run.nextWildArea={stage:nextStage,options:shuffle(available).slice(0,3)};
+    autoSave(run);
+  }
+  $('resupplyAreaTitle').textContent=musicLabel('選擇下一個野生區 · 第 '+nextStage+' 關','Choose the next wild area · Stage '+nextStage);
+  const areaChoices=$('resupplyAreaChoices');
+  areaChoices.replaceChildren(...run.nextWildArea.options.map(type=>{
+    const button=document.createElement('button');button.type='button';button.dataset.areaType=type;
+    button.innerHTML=typeIcon(type)+'<span>'+musicLabel(type+'系野生區',dexTypeName(type)+' Wild Area')+'</span>';
+    return button;
+  }));
+  let departed=false;
+  areaChoices.onclick=event=>{
+    const button=event.target.closest('[data-area-type]');if(!button||departed||!dialog.open)return;
+    departed=true;run.nextWildArea.selected=button.dataset.areaType;autoSave(run);dialog.close();
+  };
   $('resupplyStatus').textContent='';
   run.active=0;
   let swapSource=null;

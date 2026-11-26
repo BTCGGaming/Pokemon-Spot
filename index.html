@@ -1580,7 +1580,7 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
 #itemTargetDialog{box-sizing:border-box;width:min(96vw,1120px);height:min(92dvh,630px);max-width:none;max-height:none;padding:18px;background:#ede6cb;color:#263f36;border:4px solid #233f36;box-shadow:inset 0 0 0 3px #9a9b72;font-size:20px;overflow:hidden}
 #itemTargetDialog::backdrop{background:#000b}
 #itemTargetDialog h2{line-height:1.25;font-size:1.2em;margin:0;background:#234d43;color:#fff5d1;padding:.5em .7em;border:2px solid #9eac81}
-.ip-body{height:calc(100% - 120px);display:grid;grid-template-columns:28% minmax(0,1fr);gap:16px;margin-top:12px}
+.ip-body{height:calc(100% - 136px);display:grid;grid-template-columns:28% minmax(0,1fr);gap:16px;margin-top:12px}
 .ip-left{display:grid;grid-template-rows:53% minmax(0,1fr);gap:12px;min-height:0}
 .ip-art,.ip-effect{border:2px solid #879775;background:#faf3dc;padding:14px;min-height:0}
 .ip-art{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}.ip-art img{width:110px;height:110px;object-fit:contain;image-rendering:pixelated}.ip-art .ip-tm-art{display:grid;place-items:center;gap:8px}.ip-art .ip-disc{display:block;width:92px;height:92px;border-radius:50%;border:4px solid #7d8290;background:radial-gradient(circle, #faf3dc 0 11%,#6b707b 12% 17%,transparent 18%),conic-gradient(#e6e9eb,#a5adbd,#fafcff,#bcc4cf,#f6f9fd,#9ba5b5,#e6e9eb);box-shadow:inset 0 0 0 4px #d9dee5}.ip-art .ip-tm-type{display:flex;align-items:center;justify-content:center;gap:6px;font-size:.85em}.ip-art .ip-tm-type .type-icon{display:inline-block;width:26px;height:26px;flex:none;margin:0;transform:none}.ip-member .ip-name small{color:inherit}.ip-member:focus-visible{outline:none}.ip-art strong{font-size:1.1em}.ip-art small{color:#526b55;font-size:.8em}
@@ -1588,9 +1588,43 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
 .ip-team{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:12px;min-width:0}
 .ip-member{border:2px solid #81906d;box-shadow:inset 0 0 0 2px #d7cba4;background:#fbf4dc;color:#263f36;display:grid;grid-template-columns:76px minmax(0,1fr);gap:8px;align-items:center;text-align:left;padding:10px;min-width:0;border-radius:0;margin:0;font:inherit}
 .ip-member>img{width:76px;height:76px;object-fit:contain;image-rendering:pixelated}.ip-member .ip-name{display:flex;justify-content:space-between;align-items:center;gap:4px;font-weight:bold;font-size:.98em}.ip-member .ip-name small{font-size:.75em;font-weight:normal}.ip-member .ip-hp{display:flex;justify-content:space-between;font-size:.76em;margin-top:5px;gap:4px}.ip-member progress{display:block;width:100%;height:9px;accent-color:#478e59;margin-top:5px}.ip-member .ip-eligibility{display:block;font-size:.8em;color:#2d6940;font-weight:bold;margin-top:6px}.ip-member[aria-disabled=true]{background:#dcd8ca;border-color:#a09e91;color:#79796c;box-shadow:inset 0 0 0 2px #ece9dd}.ip-member[aria-disabled=true]>img{filter:grayscale(1);opacity:.65}.ip-member[aria-disabled=true] .ip-eligibility{color:#8a5544}.ip-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}.ip-footer p{margin:0;font-size:.8em}.ip-footer button{font:inherit;background:#ffe9a0;color:#263f36;border:3px solid #747556;padding:.3em 1.1em;min-height:42px;margin:0;border-radius:0}
-@media(max-height:500px){.ip-art .ip-disc{width:40px;height:40px;border-width:2px}.ip-art .ip-tm-art{gap:3px}.ip-art .ip-tm-type .type-icon{width:16px;height:16px}.ip-art .ip-tm-type{font-size:.75em}#itemTargetDialog{padding:10px;font-size:14px}#itemTargetDialog h2{padding:.3em .6em}.ip-body{height:calc(100% - 90px);gap:10px;margin-top:8px}.ip-left,.ip-team{gap:8px}.ip-art,.ip-effect{padding:8px}.ip-art{gap:3px}.ip-art img{width:48px;height:48px}.ip-effect p{font-size:.92em;line-height:1.35}.ip-member{grid-template-columns:46px minmax(0,1fr);padding:5px;gap:5px}.ip-member>img{width:46px;height:46px}.ip-member .ip-hp{margin-top:2px}.ip-member progress{height:6px;margin-top:3px}.ip-member .ip-eligibility{margin-top:3px;font-size:.8em}.ip-footer{margin-top:8px}.ip-footer button{min-height:36px;padding:.25em 1em}}
 
 #itemTargetDialog .ip-effect{overflow:auto}#itemTargetDialog .ip-member:disabled{cursor:default;opacity:1}#itemTargetDialog .ip-member:focus-visible{outline:3px solid #bc7342;outline-offset:-5px}#itemTargetDialog .ip-empty{display:grid;place-items:center;background:#ddd8c7;border:2px solid #aca68c;color:#777467;font-size:.9em}
+</style>
+<style>
+/* The resupply dialog uses one desktop layout on every device. */
+#stageResupply{position:fixed;inset:50% auto auto 50%;margin:0;width:940px;min-width:940px;max-width:none;height:auto;max-height:none;padding:18px;font-size:18px;overflow:visible;transform:translate(-50%,-50%) scale(var(--resupply-scale,1));transform-origin:center;box-sizing:border-box}
+#stageResupply .type-icon{width:1.3em;height:1.3em;flex:none}
+#stageResupply #stageResupplyTeam{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+#stageResupply #stageResupplyTeam img{height:64px}
+#stageResupply #stageResupplyReels{flex-wrap:nowrap}
+#stageResupply #stageResupplyReels label{white-space:nowrap;min-width:0}
+#stageResupply select,#stageResupply #resupplyConvert{font:inherit;min-height:0}
+#stageResupply #resupplySupply>div{grid-template-columns:repeat(3,minmax(0,1fr))}
+#stageResupply #resupplySupply button{display:grid;grid-template-columns:1fr;place-items:center;text-align:center;font:inherit;min-height:0}
+#stageResupply #resupplySupply button img{grid-row:auto;width:40px;height:40px}
+#stageResupply #resupplySupply button strong,#stageResupply #resupplySupply button small{justify-self:center}
+#stageResupply #resupplySupply button small{font-size:.78em}
+#stageResupply #resupplyAreaPanel{padding:.6em .65em 0;margin-top:.7em}
+#stageResupply #resupplyAreaTitle{font-size:1.08em;line-height:1.3;margin:0 0 .6em}
+#stageResupply #resupplyAreaChoices{grid-template-columns:repeat(3,minmax(0,1fr))}
+#stageResupply #resupplyAreaChoices button{flex-direction:row;font:inherit;min-height:2.7em}
+</style>
+<style>
+#stageResupply{width:1200px;min-width:1200px}
+#stageResupply[open]{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:14px}
+#stageResupplyTitle,#resupplyOrderHint,#stageResupplyTeam,#resupplyAreaPanel{grid-column:1/-1}
+#stageResupply #stageResupplyTeam img{height:52px}
+#stageResupply #resupplyWorkbench{grid-column:1;margin-top:.4em}
+#stageResupply #resupplySupply{grid-column:2;margin:.4em 0 0}
+#stageResupply #stageResupplyReels{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.5em}
+#stageResupply #stageResupplyReels label{display:grid;grid-template-columns:1fr;gap:.3em}
+#stageResupply #resupplyConvert{grid-column:1/-1;justify-self:end}
+#stageResupply #resupplyAreaPanel{margin-top:.5em}
+</style>
+<style>
+#itemTargetDialog{position:fixed;inset:50% auto auto 50%;margin:0;width:1120px;min-width:1120px;height:630px;min-height:630px;max-width:none;max-height:none;padding:18px;font-size:20px;transform:translate(-50%,-50%) scale(var(--item-target-scale,1));transform-origin:center}
+#itemTargetDialog .ip-hp .rogue-status{font-size:12px}
 </style>
 <main>
 <div id="championBlackout" hidden aria-hidden="true"></div>
@@ -2098,7 +2132,7 @@ function statTable(mon,level,stats){
 function showDex(){
   const mon=species[Number($('dexSpecies').value)-1];
   const level=Math.max(1,Math.min(100,Math.trunc(Number($('dexLevel').value)||1)));
-  const next=mon.evol.map(([id,kind,requirement])=>species[id-1].name+'（'+(kind==='LEVEL'?'Lv. '+requirement:kind.startsWith('TRADE')?'交換進化':kind==='ITEM'?'使用進化道具':kind)+'）');
+  const next=mon.evol.map(branch=>species[branch[0]-1].name+'（'+evolutionCondition(branch)+'）');
   $('dexInfo').innerHTML='<p>'+mon.name+' · '+mon.type.map(type=>'<span class="type-inline">'+symbol(type)+'</span>').join('／')+'</p>'+
     '<p>累積經驗值 '+experienceAt(mon,level)+'</p>'+(next.length?'<p>進化 '+next.join('／')+'</p>':'')+statTable(mon,level,statsAt(mon,level));
 }
@@ -2725,6 +2759,8 @@ function encounterRegion(run){
   return kind==='宿敵'?adventure.rival:kind.startsWith('反派組織')?adventure.villain:adventure.league;
 }
 
+const happinyEvolution=species.find(mon=>mon.id===440);
+if(happinyEvolution&&!happinyEvolution.evol.some(([target])=>target===113))happinyEvolution.evol.push([113,'ITEM','oval-stone']);
 const parentIds=new Map(species.flatMap(mon=>mon.evol.map(([id])=>[id,mon.id])));
 const pick=items=>items[randomIndex(items.length)];
 function wildForm(id,level){
@@ -2990,7 +3026,7 @@ function fresh(stage=1,team,oldReels,prior,tutorial=prior?.tutorial??false,start
   const enemyItems=mode==='formal'&&foe.trainer?regionalTrainerInventory(stage,rivalStarter,adventure):null;
   if(foe.kind&&!enemyItems) for(const mon of foes) equipEnemy(mon);
   for(const mon of foes) applyEnemyBoosters(mon,stage,enemyItems);
-  const run={tutorial,team:party,enemy:foes[0],foes,foeIndex:0,rivalStarter,adventure,enemyItems,trainer:foe.trainer??null,introSeen:!foe.kind&&!foes[0].shiny,stage,kind:foe.kind,phase:foe.phase,phaseType:foe.phaseType,
+  const run={evolutionItemRules:1,tutorial,team:party,enemy:foes[0],foes,foeIndex:0,rivalStarter,adventure,enemyItems,trainer:foe.trainer??null,introSeen:!foe.kind&&!foes[0].shiny,stage,kind:foe.kind,phase:foe.phase,phaseType:foe.phaseType,
     recentWildSpecies:[...recentWildEncounters(prior),...(!foe.kind&&!foe.trainer?[foe.id]:[])].slice(-3),
     usedWildTypes:[...new Set([...(prior?.usedWildTypes??[]),prior?.phaseType,foe.phaseType].filter(Boolean))],redEncountered:Boolean(prior?.redEncountered||prior?.kind===redEncounterKind||foe.kind===redEncounterKind),
     region:mode==='formal'?(adventure.region?adventureLabel(adventure.region):adventure.national?'全國冒險':regions[0]):null,items:prior?.items??{},loveSweetAcquired:Boolean(prior?.loveSweetAcquired||prior?.items?.["love-sweet"]),balls,used:{},
@@ -3188,7 +3224,9 @@ function levelEvolution(p,level){
   if(p.megaKey) return null;
   if(p.id===265) p.personality??=Math.floor(Math.random()*0x100000000);
   const silcoon=(p.personality>>>16)%10<5;
-  return p.evol.find(([next,kind,min])=>{
+  return p.evol.find(branch=>{
+    const [next,kind,min]=branch;
+    if(evolutionItemForBranch(branch))return false;
     if(kind==='MOVE') return p.moves.includes(emeraldData.ms[min]?.name);
     if(kind==='ITEM'&&[475,478].includes(next)) return false;
     if(level<min) return false;
@@ -5516,7 +5554,6 @@ async function resolveSpinCore(s,board,settledTracks=null){
   if(activeAbility(s.enemy)===64) await abilityDamage(s,current,'player',.05,'汙泥漿');
   if(!current.left){await replaceFainted(s);if(s.result)return;}
   if(!s.enemy.left){await winBattle(s,s.team[s.active]);return;}
-  if(itemCount(s,'razor-fang')&&Math.random()<.1){alterSpinDelay(s,'player',1);s.log.unshift('銳利之牙增加 1 次可拉霸機會。');}
   renderBattleProgress(s);
   const p=s.team[s.active];
   const matched=matchingLines(board,false,activeAbility(p)===100,activeAbility(p)===230);
@@ -6996,6 +7033,17 @@ async function advanceStage(){
   if(resupply) autoSave(state);
   openBattleStage(true,false);
 }
+function fitStageResupply(){
+  const dialog=$('stageResupply');if(!dialog?.open)return;
+  const viewport=window.visualViewport;
+  const width=Math.min(innerWidth,viewport?.width??innerWidth),height=Math.min(innerHeight,viewport?.height??innerHeight);
+  const scale=Math.min(1,(width-20)/dialog.offsetWidth,(height-20)/dialog.offsetHeight);
+  dialog.style.setProperty('--resupply-scale',String(Math.max(.05,scale)));
+}
+addEventListener('resize',fitStageResupply);
+window.visualViewport?.addEventListener('resize',fitStageResupply);
+const resupplyLayoutObserver=new ResizeObserver(fitStageResupply);
+resupplyLayoutObserver.observe($('stageResupply'));
 async function showStageResupply(run){
   const dialog=$('stageResupply'), blackout=$('championBlackout');
   $('stageResupplyTitle').textContent=musicLabel('整裝階段','Resupply');
@@ -7077,6 +7125,7 @@ async function showStageResupply(run){
     await playCenterRecovery();
     const closed=new Promise(resolve=>dialog.addEventListener('close',resolve,{once:true}));
     dialog.showModal();
+    fitStageResupply();
     await fadeChampionScene(dialog,0,1);
     blackout.hidden=true;
     await closed;
@@ -7106,12 +7155,18 @@ $('showReference').onclick=()=>{$('items').close();$('reference').showModal();};
 $('dexSpecies').innerHTML=species.map(mon=>'<option value="'+mon.id+'">'+String(mon.id).padStart(3,'0')+' '+mon.name+'</option>').join('');
 $('dexSpecies').onchange=showDex;
 $('dexLevel').oninput=showDex;
-showDex();
 const profileKey='poke-slot-profile-v1';
 function loadProfile(){
   try{
     const saved=JSON.parse(slotAccount.getItem(profileKey));
     if(saved&&Array.isArray(saved.unlocked)&&Array.isArray(saved.eggs)){
+      // Preserve existing Chansey-family unlocks when its missing baby link is restored.
+      const oldChanseyTraits=saved.traitUnlocks?.[113];
+      if(oldChanseyTraits){
+        const entry=saved.traitUnlocks[440]??={natures:[],abilities:[]};
+        for(const key of ['natures','abilities'])entry[key]=[...new Set([...(entry[key]??[]),...(oldChanseyTraits[key]??[])])];
+      }
+      if(saved.teamPreferences?.[113]&&!saved.teamPreferences[440])saved.teamPreferences[440]={...saved.teamPreferences[113]};
       return {viewedRelease:saved.viewedRelease??'',favorites:[...new Set((Array.isArray(saved.favorites)?saved.favorites:[]).filter(id=>Number.isInteger(id)&&speciesById(id)))],playerName:typeof saved.playerName==='string'?Array.from(saved.playerName.trim()).slice(0,16).join(''):'',starter:saved.starter,caught:[...new Set((Array.isArray(saved.caught)?saved.caught:saved.unlocked).filter(id=>speciesById(id)))],unlocked:[...new Set(saved.unlocked.filter(id=>species[id-1]?.id===id).map(baseSpeciesId))],seen:[...new Set([...(Array.isArray(saved.seen)?saved.seen:[]),...saved.unlocked].filter(id=>speciesById(id)))],shinyUnlocked:[...new Set((Array.isArray(saved.shinyUnlocked)?saved.shinyUnlocked:[]).filter(id=>speciesById(id)).map(baseSpeciesId))],traitUnlocks:saved.traitUnlocks&&typeof saved.traitUnlocks==='object'?saved.traitUnlocks:{},teamPreferences:saved.teamPreferences&&typeof saved.teamPreferences==='object'?saved.teamPreferences:{},eggs:saved.eggs.filter(egg=>species[egg.id-1]&&Number.isFinite(egg.progress)),tickets:Math.max(0,Number(saved.tickets)||0)};
     }
   }catch{}
@@ -7974,6 +8029,12 @@ for(const field of musicStyleFields){
 }
 $('settingsOpen').onclick=()=>$('settingsDialog').showModal();
 const releaseNotes=[
+  {version:'0.7.6',date:'2026-11-27',changes:[
+    ['熱修進化道具','Hotfixed evolution items'],
+    ['部分寶可夢進化機制實裝','Implemented additional Pokémon evolution methods'],
+    ['手機板畫面更新','Updated mobile layouts'],
+    ['銳利之牙效果重做','Reworked Razor Fang']
+  ]},
   {version:'0.7.5',date:'2026-11-26',changes:[
     ['優化所有回復道具/樹果機制','Improved recovery items and berries'],
     ['增強 全隊通關回復 能力調整','Adjusted the party recovery upgrade'],
@@ -8737,6 +8798,8 @@ function showTeamMember(id,tab='moves'){
 }
 function evolutionCondition(branch){
   const [,kind,requirement]=branch;
+  const evolutionItem=evolutionItemForBranch(branch);
+  if(evolutionItem)return musicLabel('使用'+itemCatalog[evolutionItem].name+'進化','Use '+itemTargetName(evolutionItem)+' to evolve');
   const stone=stoneNames[String(requirement).replace(/^ITEM_/,'').replace(/_STONE$/,'').toLowerCase()];
   const held={ITEM_KINGS_ROCK:'王者之證',ITEM_METAL_COAT:'金屬膜',ITEM_DRAGON_SCALE:'龍之鱗片',ITEM_UP_GRADE:'升級資料',ITEM_DEEP_SEA_TOOTH:'深海之牙',ITEM_DEEP_SEA_SCALE:'深海鱗片'};
   if(kind==='LEVEL') return 'Lv. '+requirement+' 進化';
@@ -9799,12 +9862,47 @@ const typeItems={
   'mystic-water':['神秘水滴','水'],charcoal:['木炭','火'],'miracle-seed':['奇蹟種子','草'],'sharp-beak':['銳利鳥嘴','飛行'],
   'poison-barb':['毒針','毒'],'hard-stone':['硬石頭','岩石'],'soft-sand':['柔軟沙子','地面'],'black-belt':['黑帶','格鬥'],
   magnet:['磁鐵','電'],'spell-tag':['詛咒之符','幽靈'],'twisted-spoon':['彎曲的湯匙','超能力'],'dragon-fang':['龍之牙','龍'],
-  'black-glasses':['黑色眼鏡','惡'],'metal-coat':['金屬膜','鋼'],'never-melt-ice':['不融冰','冰'],'silk-scarf':['絲綢圍巾','普通']
+  'black-glasses':['黑色眼鏡','惡'],'never-melt-ice':['不融冰','冰'],'silk-scarf':['絲綢圍巾','普通']
 };
 const potionRates={potion:.2,'super-potion':.5,'hyper-potion':.75,'max-potion':1};
 const statBoosterIds=['hp-up','protein','iron','calcium','zinc'];
 const stoneNames={fire:'火之石',thunder:'雷之石',water:'水之石',leaf:'葉之石',sun:'日之石',moon:'月之石',shiny:'光之石',dusk:'暗之石',dawn:'覺醒之石',ice:'冰之石'};
 const stoneIds=Object.keys(stoneNames).map(id=>id+'-stone');
+const specialEvolutionItems={
+  'soothe-bell':['安撫之鈴','soothe_bell','與特定寶可夢變得更親密,使他進化'],
+  'kings-rock':['王者之證','kings_rock'],
+  'metal-coat':['金屬膜','metal_coat'],
+  'dragon-scale':['龍之鱗片','dragon_scale'],
+  'up-grade':['升級資料','upgrade'],
+  'deep-sea-tooth':['深海之牙','deep_sea_tooth'],
+  'deep-sea-scale':['深海鱗片','deep_sea_scale'],
+  protector:['護具','protector'],electirizer:['電力增幅器','electirizer'],magmarizer:['熔岩增幅器','magmarizer'],
+  'dubious-disc':['可疑修正檔','dubious_disc'],'reaper-cloth':['靈界之布','reaper_cloth'],sachet:['香袋','sachet'],
+  'whipped-dream':['泡沫奶油','whipped_dream'],'razor-fang':['銳利之牙','razor_fang'],'prism-scale':['美麗鱗片','prism_scale'],
+  'oval-stone':['渾圓之石','oval_stone'],
+  'recommendation-mail':['推薦郵件','recommendation-mail','使需要通信進化的寶可夢進化']
+};
+const evolutionItemRoutes=Object.fromEntries([
+  ...[169,242,25,35,39,176,183,428,528,542,448,196,197].map(id=>[id,'soothe-bell']),
+  ...[65,68,76,94,526,534,589,617,709,711].map(id=>[id,'recommendation-mail']),
+  ...[186,199].map(id=>[id,'kings-rock']),...[208,212,462,476].map(id=>[id,'metal-coat']),
+  [230,'dragon-scale'],[233,'up-grade'],[367,'deep-sea-tooth'],[368,'deep-sea-scale'],[464,'protector'],[466,'electirizer'],
+  [467,'magmarizer'],[474,'dubious-disc'],[477,'reaper-cloth'],[683,'sachet'],[685,'whipped-dream'],
+  [470,'leaf-stone'],[471,'ice-stone'],[472,'razor-fang'],[461,'razor-fang'],[350,'prism-scale'],[113,'oval-stone']
+]);
+function isEvolutionItem(id){return stoneIds.includes(id)||Object.hasOwn(specialEvolutionItems,id);}
+function evolutionItemForBranch([target,kind,item]){
+  if(evolutionItemRoutes[target])return evolutionItemRoutes[target];
+  if(kind!=='ITEM')return null;
+  const id=String(item).replace(/^ITEM_/,'').toLowerCase().replaceAll('_','-');
+  return isEvolutionItem(id)?id:null;
+}
+function evolutionTargets(id,mon){
+  if(!isEvolutionItem(id)||!mon||mon.megaKey)return [];
+  return [...new Set(mon.evol.filter(branch=>evolutionItemForBranch(branch)===id&&speciesById(branch[0])&&(branch[0]!==475||mon.gender==='male')&&(branch[0]!==478||mon.gender==='female')).map(branch=>branch[0]))];
+}
+function eligibleEvolutionItems(run){return [...stoneIds,...Object.keys(specialEvolutionItems)].filter(id=>run.team.some(mon=>evolutionTargets(id,mon).length));}
+const evolutionItemOfferChance=.10;
 const gemNames={火:'火之寶石',水:'水之寶石',電:'電之寶石',草:'草之寶石',冰:'冰之寶石',格鬥:'格鬥寶石',毒:'毒之寶石',地面:'地面寶石',飛行:'飛行寶石',超能力:'超能力寶石',蟲:'蟲之寶石',岩石:'岩石寶石',幽靈:'幽靈寶石',龍:'龍之寶石',惡:'惡之寶石',鋼:'鋼之寶石',普通:'一般寶石',妖精:'妖精寶石'};
 const healingBerries={"sitrus-berry":["文柚果",2,0.5],"oran-berry":["橙橙果",1,0.25],"leppa-berry":["蘋野果",0,0.1]};
 const resistanceBerries={"occa-berry":["巧可果","火"],"passho-berry":["千香果","水"],"wacan-berry":["燭木果","電"],"rindo-berry":["羅子果","草"],"yache-berry":["番荔果","冰"],"chople-berry":["蓮蒲果","格鬥"],"kebia-berry":["通通果","毒"],"shuca-berry":["腰木果","地面"],"coba-berry":["棱瓜果","飛行"],"payapa-berry":["福祿果","超能力"],"tanga-berry":["扁櫻果","蟲"],"charti-berry":["草蠶果","岩石"],"kasib-berry":["佛柑果","幽靈"],"haban-berry":["莓榴果","龍"],"colbur-berry":["刺耳果","惡"],"babiri-berry":["霹靂果","鋼"],"chilan-berry":["燈漿果","普通"]};
@@ -9847,7 +9945,7 @@ const itemCatalog=Object.fromEntries([
   ['eject-button','逃脫按鍵',1,'隨機移除最多 10 個屬性圖案，合計至少保留 30 格。',true],
   ['strawberry-sweet','草莓糖飾',1,'使你運氣變好一點。'],
   ['love-sweet','愛心糖飾',2,'使你運氣變非常好。'],
-  ['up-grade','升級資料',1,'讓一名隊員回憶一個本局曾遺忘的招式。',true],
+  ['memory-mushroom','記憶蘑菇',1,'讓一名隊員回憶一個本局曾遺忘的招式。',true],
   ...Object.keys(gemNames).map(type=>['reel-stone:'+type,type+'屬性石頭',0,'將 3 個 '+type+'屬性圖案增加進圖庫。',true]),
   ...Object.entries(technicalMachines).map(([id,tm])=>[id,id.slice(0,2).toUpperCase()+id.slice(3)+' '+tm.name,tm.tier,'教相容的寶可夢學會'+tm.name+'。'+(tm.power>1?'威力 '+tm.power+'。':''),true]),
   ...Object.entries(healingBerries).map(([id,[name,tier,fraction]])=>[
@@ -9880,18 +9978,30 @@ const itemCatalog=Object.fromEntries([
   ['scope-lens','焦點鏡',3,'每次造成傷害時，有 10% 機率使傷害增加 50%。同時只生效一件。'],
   ['macho-brace','強制鍛鍊器',1,musicLabel('每件使我方拉霸次數減少 1 次；每通過 2 關，使我方當前上場寶可夢額外升 1 級。','Each copy reduces your spin allowance by 1. Every 2 cleared stages, your active Pokémon gains 1 extra level per copy.')],
   ['shell-bell','貝殼之鈴',3,'每件使我方場上寶可夢回復相當於招式傷害 10% 的 HP。'],
-  ['razor-fang','銳利之牙',2,'每次拉霸有 10% 機率增加 1 次可拉霸機會。每局最多持有一件。'],
   ['razor-claw','銳利之爪',3,'每次造成傷害時，有 10% 機率暫時偷走對手的持有道具。同時只生效一件。'],
-  ...Object.entries(stoneNames).map(([id,name])=>[id+'-stone',name,2,'可讓相容的隊員進化。使用後消耗。',true]),
+  ...Object.entries(stoneNames).map(([id,name])=>[id+'-stone',name,2,'持有時可使特定寶可夢進化',true]),
+  ...Object.entries(specialEvolutionItems).map(([id,[name,,description]])=>[id,name,2,description??'持有時可使特定寶可夢進化',true]),
   ...Object.entries(gemNames).map(([type,name])=>['gem:'+type,name,1,'將輪盤中 3 個其他屬性圖案永久轉成'+type+'屬性。使用後消耗。',true]),
   ...Object.entries(typeItems).map(([id,[name,type]])=>[id,name,2,'每件使我方 '+type+'系招式威力增加 '+typeItemPowerBonus+'%。'])
 ].map(([id,name,tier,description,usable=false])=>[id,{name,tier,description,usable,sprite:id,type:typeItems[id]?.[1]}]));
 itemCatalog.potion.quantity=2;
 for(const id of [...Object.keys(healingBerries),...Object.keys(statusBerries)]){itemCatalog[id].usable=true;itemCatalog[id].description+=' 也可從背包主動選擇隊員使用。';}
 function recoveryItem(id){return Boolean(potionRates[id]||['full-heal','revive','max-revive'].includes(id)||healingBerries[id]||statusBerries[id]);}
-function stoneEvolution(id,mon){
-  const key='ITEM_'+id.replaceAll('-','_').toUpperCase();
-  return mon.evol.find(([target,kind,item])=>kind==='ITEM'&&(item===key||item===id)&&speciesById(target)&&(target!==475||mon.gender==='male')&&(target!==478||mon.gender==='female'))?.[0];
+function stoneEvolution(id,mon){return evolutionTargets(id,mon)[0];}
+async function useEvolutionItem(run,id,fromReward=false){
+  const def=itemCatalog[id];
+  const index=await chooseItemPartyTarget(run,musicLabel('選擇進化的寶可夢','Choose a Pokémon to evolve'),mon=>evolutionTargets(id,mon).length>0,null,id);
+  if(index<0)return false;
+  const mon=run.team[index],targets=evolutionTargets(id,mon);if(!targets.length)return false;
+  let target=targets[0];
+  if(targets.length>1){
+    const choice=await itemPrompt(musicLabel('選擇'+displayPokemon(mon)+'的進化型態','Choose an evolution for '+displayPokemon(mon)),targets.map(id=>'<button value="'+id+'"><img style="width:64px;height:64px;object-fit:contain;image-rendering:pixelated" src="'+sprite({...mon,id,megaKey:null})+'" alt="">'+displayPokemon({...mon,id,name:speciesById(id).name})+'</button>').join(''));
+    target=Number(choice);if(!targets.includes(target))return false;
+  }
+  if(!evolutionTargets(id,mon).includes(target))return false;
+  await evolvePartyMember(mon,target,run);
+  if(!fromReward)consumeItem(run,id);
+  return true;
 }
 function hasStealableEnemyItem(run,mon){
   return run.enemyItems?Object.values(run.enemyItems).some(count=>count>0):Boolean(mon.heldItem);
@@ -10000,6 +10110,8 @@ function playerCanHoldItem(run,id){return (run.items?.[id]??0)+(run.stolenItems?
 const itemCount=(s,id)=>itemsSuppressed(s,id)||berriesSuppressed(s,id,'player')?0:Math.min(passiveStageItemCaps[id]??Infinity,Math.max(0,(s.items?.[id]??0)+(s.stolenItems?.[id]??0)-(s.enemyStolenItems?.[id]??0)));
 Object.assign(itemSprites,{"shiny-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTHF5qX//4zm99b///+txZz/5nP/3gictXt+iUiRAAAAAXRSTlMAQObYZgAAAKNJREFUGNNjYKAPYBQUROEKGZsgCwi5hoYaCSCkjVJDQ4MV4XxhJSA/0hEh7QJUP9MQLq1ibBoalAnjMzo5m5eGKsH5QkrO5aXuRnC+iJJ7uUe7USbUfEZVJ3eTjnajJBjfNdTZo6O4bBLUPYymoSHl5eZqSkj8YuMihHVuadOUlNSS4c4XSps5LS0J7joGEbWZM5OUkXwnomysJIgaOII0CncAusEjLg0LwygAAAAASUVORK5CYII=","silver-crown":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAIVBMVEUxMTExMTFKWntSY3tac5xre5SUnLW1vcXW1t7e5ub39/cDqBo9AAAAAXRSTlMAQObYZgAAAHJJREFUGNNjYBgUgFFQEIUr3taOLCCekZWRLoCQLlu2ctqyQjhfuG36zOnTmuEKRNsqp88sa0XiT89Kn4bEX545fWb6VAQ/qywtrTIVzhdyW9HRMc0JzmdUc3N1VVVEuEfUzVVVVQDJvaJOKoJ4/DNwAADLNByKb0gfcAAAAABJRU5ErkJggg==","dusk-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTG9lL2te63vreaUa6VzUntSQlKMWpRjSmOfXHzpAAAAAXRSTlMAQObYZgAAAJBJREFUeNq9z8EJwzAMQNF2Aysj2F3AOIHeK3IvjTOC6k5geg4BTRDItlEgkb1Aq9vjC4Eu/5krANRsrHVQ3NwQH8Foti1imL3m0GKf+Fk8IBFP5lh33dAvteOYV+KXOdfjO38rd2PeLfdrz8WU85Imo/7s5ySrV5JcTJQkq+/MLLn0GIOvvg/Weck6ACD8yWwaxChDup0UJgAAAABJRU5ErkJggg==","super-shard":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAGFBMVEX///9COnsxMTGErebF3ubv//djjN5KUrXCERtnAAAAAXRSTlMAQObYZgAAAGlJREFUGNNjYBggIITKZQpC4TKqGqEoVg1F4jMqmYSGpgkg9Ka4uAanKSAUqCW7hCHzGdPS3JINkSxLSzMzRrZAzDhdPBlJg7JxoaBgERLfrFxQSAnJQPNyJQVk16crofqmCM13CgMVzABN1g9BTtwTXgAAAABJRU5ErkJggg==","up-grade":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAALVBMVEX///8xMTFjY0r/996EhGvv78XmlAD/3gDFxcXmvb3v/9aEhIStrZTW1rWl1qXbECeKAAAAAXRSTlMAQObYZgAAAIpJREFUGNNjYBgYIIjKFTJFERAyNisTROGWl5cLIrjG5oXlZUpQAUZjY2MjILc1RgDCdzHuWKWktCNUCcZ3WrVqsbHxJjjfcyaQ39EE52vOe7dn3rvXML6v3ouOzpnvXh+C8u9e6gDy5+mcEYC6/e5uIF/pDNxBQIFNSFyQwJ0zKB4SvCOI1/80AwAH6i9DYI5u1wAAAABJRU5ErkJggg==","color-screw":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9SUlK97/+Ezu8xMTGtrd7OjM7va73/nNZtyEHMAAAAAXRSTlMAQObYZgAAAF1JREFUGNNjYBgUgFFQAIUvpKSILMCoZKykiCxtbGyshKRAODTU2AjBZzENDQ02UkHip6WGGiPxw8rLUPjhFWWhyOoz2oF8B2R+arAKkv1uqcEmDkh8FhcXB4ZBCQDM/RCQTzHyUgAAAABJRU5ErkJggg==","dawn-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAGFBMVEX///8xMTGU/+8QzsUI3rUZ/97///8ZtaVl6PHsAAAAAXRSTlMAQObYZgAAAI5JREFUeNq90DEOwjAMBVC4QRqpB6gLHKBuxE6MMqep1Z0rNMjXp5MdsYO3p29Ltk//qXPXuZYeYHBmDwWnweJxGhHBaRxvL8SHuRwO96ztYbmGIo2ZeVP7HRlYzPJc4EJRPRPDGjXvRYhJ3k5diSiZU01UU9Z1tySzVHMRqTZ+DKyyc27O75mz+37PT+oDgZ4ipC2MvN0AAAAASUVORK5CYII=","gold-crown":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAIVBMVEUxMTExMTGca0Kla0Kte0q1hErOpVLevVL35kr3763////1RHMzAAAAAXRSTlMAQObYZgAAAHJJREFUGNNjYBgUgFFQEIUr3taOLCCekZWRLoCQLlu2ctqyQjhfuG36zOnTmuEKRNsqp88sa0XiT89Kn4bEX545fWb6VAQ/qywtrTIVzhdyW9HRMc0JzmdUc3N1VVVEuEfUzVVVVQDJvaJOKoJ4/DNwAADLNByKb0gfcAAAAABJRU5ErkJggg==","eject-button":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAIVBMVEX///8xMTH/3hnWtRmMjIxrhJTF1t7/cyH/Qhm1KSGMpbXrxxWxAAAAAXRSTlMAQObYZgAAAIFJREFUeNq9zsEJhDAQhWHtIJaQMAS8bwWjFQRswMPsfS+xg2UbWLSFVOlb8EncApzb9xN4aW667o/BXTiLr2km6mrarJ5sH9Ge+aWOFrV3XkZPJ42wcKKdgq75gwk6jf325QQ8SfhNDKeTRIRC44GClTFRSsf/IYSDDCQDyQDecjtimCTNknKDrgAAAABJRU5ErkJggg==","ice-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAIVBMVEUxMTEZa5QxMTE6nLVjvc6U1t697/fW7/fe9//v///3//+CGYlEAAAAAXRSTlMAQObYZgAAAL9JREFUGFe1zsEJwjAUBuCQDQIOUIKt54oVetSkRY/SJMQBis0AXUCI1LO0NB2gYKb0YNJ2AP1v33s/jwfAfwIxDpaMeHVfDMKh5GQ7r5XVjCRTYTPYTpO9NzzbkcvZ69RWWpLcGZJ0fPaCJrOrdy8Ic16zVJpGJTvnkCvZP17F6muYC8MbVVzcP1Apw0UdH47OnTHiViDiz7f0VGYx8udgTSVjCLk6gHXWUkZpMPnKaMkx8Ik0F3omgBjjBX+aD8/fMg4vRnLsAAAAAElFTkSuQmCC","lure":"iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB7UlEQVR4nO2XLZTaQBCAP/oqkOBSGdziDsfJWBy4nry6SOIambogcXcSGVyQKzmXc6zLSuJAxqWCR3ppuDab9krFzXsxM8nOt/OzO+nYts015cNVvb8D/A8AH//g2+KCrvOvAIqHKGZofyoVq41k6XuFKUSnRRsW2yTB6vUAyI7H0rDTe77MJphAmNZA8RDFpfNL4gYhXE7PXwGohP3l7s9yI4TResY1sNN75tESgIXnVvRtxBjgMVqXjqeeT+C6NfubAsBpt+dU/OxQZ2aRaNUF48/3jIaiku9npYikJJMbMOiCVhEYDQXJTpHsVKnT2Z6Z47A8ATQW0wgU43iMXvRZh0HlLFhtJJGU2PMDT5MnaBgFE4AiTVOW2QKAla+xrR8tqbM9d8FpLdeaMxgMGkE0Bag4dywHmUm2h6R84bY/KvUmEMY1cHbiWA6uNQdA8QxQ6s8QTaT1bRiosKa77Y+M12k1D2wPCb7w0CqvPC9T8iYA20OCzCRa5dyvAwAepz626AKgVV6rjd+JURfEaUSgQrTKX33JFl184TEZzKBBFxjXgFY5tuii1lnNJqbWCc7gQjQ+iOI04u6bR1f0asZcHVl9DRvvvg1ACSG4qSjPrWjivC0A/HriMZoJ254DxtPva3L1/4J3gKsDfAdsJc+xV9RPYgAAAABJRU5ErkJggg==","bright-powder":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTGErYSc1pxKc0o6Yzqt5q3W/9b3//eEvYRmqGLvAAAAAXRSTlMAQObYZgAAAJRJREFUGNNjYBggICgogMJ1cXFEEmBUNjZycUTwhYyNjZVc4AoYnYyBClRc4fzQIGdjJRW4BlElV2UlJbgBgkDDgpxUYHzGtFAl5RAVF5h5YmlpQcamLnDlYpnlqcGqCPcwTi8vT1VFuFe8oqO8UhHh1vKOjvaSAGTpjvaUAEYBOL+iolw0AKEeaFwhst8Z0cKCmgAADGsfQQkiCFYAAAAASUVORK5CYII=","white-flute":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTHm5ub///+lpaXvve/ejN7FxcXeY961Y7XItIAXAAAAAXRSTlMAQObYZgAAAIdJREFUeNq1kMENgzAMRROpAyRRF+CbYq6UBVBGCBPACFYn4NQV2LY3bB96qvpvT09f/nL4Y7LHiOS4TJ3TKzkuT0lW02P7pm/5HomvdqytVaMLzU1Uhzq3XUybsA/80kssAw5eLhbIMZ7KAI/gpFMAeZ+OASzBFtDb7WB0hmORPrlfZG3/lg/5OBV4ZD+c/AAAAABJRU5ErkJggg==","max-potion":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAIVBMVEX///8xMTHm5vdzc4TOzt61tcWUlKUxWnuUrf8he8VCnOYkoIefAAAAAXRSTlMAQObYZgAAAKlJREFUeNqtz8EKwjAMBmBF8Lwq6M4Bd55se4HR7V5Ke9/qskcY+gR9AmE+gHtNC6NNPWtuX/ITks2fqmB5TAZKRNwCNyohHwCyKo/GAHiSX2M8Cs9d3QMa0YU4rzOsOnLJW6ONCJZlWxl9pbwspNRD4n3jyuVNOOjMGxwncjo142OJbKf7a0HvfWrtPL/7sA+dn/0lGNA6itxbATrS/0zBSmqspAbxt/oA41kol4weruQAAAAASUVORK5CYII=","shell-bell":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAJ1BMVEX///97jIxKSkoxMTHm5ub//97///+ltbWczsXOzsXW9+/v1talpaX4/VzSAAAAAXRSTlMAQObYZgAAALZJREFUGNNjYBgwIGSMxGFSZmRgMIDxlI0tXIQYGBhhXNe0JaXqBgxMULWu6ZW7IzSKGZghfJXw6tCokJZwAyjftDo0bYn7jnYon8mtJCzNvTpEwwBiPlP41rSU6jCvYiGocSu3prlvDVtSDHNKWRhQepePM5TPbBUWUprlZBIM4ysv3b5tibLqJJj6IuOlLo7GanDXmygbGxsrxcD5zKFKSkphhxGeNQ4NSztkgOR7oAYD2gQyAA6WKnTChnvXAAAAAElFTkSuQmCC","macho-brace":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAALVBMVEX///8xazo6UkK1773//94xMTGcnDGMxZRrpXNKhFJKWmOcpa3FztbW3ubv7/fJMECYAAAAAXRSTlMAQObYZgAAAMBJREFUGNNjYKA+YFRSReErG2sEIHGZTNI1WpH4wmYZoRFRoQjl5a1Mgnv2wAXUKwI0Jda+PQ0zQ6OJaeYsrlVvtkL5ka2aM5YyMKx9CuWzThWcdTaAgesOTEOoxNJ9Wxm4XsP4TFsZ1p6NVFJdANNwZwHXvskIR4JUrkByJMikZpAjYQrWbWWYXN66SRDGX3s6VL0iRlMSbsDbNxpNmzpnwH29ai/QkTORPL1q6VTBGciBwhAq2YoSaEyhAdSICwCnZzxR7LVVzAAAAABJRU5ErkJggg==","lucky-egg":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAElBMVEX///8xMTHe7/fO1t7///+lrbXKGaJ8AAAAAXRSTlMAQObYZgAAAGJJREFUeNq90MsNgCAQRVHoADQ2cIkFIKEDC9CY6b8ViRtmSNzydid5yXzcpMRoSQqKHsjKC+iC5wRGX6YO95/9xzR4H1ytk3QfQO12KxSRPn8rVeRR+0lL1uc2BvuOxhl5AWjiEdl1GaVxAAAAAElFTkSuQmCC","scope-lens":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAALVBMVEX///8xMTGUcynv9/9zUgjvxUr371Jre4xCUmOUpbWltcXF1uZSc617nNbWWkq/VPdFAAAAAXRSTlMAQObYZgAAANtJREFUGNNjYKAFEBJA4TKaFKLwhcM8yicgSZuqenUuLy+vhPJZ01JDdqxcvXt3AYQvlhYaUt0558ypnVB+amhI1Y6OjprlYC5TGoi/ePdmixkQ49LUQoM6V63oWA2xlTGjIzRIYlbz3VPmYL5as7VokMSMu3fvLATzBW1PGAL5tm+hfKEdHZvEBWfsvXtnIphfLWwttVyo8/TekxUQ/g7B1csFxOecmQ7xpfSuVbsqBRjLy6GeZLfevX1iA0OjYAPUe4uNV0k2IHlfatWKFSjBM3Mmang1SlAtJgBiGEpJekly+gAAAABJRU5ErkJggg==","leaf-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAJ1BMVEX///8xMTFaazrF1qWcrXt7jFo6Yzp7pXtahFJKc0JrlGtKWimMtYyZ8cmwAAAAAXRSTlMAQObYZgAAAMRJREFUGNNjYKANYBIUQ+YyCps4CSBzXZNMHBF8YdeM5YsRfEbT9FmdraZwDcJunSu6ZrnA+Gwm6Z0rVq4IDoIrn1kxa1ZHsCOS8srOWc5wfljF9BXLq0w2Qp3mEtneNXPmEpNAqHZjt86qjo7FrjB+sEnnyuWrjJH4mR1dxiahYTC+8TEXY2fv3VD3MLr6tBgbm27ShvLZXD2cgaqVFGHOFw1VDQkNVYJ7hzEodPfWUEWE9wWVlLQ3IgUPQ6KgYAJ14gEACug1tWOICa4AAAAASUVORK5CYII=","moon-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9KY1IxMTFrhHOEnIzO5tZac2OtxbXe9+YjyYtyAAAAAXRSTlMAQObYZgAAAJ1JREFUeNq90MEKwjAMBuBuT6AiPZdtUK8lxRdYtryC11GJZ4e0veqT28Ma0Lvm9pG/Can6WzVd96F+0kbY9h4dGqF9BnecxEPKzOyr2wfmfcCl2iLddYAoBnDBj3G3xSNzieNa247y7JE2N+MVU3EyNe6RGSiLA8N5pNf2XC8aAG9r3TaUXQhCZWdAJKE6lXmXVVhupXQwXz/zq3oDN4Uj4YLLZ7AAAAAASUVORK5CYII=","sun-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAGFBMVEX///8xMTH/787mczqESin/rXPFYyn3hEpRGevHAAAAAXRSTlMAQObYZgAAALdJREFUeNqtkMEOgjAMhiXxATaC3B3gXeu4jyy7wyyeYWE8AERfXwybzDvNDv3yf2mzHvYq+o8RI1u/tLEOOCMSVLKxFjcGl4Q65ZgzwKYVvHZCVZQWx9l2jmPsGccp9X7RMkTdCD9v6osCOZCNG41w95wMvQZtfB7lmVlSMwo3/fEsAZR5V6twAjVaaW0J59UX8WCtnWV79QvwZZSk9PdFaSYlgmNoKWUdcpdimGck4iQ85vftUh8MRSWlwDNeKQAAAABJRU5ErkJggg==","fire-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAJ1BMVEX///8xMTF7eyHm5nvFxWv//+///4z/75ylpUr3lDH37zHecxDezhCJQDF6AAAAAXRSTlMAQObYZgAAAMJJREFUeNq1zrEKgkAYB3DtCbwkaFUKgrZUaC1vcowunZvCPUSaBId7guJsDYnDN8gHcLiH6pPuzvbov/348338jT/FQWj8ReSFAUGapo9D77C1lG2CZ36kbQZk70bcV7bjc0L5AyzrjOQVD7XjLOsdSs/BrOJP5QmQ8XRw39ZpqQ3k1xN2PhwlYFYf3UK+X8M1a6hrSa9uObsLsRjmsEaIrlDryaUFlpb2shUd3RjKO/dFMYZaZkopdpASDEBI6ve8Ab+lP9QjkbpoAAAAAElFTkSuQmCC","razor-claw":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///8xMTH////W3t61xc6EjJScpa1rc3tSUlLkaNMaAAAAAXRSTlMAQObYZgAAAIFJREFUeNrFzzEOwjAMBVB8A6etos4g1J0OXCCicwa8ozY5grk+v1XF7wngD1aeLCv26S+REMLRzfn6DKRcblaLsj0OtdZ8aDtc9DuNNkIbxIF29M2v3V3y8nY6Js9xoiVZL8npxVRm4wIdvmrvKHviYzUXFrgZMg+KipOVFrx/kw+x7h1SJ0LMBwAAAABJRU5ErkJggg==","thunder-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8pcykxMTH3//drtWtKlEqt962M1ozW73u1zloTF89lAAAAAXRSTlMAQObYZgAAAKtJREFUeNq1kMENgjAYRsEJ0IvpraIJA1QHMPlquZr0T+8qDEAqnYDIAhy6rRyKvwvwbi+v+dI2W4m8LA9/ujkBt4L9qIjMg7NSZGEKzoo8jOSsXKi15Hwx/qMlZ5h66JPnSnlgtItXz/M449q0v2/0rEPo0vG+ETHGCdc015KYrCZa5pt7dB5ki59PwUN32eLCBfBt8xe9yWLOiSoQIUh+LYCwzZhd+qwV+AJTFy23qaKafgAAAABJRU5ErkJggg==","water-stone":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAJFBMVEX///8xMTFKSrXFxf/e3v9jUs6chP/v7/9ra96tzvdzlL2Utd6LtWuPAAAAAXRSTlMAQObYZgAAALBJREFUeNq10LEKwjAQBuDWJ2go7jWlVbpGirOcCG4KeYA6HGYvZBeE8wWE1M3RURAEX0475NIX6G0fPz/HXTTSTIQQSaDIldZ7ZqyWAFBm3ilsW1gvEh/PwQI8BrYWdsHp3LabpyzY9cm5jh2rGq/uVRWZt0Fzl7w/XSEiXfSR63gjkmUSTHSWjT9FoSFXcRznhqj7x96l+/RtdvF99+1gfZDN4BlTpCGjmRBZNNL8AMwDKvG9c4WOAAAAAElFTkSuQmCC","razor-fang":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAHlBMVEX///8xMTGllFrWxYTv5r2cpa21xc7///9rc3uEjJS4yfAZAAAAAXRSTlMAQObYZgAAAG1JREFUGNNjYKAHYBRE5QoZCSDzhVyMFJGlVVw0UPguqaFNSBoYVctLI5D54eVloY0o/PLQiUgGiJeXpwYi8cXKy0uR+Yzl5WWRyAamAw0QQDNAAE0DsgUgExNRfChWXiqAKlAWiBYkggJ0CHkA9RIXHO8bpXIAAAAASUVORK5CYII=","gem:草":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlpj/3u9/7VCzlLv/+YxMTE6vVoAlDEP1BUBAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:冰":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlpr7++t//8x1v/v//8xMTEZtf8AnM692s/+AAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:火":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlr/lEr/zmv3QjH//+8xMTHmSiG1GQBvVNV3AAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:地面":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlq9hDrOpVKlayHmxYQxMTFzQhBrOhAD3qpRAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:電":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlr/5gD//6XmzgD///8xMTHFrQC9pQBabxnUAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:毒":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlqca63Ftc5rY4zv/+YxMTE6a2spSkoEgpkEAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:格鬥":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlq9c3vmnIyUSnv/3tYxMTF7OlpjKTqoTKlqAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:水":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlpCpf97zv8xlP/W//8xMTEAe9YAUs64EG0AAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:超能力":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlr/a7X/pcXWOoz/3tYxMTGlIYxzAGtsOW8GAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:惡":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlpKSkp7e3s6OjqlpaUxMTEpKSkhISFG1wVjAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:鋼":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAGFBMVEX///9aWlqMjJy9vc5jY2Pv7/8xMTEhISFmQTziAAAAAXRSTlMAQObYZgAAAHhJREFUeNrNjTsSQEAQREnEficYS25GucAuB6AmV6UcQLTXN4HmCLys63V1J78gLYz8zWUjwt2rWQy/IVcSjGaEFl6t72W7s29VhNyAPKiuTPQM7JMqkZuxl/VFiLE2jUId4mn/IFtCLE0/HO7WKDA0FjCOgukvuADEaxUflc9EKwAAAABJRU5ErkJggg==","gem:龍":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlqlhM6tve+EY+be/94xMTFKQpxjOnN0q94rAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:幽靈":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlprUr1ra95SQpyMjOYxMTE6MXMhKVIJUzLrAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:蟲":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlq93mvm77WcvSH///8xMTGMpRBzlABH4cKUAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:岩石":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlq9lHvezrWMc1rv5s4xMTFzWkpSQjGAQGiWAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:飛行":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlq9zv/e5v+crffv//8xMTFrhMVCUpTSfdUaAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg==","gem:妖精":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAA3NCSVQFBQUYJt5DAAAAQlBMVEX///9aWlr/3u/vY70xMTGEhIT/5vf3jMX/pdbve8X////va73OUqXvnN7/tdbejL3/rdb/tdbOOpz37//Wc7Xve8WoSun8AAAAFnRSTlMA/////////////////////wD///8As+elogAAAH1JREFUeNrtzEkSwjAMRFFbCGN5Dknuf1UklyuLDjeAv9QrtfuB/NVXfUWaxch3fQYJK6GbezuvGqF7Uk1hVnUG3D9UU5paq7QMTDlZpuYD1nn51Jx5c+ilFJGidVVl9LdMPgafJ6D53oz74G0p+hD7vZbRqXVQcFB003/uAwInBo7AWTj3AAAAAElFTkSuQmCC","gem:普通":"iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAA3NCSVQFBQUYJt5DAAAAG1BMVEX///9aWlrmvb331tbFtbX///8xMTGtpaWUlJRU664PAAAAAXRSTlMAQObYZgAAAH5JREFUeNrNjcENwkAMBJMPbwIdOJcUYJ+ggDMUkMj/SIgGUCRK4MqOH9m7Esj8VrPabQ5B2znnmi+9CI9VszhpQb6KOv0NWnj2fpJlz2kwEQoROZrNTFQGXg8zovDE3un+1ZxX1yismn/+XwqT5o/rwjvsGgWGxgLGUXD9DzaNdBd7I1+MfAAAAABJRU5ErkJggg=="});
 function itemArt(key){
+  if(specialEvolutionItems[key])return '<img src="./assets/pokerogue/images/items/'+specialEvolutionItems[key][1]+(key==='recommendation-mail'?'.svg':'.png')+'" alt="">';
+  if(key==='memory-mushroom')return '<img src="./assets/pokerogue/images/items/big_mushroom.png" alt="">';
   if(key.startsWith('mega:')) return '<img src="./assets/pokerogue/images/items/'+key.slice(5)+'.png" alt="">';
   const data=itemSprites[key];
   if(data) return '<img src="data:image/png;base64,'+data+'" alt="">';
@@ -10090,11 +10202,10 @@ function contextualRewardWeights(ids,run){
 function rewardOptions(s){
   const typesInTeam=new Set(s.team.flatMap(mon=>mon.type));
   const moveTypes=new Set(s.team.flatMap(mon=>mon.moves.map(move=>skillDetails[move]?.type)));
-  const all=Object.keys(rewards).filter(id=>!id.startsWith('mega:')&&(!rewards[id].type||typesInTeam.has(rewards[id].type))&&
+  const all=Object.keys(rewards).filter(id=>!id.startsWith('mega:')&&!isEvolutionItem(id)&&(!rewards[id].type||typesInTeam.has(rewards[id].type))&&
     (!s.tutorial||!isNewReward(id))&&playerCanHoldItem(s,id)&&
     (id!=='gold-crown'||s.stage>=80)&& (id!=='hp-up'||s.stage>=20)&&
     (!immediateReward(id)||canApplyItem(s,id))&&
-    !(id==='razor-fang'&&s.items[id])&&
     !(id==='strawberry-sweet'&&(s.items[id]??0)>=3)&&
     !(id==='love-sweet'&&(s.loveSweetAcquired||s.items[id]))&&
     (!resistanceBerries[id]||(s.items[id]??0)<5)&&
@@ -10102,10 +10213,13 @@ function rewardOptions(s){
   const results=[];
   const megaPool=s.stage>=50?eligibleMegaStones(s):[];
   const megaOffer=megaPool.length&&Math.random()<.10?pick(megaPool):null;
+  const evolutionPool=s.tutorial?[]:eligibleEvolutionItems(s);
+  const evolutionOffer=evolutionPool.length&&Math.random()<evolutionItemOfferChance?pick(evolutionPool):null;
+  const specialOffers=[megaOffer,evolutionOffer].filter(Boolean);
   const count=4+(s.tutorial?0:upgradeEffect(s,'rewardChoices'));
   const luck=rewardLuck(s);
   for(let i=0;i<count;i++){
-    if(i===0&&megaOffer){results.push(megaOffer);continue;}
+    if(i<specialOffers.length){results.push(specialOffers[i]);continue;}
     const draw=Math.random();
     const tier=rewardRarity(draw,luck);
     const pool=all.filter(id=>rewards[id].tier===tier&&!results.includes(id));
@@ -10200,15 +10314,16 @@ function immediateReward(id){
   return Boolean(itemCatalog[id]?.usable&&!recoveryItem(id));
 }
 function isNewReward(id){
-  return id==='strawberry-sweet'||id==='love-sweet'||reelTools.has(id)||id==='color-screw'||id==='super-shard'||id==='up-grade'||id.startsWith('reel-stone:')||Boolean(technicalMachines[id]);
+  return id==='strawberry-sweet'||id==='love-sweet'||reelTools.has(id)||id==='color-screw'||id==='super-shard'||id==='memory-mushroom'||id.startsWith('reel-stone:')||Boolean(technicalMachines[id]);
 }
 function canApplyItem(run,id){
+  if(isEvolutionItem(id))return run.team.some(mon=>evolutionTargets(id,mon).length);
   if(id.startsWith('mega:')) return eligibleMegaStones(run).includes(id);
   if(id.startsWith('reel-stone:')) return Object.hasOwn(types,id.slice(11));
   if(id==='eject-button') return removableReelCount(run)>0;
   if(id==='color-screw') return true;
   if(id==='super-shard'||reelTools.has(id)) return run.reels.some(reel=>reel.some(type=>Object.hasOwn(types,type)));
-  if(id==='up-grade'||technicalMachines[id]) return run.team.some(mon=>teachableMoves(mon,id).length);
+  if(id==='memory-mushroom'||technicalMachines[id]) return run.team.some(mon=>teachableMoves(mon,id).length);
   if(id==='white-flute') return true;
   if(id.startsWith('gem:')) return run.reels.flat().filter(type=>type!==wildReelType&&type!==id.slice(4)).length>=3;
   return run.team.some(mon=>usableTarget(id,mon));
@@ -10216,7 +10331,7 @@ function canApplyItem(run,id){
 function usableTarget(id,p){
   if(potionRates[id]||healingBerries[id]) return p.left>0&&p.left<p.hp;
   if(statusBerries[id]){const statuses=statusBerries[id][1];return p.left>0&&(statuses?statuses.some(status=>status==='confusion'?p.confusion>0:(p.status||(p.burned?'burn':null))===status):Boolean(p.status||p.burned||p.confusion));}
-  if(stoneIds.includes(id)) return Boolean(stoneEvolution(id,p));
+  if(isEvolutionItem(id)) return evolutionTargets(id,p).length>0;
   if(id==='full-heal') return p.left>0&&Boolean(p.status||p.burned||p.confusion);
   return p.left===0;
 }
@@ -10260,7 +10375,7 @@ function itemPrompt(title,buttons){
   });
 }
 function teachableMoves(mon,id){
-  if(id==='up-grade') return (mon.forgottenMoves??[]).filter(name=>skillDetails[name]&&!mon.moves.includes(name));
+  if(id==='memory-mushroom') return (mon.forgottenMoves??[]).filter(name=>skillDetails[name]&&!mon.moves.includes(name));
   const tm=technicalMachines[id];
   return tm?.species.has(mon.id)&&!mon.moves.includes(tm.name)?[tm.name]:[];
 }
@@ -10328,29 +10443,38 @@ async function useReelTool(run,id){
   run.log.unshift(itemCatalog[id].name+'將所有'+source+'屬性圖案轉成'+to+'屬性。');
   return true;
 }
-function usesItemTargetDialog(id){return recoveryItem(id)||Boolean(technicalMachines[id])||id==='up-grade';}
+function fitItemTargetDialog(){
+  const dialog=$('itemTargetDialog');if(!dialog?.open)return;
+  const viewport=window.visualViewport;
+  const width=Math.min(innerWidth,viewport?.width??innerWidth),height=Math.min(innerHeight,viewport?.height??innerHeight);
+  const scale=Math.min(1,(width-20)/dialog.offsetWidth,(height-20)/dialog.offsetHeight);
+  dialog.style.setProperty('--item-target-scale',String(Math.max(.05,scale)));
+}
+addEventListener('resize',fitItemTargetDialog);
+window.visualViewport?.addEventListener('resize',fitItemTargetDialog);
+function usesItemTargetDialog(id){return isEvolutionItem(id)||recoveryItem(id)||Boolean(technicalMachines[id])||id==='memory-mushroom';}
 function itemTargetName(id){const name=itemCatalog[id].name;return settings.language==='en'?(globalThis.gameEnglishText?.(name)??name):name;}
 function chooseItemTargetDialog(run,id,eligible,entryStatus){
   let dialog=$('itemTargetDialog');
-  if(!dialog){dialog=document.createElement('dialog');dialog.id='itemTargetDialog';dialog.setAttribute('aria-labelledby','itemTargetTitle');document.body.append(dialog);}
-  const def=itemCatalog[id],machine=technicalMachines[id],teaching=Boolean(machine)||id==='up-grade';
+  if(!dialog){dialog=document.createElement('dialog');dialog.id='itemTargetDialog';dialog.setAttribute('aria-labelledby','itemTargetTitle');document.body.append(dialog);new ResizeObserver(fitItemTargetDialog).observe(dialog);}
+  const def=itemCatalog[id],machine=technicalMachines[id],teaching=Boolean(machine)||id==='memory-mushroom',evolving=isEvolutionItem(id);
   const name=itemTargetName(id),count=itemCount(run,id);
   const desc=machine?moveEffectText(machine.name):settings.language==='en'?(globalThis.gameEnglishText?.(def.description)??def.description):def.description;
   const art=machine?'<div class="ip-tm-art"><i class="ip-disc" aria-hidden="true"></i><span class="ip-tm-type">'+typeIcon(machine.type)+musicLabel(machine.type+'屬性',dexTypeName(machine.type)+' type')+'</span></div>':itemArt(def.sprite);
   const rows=Array.from({length:6},(_,index)=>{
     const mon=run.team[index];if(!mon)return '<div class="ip-empty">'+musicLabel('空位','Empty slot')+'</div>';
     const can=eligible(mon,index),compatibility=entryStatus?.(mon);
-    const reason=can?musicLabel(teaching?'可學習':'可使用',teaching?'Can learn':'Usable'):teaching?musicLabel(compatibility==='known'?'不可用 · 已學會':'不可用 · 無法學習',compatibility==='known'?'Unavailable · Already known':'Unavailable · Cannot learn'):!mon.left?musicLabel('不可用 · 已氣竭','Unavailable · Fainted'):(potionRates[id]||healingBerries[id])?musicLabel('不可用 · HP 已滿','Unavailable · Full HP'):['revive','max-revive'].includes(id)?musicLabel('不可用 · 尚未氣竭','Unavailable · Not fainted'):musicLabel('不可用 · 無對應異常','Unavailable · No matching status');
+    const reason=can?musicLabel(evolving?'可進化':teaching?'可學習':'可使用',evolving?'Can evolve':teaching?'Can learn':'Usable'):evolving?musicLabel('不可用 · 無法進化','Unavailable · Cannot evolve'):teaching?musicLabel(compatibility==='known'?'不可用 · 已學會':'不可用 · 無法學習',compatibility==='known'?'Unavailable · Already known':'Unavailable · Cannot learn'):!mon.left?musicLabel('不可用 · 已氣竭','Unavailable · Fainted'):(potionRates[id]||healingBerries[id])?musicLabel('不可用 · HP 已滿','Unavailable · Full HP'):['revive','max-revive'].includes(id)?musicLabel('不可用 · 尚未氣竭','Unavailable · Not fainted'):musicLabel('不可用 · 無對應異常','Unavailable · No matching status');
     const status=!mon.left?musicLabel('氣竭','Fainted'):fighterStatus(mon);
     return '<button class="ip-member" type="button" data-item-target="'+index+'" '+(can?'':'disabled')+' aria-disabled="'+!can+'"><img src="'+sprite(mon)+'" alt=""><div><div class="ip-name"><span>'+displayPokemon(mon)+'</span><small>Lv. '+mon.level+'</small></div><div class="ip-hp"><span>HP '+mon.left+' / '+mon.hp+'</span><span>'+status+'</span></div><progress value="'+mon.left+'" max="'+mon.hp+'" aria-label="HP"></progress><span class="ip-eligibility">'+reason+'</span></div></button>';
   }).join('');
-  dialog.innerHTML='<h2 id="itemTargetTitle">'+name+' · '+musicLabel(teaching?'選擇學習的寶可夢':'選擇使用對象',teaching?'Choose a Pokémon to learn':'Choose a target')+'</h2><div class="ip-body"><div class="ip-left"><div class="ip-art">'+art+'<strong>'+name+'</strong><small>'+musicLabel(count?'持有 ×':'本次道具 ×',count?'Owned ×':'Available ×')+(count||1)+'</small></div><div class="ip-effect"><h3>'+musicLabel('效果說明','Effect')+'</h3><p>'+desc+'</p></div></div><div class="ip-team">'+rows+'</div></div><div class="ip-footer"><p>'+musicLabel(teaching?'點選可用的隊員，繼續學習招式。':'點選可用的隊員使用道具。',teaching?'Select an eligible Pokémon to continue learning.':'Select an eligible Pokémon to use this item.')+'</p><button type="button" data-item-close>'+musicLabel('關閉視窗','Close window')+'</button></div>';
+  dialog.innerHTML='<h2 id="itemTargetTitle">'+name+' · '+musicLabel(evolving?'選擇進化的寶可夢':teaching?'選擇學習的寶可夢':'選擇使用對象',evolving?'Choose a Pokémon to evolve':teaching?'Choose a Pokémon to learn':'Choose a target')+'</h2><div class="ip-body"><div class="ip-left"><div class="ip-art">'+art+'<strong>'+name+'</strong><small>'+musicLabel(count?'持有 ×':'本次道具 ×',count?'Owned ×':'Available ×')+(count||1)+'</small></div><div class="ip-effect"><h3>'+musicLabel('效果說明','Effect')+'</h3><p>'+desc+'</p></div></div><div class="ip-team">'+rows+'</div></div><div class="ip-footer"><p>'+musicLabel(evolving?'點選可進化的隊員。':teaching?'點選可用的隊員，繼續學習招式。':'點選可用的隊員使用道具。',evolving?'Select an eligible Pokémon to evolve.':teaching?'Select an eligible Pokémon to continue learning.':'Select an eligible Pokémon to use this item.')+'</p><button type="button" data-item-close>'+musicLabel('關閉視窗','Close window')+'</button></div>';
   return new Promise(resolve=>{
     dialog.returnValue='cancel';
     const click=event=>{if(event.target.closest('[data-item-close]')){dialog.close('cancel');return;}const button=event.target.closest('[data-item-target]');if(!button||button.disabled)return;const index=Number(button.dataset.itemTarget);if(eligible(run.team[index],index))dialog.close(String(index));};
     dialog.addEventListener('click',click);
     dialog.addEventListener('close',()=>{dialog.removeEventListener('click',click);const index=Number(dialog.returnValue);resolve(dialog.returnValue!=='cancel'&&Number.isInteger(index)&&index>=0&&index<run.team.length?index:-1);},{once:true});
-    dialog.showModal();dialog.querySelector('[data-item-close]').focus({preventScroll:true});dialog.scrollTop=0;
+    dialog.showModal();fitItemTargetDialog();dialog.querySelector('[data-item-close]').focus({preventScroll:true});dialog.scrollTop=0;
   });
 }
 async function chooseItemPartyTarget(run,title,eligible,entryStatus,id){
@@ -10366,18 +10490,19 @@ async function useTeachingItem(run,id){
   const index=await chooseItemPartyTarget(run,'選擇'+itemCatalog[id].name+'的使用對象',mon=>teachableMoves(mon,id).length>0,compatibility,id);
   if(index<0) return false;
   const mon=run.team[index],options=teachableMoves(mon,id);
-  const choice=id==='up-grade'?await itemPrompt('回憶哪一個招式？',options.map((name,i)=>'<button value="'+i+'">'+name+'</button>').join('')):'0';
+  const choice=id==='memory-mushroom'?await itemPrompt('回憶哪一個招式？',options.map((name,i)=>'<button value="'+i+'">'+name+'</button>').join('')):'0';
   const move=choice==='cancel'?null:options[Number(choice)];
   if(!move) return false;
   const slot=mon.moves.length<4?mon.moves.length:await chooseForgottenMove(mon,move);
   if(slot<0) return false;
   teachPartyMove(mon,move,slot);
-  run.log.unshift(mon.name+(id==='up-grade'?'回憶起':'學會了')+move+'。');
+  run.log.unshift(mon.name+(id==='memory-mushroom'?'回憶起':'學會了')+move+'。');
   return true;
 }
 async function applyUsableItem(run,id,fromReward=false){
   if(!usesItemTargetDialog(id)&&!canApplyItem(run,id)) return false;
   const def=itemCatalog[id];
+  if(isEvolutionItem(id))return useEvolutionItem(run,id,fromReward);
   if(id.startsWith('mega:')){
     return useMegaStone(run,id);
   }else if(id.startsWith('reel-stone:')){
@@ -10395,7 +10520,7 @@ async function applyUsableItem(run,id,fromReward=false){
     run.log.unshift('超級碎片將所有'+source+'屬性圖案轉為萬能。');
   }else if(reelTools.has(id)){
     if(!await useReelTool(run,id)) return false;
-  }else if(id==='up-grade'||technicalMachines[id]){
+  }else if(id==='memory-mushroom'||technicalMachines[id]){
     if(!await useTeachingItem(run,id)) return false;
   }else if(id==='white-flute'){
     run.fluteUntil=Math.max(run.stage,run.fluteUntil??0)+5;
@@ -10406,10 +10531,7 @@ async function applyUsableItem(run,id,fromReward=false){
   }else{
     const target=await chooseItemPartyTarget(run,'選擇'+def.name+'的使用對象',mon=>usableTarget(id,mon),null,id);
     if(target<0) return false;
-    if(!stoneIds.includes(id)){const used=useItem(run,id,target,fromReward);if(used&&(healingBerries[id]||statusBerries[id]))await playBerryAnimations(run);return used;}
-    const mon=run.team[target],evolution=stoneEvolution(id,mon);
-    if(!evolution) return false;
-    await evolvePartyMember(mon,evolution,run);
+    const used=useItem(run,id,target,fromReward);if(used&&(healingBerries[id]||statusBerries[id]))await playBerryAnimations(run);return used;
   }
   if(!fromReward) consumeItem(run,id);
   return true;
@@ -10442,6 +10564,7 @@ function ballPanel(){
   return emeraldBagPanel('balls',rows,message);
 }
 function migrateRun(run){
+  if(!run.evolutionItemRules){if(run.items?.['up-grade']){run.items['memory-mushroom']=(run.items['memory-mushroom']??0)+run.items['up-grade'];delete run.items['up-grade'];}run.evolutionItemRules=1;}
   delete run.megaInProgress;
   run.items??={};run.used??={};
   run.log??=[];
@@ -11402,7 +11525,8 @@ for(const id of [163,498])Object.assign(moveRules[emeraldData.ms[id].name],{min:
 for(const [name,rule]of Object.entries(moveRules))if(isCounterProtectionMove(name)){const description=(rule.description??moveEffectText(name))+musicLabel(' 防護類招式不可在同次或連續兩次拉霸中成功施放。',' Protection moves cannot succeed twice in the same or consecutive spins.');rule.description=description;skillDetails[name].description=description;}
 state=fresh();
 render();
+showDex();
 
 </script>
-<script defer src="./assets/player-account.js?v=20261126-075-badge"></script>
+<script defer src="./assets/player-account.js?v=20261127-evolution"></script>
 </html>

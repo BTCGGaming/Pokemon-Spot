@@ -1574,6 +1574,23 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
 #stageResupply{box-sizing:border-box;overscroll-behavior:contain}
 @media(max-height:500px) and (orientation:landscape){#stageResupply{font-size:14px;max-height:92dvh;padding:10px}#stageResupplyTeam img{height:42px}#stageResupply select,#resupplyConvert,#resupplyAreaChoices button{min-height:40px;font-size:14px}#resupplySupply button{grid-template-columns:32px 1fr;text-align:left}#resupplySupply button img{width:32px;height:32px;grid-row:span 2}#resupplySupply button strong,#resupplySupply button small{justify-self:start}}
 </style>
+<style>
+
+#itemTargetDialog{box-sizing:border-box;width:min(96vw,1120px);height:min(92dvh,630px);max-width:none;max-height:none;padding:18px;background:#ede6cb;color:#263f36;border:4px solid #233f36;box-shadow:inset 0 0 0 3px #9a9b72;font-size:20px;overflow:hidden}
+#itemTargetDialog::backdrop{background:#000b}
+#itemTargetDialog h2{line-height:1.25;font-size:1.2em;margin:0;background:#234d43;color:#fff5d1;padding:.5em .7em;border:2px solid #9eac81}
+.ip-body{height:calc(100% - 120px);display:grid;grid-template-columns:28% minmax(0,1fr);gap:16px;margin-top:12px}
+.ip-left{display:grid;grid-template-rows:53% minmax(0,1fr);gap:12px;min-height:0}
+.ip-art,.ip-effect{border:2px solid #879775;background:#faf3dc;padding:14px;min-height:0}
+.ip-art{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}.ip-art img{width:110px;height:110px;object-fit:contain;image-rendering:pixelated}.ip-art .ip-tm-art{display:grid;place-items:center;gap:8px}.ip-art .ip-disc{display:block;width:92px;height:92px;border-radius:50%;border:4px solid #7d8290;background:radial-gradient(circle, #faf3dc 0 11%,#6b707b 12% 17%,transparent 18%),conic-gradient(#e6e9eb,#a5adbd,#fafcff,#bcc4cf,#f6f9fd,#9ba5b5,#e6e9eb);box-shadow:inset 0 0 0 4px #d9dee5}.ip-art .ip-tm-type{display:flex;align-items:center;justify-content:center;gap:6px;font-size:.85em}.ip-art .ip-tm-type .type-icon{display:inline-block;width:26px;height:26px;flex:none;margin:0;transform:none}.ip-member .ip-name small{color:inherit}.ip-member:focus-visible{outline:none}.ip-art strong{font-size:1.1em}.ip-art small{color:#526b55;font-size:.8em}
+.ip-effect h3{font-size:1em;margin:0 0 .5em}.ip-effect p{font-size:.9em;line-height:1.5;margin:0;overflow-wrap:anywhere}
+.ip-team{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:12px;min-width:0}
+.ip-member{border:2px solid #81906d;box-shadow:inset 0 0 0 2px #d7cba4;background:#fbf4dc;color:#263f36;display:grid;grid-template-columns:76px minmax(0,1fr);gap:8px;align-items:center;text-align:left;padding:10px;min-width:0;border-radius:0;margin:0;font:inherit}
+.ip-member>img{width:76px;height:76px;object-fit:contain;image-rendering:pixelated}.ip-member .ip-name{display:flex;justify-content:space-between;align-items:center;gap:4px;font-weight:bold;font-size:.98em}.ip-member .ip-name small{font-size:.75em;font-weight:normal}.ip-member .ip-hp{display:flex;justify-content:space-between;font-size:.76em;margin-top:5px;gap:4px}.ip-member progress{display:block;width:100%;height:9px;accent-color:#478e59;margin-top:5px}.ip-member .ip-eligibility{display:block;font-size:.8em;color:#2d6940;font-weight:bold;margin-top:6px}.ip-member[aria-disabled=true]{background:#dcd8ca;border-color:#a09e91;color:#79796c;box-shadow:inset 0 0 0 2px #ece9dd}.ip-member[aria-disabled=true]>img{filter:grayscale(1);opacity:.65}.ip-member[aria-disabled=true] .ip-eligibility{color:#8a5544}.ip-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}.ip-footer p{margin:0;font-size:.8em}.ip-footer button{font:inherit;background:#ffe9a0;color:#263f36;border:3px solid #747556;padding:.3em 1.1em;min-height:42px;margin:0;border-radius:0}
+@media(max-height:500px){.ip-art .ip-disc{width:40px;height:40px;border-width:2px}.ip-art .ip-tm-art{gap:3px}.ip-art .ip-tm-type .type-icon{width:16px;height:16px}.ip-art .ip-tm-type{font-size:.75em}#itemTargetDialog{padding:10px;font-size:14px}#itemTargetDialog h2{padding:.3em .6em}.ip-body{height:calc(100% - 90px);gap:10px;margin-top:8px}.ip-left,.ip-team{gap:8px}.ip-art,.ip-effect{padding:8px}.ip-art{gap:3px}.ip-art img{width:48px;height:48px}.ip-effect p{font-size:.92em;line-height:1.35}.ip-member{grid-template-columns:46px minmax(0,1fr);padding:5px;gap:5px}.ip-member>img{width:46px;height:46px}.ip-member .ip-hp{margin-top:2px}.ip-member progress{height:6px;margin-top:3px}.ip-member .ip-eligibility{margin-top:3px;font-size:.8em}.ip-footer{margin-top:8px}.ip-footer button{min-height:36px;padding:.25em 1em}}
+
+#itemTargetDialog .ip-effect{overflow:auto}#itemTargetDialog .ip-member:disabled{cursor:default;opacity:1}#itemTargetDialog .ip-member:focus-visible{outline:3px solid #bc7342;outline-offset:-5px}#itemTargetDialog .ip-empty{display:grid;place-items:center;background:#ddd8c7;border:2px solid #aca68c;color:#777467;font-size:.9em}
+</style>
 <main>
 <div id="championBlackout" hidden aria-hidden="true"></div>
 <dialog id="stageResupply" aria-labelledby="stageResupplyTitle">
@@ -10310,7 +10327,33 @@ async function useReelTool(run,id){
   run.log.unshift(itemCatalog[id].name+'將所有'+source+'屬性圖案轉成'+to+'屬性。');
   return true;
 }
-async function chooseItemPartyTarget(run,title,eligible,entryStatus){
+function usesItemTargetDialog(id){return recoveryItem(id)||Boolean(technicalMachines[id])||id==='up-grade';}
+function itemTargetName(id){const name=itemCatalog[id].name;return settings.language==='en'?(globalThis.gameEnglishText?.(name)??name):name;}
+function chooseItemTargetDialog(run,id,eligible,entryStatus){
+  let dialog=$('itemTargetDialog');
+  if(!dialog){dialog=document.createElement('dialog');dialog.id='itemTargetDialog';dialog.setAttribute('aria-labelledby','itemTargetTitle');document.body.append(dialog);}
+  const def=itemCatalog[id],machine=technicalMachines[id],teaching=Boolean(machine)||id==='up-grade';
+  const name=itemTargetName(id),count=itemCount(run,id);
+  const desc=machine?moveEffectText(machine.name):settings.language==='en'?(globalThis.gameEnglishText?.(def.description)??def.description):def.description;
+  const art=machine?'<div class="ip-tm-art"><i class="ip-disc" aria-hidden="true"></i><span class="ip-tm-type">'+typeIcon(machine.type)+musicLabel(machine.type+'屬性',dexTypeName(machine.type)+' type')+'</span></div>':itemArt(def.sprite);
+  const rows=Array.from({length:6},(_,index)=>{
+    const mon=run.team[index];if(!mon)return '<div class="ip-empty">'+musicLabel('空位','Empty slot')+'</div>';
+    const can=eligible(mon,index),compatibility=entryStatus?.(mon);
+    const reason=can?musicLabel(teaching?'可學習':'可使用',teaching?'Can learn':'Usable'):teaching?musicLabel(compatibility==='known'?'不可用 · 已學會':'不可用 · 無法學習',compatibility==='known'?'Unavailable · Already known':'Unavailable · Cannot learn'):!mon.left?musicLabel('不可用 · 已氣竭','Unavailable · Fainted'):(potionRates[id]||healingBerries[id])?musicLabel('不可用 · HP 已滿','Unavailable · Full HP'):['revive','max-revive'].includes(id)?musicLabel('不可用 · 尚未氣竭','Unavailable · Not fainted'):musicLabel('不可用 · 無對應異常','Unavailable · No matching status');
+    const status=!mon.left?musicLabel('氣竭','Fainted'):fighterStatus(mon);
+    return '<button class="ip-member" type="button" data-item-target="'+index+'" '+(can?'':'disabled')+' aria-disabled="'+!can+'"><img src="'+sprite(mon)+'" alt=""><div><div class="ip-name"><span>'+displayPokemon(mon)+'</span><small>Lv. '+mon.level+'</small></div><div class="ip-hp"><span>HP '+mon.left+' / '+mon.hp+'</span><span>'+status+'</span></div><progress value="'+mon.left+'" max="'+mon.hp+'" aria-label="HP"></progress><span class="ip-eligibility">'+reason+'</span></div></button>';
+  }).join('');
+  dialog.innerHTML='<h2 id="itemTargetTitle">'+name+' · '+musicLabel(teaching?'選擇學習的寶可夢':'選擇使用對象',teaching?'Choose a Pokémon to learn':'Choose a target')+'</h2><div class="ip-body"><div class="ip-left"><div class="ip-art">'+art+'<strong>'+name+'</strong><small>'+musicLabel(count?'持有 ×':'本次道具 ×',count?'Owned ×':'Available ×')+(count||1)+'</small></div><div class="ip-effect"><h3>'+musicLabel('效果說明','Effect')+'</h3><p>'+desc+'</p></div></div><div class="ip-team">'+rows+'</div></div><div class="ip-footer"><p>'+musicLabel(teaching?'點選可用的隊員，繼續學習招式。':'點選可用的隊員使用道具。',teaching?'Select an eligible Pokémon to continue learning.':'Select an eligible Pokémon to use this item.')+'</p><button type="button" data-item-close>'+musicLabel('關閉視窗','Close window')+'</button></div>';
+  return new Promise(resolve=>{
+    dialog.returnValue='cancel';
+    const click=event=>{if(event.target.closest('[data-item-close]')){dialog.close('cancel');return;}const button=event.target.closest('[data-item-target]');if(!button||button.disabled)return;const index=Number(button.dataset.itemTarget);if(eligible(run.team[index],index))dialog.close(String(index));};
+    dialog.addEventListener('click',click);
+    dialog.addEventListener('close',()=>{dialog.removeEventListener('click',click);const index=Number(dialog.returnValue);resolve(dialog.returnValue!=='cancel'&&Number.isInteger(index)&&index>=0&&index<run.team.length?index:-1);},{once:true});
+    dialog.showModal();dialog.querySelector('[data-item-close]').focus({preventScroll:true});dialog.scrollTop=0;
+  });
+}
+async function chooseItemPartyTarget(run,title,eligible,entryStatus,id){
+  if(id&&usesItemTargetDialog(id))return chooseItemTargetDialog(run,id,eligible,entryStatus);
   const picker=$('partyPicker');
   picker.dataset.itemTarget='true';
   try{return await choosePartyMember(run,title,eligible,'返回',entryStatus);}
@@ -10319,7 +10362,7 @@ async function chooseItemPartyTarget(run,title,eligible,entryStatus){
 async function useTeachingItem(run,id){
   const machine=technicalMachines[id];
   const compatibility=machine?mon=>mon.moves.includes(machine.name)?'known':machine.species.has(mon.id)?'learn':'blocked':null;
-  const index=await chooseItemPartyTarget(run,'選擇'+itemCatalog[id].name+'的使用對象',mon=>teachableMoves(mon,id).length>0,compatibility);
+  const index=await chooseItemPartyTarget(run,'選擇'+itemCatalog[id].name+'的使用對象',mon=>teachableMoves(mon,id).length>0,compatibility,id);
   if(index<0) return false;
   const mon=run.team[index],options=teachableMoves(mon,id);
   const choice=id==='up-grade'?await itemPrompt('回憶哪一個招式？',options.map((name,i)=>'<button value="'+i+'">'+name+'</button>').join('')):'0';
@@ -10332,7 +10375,7 @@ async function useTeachingItem(run,id){
   return true;
 }
 async function applyUsableItem(run,id,fromReward=false){
-  if(!canApplyItem(run,id)) return false;
+  if(!usesItemTargetDialog(id)&&!canApplyItem(run,id)) return false;
   const def=itemCatalog[id];
   if(id.startsWith('mega:')){
     return useMegaStone(run,id);
@@ -10360,7 +10403,7 @@ async function applyUsableItem(run,id,fromReward=false){
     if(!changeReelSymbols(run,id.slice(4))) return false;
     run.log.unshift(def.name+'轉換了 3 個輪盤圖案。');
   }else{
-    const target=await chooseItemPartyTarget(run,'選擇'+def.name+'的使用對象',mon=>usableTarget(id,mon));
+    const target=await chooseItemPartyTarget(run,'選擇'+def.name+'的使用對象',mon=>usableTarget(id,mon),null,id);
     if(target<0) return false;
     if(!stoneIds.includes(id)){const used=useItem(run,id,target,fromReward);if(used&&(healingBerries[id]||statusBerries[id]))await playBerryAnimations(run);return used;}
     const mon=run.team[target],evolution=stoneEvolution(id,mon);
@@ -10376,8 +10419,8 @@ async function useInventoryItem(id){
   const reels=state.reels;
   rolling=true;
   try{
-    const confirmed=await itemPrompt('確認使用'+def.name+'嗎？','<button value="yes">確認</button>');
-    if(confirmed==='yes') await applyUsableItem(state,id);
+    if(usesItemTargetDialog(id)) await applyUsableItem(state,id);
+    else{const confirmed=await itemPrompt('確認使用'+def.name+'嗎？','<button value="yes">確認</button>');if(confirmed==='yes') await applyUsableItem(state,id);}
   }finally{
     rolling=false;
     render(state.reels!==reels);

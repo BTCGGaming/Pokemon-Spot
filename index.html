@@ -1558,6 +1558,22 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
 #collectionFilters [data-favorite-filter]{flex-basis:100%;order:9}
 #teamMemberFavorite[aria-pressed=true],[data-favorite-filter][aria-pressed=true]{background:#ffe79c;color:#705016;border-color:#a57625}
 </style>
+<style>
+.rogue-status{display:inline-block;width:2.5em;height:1em;background-size:110% 800%;background-repeat:no-repeat;image-rendering:pixelated;vertical-align:middle}
+.release-unread{position:relative}
+.release-unread::after{content:'!';position:absolute;right:-.35em;top:-.45em;display:grid;place-items:center;background:#d42128;color:#fff;border:2px solid #fff;border-radius:50%;width:1.1em;height:1.1em;font:bold 16px sans-serif;pointer-events:none}
+#resupplyConversionHint{margin:.3em 0 .65em;font-size:.9em;line-height:1.5}
+#resupplySupply{margin:.7em 0;padding:.65em;background:#e6eed7;border:2px solid #879d74}
+#resupplySupply h3{font-size:1.08em;margin:0 0 .3em}
+#resupplySupply p{margin:.3em 0 .6em;font-size:.85em}
+#resupplySupply>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5em}
+#resupplySupply button{display:grid;place-items:center;gap:.3em;padding:.5em .25em;color:#263f36;background:#fff4d6;border:2px solid #8b956c;border-radius:0;min-height:44px}
+#resupplySupply button img{width:40px;height:40px;object-fit:contain;image-rendering:pixelated}
+#resupplySupply button small{font-size:.78em;line-height:1.4}
+#stageResupplyTeam{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+#stageResupply{box-sizing:border-box;overscroll-behavior:contain}
+@media(max-height:500px) and (orientation:landscape){#stageResupply{font-size:14px;max-height:92dvh;padding:10px}#stageResupplyTeam img{height:42px}#stageResupply select,#resupplyConvert,#resupplyAreaChoices button{min-height:40px;font-size:14px}#resupplySupply button{grid-template-columns:32px 1fr;text-align:left}#resupplySupply button img{width:32px;height:32px;grid-row:span 2}#resupplySupply button strong,#resupplySupply button small{justify-self:start}}
+</style>
 <main>
 <div id="championBlackout" hidden aria-hidden="true"></div>
 <dialog id="stageResupply" aria-labelledby="stageResupplyTitle">
@@ -2719,8 +2735,10 @@ function wildPool(stage,region){
   const dex=regionalDex[region];
   const first=dex?.first??1;
   const last=dex?.last??species.length;
-  const pool=[...new Set(species.slice(first-1,last).filter(mon=>!legendarySpeciesIds.has(mon.id)&&mon.id!==292)
-    .map(mon=>wildForm(mon.id,level).id).filter(id=>id>=first&&id<=last))].map(speciesById);
+  const openingRanges=[[1,42],[152,178],[252,286],[387,428],[495,545],[650,676]];
+  const inOpening=id=>stage>10||openingRanges.some(([a,b])=>id>=a&&id<=b);
+  const pool=[...new Set(species.slice(first-1,last).filter(mon=>inOpening(mon.id)&&!legendarySpeciesIds.has(mon.id)&&mon.id!==292)
+    .map(mon=>wildForm(mon.id,level).id).filter(id=>id>=first&&id<=last&&inOpening(id)))].map(speciesById);
   wildPoolCache.set(key,pool);
   return pool;
 }
@@ -3859,7 +3877,7 @@ function confuseTarget(s,target,potency,secondary=false){
   if(abilityImmuneToStatus(target,'confusion')||secondary&&activeAbility(target)===19) return false;
   const side=s.team.includes(target)?'player':'enemy';
   if(!target.left||target.confusion||s.safeguard?.[side]||(potency<1&&Math.random()>=potency)) return false;
-  target.confusion=2+Math.floor(Math.random()*4);
+  target.confusion=2;
   delete target.confusionUntil;
   refreshFighterStatus(s,target);
   noteEffect(s,target,'陷入混亂。');
@@ -4325,13 +4343,20 @@ function showStatusNotice(run,zh,en){
   run.log.unshift(message);
   if(run===state) $('notice').textContent=message;
 }
+const statusSpinChecks=new WeakMap();
+function spinStatusChecks(run,mon){
+  let check=statusSpinChecks.get(mon);
+  if(!check||check.run!==run||check.stage!==run.stage||check.spin!==run.spins){check={run,stage:run.stage,spin:run.spins};statusSpinChecks.set(mon,check);}
+  return check;
+}
 async function checkSleepOrFreeze(run,mon,side,asleepOnly,thawsUser){
   const status=mon.status;
   if((status!=='sleep'&&status!=='freeze')||thawsUser) return false;
-  mon.statusMovesRemaining=(mon.statusMovesRemaining??2)-(status==='sleep'&&activeAbility(mon)===48?2:1);
-  if(status==='freeze'&&Math.random()<.25||mon.statusMovesRemaining<=0){
-    cureBattleStatus(run,mon);
-    return false;
+  const check=spinStatusChecks(run,mon);
+  if(check.major!==status){
+    check.major=status;
+    mon.statusMovesRemaining=(mon.statusMovesRemaining??(status==='freeze'?3:2))-(status==='sleep'&&activeAbility(mon)===48?2:1);
+    if(status==='freeze'&&Math.random()<.25||mon.statusMovesRemaining<=0){cureBattleStatus(run,mon);return false;}
   }
   if(status==='sleep'&&asleepOnly) return false;
   const name=displayPokemon(mon);
@@ -4340,12 +4365,10 @@ async function checkSleepOrFreeze(run,mon,side,asleepOnly,thawsUser){
   return true;
 }
 async function checkActionStatus(run,mon,target,side){
-  if(mon.confusion>0){
-    mon.confusion--;
-    if(!mon.confusion){
-      run.log.unshift(mon.name+'解除了混亂。');
-      refreshFighterStatus(run,mon);
-    }else{
+  const check=spinStatusChecks(run,mon);
+  if(mon.confusion>0&&!check.confusionChecked){
+    check.confusionChecked=true;
+    {
       showStatusNotice(run,mon.name+'仍在混亂中。',displayPokemon(mon)+' is confused!');
       await animateStatusAction(side,'confusion');
       if(Math.random()<1/3){
@@ -4360,12 +4383,14 @@ async function checkActionStatus(run,mon,target,side){
       }
     }
   }
-  if(mon.status==='paralysis'&&Math.random()<1/8){
+  if(mon.status==='paralysis'&&check.paralyzed===undefined)check.paralyzed=Math.random()<1/8;
+  if(mon.status==='paralysis'&&check.paralyzed){
     showStatusNotice(run,mon.name+'因麻痺無法行動。',displayPokemon(mon)+' is paralyzed! It can’t move!');
     await animateStatusAction(side,'paralysis');
     return true;
   }
-  if(mon.attractedTo!=null&&mon.attractedTo===target.personality&&Math.random()<.5){
+  if(mon.attractedTo!=null&&mon.attractedTo===target.personality&&check.attracted===undefined)check.attracted=Math.random()<.5;
+  if(mon.attractedTo!=null&&mon.attractedTo===target.personality&&check.attracted){
     showStatusNotice(run,mon.name+'因著迷而無法行動。',displayPokemon(mon)+' is immobilized by love!');
     await animateStatusAction(side,'attract');
     return true;
@@ -5039,6 +5064,7 @@ async function finishStage(s,message){
   }
   if(champion){
     await equalizePartyLevels(s);
+    healAtStageEntry(s);
     delete s.rewardPending;
     s.finished=true;
     s.result=musicLabel('冒險完成！','Adventure completed!');
@@ -5055,6 +5081,7 @@ async function finishStage(s,message){
     }
   }
   await equalizePartyLevels(s);
+  if(mode==='formal') healAtStageEntry(s);
   await advanceZygardeForms(s);
   await chooseReward(s);
   delete s.rewardPending;
@@ -5621,6 +5648,15 @@ async function resolveSpinCore(s,board,settledTracks=null){
 }
 async function applyMajorStatusTurnEnd(run,mon,side){
   if(!mon.left) return;
+  const check=spinStatusChecks(run,mon);
+  if(check.turnEnded)return;
+  check.turnEnded=true;
+  if(mon.confusion>0){mon.confusion=Math.max(0,Math.min(2,mon.confusion)-1);if(!mon.confusion){noteEffect(run,mon,'解除了混亂。');refreshFighterStatus(run,mon);}}
+  if(['sleep','freeze'].includes(mon.status)&&check.major!==mon.status){
+    check.major=mon.status;
+    mon.statusMovesRemaining=(mon.statusMovesRemaining??(mon.status==='freeze'?3:2))-(mon.status==='sleep'&&activeAbility(mon)===48?2:1);
+    if(mon.statusMovesRemaining<=0||mon.status==='freeze'&&Math.random()<.25)cureBattleStatus(run,mon);
+  }
   const weather=run.weather?.kind,weatherAbility=activeAbility(mon);
   if(run.terrain?.kind==='grass'&&!mon.type.includes('飛行')&&weatherAbility!==26)healMon(run,mon,side,Math.max(1,Math.floor(mon.hp/16)));
   const weatherImmune=weather==='sand'&&(mon.type.some(type=>['岩石','地面','鋼'].includes(type))||[146,159].includes(weatherAbility))||
@@ -6015,13 +6051,13 @@ function refreshFighterStatus(run,mon){
   if(badges) updateMarkup(badges,fighterStatus(mon));
 }
 function fighterStatus(p){
-  if(!p.left) return '';
-  const status=p.status||(p.burned?'burn':null);
-  const shown=[status,p.confusion?'confusion':null].filter(Boolean);
+  if(!p.left)return '';
+  const status=p.status||(p.burned?'burn':null),shown=[status,p.confusion?'confusion':null].filter(Boolean);
+  const frames={burn:1,freeze:3,frostbite:3,paralysis:4,poison:5,sleep:6,toxic:7};
   return shown.map(key=>{
-    const label=statusNames[key]??'混亂';
-    const art=ndsBattleArt.statuses[key==='toxic'?'poison':key==='frostbite'?'freeze':key];
-    return art?'<img src="'+art+'" alt="'+label+'" title="'+label+'">':'<span class="custom-status">'+label+'</span>';
+    const label=musicLabel(statusNames[key]??'混亂',({burn:'Burn',freeze:'Frozen',frostbite:'Frozen',paralysis:'Paralysis',poison:'Poison',sleep:'Sleep',toxic:'Badly poisoned',confusion:'Confusion'})[key]);
+    if(key==='confusion')return '<span class="custom-status" role="img" aria-label="'+label+'" title="'+label+'">'+musicLabel('混亂','CONF')+'</span>';
+    return '<span class="rogue-status" role="img" aria-label="'+label+'" title="'+label+'" style="background-image:url(assets/pokerogue/images/status-ui/statuses'+(settings.language==='en'?'':'_zh-Hant')+'.png);background-position:0 '+(frames[key]*100/7)+'%"></span>';
   }).join('');
 }
 function panel(p,isPlayer){
@@ -6898,9 +6934,9 @@ function healAtStageEntry(run){
   if(!amount) return;
   for(const mon of run.team){
     if(!mon.left||mon.left===mon.hp) continue;
-    const restored=Math.min(amount,mon.hp-mon.left);
+    const restored=Math.min(Math.max(1,Math.floor(mon.hp*amount/100)),mon.hp-mon.left);
     mon.left+=restored;
-    run.log.unshift(mon.name+'在進入新關時恢復 '+restored+' HP。');
+    run.log.unshift(mon.name+'在通關時恢復 '+restored+' HP。');
   }
 }
 $('nextBattle').onclick=advanceStage;
@@ -6938,7 +6974,7 @@ async function advanceStage(){
   state.log=previousLog;
   state.log.unshift('第 '+stage+' 關開始。');
   if(heal&&mode==='formal') state.log.unshift('階段補給：全隊 HP 已恢復。');
-  if(mode==='formal') healAtStageEntry(state);
+  
   if(resupply) autoSave(state);
   openBattleStage(true,false);
 }
@@ -6946,6 +6982,9 @@ async function showStageResupply(run){
   const dialog=$('stageResupply'), blackout=$('championBlackout');
   $('stageResupplyTitle').textContent=musicLabel('整裝階段','Resupply');
   $('stageResupplyReelTitle').textContent=musicLabel('重新調整圖庫','Adjust Symbol Pool');
+  let conversionHint=$('resupplyConversionHint');
+  if(!conversionHint){conversionHint=document.createElement('p');conversionHint.id='resupplyConversionHint';$('stageResupplyReelTitle').after(conversionHint);}
+  conversionHint.textContent=musicLabel('選擇一種現有屬性，將該屬性的所有圖案轉換為目前未持有的另一種屬性。','Choose an existing type and convert all its symbols to a type not currently in your pool.');
   $('resupplySourceLabel').textContent=musicLabel('現有屬性','Owned type');
   $('resupplyTargetLabel').textContent=musicLabel('圖庫沒有的屬性','Type absent from pool');
   $('resupplyConvert').textContent=musicLabel('全部轉換','Convert All');
@@ -6962,9 +7001,18 @@ async function showStageResupply(run){
     button.innerHTML=typeIcon(type)+'<span>'+musicLabel(type+'系野生區',dexTypeName(type)+' Wild Area')+'</span>';
     return button;
   }));
+  let supply=$('resupplySupply');
+  if(!supply){supply=document.createElement('section');supply.id='resupplySupply';$('resupplyAreaPanel').before(supply);}
+  const claimed=()=>run.resupplyClaimStage===run.stage;
+  const drawSupply=()=>{
+    supply.innerHTML='<h3>'+musicLabel('選擇一件補給品放入背包','Choose one supply for your bag')+'</h3><p role="status">'+(claimed()?musicLabel('已領取補給品，請選擇下一個野生區。','Supply claimed. Choose the next wild area.'):musicLabel('每次整備可領取一件，現在不用立即使用。','Claim one item per resupply. Use it later from your bag.'))+'</p><div>'+['hyper-potion','full-heal','revive'].map(id=>'<button type="button" data-supply="'+id+'" '+(claimed()?'disabled':'')+'>'+itemArt(itemCatalog[id].sprite)+'<strong>'+musicLabel(itemCatalog[id].name,({'hyper-potion':'Hyper Potion','full-heal':'Full Heal',revive:'Revive'})[id])+' ×1</strong><small>'+musicLabel(({'hyper-potion':'恢復一名隊員 75% HP','full-heal':'解除異常狀態與混亂',revive:'復活一名隊員，恢復 50% HP'})[id],({'hyper-potion':'Restores 75% HP','full-heal':'Cures status and confusion',revive:'Revives with 50% HP'})[id])+'</small></button>').join('')+'</div>';
+    areaChoices.querySelectorAll('button').forEach(button=>button.disabled=!claimed());
+  };
+  supply.onclick=event=>{const button=event.target.closest('[data-supply]');if(!button||claimed())return;const id=button.dataset.supply;run.items[id]=(run.items[id]??0)+1;run.resupplyClaimStage=run.stage;autoSave(run);drawSupply();};
+  drawSupply();
   let departed=false;
   areaChoices.onclick=event=>{
-    const button=event.target.closest('[data-area-type]');if(!button||departed||!dialog.open)return;
+    const button=event.target.closest('[data-area-type]');if(!button||departed||!dialog.open||!claimed())return;
     departed=true;run.nextWildArea.selected=button.dataset.areaType;autoSave(run);dialog.close();
   };
   $('resupplyStatus').textContent='';
@@ -6988,7 +7036,7 @@ async function showStageResupply(run){
     for(const reel of run.reels) for(const type of reel) counts.set(type,(counts.get(type)??0)+1);
     $('stageResupplyPool').innerHTML=[...counts].map(([type,count])=>'<span>'+typeIcon(type)+' ×'+count+'</span>').join('');
     for(const [id,present] of [['resupplySource',true],['resupplyTarget',false]]){
-      $(id).replaceChildren(...Object.keys(types).filter(type=>counts.has(type)===present).map(type=>new Option(type,type)));
+      $(id).replaceChildren(...Object.keys(types).filter(type=>counts.has(type)===present).map(type=>new Option(musicLabel(type,dexTypeName(type)),type)));
     }
     const disabled=!$('resupplySource').length||!$('resupplyTarget').length;
     $('resupplyConvert').disabled=disabled;
@@ -7046,10 +7094,10 @@ function loadProfile(){
   try{
     const saved=JSON.parse(slotAccount.getItem(profileKey));
     if(saved&&Array.isArray(saved.unlocked)&&Array.isArray(saved.eggs)){
-      return {favorites:[...new Set((Array.isArray(saved.favorites)?saved.favorites:[]).filter(id=>Number.isInteger(id)&&speciesById(id)))],playerName:typeof saved.playerName==='string'?Array.from(saved.playerName.trim()).slice(0,16).join(''):'',starter:saved.starter,caught:[...new Set((Array.isArray(saved.caught)?saved.caught:saved.unlocked).filter(id=>speciesById(id)))],unlocked:[...new Set(saved.unlocked.filter(id=>species[id-1]?.id===id).map(baseSpeciesId))],seen:[...new Set([...(Array.isArray(saved.seen)?saved.seen:[]),...saved.unlocked].filter(id=>speciesById(id)))],shinyUnlocked:[...new Set((Array.isArray(saved.shinyUnlocked)?saved.shinyUnlocked:[]).filter(id=>speciesById(id)).map(baseSpeciesId))],traitUnlocks:saved.traitUnlocks&&typeof saved.traitUnlocks==='object'?saved.traitUnlocks:{},teamPreferences:saved.teamPreferences&&typeof saved.teamPreferences==='object'?saved.teamPreferences:{},eggs:saved.eggs.filter(egg=>species[egg.id-1]&&Number.isFinite(egg.progress)),tickets:Math.max(0,Number(saved.tickets)||0)};
+      return {viewedRelease:saved.viewedRelease??'',favorites:[...new Set((Array.isArray(saved.favorites)?saved.favorites:[]).filter(id=>Number.isInteger(id)&&speciesById(id)))],playerName:typeof saved.playerName==='string'?Array.from(saved.playerName.trim()).slice(0,16).join(''):'',starter:saved.starter,caught:[...new Set((Array.isArray(saved.caught)?saved.caught:saved.unlocked).filter(id=>speciesById(id)))],unlocked:[...new Set(saved.unlocked.filter(id=>species[id-1]?.id===id).map(baseSpeciesId))],seen:[...new Set([...(Array.isArray(saved.seen)?saved.seen:[]),...saved.unlocked].filter(id=>speciesById(id)))],shinyUnlocked:[...new Set((Array.isArray(saved.shinyUnlocked)?saved.shinyUnlocked:[]).filter(id=>speciesById(id)).map(baseSpeciesId))],traitUnlocks:saved.traitUnlocks&&typeof saved.traitUnlocks==='object'?saved.traitUnlocks:{},teamPreferences:saved.teamPreferences&&typeof saved.teamPreferences==='object'?saved.teamPreferences:{},eggs:saved.eggs.filter(egg=>species[egg.id-1]&&Number.isFinite(egg.progress)),tickets:Math.max(0,Number(saved.tickets)||0)};
     }
   }catch{}
-  return {favorites:[],playerName:'',starter:null,caught:[],unlocked:[],seen:[],shinyUnlocked:[],traitUnlocks:{},teamPreferences:{},eggs:[],tickets:0};
+  return {viewedRelease:'',favorites:[],playerName:'',starter:null,caught:[],unlocked:[],seen:[],shinyUnlocked:[],traitUnlocks:{},teamPreferences:{},eggs:[],tickets:0};
 }
 const profile=loadProfile();
 function saveProfile(){
@@ -7908,6 +7956,12 @@ for(const field of musicStyleFields){
 }
 $('settingsOpen').onclick=()=>$('settingsDialog').showModal();
 const releaseNotes=[
+  {version:'0.7.5',date:'2026-11-26',changes:[
+    ['優化所有回復道具/樹果機制','Improved recovery items and berries'],
+    ['增強 全隊通關回復 能力調整','Adjusted the party recovery upgrade'],
+    ['異常狀態 效果及顯示優化','Improved status effects and their display'],
+    ['遊戲前期難度調整','Adjusted early-game difficulty']
+  ]},
   {"version":"0.7.0","date":"2026-11-23","changes":[["收錄卡洛斯地區寶可夢／技能／特性","Added Kalos Pokémon, moves, and abilities"],["開放卡洛斯地區挑戰關卡","Opened Kalos challenge stages"],["新增MEGA進化及相關道具","Added Mega Evolution and related items"],["道具稀有度調整","Adjusted item rarities"],["多項技能平衡","Rebalanced multiple moves"],["道館關卡難度調整","Adjusted Gym battle difficulty"],["反派組織關卡重新設計","Redesigned villain team stages"],["遊戲視覺優化","Improved game visuals"],["戰鬥提示優化","Improved battle feedback"],["調整遊戲後期難度","Adjusted late-game difficulty"],["道具美術持續補足","Continued adding item artwork"]]},
   {version:'0.6.0',date:'2026-11-17',changes:[
     ['收錄合眾地區寶可夢／技能／特性','Added Unova Pokémon, moves, and abilities'],
@@ -7931,11 +7985,14 @@ $('changelogOpen').onclick=()=>{
   $('changelogTitle').textContent=musicLabel('更新日誌','Changelog');
   $('changelogClose').textContent=musicLabel('關閉','Close');
   $('changelogEntries').innerHTML=releaseNotes.map(({version,date,changes})=>
-    '<details><summary><span>'+musicLabel('版本 '+version+' 更新內容','Version '+version+' update')+'</span><time datetime="'+date+'">'+date.replaceAll('-','.')+'</time></summary>'+
+    '<details data-release="'+version+'"'+(version===releaseNotes[0].version&&profile.viewedRelease!==version?' class="release-unread"':'')+'><summary><span>'+musicLabel('版本 '+version+' 更新內容','Version '+version+' update')+'</span><time datetime="'+date+'">'+date.replaceAll('-','.')+'</time></summary>'+
     '<ul>'+changes.map(change=>'<li>'+musicLabel(...change)+'</li>').join('')+'</ul></details>'
   ).join('');
+  for(const entry of $('changelogEntries').querySelectorAll('details'))entry.addEventListener('toggle',()=>{if(entry.open&&entry.dataset.release===releaseNotes[0].version){profile.viewedRelease=entry.dataset.release;saveProfile();entry.classList.remove('release-unread');refreshReleaseBadge();}});
   $('changelogDialog').showModal();
 };
+function refreshReleaseBadge(){ $('changelogOpen').classList.toggle('release-unread',profile.viewedRelease!==releaseNotes[0].version); }
+refreshReleaseBadge();
 for(const {key,inputs} of audioControls){
   for(const id of inputs) $(id).oninput=event=>{settings[key]=Number(event.target.value);saveSettings();};
 }
@@ -9415,7 +9472,7 @@ const upgradesCatalog={
   defense:{name:'防禦強化',sprite:'iron',values:[5,10,15,20,25],unit:'%'},
   specialDefense:{name:'特防強化',sprite:'zinc',values:[5,10,15,20,25],unit:'%'},
   gold:{name:'通關額外金幣',sprite:'amulet-coin',values:[2,5,10,15,25],unit:' 金幣'},
-  healing:{name:'通關全隊回復',sprite:'potion',values:[2,4,8],unit:' HP'},
+  healing:{name:'通關全隊回復',sprite:'potion',values:[1,2,5],unit:'% HP'},
   luck:{name:'幸運',sprite:'lucky-egg',values:[3,6,9],labels:['變得有點幸運','變得有點幸運','運氣真的不錯'],costs:[500,1000,2000]},
   rewardChoices:{name:'可選擇道具',sprite:'lucky-egg',values:[1,2],unit:' 件',costs:[1000,2000]},
   delay:{name:'延後對手行動',sprite:'quick-claw',values:[1,2],unit:' 次拉霸'},
@@ -9789,7 +9846,7 @@ const itemCatalog=Object.fromEntries([
   ['hyper-potion','厲害傷藥',2,'恢復一名存活寶可夢 75% 最大 HP。使用後消耗。',true],
   ['max-potion','全滿藥',3,'回滿一名存活寶可夢的 HP。每關可用一次，使用後保留。',true],
   ['full-heal','萬靈藥',1,'解除一名存活隊員的異常狀態與混亂。使用後消耗。',true],
-  ['revive','活力碎片',1,'復活一名氣竭隊員並恢復一半 HP。使用後消耗。',true],
+  ['revive','活力碎片',0,'復活一名氣竭隊員並恢復一半 HP。使用後消耗。',true],
   ['max-revive','活力塊',2,'復活一名氣竭隊員並恢復全部 HP。使用後消耗。',true],
   ['quick-claw','先制之爪',2,'每件使對手例行行動前可多拉霸 1 次。'],
   ['focus-band','氣勢披帶',3,'每關一次，受到致命招式時以 1 HP 撐住。'],
@@ -9811,6 +9868,9 @@ const itemCatalog=Object.fromEntries([
   ...Object.entries(gemNames).map(([type,name])=>['gem:'+type,name,1,'將輪盤中 3 個其他屬性圖案永久轉成'+type+'屬性。使用後消耗。',true]),
   ...Object.entries(typeItems).map(([id,[name,type]])=>[id,name,2,'每件使我方 '+type+'系招式威力增加 '+typeItemPowerBonus+'%。'])
 ].map(([id,name,tier,description,usable=false])=>[id,{name,tier,description,usable,sprite:id,type:typeItems[id]?.[1]}]));
+itemCatalog.potion.quantity=2;
+for(const id of [...Object.keys(healingBerries),...Object.keys(statusBerries)]){itemCatalog[id].usable=true;itemCatalog[id].description+=' 也可從背包主動選擇隊員使用。';}
+function recoveryItem(id){return Boolean(potionRates[id]||['full-heal','revive','max-revive'].includes(id)||healingBerries[id]||statusBerries[id]);}
 function stoneEvolution(id,mon){
   const key='ITEM_'+id.replaceAll('-','_').toUpperCase();
   return mon.evol.find(([target,kind,item])=>kind==='ITEM'&&(item===key||item===id)&&speciesById(target)&&(target!==475||mon.gender==='male')&&(target!==478||mon.gender==='female'))?.[0];
@@ -9996,6 +10056,19 @@ function rewardRarity(draw,luck){
 function rewardItemWeight(id){
   return id.startsWith('ball:')?1.25:id==='super-shard'?.5:technicalMachines[id] ? .25 : 1;
 }
+function contextualRewardWeights(ids,run){
+  const present=new Set(run.reels.flat()),weights=new Map(ids.map(id=>[id,rewardItemWeight(id)]));
+  const stones=ids.filter(id=>id.startsWith('reel-stone:'));
+  const owned=stones.filter(id=>present.has(id.slice(11))),other=stones.filter(id=>!present.has(id.slice(11)));
+  const teamTypes=new Set(run.team?.flatMap(mon=>mon.type)??[...present]);
+  const oldBudget=stones.filter(id=>teamTypes.has(id.slice(11))).length;
+  const budget=.65*Math.max(1,oldBudget);
+  for(const group of [owned,other]) if(group.length){const share=owned.length&&other.length?(group===owned?.85:.15):1;for(const id of group)weights.set(id,budget*share/group.length);}
+  const freed=Math.max(0,oldBudget-budget);
+  const potions=ids.filter(id=>Boolean(potionRates[id])),balls=ids.filter(id=>id.startsWith('ball:'));
+  for(const group of [potions,balls]) if(group.length){const share=freed/(potions.length&&balls.length?2:1)/group.length;for(const id of group)weights.set(id,weights.get(id)+share);}
+  return weights;
+}
 function rewardOptions(s){
   const typesInTeam=new Set(s.team.flatMap(mon=>mon.type));
   const moveTypes=new Set(s.team.flatMap(mon=>mon.moves.map(move=>skillDetails[move]?.type)));
@@ -10020,9 +10093,10 @@ function rewardOptions(s){
     const pool=all.filter(id=>rewards[id].tier===tier&&!results.includes(id));
     const available=pool.length?pool:all.filter(id=>rewards[id].tier===tier);
     // The super shard has half the weight of other eligible legendary rewards.
-    const weight=available.reduce((sum,id)=>sum+rewardItemWeight(id),0);
+    const weights=contextualRewardWeights(available,s);
+    const weight=available.reduce((sum,id)=>sum+weights.get(id),0);
     let selection=Math.random()*weight;
-    results.push(available.find(id=>(selection-=rewardItemWeight(id))<0)??available.at(-1));
+    results.push(available.find(id=>(selection-=weights.get(id))<0)??available.at(-1));
   }
   return results;
 }
@@ -10098,21 +10172,21 @@ async function chooseReward(s){
     const id=selected.slice(5);
     s.balls[id]+=ballCatalog[id].quantity;
   }else{
-    s.items[selected]=(s.items[selected]??0)+1;
+    s.items[selected]=(s.items[selected]??0)+(rewards[selected].quantity??1);
     if(selected==='love-sweet') s.loveSweetAcquired=true;
     if(isStatBooster(selected)) for(const p of s.team) setBattleLevel(p,p.level,s);
   }
   s.log.unshift('取得 '+rewards[selected].name+'。');
 }
 function immediateReward(id){
-  return Boolean(itemCatalog[id]?.usable&&id!=='max-potion');
+  return Boolean(itemCatalog[id]?.usable&&!recoveryItem(id));
 }
 function isNewReward(id){
   return id==='strawberry-sweet'||id==='love-sweet'||reelTools.has(id)||id==='color-screw'||id==='super-shard'||id==='up-grade'||id.startsWith('reel-stone:')||Boolean(technicalMachines[id]);
 }
 function canApplyItem(run,id){
   if(id.startsWith('mega:')) return eligibleMegaStones(run).includes(id);
-  if(id.startsWith('reel-stone:')) return run.team.some(mon=>mon.type.includes(id.slice(11)));
+  if(id.startsWith('reel-stone:')) return Object.hasOwn(types,id.slice(11));
   if(id==='eject-button') return removableReelCount(run)>0;
   if(id==='color-screw') return true;
   if(id==='super-shard'||reelTools.has(id)) return run.reels.some(reel=>reel.some(type=>Object.hasOwn(types,type)));
@@ -10122,7 +10196,8 @@ function canApplyItem(run,id){
   return run.team.some(mon=>usableTarget(id,mon));
 }
 function usableTarget(id,p){
-  if(potionRates[id]) return p.left>0&&p.left<p.hp;
+  if(potionRates[id]||healingBerries[id]) return p.left>0&&p.left<p.hp;
+  if(statusBerries[id]){const statuses=statusBerries[id][1];return p.left>0&&(statuses?statuses.some(status=>status==='confusion'?p.confusion>0:(p.status||(p.burned?'burn':null))===status):Boolean(p.status||p.burned||p.confusion));}
   if(stoneIds.includes(id)) return Boolean(stoneEvolution(id,p));
   if(id==='full-heal') return p.left>0&&Boolean(p.status||p.burned||p.confusion);
   return p.left===0;
@@ -10137,13 +10212,22 @@ function useItem(run,id,index,fromReward=false){
   if(!itemCatalog[id]?.usable||(!fromReward&&(!itemCount(run,id)||run.used[id]))||!p||!usableTarget(id,p)) return false;
   if(potionRates[id]){
     p.left=Math.min(p.hp,p.left+Math.max(1,Math.floor(p.hp*potionRates[id])));
+   }else if(healingBerries[id]){
+    p.left=Math.min(p.hp,p.left+Math.max(1,Math.floor(p.hp*healingBerries[id][2])));
+    if(!fromReward) eatBattleBerry(run,p,'player',id);
+  }else if(statusBerries[id]){
+    const statuses=statusBerries[id][1];
+    if(!statuses||statuses.includes('confusion')){p.confusion=0;delete p.confusionUntil;}
+    if(!statuses||statuses.includes(p.status)||(p.burned&&statuses.includes('burn'))) clearMajorStatus(p);
+    if(!fromReward) eatBattleBerry(run,p,'player',id);
   }else if(id==='full-heal'){
     clearMonStatus(p);
   }else if(id==='revive'||id==='max-revive'){
     p.left=id==='revive'?Math.max(1,Math.floor(p.hp/2)):p.hp;
+    clearMonStatus(p);
   }else return false;
   if(id==='max-potion') run.used[id]=true;
-  else if(!fromReward) consumeItem(run,id);
+  else if(!fromReward&&!healingBerries[id]&&!statusBerries[id]) consumeItem(run,id);
   run.log.unshift('對'+p.name+'使用'+itemCatalog[id].name+'。');
   return true;
 }
@@ -10278,7 +10362,7 @@ async function applyUsableItem(run,id,fromReward=false){
   }else{
     const target=await chooseItemPartyTarget(run,'選擇'+def.name+'的使用對象',mon=>usableTarget(id,mon));
     if(target<0) return false;
-    if(!stoneIds.includes(id)) return useItem(run,id,target,fromReward);
+    if(!stoneIds.includes(id)){const used=useItem(run,id,target,fromReward);if(used&&(healingBerries[id]||statusBerries[id]))await playBerryAnimations(run);return used;}
     const mon=run.team[target],evolution=stoneEvolution(id,mon);
     if(!evolution) return false;
     await evolvePartyMember(mon,evolution,run);
@@ -10353,7 +10437,8 @@ function migrateRun(run){
   run.introSeen??=Boolean(!run.kind||run.spins||run.result);
   for(const p of [...run.team,...run.foes]){
     if(p.status==='frostbite') p.status='freeze';
-    if(['sleep','freeze'].includes(p.status)) p.statusMovesRemaining??=2;
+    if(['sleep','freeze'].includes(p.status)) p.statusMovesRemaining??=p.status==='freeze'?3:2;
+    if(p.confusion>0)p.confusion=Math.min(2,p.confusion);
     delete p.statusUntil;
     delete p.confusionUntil;
     if(p.transformOriginal) continue;
@@ -10378,7 +10463,7 @@ function migrateRun(run){
   }
 }
 function inventoryPanel(){
-  const rows=Object.keys({...state.items,...state.stolenItems}).flatMap(id=>{
+  const rows=Object.keys({...state.items,...state.stolenItems}).sort((a,b)=>Number(recoveryItem(b))-Number(recoveryItem(a))).flatMap(id=>{
     const count=itemCount(state,id),def=itemCatalog[id];
     if(!count||!def) return [];
     return [{id,def,count,label:def.name,enabled:Boolean(def.usable&&!rolling&&!state.used[id]&&!state.result),
@@ -11275,5 +11360,5 @@ state=fresh();
 render();
 
 </script>
-<script defer src="./assets/player-account.js?v=20261126-inherit-1"></script>
+<script defer src="./assets/player-account.js?v=20261126-075"></script>
 </html>

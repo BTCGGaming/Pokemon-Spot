@@ -1557,6 +1557,21 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
 #setup .team-slot-options [data-favorite-filter]{grid-column:1/-1}
 #collectionFilters [data-favorite-filter]{flex-basis:100%;order:9}
 #teamMemberFavorite[aria-pressed=true],[data-favorite-filter][aria-pressed=true]{background:#ffe79c;color:#705016;border-color:#a57625}
+.move-fallback-halo{position:absolute;left:var(--fx-x);top:var(--fx-y);width:5.5cqw;height:5.5cqw;border:.22cqw solid var(--fallback-tint);border-radius:50%;translate:-50% -50%;box-shadow:0 0 1.1cqw var(--fallback-tint),inset 0 0 .8cqw var(--fallback-tint);animation:fallback-halo .55s ease-out both;pointer-events:none}
+@keyframes fallback-halo{0%{opacity:0;scale:.3}25%{opacity:.95}100%{opacity:0;scale:1.5}}
+.protection-fallback{position:absolute;translate:-50% -50%;width:10cqw;height:10cqw;background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAABgCAMAAADyzVHLAAAANlBMVEUAAAAA7Owc//8kvNJRz+FZ//9j//9v//+d///N///X///f//+A//9V//+V//88/v/s///w//9UavM3AAAAAXRSTlMAQObYZgAAAkhJREFUeF7szKkRADAIAEEKIF//zcYzE0fcrjtz8RMAAAAAAAAAAAAAAADAWKWazSzV7Ox3+cdl34xxGIdhIHhx4jiMnDPv/589wBAsgAtXmnK3m4bNlAP+fs/ncQhxev++XvsuxOn9935nCoH3P59MIfD+95spBOo9dxxClN5z+y5E6T2XKUTpPZcpROk9lynE+H1eOwoxfl/X9kKM3/e1LMTc/1zLQsz977UsxOwYSpdCyPahdCuELIfSVghZDqWtELIcSluhiVmwBVuwBVvwxCzYgi3Ygi3Ygpeh9FEI2TaUroWQtaE0CiFrQ2kUQtaG0igEbVm60IcQsq1LXVchZK1LjRCC7nehIQTd70JDiKoMy9KFCjGVYdu6UCGmArTWhQpR97tQIep+FyqEVYblcUNQZdjWG4IqQ4sbgipDixuCKkOLG8IrgxJbGZTYyqDEVgYltjIo0ZVBia0MSmxlUGIrgxJbGZTgyqDEVgYltjIosZVBiagMZHOwYAu2YAu2YAu2YAu2YAu2YLgyKLGVQYmtDEpsZVBiK4MSWxmU2MqgxFYGJbYyKHGVgW8OWhmUZqaVQWlmWhmUZqaVQWlmWhmUpiZdQWhu0hWE5iZdQWhu95WBvn/fHPzZ4M8Gfzb4s8GfDf5ssGALtmALtmALtmALtmALtmB/NvizARhVGfzZADQHJVLxuiqRiiOUSMURQthGVxj0v505xAEABIIgBiSEkPv/f/FnWdm6MTOy1mwVdnarsLqt/H8AAAAAAAAAAAAAAADAAynplaiaJQaGAAAAAElFTkSuQmCC');background-size:500% 100%;image-rendering:pixelated;animation:protection-frames .6s steps(4) infinite;filter:drop-shadow(0 0 .6cqw #5dffff);pointer-events:none}
+@keyframes protection-frames{from{background-position:0 0}to{background-position:100% 0}}
+.portrait[data-preparation]>img,.portrait[data-preparation]>svg{opacity:0!important}
+.portrait[data-preparation]:before{content:'';position:absolute;left:30%;right:15%;bottom:3%;height:8%;border-radius:50%;background:#493f2c;box-shadow:0 .2cqw .4cqw #5f553a;pointer-events:none}
+.portrait[data-preparation=water]:before{background:#4dbce6;box-shadow:0 0 0 .12cqw #d8faff,0 0 .7cqw #65dfff}
+.portrait[data-preparation=air]:before{background:#32453866;filter:blur(.12cqw)}
+.portrait[data-preparation=shadow]:before{background:#432b69;box-shadow:0 0 .8cqw #985bba}
+.move-preparation-fx{position:absolute;left:25%;right:15%;bottom:3%;height:18%;border-radius:50%;border:.25cqw solid #e2bf80;box-shadow:0 0 1cqw #b39a68;animation:preparation-ripple .65s ease-out both;pointer-events:none;z-index:5}
+.move-preparation-fx.water{border-color:#a5edff;box-shadow:0 0 1cqw #60cfff}.move-preparation-fx.air{bottom:40%;border-color:#e8faff;box-shadow:0 0 1cqw #c2efff}.move-preparation-fx.shadow{border-color:#b582df;box-shadow:0 0 1cqw #775399}.move-preparation-fx.charge{bottom:30%;height:50%;border-color:#fff1a2;box-shadow:0 0 1cqw #fff1a2}
+@keyframes preparation-ripple{0%{opacity:0;scale:.4}30%{opacity:1}100%{opacity:0;scale:1.5}}
+.opponent-item-notice{position:absolute;left:34.5%;top:17%;width:31cqw;min-height:8.8cqw;z-index:12;box-sizing:border-box;background:#203f3eee;color:#fff7d5;border:.22cqw solid #f8dd88;box-shadow:0 0 0 .2cqw #40364b,inset 0 0 0 .18cqw #68877a,0 .35cqw 1.5cqw #0006;display:grid;grid-template-columns:5.8cqw minmax(0,1fr);gap:.8cqw;padding:.85cqw 1cqw;align-items:center;pointer-events:none}
+.opponent-item-notice img{width:4.7cqw;height:4.7cqw;image-rendering:pixelated;object-fit:contain;filter:drop-shadow(0 0 .5cqw #fff6ae)}
+.opponent-item-notice .item-announcer{font-size:1.05cqw;color:#ffe88f;line-height:1.4}.opponent-item-notice strong{display:block;font-size:1.7cqw;line-height:1.35}.opponent-item-notice .item-result{font-size:1.12cqw;line-height:1.45;color:#fff;margin:.3cqw 0 0}.opponent-item-notice .item-action-note{font-size:.95cqw;color:#c8e4d7;margin:.4cqw 0 0}
 </style>
 <style>
 .rogue-status,.fighter-status span.rogue-status{display:inline-block;box-sizing:content-box;flex:0 0 auto;width:2.5em;height:1em;min-width:0;min-height:0;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background-color:transparent;background-size:110% 800%;background-repeat:no-repeat;image-rendering:pixelated;vertical-align:middle;line-height:1;text-shadow:none;overflow:hidden}
@@ -1798,7 +1813,7 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
 <script defer src="./assets/site-analytics.js?v=20261125-1"></script>
 <script src="./assets/emerald-sprites.js"></script>
 <script src="./assets/pokerogue/manifest.js?v=kalos-mega-1"></script>
-<script src="./assets/pokerogue-player.js?v=bounded-animation-20261125"></script>
+<script src="./assets/pokerogue-player.js?v=visual-coverage-20261127"></script>
 <script src="./assets/sprite-recovery.js?v=20261125-1"></script>
 <script type="text/plain" id="slotGameSource">
 'use strict';
@@ -1945,6 +1960,42 @@ for(const [type,value] of Object.entries({格鬥:.5,蟲:.5,惡:.5,毒:2,鋼:2,�
 delete matchup.惡.鋼;delete matchup.幽靈.鋼;
 Object.assign(abilityDescriptions,{"125":"造成傷害時，無視對手防禦及特防的正階級。","127":"對手的樹果暫時失效。","132":"受到傷害減少 15%。","134":"鋼系攻擊遇到效果微弱時，改為一般效果。","135":"受到鋼系招式傷害減少 25%。","139":"吃下樹果時，獲得一個木子果。","140":"每次拉霸有 50% 機率預知對手的反擊招式，並免疫該招傷害。","148":"本次拉霸後對手將行動時，造成傷害增加 25%。","149":"有 10% 機率免疫攻擊傷害。","151":"攻擊時無視對手的屏障效果。","152":"造成物理傷害時，降低目標防禦 1 階。","156":"反彈對手招式造成的能力下降。","158":"依原本觸發招式的次數，從自己的招式隨機出招。","161":"目前 HP 低於一半時，造成及受到的傷害各增加 25%。"});
 Object.assign(abilityDescriptions,{"78":"免疫電系招式，受到時速度提高 1 階。","79":"對同性目標傷害提高 25%，對異性降低 25%。","80":"因畏縮而延後行動時提高速度 1 階。","81":"冰雹中提高閃避，並免疫冰雹傷害。","83":"受到要害攻擊後，攻擊升到最高階。","85":"受到火系招式及灼傷的傷害減半。","86":"能力升降階數加倍。","87":"免疫水系招式並恢復四分之一 HP。火系傷害提高 25%，雨天回復、晴天扣血。","88":"上場時比較對手雙防，提高攻擊或特攻 1 階。","89":"拳類招式傷害提高 20%。","90":"中毒時每次回復八分之一最大 HP。","91":"同屬性招式加成從 1.5 倍增至 2 倍。","92":"使用原本命中 2 至 5 次的招式時固定命中 5 次。","93":"雨天每次結算解除主要異常。","94":"大晴天特攻提高 50%，每次結算損失八分之一 HP。","95":"有主要異常時速度提高 50%，免受麻痺減速。","97":"擊中要害時額外提高 50% 傷害。","98":"免疫灼傷、中毒、天氣等非直接攻擊傷害。","99":"雙方針對此寶可夢或由此寶可夢使出的招式必定命中。","101":"威力 60 以下的攻擊招式威力提高 50%。","102":"大晴天免疫主要異常狀態。","104":"出招時無視目標會阻礙攻擊的特性。","105":"提高擊中要害的機率。","106":"被物理攻擊擊倒時，攻擊者失去四分之一最大 HP。","107":"上場時若對手帶有剋制、一擊必殺或自爆招式，會發出危險預警。","108":"上場時揭露對手威力最高的一招。","109":"攻擊時無視目標防禦階級，受擊時無視攻擊者的進攻階級。","110":"效果微弱的攻擊傷害加倍。","111":"受到效果絕佳的攻擊時減傷 25%。","113":"普通與格鬥招式可以命中幽靈系。","115":"冰雹中免疫天氣傷害，並回復十六分之一最大 HP。","116":"受到效果絕佳的攻擊時減傷 25%。","117":"上場時使天氣變為冰雹。","119":"上場時揭露對手攜帶的道具。","120":"反作用力招式的威力提高 20%。","124":"受到物理攻擊後，沒有攜帶道具時可偷取攻擊者的道具。","126":"能力提升與下降反轉。","128":"被對手降低能力後，攻擊提高 2 階。","129":"HP 剩一半以下時，攻擊與特攻減半。","130":"受到攻擊時有 30% 機率封鎖該招式。","131":"每次結算有 30% 機率治癒一位備戰隊友的主要異常。","133":"受到物理傷害時，防禦降低 1 階、速度提高 1 階。","136":"滿血時受到的招式傷害減半。","137":"中毒時物理傷害提高 50%。","138":"灼傷時特殊傷害提高 50%。","141":"每次結算隨機提高一項能力 2 階，並降低另一項 1 階。","142":"免疫冰雹與沙暴的傷害。","143":"物理攻擊有 30% 機率使目標中毒。","144":"主動換下場時回復三分之一最大 HP。","145":"防禦階級不會降低。","146":"沙暴中速度加倍，且免疫沙暴傷害。","147":"受對方變化招式時，其命中率至多為 50%。","150":"上場時自動變身為對手。","153":"擊倒對手後攻擊提高 1 階。","154":"受到惡系攻擊後，攻擊提高 1 階。","155":"受到蟲、幽靈或惡系攻擊後，速度提高 1 階。","157":"免疫草系招式，受到時攻擊提高 1 階。","159":"沙暴中岩石、地面和鋼系攻擊提高 30%，並免疫沙暴傷害。","160":"受到物理攻擊時，攻擊者失去八分之一最大 HP。","162":"招式命中率提高 10%。"});
+function notifyAbilityImmunity(run,source,target,skill,impact){
+  const id=impact.defenseAbility,type=skill.type;
+  if(impact.absorb||impact.boost||impact.waterBoost||impact.speedBoost||impact.grassBoost||id===25&&impact.effectiveness<=1||id===26&&type==='地面'&&!target.grounded&&!run.gravity||id===43&&specialTypes.includes(type))abilityNotice(run,target,id);
+  for(const mon of [run.team[run.active],run.enemy])if(mon?.left&&(activeAbility(mon)===189&&type==='火'||activeAbility(mon)===190&&type==='水'))abilityNotice(run,mon);
+}
+function notifyDamageAbilities(run,source,target,skill,detail){
+  const {fixed,physical,criticalHit,effectiveness,attackAbility:a,defenseAbility:d,grace,amount,raw}=detail,type=skill.type,id=Number(skill.id),weather=run.weather?.kind;
+  const sourceStatus=source.status??(source.burned?'burn':null);
+  const emit=(condition,mon,ability)=>{if(condition)abilityNotice(run,mon,ability);};
+  if(!fixed){
+    emit(a===89&&[4,5,7,8,9,146,183,223,264,309,325,327,359,409,418].includes(id),source,a);
+    emit(a===120&&(['RECOIL','DOUBLE_EDGE','RECOIL_IF_MISS','GEN4_HEAD_SMASH','GEN4_FLARE_BLITZ'].includes(skill.effect)||moveRules[skill.name]?.effect==='headCharge'),source,a);
+    emit(a===101&&skill.power<=60,source,a);emit(a===129&&source.left*2<=source.hp,source,a);
+    emit(a===91&&source.type.includes(type)||a===97&&criticalHit||a===105&&criticalHit,source,a);
+    const defenseIndex=physical||skill.physicalDefense?2:4,attackIndex=physical?1:3;
+    emit(d===109&&source.stages[attackIndex]!==0,target,d);
+    emit(a===109&&target.stages[defenseIndex]!==0||a===125&&target.stages[defenseIndex]>0,source,a);
+  }
+  emit(physical&&[37,74].includes(a)||a===32&&grace>1||a===112||a===79&&source.gender&&target.gender||a===110&&effectiveness<1,source,a);
+  emit(a===137&&physical&&['poison','toxic'].includes(sourceStatus)||a===138&&!physical&&sourceStatus==='burn'||a===94&&!physical&&weather==='sun'||a===159&&weather==='sand'&&['地面','岩石','鋼'].includes(type),source,a);
+  emit(a===161&&source.left*2<source.hp||a===148&&run.team.includes(source)&&!run.actionFlags?.retaliation&&(!run.playerTrickRoom||run.counterSpins>=counterTarget(run)||run.enemyWarning),source,a);
+  emit(d===47&&['火','冰'].includes(type)||[111,116].includes(d)&&effectiveness>1||d===136&&target.left===target.hp||type==='火'&&[85,87].includes(d)||d===132||d===135&&type==='鋼'||d===161&&target.left*2<target.hp||d===5&&target.left===target.hp||[4,75].includes(d)&&raw>target.hp*.5,target,d);
+  emit(d===169&&physical||d===179&&run.terrain?.kind==='grass'&&physical,target,d);
+  emit(a===173&&/咬|牙/.test(skill.name)||a===178&&[352,396,399,406,618].includes(id)||a===181&&kalosContactMoves.has(id)||a===177&&source.galeMoveBoost||a===303&&type==='妖精'&&source.left===source.hp,source,a);
+  emit(a===151&&run.fieldEffects?.[(physical?'physicalScreen:':'specialScreen:')+(run.team.includes(target)?'player':'enemy')],source,a);
+  emit(a===134&&type==='鋼'&&typeMultiplier(type,target)>0&&typeMultiplier(type,target)<1||a===223&&type==='超能力'&&typeMultiplier(type,target)>0&&typeMultiplier(type,target)<1||a===113&&['普通','格鬥'].includes(type)&&target.type.includes('幽靈'),source,a);
+  emit([96,121,227].includes(d),target,d);emit(a===121,source,a);
+  emit(a===104&&activeAbility(target)!==0,source,a);
+  emit(a===92&&(['MULTI_HIT'].includes(skill.effect)||moveRules[skill.name]?.effect==='manyHits'),source,a);
+  if(type==='惡'||type==='妖精'){
+    const pair=[run.team[run.active],run.enemy],aura=pair.filter(mon=>mon?.left&&activeAbility(mon)===(type==='惡'?186:187));
+    if(aura.length){const breaker=pair.find(mon=>mon?.left&&activeAbility(mon)===188);if(breaker)abilityNotice(run,breaker,188);else for(const mon of aura)abilityNotice(run,mon);}
+  }
+  if(skill.name==='唱歌'&&a===232)abilityNotice(run,source,232);
+}
+function abilityNotice(run,mon,id=activeAbility(mon)){return globalThis.pokemonAbilityFeedback?.trigger(run,mon,id)??false;}
 function activeAbility(mon){
   if(mon?.geneAbilityStolen) return 0;
   const id=mon?.geneAbility??mon?.copiedAbility??mon?.abilityId??0;
@@ -1986,9 +2037,11 @@ function syncGeneLoad(run){
   const allyAbility=activeAbility(ally),enemyAbility=activeAbility(enemy);
   if(!ally?.left||!enemy?.left||allyAbility===enemyAbility) return;
   if(allyAbility===233&&enemyAbility){
+    abilityNotice(run,ally,233);
     ally.geneAbility=enemyAbility;
     enemy.geneAbilityStolen=true;
   }else if(enemyAbility===233&&allyAbility){
+    abilityNotice(run,enemy,233);
     enemy.geneAbility=allyAbility;
     ally.geneAbilityStolen=true;
   }
@@ -1999,7 +2052,8 @@ function applyKyuremType(run,mon){
   const fire=roster.some(member=>member.id===643),electric=roster.some(member=>member.id===644);
   if(fire!==electric){
     mon.abilityBaseType??=mon.type.slice();
-    mon.type=['龍',fire?'火':'電'];
+    const next=['龍',fire?'火':'電'];if(mon.type.join()!==next.join())abilityNotice(run,mon,231);
+    mon.type=next;
   }else if(mon.abilityBaseType){
     mon.type=mon.abilityBaseType;
     delete mon.abilityBaseType;
@@ -2008,19 +2062,20 @@ function applyKyuremType(run,mon){
 function activateStandardEntry(run,mon,opponent){
   if(!mon.left||!opponent?.left) return;
   const ability=activeAbility(mon);
-  if(ability===88) changeStage(mon,effectiveBattleStat(opponent,2)<effectiveBattleStat(opponent,4)?1:3,1);
-  if(ability===117) run.weather={kind:'hail',until:(run.enemyTurns??0)+5,potency:1};
-  if(ability===150) transformInto(mon,opponent);
+  if(ability===88&&changeStage(mon,effectiveBattleStat(opponent,2)<effectiveBattleStat(opponent,4)?1:3,1))abilityNotice(run,mon,88);
+  if(ability===117){run.weather={kind:'hail',until:(run.enemyTurns??0)+5,potency:1};abilityNotice(run,mon,117);}
+  if(ability===150&&transformInto(mon,opponent))abilityNotice(run,mon,150);
   if(ability===107&&opponent.moves.some(name=>['OHKO','EXPLOSION'].includes(skillDetails[name]?.effect)||
-    skillDetails[name]?.power&&typeMultiplier(skillDetails[name].type,mon)>1)) noteEffect(run,mon,'因危險預知而警戒。');
+    skillDetails[name]?.power&&typeMultiplier(skillDetails[name].type,mon)>1)){abilityNotice(run,mon,107);noteEffect(run,mon,'因危險預知而警戒。');}
   if(ability===108&&opponent.moves.length){
+    abilityNotice(run,mon,108);
     const strongest=opponent.moves.reduce((best,name)=>(skillDetails[name]?.power??0)>(skillDetails[best]?.power??0)?name:best);
     noteEffect(run,mon,'預知了對手的'+displayMove(strongest)+'。');
   }
   if(ability===119){
     const side=run.team.includes(opponent)?'player':'enemy';
     const items=itemKinds(run,side).map(id=>itemCatalog[id]?.name).filter(Boolean);
-    if(items.length) noteEffect(run,mon,'發現對手持有：'+items.join('、')+'。');
+    if(items.length){abilityNotice(run,mon,119);noteEffect(run,mon,'發現對手持有：'+items.join('、')+'。');}
   }
 }
 function activateAbility(run,mon,opponent){
@@ -2028,6 +2083,7 @@ function activateAbility(run,mon,opponent){
   for(const flag of ['attractedTo','torment','imprison','magicCoat','snatch']) delete mon[flag];
   if(mon.abilityId===36&&opponent?.left&&opponent.abilityId!==36){
     mon.copiedAbility=activeAbility(opponent);
+    if(mon.copiedAbility)abilityNotice(run,mon,36);
     if(mon.copiedAbility) run.log.unshift(mon.name+'複製了'+abilityNames[mon.copiedAbility]+'。');
   }
   syncGeneLoad(run);
@@ -2035,9 +2091,10 @@ function activateAbility(run,mon,opponent){
   activateStandardEntry(run,mon,opponent);
   delete mon.kalosEntryBuffs;
   kalosFieldsOnEntry(run,mon);
-  if(activeAbility(mon)===189)run.weather={kind:'rain'};
-  if(activeAbility(mon)===190)run.weather={kind:'sun'};
+  if(activeAbility(mon)===189){run.weather={kind:'rain'};abilityNotice(run,mon,189);}
+  if(activeAbility(mon)===190){run.weather={kind:'sun'};abilityNotice(run,mon,190);}
   if(activeAbility(mon)===55){
+    abilityNotice(run,mon,55);
     changeStage(mon,1,2);
     changeStage(mon,6,-2);
   }
@@ -2046,19 +2103,20 @@ function activateAbility(run,mon,opponent){
     const boost=Math.max(0,new Set(roster.flatMap(member=>member.type)).size-1);
     changeStage(mon,1,boost);
     changeStage(mon,3,boost);
-    mon.titanBoosted=true;
+    mon.titanBoosted=true;if(boost)abilityNotice(run,mon,210);
   }
   updateWeatherAbilities(run);
 }
 function updateWeatherAbilities(run){
   const pair=[run.team[run.active],run.enemy];
-  if(pair.some(mon=>mon?.left&&[76,214].includes(activeAbility(mon)))) delete run.weather;
+  if(run.weather)for(const mon of pair)if(mon?.left&&[76,214].includes(activeAbility(mon))){abilityNotice(run,mon);delete run.weather;break;}
   for(const mon of pair) if(mon) mon.flowerGift=activeAbility(mon)===122&&run.weather?.kind==='sun';
   for(const mon of pair) if(mon) mon.inSand=run.weather?.kind==='sand';
   for(const mon of pair){
     if(!mon?.left||activeAbility(mon)!==59) continue;
     const type={rain:'水',sun:'火',hail:'冰'}[run.weather?.kind]??'普通';
     mon.abilityBaseType??=mon.type.slice();
+    if(mon.type.join()!==type)abilityNotice(run,mon,59);
     mon.type=[type];
   }
 }
@@ -2076,8 +2134,8 @@ function leaveAbility(mon,withdrawing=true){
   delete mon.flowerGift;
   delete mon.titanBoosted;
   if(withdrawing){
-    if(activeAbility(mon)===30) clearMonStatus(mon);
-    if(activeAbility(mon)===144&&mon.left&&!mon.healBlocked) mon.left=Math.min(mon.hp,mon.left+Math.max(1,Math.floor(mon.hp/3)));
+    if(activeAbility(mon)===30){if(mon.status||mon.confusion)abilityNotice(state,mon,30);clearMonStatus(mon);}
+    if(activeAbility(mon)===144&&mon.left&&!mon.healBlocked){if(mon.left<mon.hp)abilityNotice(state,mon,144);mon.left=Math.min(mon.hp,mon.left+Math.max(1,Math.floor(mon.hp/3)));}
     mon.toxicTurns=0;
     delete mon.nightmare;
     mon.confusion=0;
@@ -3506,7 +3564,9 @@ function showMoveFx(source,target,skill,overrideArt){
   const tile=(key,style,classes)=>'<img class="'+classes+'" style="'+style+'" alt="" src="data:image/png;base64,'+moveSpriteArt[key]+'">';
   const pieces=project?Array.from({length:3},(_,i)=>tile(art,'--fx-delay:'+i*.056+'s;--fx-track:'+((i-1)*1.05)+'cqw','move-projectile')).join(''):'';
   const impact=skill.type==='水'&&project?'water_impact':art;
-  fx.innerHTML=pieces+(project&&!skill.power?'':tile(impact,'','move-impact '+(project?'after-projectile':'')));
+  const tint={火:'#ff7a39',水:'#53cfff',草:'#86df68',電:'#ffe16c',冰:'#b9f7ff',妖精:'#ffb1e0',幽靈:'#c8a0ff',惡:'#b25a85',超能力:'#ff83bf',鋼:'#c0e9ee',地面:'#dfad71',岩石:'#d9c892',毒:'#c793ed',飛行:'#b7e3ff',龍:'#957cff',蟲:'#cfdf74',格鬥:'#f69c75'}[skill.type]??'#fff1b0';
+  fx.style.setProperty('--fallback-tint',tint);
+  fx.innerHTML=pieces+(project&&!skill.power?'':tile(impact,'','move-impact '+(project?'after-projectile':'')))+'<span class="move-fallback-halo" aria-hidden="true"></span>';
   return {project,contact:skill.power&&!project&&art==='impact'};
 }
 async function animateGrowl(attacker,source,target){
@@ -3533,10 +3593,36 @@ async function animateGrowl(attacker,source,target){
     fx.innerHTML='';
   }
 }
+function preparationKind(kind){return ({地面:'ground',水:'water',飛:'air',影:'shadow'})[kind]??'charge';}
+async function animateMovePreparation(side,skill,kind){
+  const portrait=$(side)?.querySelector('.portrait');if(!portrait)return;
+  const motion=preparationKind(kind),image=portrait.querySelector('img[data-mon-id]:not([hidden])')??portrait.querySelector('svg');
+  const effect=document.createElement('span');effect.className='move-preparation-fx '+motion;effect.setAttribute('aria-hidden','true');portrait.append(effect);
+  if(!kind){showMoveFx(portrait,portrait,skill);}
+  const frames=motion==='ground'?[{translate:'0 0',opacity:1},{translate:'0 32%',scale:'.7 0',opacity:0}]:motion==='air'?[{translate:'0 0',opacity:1},{translate:'0 -65%',opacity:0}]:motion==='water'?[{translate:'0 0',opacity:1},{translate:'0 20%',filter:'hue-rotate(20deg)',opacity:0}]:[{opacity:1},{filter:'brightness(2)',opacity:kind?0:1}];
+  const animation=!reducedMotion.matches&&image?image.animate(frames,{duration:Math.max(240,650/battleSpeed),easing:'ease-in',fill:'both'}):null;
+  try{await wait(650);if(kind)portrait.dataset.preparation=motion;}finally{animation?.cancel();effect.remove();$('moveFx').replaceChildren();}
+}
+async function returnFromPreparation(side,kind){
+  const portrait=$(side)?.querySelector('.portrait');if(!portrait)return;delete portrait.dataset.preparation;if(!kind)return;
+  const image=portrait.querySelector('img[data-mon-id]:not([hidden])')??portrait.querySelector('svg');
+  const animation=!reducedMotion.matches&&image?image.animate([{opacity:0,translate:kind==='飛'?'0 -40%':'0 20%'},{opacity:1,translate:'0 0'}],{duration:Math.max(180,400/battleSpeed),easing:'ease-out'}):null;
+  try{await wait(400);}finally{animation?.cancel();}
+}
+async function animateProtectionFallback(side){
+  const portrait=$(side)?.querySelector('.portrait');
+  if(!portrait)return;
+  const box=portrait.getBoundingClientRect(),field=document.querySelector('.desktop').getBoundingClientRect(),fx=$('moveFx');
+  const shield=document.createElement('div');shield.className='protection-fallback';
+  shield.style.left=box.left-field.left+box.width*.5+'px';shield.style.top=box.top-field.top+box.height*.55+'px';
+  fx.append(shield);playGameSound(moveSoundCues[182]??'stat-up');
+  try{await wait(Math.max(300,1000/battleSpeed));}finally{shield.remove();}
+}
 async function animateAttack(attacker,defender,skill){
   const source=$(attacker).querySelector('.portrait');
   const target=$(defender).querySelector('.portrait');
   if(await playRogueEffect(skill.id,source,target,attacker)) return;
+  if(isCounterProtectionMove(skill.name)){await animateProtectionFallback(attacker);return;}
   if(skill.name==='叫聲'){await animateGrowl(attacker,source,target);return;}
   source.classList.remove('attacking','casting');
   target.classList.remove('receiving','buffing');
@@ -3579,23 +3665,24 @@ async function damagePopup(side,damage,effectiveness,half=false){
   portrait.classList.remove('impact-number','confirmed-hit');
 }
 function changeOpposingStage(source,target,index,amount){
-  if(amount<0&&target.type.includes('草')&&(activeAbility(target)===166||state?.team?.includes(target)&&activeAbility(state.team[state.active])===166))return 0;
+  if(amount<0&&target.type.includes('草')&&(activeAbility(target)===166||state?.team?.includes(target)&&activeAbility(state.team[state.active])===166)){abilityNotice(state,activeAbility(target)===166?target:state.team[state.active],166);return 0;}
   const recipient=amount<0&&activeAbility(target)===156?source:target;
+  if(recipient===source)abilityNotice(state,target,156);
   const before=recipient.stages[index];
   const changed=changeStage(recipient,index,amount);
-  if(changed&&recipient===target&&target.stages[index]<before&&activeAbility(target)===128) changeStage(target,1,2);
-  if(changed&&recipient===target&&target.stages[index]<before&&activeAbility(target)===172) changeStage(target,3,2);
+  if(changed&&recipient===target&&target.stages[index]<before&&activeAbility(target)===128){abilityNotice(state,target,128);changeStage(target,1,2);}
+  if(changed&&recipient===target&&target.stages[index]<before&&activeAbility(target)===172){abilityNotice(state,target,172);changeStage(target,3,2);}
   return changed;
 }
 function changeStage(p,index,amount){
   const ability=activeAbility(p);
   if(ability===126) amount=-amount;
   if(ability===86) amount*=2;
-  if(amount<0&&(p.mistGuard||[29,73].includes(ability)||index===1&&ability===52||index===2&&ability===145)) return 0;
+  if(amount<0&&(p.mistGuard||[29,73].includes(ability)||index===1&&ability===52||index===2&&ability===145)){if(!p.mistGuard)abilityNotice(state,p,ability);return 0;}
   const before=p.stages[index];
   p.stages[index]=Math.max(-6,Math.min(6,before+amount));
   const delta=p.stages[index]-before;
-  if(delta)queueStageVisual(p,index,delta);
+  if(delta){queueStageVisual(p,index,delta);if([126,86].includes(ability))abilityNotice(state,p,ability);}
   return Boolean(delta);
 }
 const statusNames={burn:'灼傷',poison:'中毒',toxic:'劇毒',paralysis:'麻痺',freeze:'冰凍',frostbite:'凍傷',sleep:'睡眠',confusion:'混亂'};
@@ -3606,11 +3693,24 @@ function queueBerryAnimation(run,mon,id){
   if(!berryAnimations.has(run)) berryAnimations.set(run,[]);
   berryAnimations.get(run).push({mon,id});
 }
+const automaticEnemyBerrySpins=new WeakMap();
+async function checkAutomaticEnemyHealingBerry(run){
+  const mon=run.enemy,key=run.stage+':'+run.spins;
+  if(run.result||run.won||!mon?.left||mon.left*2>mon.hp||mon.healBlocked||automaticEnemyBerrySpins.get(mon)===key)return false;
+  const id=Object.keys(healingBerries).find(id=>enemyItemCount(run,id)>0);if(!id)return false;
+  automaticEnemyBerrySpins.set(mon,key);
+  eatBattleBerry(run,mon,'enemy',id);
+  const recovered=Math.min(mon.hp-mon.left,Math.max(1,Math.floor(mon.hp*healingBerries[id][2])));mon.left+=recovered;
+  updateHp('enemyHp',mon);
+  run.log.unshift(musicLabel('對手自動吃下'+itemCatalog[id].name+' → '+mon.name+'恢復 '+recovered+' HP（不消耗行動）。','Opponent automatically ate '+enemyRecoveryName(id)+' → '+displayPokemon(mon)+' recovered '+recovered+' HP (no action consumed).'));
+  await playBerryAnimations(run);return true;
+}
 async function checkHealingBerry(run){
+  await checkAutomaticEnemyHealingBerry(run);
   if(!activeBerrySpins.has(run)||checkedBerrySpins.get(run)===run.spins) return;
   checkedBerrySpins.set(run,run.spins);
-  for(const side of ['player','enemy']){
-  const mon=side==='player'?run.team[run.active]:run.enemy;
+  for(const side of ['player']){
+  const mon=run.team[run.active];
   if(!mon?.left||mon.left*2>=mon.hp) continue;
   const id=Object.keys(healingBerries).find(key=>(side==='player'?itemCount(run,key):enemyItemCount(run,key))>0);
   if(!id) continue;
@@ -3628,7 +3728,7 @@ function resistanceBerryFactor(run,type){
 }
 function consumeStatusBerry(run,mon,status){
   const player=run.team.includes(mon);
-  if(!mon.left||(!player&&mon!==run.enemy)) return false;
+  if(!mon.left||(!player&&mon!==run.enemy))return false;
   const count=id=>player?itemCount(run,id):enemyItemCount(run,id);
   const specific=Object.keys(statusBerries).find(id=>statusBerries[id][1]?.includes(status)&&count(id)>0);
   const id=specific??(count('lum-berry')>0?'lum-berry':null);
@@ -3639,7 +3739,7 @@ function consumeStatusBerry(run,mon,status){
     delete mon.confusionUntil;
   }
   if(status!=='confusion'||id==='lum-berry') clearMajorStatus(mon);
-  run.log.unshift(mon.name+'吃下'+itemCatalog[id].name+'，解除'+statusNames[status]+'。');
+  run.log.unshift(player?mon.name+'吃下'+itemCatalog[id].name+'，解除'+statusNames[status]+'。':musicLabel('對手自動吃下'+itemCatalog[id].name+' → '+mon.name+'解除'+statusNames[status]+'（不消耗行動）。','Opponent automatically ate '+enemyRecoveryName(id)+' → '+displayPokemon(mon)+' was cured (no action consumed).'));
   refreshFighterStatus(run,mon);
   return true;
 }
@@ -3655,7 +3755,7 @@ async function playBerryAnimations(run){
     layer.className='berry-effect';
     layer.innerHTML='<span class="berry-food">'+itemArt(id)+'</span><span class="berry-sparkles">✦</span><span class="berry-ring"></span>';
     portrait.append(layer);
-    $('notice').textContent=mon.name+'吃下了'+itemCatalog[id].name+'！';
+    $('notice').textContent=side==='enemy'?musicLabel(mon.name+'自動吃下'+itemCatalog[id].name+'！不消耗行動。',displayPokemon(mon)+' automatically ate '+enemyRecoveryName(id)+'! No action consumed.'):mon.name+'吃下了'+itemCatalog[id].name+'！';
     try{
       for(let bite=0;bite<3;bite++){
         portrait.classList.remove('berry-chew');
@@ -3677,13 +3777,13 @@ async function playBerryAnimations(run){
   }
 }
 function giveStatus(s,p,status,secondary=false){
-  if(activeAbility(p)===102&&s.weather?.kind==='sun') return false;
-  if(status==='sleep'&&activeAbility(p)===175)return false;
+  if(activeAbility(p)===102&&s.weather?.kind==='sun'){abilityNotice(s,p,102);return false;}
+  if(status==='sleep'&&activeAbility(p)===175){abilityNotice(s,p,175);return false;}
   const grounded=!p.type.includes('飛行')&&activeAbility(p)!==26;
   if(grounded&&(s.terrain?.kind==='mist'||s.terrain?.kind==='electric'&&status==='sleep'))return false;
   const owner=s.team.includes(p)?s.team[s.active]:s.enemy;
-  if(p.type.includes('草')&&activeAbility(owner)===166)return false;
-  if(abilityImmuneToStatus(p,status)||secondary&&activeAbility(p)===19) return false;
+  if(p.type.includes('草')&&activeAbility(owner)===166){abilityNotice(s,owner,166);return false;}
+  if(abilityImmuneToStatus(p,status)||secondary&&activeAbility(p)===19){abilityNotice(s,p);return false;}
   if(p.status||p.burned||!p.left||s.safeguard?.[s.team.includes(p)?'player':'enemy']) return false;
   if((status==='burn'&&p.type.includes('火'))||(status==='paralysis'&&p.type.includes('電'))||
      (status==='freeze'&&(p.type.includes('冰')||s.weather?.kind==='sun'))||
@@ -3701,13 +3801,14 @@ function giveStatus(s,p,status,secondary=false){
 function applyStatusAbility(run,mon){
   const ability=activeAbility(mon);
   if(ability===61&&Math.random()<.5){
+    abilityNotice(run,mon,61);
     clearMonStatus(mon);
     refreshFighterStatus(run,mon);
     run.log.unshift(mon.name+'因蛻皮恢復正常。');
     return true;
   }
-  if(ability===62) changeStage(mon,1,3);
-  if(ability===63) changeStage(mon,2,3);
+  if(ability===62&&changeStage(mon,1,3))abilityNotice(run,mon,62);
+  if(ability===63&&changeStage(mon,2,3))abilityNotice(run,mon,63);
   return false;
 }
 function healMon(s,p,side,amount){
@@ -3946,7 +4047,7 @@ function noteEffect(s,mon,text){
   return true;
 }
 function confuseTarget(s,target,potency,secondary=false){
-  if(abilityImmuneToStatus(target,'confusion')||secondary&&activeAbility(target)===19) return false;
+  if(abilityImmuneToStatus(target,'confusion')||secondary&&activeAbility(target)===19){abilityNotice(s,target);return false;}
   const side=s.team.includes(target)?'player':'enemy';
   if(!target.left||target.confusion||s.safeguard?.[side]||(potency<1&&Math.random()>=potency)) return false;
   target.confusion=2;
@@ -4296,9 +4397,13 @@ async function animateStageChanges(run,previous=[]){
   stageVisualRun=(async()=>{
     while(pendingStageVisuals.size){
       const entries=[...pendingStageVisuals];pendingStageVisuals.clear();
+      let deferred=false;
       for(const [mon,changes]of entries){
         const side=run.team[run.active]===mon?'player':run.enemy===mon?'enemy':null;
         if(!side||!mon.left||$('battleScreen').hidden)continue;
+        if($(side).classList.contains('pre-intro')||side==='player'&&run.playerSending||$(side).querySelector('.portrait[data-preparation]')){
+          pendingStageVisuals.set(mon,[...changes,...(pendingStageVisuals.get(mon)??[])]);deferred=true;continue;
+        }
         for(const direction of [1,-1]){
           const indices=[...new Set(changes.filter(change=>Math.sign(change.delta)===direction).map(change=>change.index))];
           if(!indices.length)continue;
@@ -4328,11 +4433,16 @@ async function animateStageChanges(run,previous=[]){
           finally{animations.forEach(animation=>animation.cancel());effect.remove();}
         }
       }
+      if(deferred)break;
     }
   })();
-  try{await stageVisualRun;}finally{stageVisualRun=null;}
+  try{await stageVisualRun;}finally{
+    stageVisualRun=null;
+    if(pendingStageVisuals.size&&stageVisualTimer===null)stageVisualTimer=setTimeout(()=>{stageVisualTimer=null;if(!stageVisualDepth)void animateStageChanges(state,[]);},60);
+  }
 }
 async function executeMove(s,...args){
+  globalThis.pokemonAbilityFeedback?.enter(s);
   const visible=s===state&&$('battleScreen').hidden===false&&!args[8];
   const active=visible?[...new Set([s.team[s.active],s.enemy])]:[];
   const previous=active.map(mon=>[mon,mon.stages.slice(),stageVisualVersions.get(mon)??0]);
@@ -4353,13 +4463,14 @@ async function executeMove(s,...args){
     if(used&&!args[8]&&activeAbility(source)===221&&source.left&&target.left&&skillDetails[name]?.type==='普通'){
       const options=source.moves.filter(move=>skillDetails[move]?.type!=='普通'&&moveRules[move]?.shapes!=='P');
       if(options.length){
-        s.log.unshift(source.name+'的神柱之王發動了。');
+        abilityNotice(s,source,221);s.log.unshift(source.name+'的神柱之王發動了。');
         await executeMove(s,source,target,pick(options),side,Boolean(args[4]),'',1,[],1);
       }
     }
     if(used&&!args[8]&&activeAbility(source)===185&&skillDetails[name]?.power&&source.left&&target.left){
       const dealt=Math.max(0,targetHpBefore-target.left);
       if(dealt){
+        abilityNotice(s,source,185);
         const extra=shieldHit(s,target,Math.max(1,Math.floor(dealt/2))).damage;
         target.left=Math.max(0,target.left-extra);
         updateHp((side==='player'?'enemy':'player')+'Hp',target);
@@ -4382,6 +4493,7 @@ async function executeMove(s,...args){
     }
     await playBerryAnimations(s);
     if(side==='enemy'&&s===state) setMoveHighlights(s,'enemy',s.enemy,[]);
+    globalThis.pokemonAbilityFeedback?.leave(s);
   }
 }
 function cureBattleStatus(run,mon){
@@ -4470,25 +4582,29 @@ async function checkActionStatus(run,mon,target,side){
   return false;
 }
 async function moveFailure(run,message,cue='move-immune'){
+  const failureActor=moveFailureActors.get(run);
+  const immuneMessage=/免疫這次傷害|對目標無效/.test(message);
+  if(immuneMessage&&failureActor){const {source,target,name,side}=failureActor;message=musicLabel((side==='player'?'我方':'對手')+source.name+'使用'+name+'，但對'+target.name+'好像沒有效果……',(side==='player'?'Ally ':'Opponent ')+displayPokemon(source)+' used '+displayMove(name)+', but it has no effect on '+displayPokemon(target)+'…');}
   run.log.unshift(message);
   if(run===state){
     const actor=moveFailureActors.get(run);
     const missed=cue==='move-miss'||/未命中|沒有命中|避開了攻擊|命中失敗/.test(message);
     const immune=/免疫這次傷害|對目標無效/.test(message);
-    const text=missed?(actor?displayPokemon(actor.source):'')+musicLabel(' 未命中',' missed'):immune&&actor?displayMove(actor.name)+musicLabel('對',' against ')+displayPokemon(actor.target)+musicLabel(' 好像沒有用...',' has no effect...'):message;
+    const text=missed?(actor?displayPokemon(actor.source):'')+musicLabel(' 未命中',' missed'):message;
     const notice=$('notice');notice.textContent=text;notice.classList.toggle('move-missed',missed);playGameSound(cue);
     try{await wait(missed?1100:1000);}finally{notice.classList.remove('move-missed');}
   }
   return false;
 }
 function isCounterProtectionMove(name){
+  if(skillDetails[name]?.effect==='SEMI_INVULNERABLE')return false;
   return ['guard','protectCounter','substitute','shadowForce','quickGuard','wish'].includes(moveRules[name]?.effect)||skillDetails[name]?.effect==='PROTECT'||[561,588,596].includes(Number(skillDetails[name]?.id));
 }
 async function executeMoveCore(s,source,target,name,side,counter=false,sequence='',scale=1,support=[],depth=0,potency=1){
   if(!source||!target||source.left<=0||target.left<=0)return false;
   const original=skillDetails[name];
   if(!original) return false;
-  if(activeAbility(target)===171&&/[球跳彈]/.test(name)) return moveFailure(s,target.name+'的防彈擋下了這招。');
+  if(activeAbility(target)===171&&/[球跳彈]/.test(name)){abilityNotice(s,target,171);return moveFailure(s,target.name+'的防彈擋下了這招。');}
   const custom=moveRules[name]?.effect;
   if(custom==='camouflage') return false;
   const celestialVoice=name==='唱歌'&&activeAbility(source)===232;
@@ -4572,7 +4688,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   if(locked) source.lockDamage=false;
   const other=side==='player'?'enemy':'player';
   const actor=side==='player'?'我方':counter?'對手反擊':'對手出招';
-  const action=musicLabel(actor+' · '+source.name+'使用'+name,(source===s.team[s.active]?'Ally':'Opponent')+' · '+displayPokemon(source)+' used '+displayMove(name));
+  const action=musicLabel(actor+source.name+'使用'+name,(source===s.team[s.active]?'Ally':'Opponent')+' · '+displayPokemon(source)+' used '+displayMove(name));
   const asleepOnly=['SLEEP_TALK','SNORE'].includes(skill.effect);
   const thawsUser=source.status==='freeze'&&['172','221','394'].includes(String(skill.id));
   if(depth===0&&await checkSleepOrFreeze(s,source,side,asleepOnly,thawsUser)) return false;
@@ -4604,7 +4720,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   if(thawsUser) cureBattleStatus(s,source);
   source.lastMove=name;
   source.actionSerial=(source.actionSerial??0)+1;
-  if(activeAbility(source)===168&&source.proteanTurn!==s.stage+':'+s.spins){source.abilityBaseType??=source.type.slice();source.type=[skill.type];source.proteanTurn=s.stage+':'+s.spins;}
+  if(activeAbility(source)===168&&source.proteanTurn!==s.stage+':'+s.spins){abilityNotice(s,source,168);source.abilityBaseType??=source.type.slice();source.type=[skill.type];source.proteanTurn=s.stage+':'+s.spins;}
   source.galeMoveBoost=activeAbility(source)===177&&source.left===source.hp&&skill.type==='飛行'&&!source.kalosGaleUsed;
   if(source.galeMoveBoost)source.kalosGaleUsed=true;
   if(skill.power) changeAegislash(source,true,s);
@@ -4622,16 +4738,19 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   source.usedMoves??=[];
   if(!source.usedMoves.includes(name)) source.usedMoves.push(name);
   if(custom==='trump') source.trumpUses=(source.trumpUses??0)+1;
-  if(side==='player'&&activeAbility(source)===1&&skill.power&&Math.random()<.05) alterSpinDelay(s,side,1);
+  if(side==='player'&&activeAbility(source)===1&&skill.power&&Math.random()<.05){abilityNotice(s,source,1);alterSpinDelay(s,side,1);}
   $('notice').textContent=action+'！'+sequence;
   if(side==='enemy'&&s===state&&source===s.enemy) setMoveHighlights(s,'enemy',source,[name]);
   const releasing=s.actionFlags?.releasingDeferred;
   const charges=['RAZOR_WIND','SOLAR_BEAM','SEMI_INVULNERABLE','FUTURE_SIGHT'].includes(skill.effect);
   if(charges&&!releasing&&!(skill.effect==='SOLAR_BEAM'&&s.weather?.kind==='sun')){
     if(source.deferredMove) return false;
+    const previous=source.semiReturnUse;
+    if(skill.effect==='SEMI_INVULNERABLE'&&previous?.stage===s.stage&&s.spins>=previous.spin&&s.spins-previous.spin<=1)return moveFailure(s,displayMove(name)+musicLabel('失敗了！',' failed!'));
     const delay=skill.effect==='FUTURE_SIGHT'?2:1;
     source.deferredMove={name,at:s.spins+delay,scale,potency};
-    if(skill.effect==='SEMI_INVULNERABLE') source.semiInvulnerable=name==='潛水'?'水':'飛';
+    if(skill.effect==='SEMI_INVULNERABLE') source.semiInvulnerable=Number(skill.id)===91?'地面':Number(skill.id)===291?'水':[467,566].includes(Number(skill.id))?'影':'飛';
+    await animateMovePreparation(side,skill,source.semiInvulnerable);
     return noteEffect(s,source,'開始準備'+name+'。');
   }
   if(target.semiInvulnerable&&skill.power&&!(target.semiInvulnerable==='飛'&&['GUST','SKY_UPPERCUT','THUNDER'].includes(skill.effect))&&
@@ -4663,6 +4782,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   }
   const impact=!presentHeals&&skill.power?moveTypeImpact(skill.type,kalosId===614?{...target,grounded:true,magnetRise:false}:target,source,kalosId===614?{...s,gravity:true}:s,custom):null;
   if(impact?.immune){
+    notifyAbilityImmunity(s,source,target,skill,impact);
     if(s===state) await animateAttack(side,other,skill);
     if(impact.absorb) healMon(s,target,other,Math.max(1,Math.floor(target.hp/4)));
     if(impact.boost){changeStage(target,1,1);changeStage(target,3,1);}
@@ -4677,9 +4797,9 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     if(kalosContactMoves.has(Number(skill.id))&&target.spikyShield){source.left=Math.max(0,source.left-Math.max(1,Math.floor(source.hp/8)));updateHp(side+'Hp',source);}
     return moveFailure(s,target.name+'擋下了這次攻擊。');
   }
-  if(impact&&activeAbility(target)===149&&Math.random()<.1) return moveFailure(s,target.name+'以幻覺避開了傷害。');
+  if(impact&&activeAbility(target)===149&&Math.random()<.1){abilityNotice(s,target,149);return moveFailure(s,target.name+'以幻覺避開了傷害。');}
   if(impact&&side==='enemy'&&s.actionFlags?.telepathy===name&&s.actionFlags.telepathyTarget===s.active&&s.actionFlags.telepathyEnemy===s.foeIndex){
-    delete s.actionFlags.telepathy;
+    abilityNotice(s,target,140);delete s.actionFlags.telepathy;
     return moveFailure(s,target.name+'用心靈感應避開了傷害。');
   }
   if(custom==='skyDrop'&&!s.actionFlags?.releasingSkyDrop){
@@ -4690,7 +4810,13 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     return noteEffect(s,source,'將對手帶上高空。');
   }
   if(custom==='chatter') playSpeciesCry(source,.16);
-  else await animateAttack(side,skill.self?side:other,skill);
+  else {
+    if(side==='player'&&support.length){const ability=activeAbility(source),minimum=moveLineMinimum(name,source),type=moveRules[name]?.lineType??skill.type;
+      if([212,213].includes(ability)&&((ability===212&&['水','冰'].includes(type))||(ability===213&&['火','地面'].includes(type))))abilityNotice(s,source,ability);
+      if(type!=='普通'&&support.filter(line=>lineMatchesMoveType(line,type,0)).length<minimum&&support.filter(line=>lineMatchesMoveType(line,type,ability)).length>=minimum)abilityNotice(s,source,ability);
+    }
+    await animateAttack(side,skill.self?side:other,skill);
+  }
   if(presentHeals){
     healMon(s,target,other,Math.max(1,Math.floor(target.hp*.25*potency)));
     return noteEffect(s,target,'收到了能恢復 HP 的禮物。');
@@ -4710,7 +4836,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     const {effectiveness,defenseAbility}=impact;
     skill={...skill,effectiveness};
     if(activeAbility(source)===113||activeAbility(source)===134&&skill.type==='鋼'||custom==='judgment'||s.gravity||s.miracleEye||[96,121,227].includes(defenseAbility)||[121,223].includes(activeAbility(source))) skill={...skill,effectiveness};
-    const effectivenessText=fixedDamageEffects.has(skill.effect)||skill.fixedDamage!==undefined?'':effectiveness>1?' 效果絕佳！':effectiveness<1?' 效果微弱。':'';
+    const effectivenessText=fixedDamageEffects.has(skill.effect)||skill.fixedDamage!==undefined?'':effectiveness>1?musicLabel('對'+target.name+'效果絕佳！','It’s super effective against '+displayPokemon(target)+'! '):effectiveness<1?musicLabel('但對'+target.name+'效果不好……','It’s not very effective against '+displayPokemon(target)+'… '):'';
     const attackAbility=activeAbility(source);
     const electricBonus=skill.type==='電'&&source.electricCharge?1+source.electricCharge:1;
     if(skill.type==='電') delete source.electricCharge;
@@ -4757,6 +4883,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       if(defenseAbility===5&&target.left===target.hp) amount*=.25;
       if([4,75].includes(defenseAbility)&&amount>target.hp*.5) amount*=.5;
       if(skill.effect==='OHKO') amount=target.left*potency;
+      if(amount>0)notifyDamageAbilities(s,source,target,skill,{fixed,physical,criticalHit,effectiveness,attackAbility,defenseAbility,grace,amount,raw});
       const rawDamage=target.counterGuard||amount<=0?0:Math.max(1,Math.floor(amount));
       const hitResult=shieldHit(s,target,skill.effect==='OHKO'&&target.bossShieldLayers?Math.min(rawDamage,target.left-(bossShieldThresholds(target).find(hp=>hp<target.left)??0)):rawDamage);
       let damage=hitResult.damage;
@@ -4776,12 +4903,12 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       if(broken) s.log.unshift(musicLabel(target.name+'的首領護盾破了 '+broken+' 層。',displayPokemon(target)+' lost '+broken+' boss shield(s).'));
       target.left-=damage;
       if(damage){
-        if(!target.left&&attackAbility===153) changeStage(source,1,1);
-        if(target.left&&defenseAbility===83&&criticalHit) target.stages[1]=6;
-        if(target.left&&defenseAbility===154&&skill.type==='惡') changeStage(target,1,1);
-        if(target.left&&defenseAbility===155&&['蟲','幽靈','惡'].includes(skill.type)) changeStage(target,5,1);
-        if(target.left&&defenseAbility===133&&physical){changeStage(target,2,-1);changeStage(target,5,1);}
-        if(target.left&&defenseAbility===130&&Math.random()<.3) source.blockedMove=name;
+        if(!target.left&&attackAbility===153&&changeStage(source,1,1))abilityNotice(s,source,153);
+        if(target.left&&defenseAbility===83&&criticalHit){abilityNotice(s,target,83);const delta=6-target.stages[1];target.stages[1]=6;if(delta)queueStageVisual(target,1,delta);}
+        if(target.left&&defenseAbility===154&&skill.type==='惡'&&changeStage(target,1,1))abilityNotice(s,target,154);
+        if(target.left&&defenseAbility===155&&['蟲','幽靈','惡'].includes(skill.type)&&changeStage(target,5,1))abilityNotice(s,target,155);
+        if(target.left&&defenseAbility===133&&physical){abilityNotice(s,target,133);changeStage(target,2,-1);changeStage(target,5,1);}
+        if(target.left&&defenseAbility===130&&Math.random()<.3){abilityNotice(s,target,130);source.blockedMove=name;}
       }
       if(damage&&(thawTarget||target.status==='sleep'&&['WAKE_UP_SLAP','GEN4_WAKE_UP_SLAP'].includes(skill.effect))) cureBattleStatus(s,target);
       inflicted+=damage;
@@ -4798,11 +4925,13 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
         }
       }
       updateHp(other+'Hp',target);
-      s.log.unshift(action+(count>1?'（第 '+(hit+1)+' 擊）':'')+'，造成 '+damage+' 傷害。'+effectivenessText);
+      const outcome=musicLabel(action+(count>1?'（第 '+(hit+1)+' 擊）':'')+'，'+effectivenessText+'造成 '+damage+' 傷害。',action+(count>1?' (hit '+(hit+1)+')':'')+'. '+effectivenessText+'Dealt '+damage+' damage.');
+      s.log.unshift(outcome);if(s===state)$('notice').textContent=outcome;
       await damagePopup(other,damage,effectiveness,side==='player'&&potency===.5?Math.max(1,Math.floor(amount*2)):0);
       await kalosAfterDamage(s,source,target,skill,side,damage);
       if(damage){
         if(defenseAbility===16&&target.left){
+          abilityNotice(s,target,16);
           target.abilityBaseType??=target.type.slice();
           target.type=[skill.type];
         }
@@ -4823,7 +4952,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
       else source.rampage={name,remaining:source.rampage?remaining-1:remaining};
     }
     if(!inflicted) return false;
-    if(activeAbility(source)===152&&moveDamageCategory(skill)==='物理') changeOpposingStage(source,target,2,-1);
+    if(activeAbility(source)===152&&moveDamageCategory(skill)==='物理'&&changeOpposingStage(source,target,2,-1))abilityNotice(s,source,152);
     if(skill.effect==='GEN5_FINAL_GAMBIT'){source.left=0;updateHp(side+'Hp',source);}
     if(skill.effect==='GEN5_CLEAR_SMOG') target.stages=neutralStages();
     if(skill.effect==='GEN5_SMACK_DOWN'){target.grounded=true;delete target.magnetRise;}
@@ -4878,7 +5007,7 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
     }
     if(target.left&&hitStatuses[skill.effect]&&Math.random()*100<Math.min(25,skill.secondaryChance)*potency) giveStatus(s,target,hitStatuses[skill.effect],true);
   }else s.log.unshift(action+'。');
-  if(skill.type==='電'&&[57,58].includes(activeAbility(source))) changeStage(source,activeAbility(source)===57?3:1,1);
+  if(skill.type==='電'&&[57,58].includes(activeAbility(source))&&changeStage(source,activeAbility(source)===57?3:1,1))abilityNotice(s,source);
   if(custom) return applyCustomMove(s,source,target,skill,side,{support,full,inflicted,depth,potency});
   const quantitative=skill.stat!==undefined||stageEffects[skill.effect]||['RESTORE_HP','SOFTBOILED','SYNTHESIS','MOONLIGHT','SWALLOW','REST'].includes(skill.effect);
   if(!skill.power&&!quantitative&&potency<1&&Math.random()>=potency){s.log.unshift(action+'，減半效果未生效。');return false;}
@@ -5004,23 +5133,23 @@ async function executeMoveCore(s,source,target,name,side,counter=false,sequence=
   return true;
 }
 async function afterPhysicalHit(run,source,target,side,attackAbility,defenseAbility){
-  if(attackAbility===69&&Math.random()<.1) confuseTarget(run,target,1);
+  if(attackAbility===69&&Math.random()<.1&&confuseTarget(run,target,1))abilityNotice(run,source,69);
   if(!source.left) return;
   if(defenseAbility===24) await abilityDamage(run,source,side,.1,'粗糙皮膚');
   if(defenseAbility===160) await abilityDamage(run,source,side,1/8,'鐵刺');
   if(defenseAbility===106&&!target.left) await abilityDamage(run,source,side,1/4,'引爆');
-  if(attackAbility===143&&target.left&&Math.random()<.3) giveStatus(run,target,'poison',true);
+  if(attackAbility===143&&target.left&&Math.random()<.3&&giveStatus(run,target,'poison',true))abilityNotice(run,source,143);
   if(defenseAbility===124&&target.left){
     const targetSide=side==='player'?'enemy':'player';
-    if(itemTotal(run,targetSide)===0) transferBattleItem(run,side);
+    if(itemTotal(run,targetSide)===0&&transferBattleItem(run,side))abilityNotice(run,target,124);
   }
   if([9,27,38,49,56].includes(defenseAbility)&&Math.random()<.5){
-    if(defenseAbility===56) confuseTarget(run,source,1);
-    else giveStatus(run,source,{9:'paralysis',27:pick(['poison','paralysis','burn']),38:'poison',49:'burn'}[defenseAbility]);
+    const applied=defenseAbility===56?confuseTarget(run,source,1):giveStatus(run,source,{9:'paralysis',27:pick(['poison','paralysis','burn']),38:'poison',49:'burn'}[defenseAbility]);if(applied)abilityNotice(run,target,defenseAbility);
   }
 }
 async function abilityDamage(run,mon,side,rate,label){
-  if(!mon.left||activeAbility(mon)===98) return;
+  if(!mon.left)return;if(activeAbility(mon)===98){abilityNotice(run,mon,98);return;}
+  const owner=[run.team[run.active],run.enemy].find(candidate=>abilityNames[activeAbility(candidate)]===label);if(owner)abilityNotice(run,owner);
   const loss=Math.min(mon.left,Math.max(1,Math.floor(mon.hp*rate)));
   mon.left-=loss;
   updateHp(side+'Hp',mon);
@@ -5283,7 +5412,9 @@ async function releaseDeferredMoves(s){
     const pending=source.deferredMove;
     if(!source.left||!target.left||!pending||pending.at>s.spins) continue;
     delete source.deferredMove;
-    delete source.semiInvulnerable;
+    const preparation=source.semiInvulnerable;delete source.semiInvulnerable;
+    if(skillDetails[pending.name]?.effect==='SEMI_INVULNERABLE')source.semiReturnUse={stage:s.stage,spin:s.spins};
+    await returnFromPreparation(side,preparation);
     s.actionFlags.releasingDeferred=true;
     try{await executeMove(s,source,target,pending.name,side,false,'',pending.scale,[],1,pending.potency);}
     finally{delete s.actionFlags.releasingDeferred;}
@@ -5309,7 +5440,7 @@ function reviveTimeMaster(run,mon,side){
   const key=side+':'+index;
   if(run.timeRevived.includes(key)) return false;
   run.timeRevived.push(key);
-  mon.left=mon.hp;
+  abilityNotice(run,mon,218);mon.left=mon.hp;
   clearMonStatus(mon);
   updateHp(side+'Hp',mon);
   run.log.unshift(mon.name+'用時間掌控者回復了全部 HP。');
@@ -5331,16 +5462,6 @@ async function winBattle(s,p){
     p=s.team[s.active];
   }
   if(s.trainer){
-    const reserve=s.foes.find(mon=>mon!==s.enemy&&!mon.left);
-    const revived=reserve??(bestEnemyReserve(s)<0&&!s.enemy.left?s.enemy:null);
-    if(revived&&enemyItemCount(s,'max-revive')){
-      consumeEnemyItem(s,'max-revive');
-      clearMonStatus(revived);
-      revived.stages=neutralStages();
-      revived.left=revived.hp;
-      s.log.unshift('對手使用活力塊，'+revived.name+'恢復全部 HP。');
-      if(revived===s.enemy){await sendEnemy(s,s.foeIndex,true);return;}
-    }
     let next=bestEnemyReserve(s);
     if(next>=0&&p.left&&activeAbility(p)===219&&s.foes.filter(mon=>mon!==s.enemy&&mon.left).length>1){
       const choice=await choosePartyMember({team:s.foes,active:s.foeIndex},'空間掌控者 · 選擇對手下一隻寶可夢',
@@ -5372,11 +5493,12 @@ function applyBadDreams(run,ownerSide){
   const target=ownerSide==='player'?enemy:player;
   if(!owner?.left||!target?.left||activeAbility(owner)!==123||target.status||target.burned||Math.random()>=.25) return false;
   if(!giveStatus(run,target,'sleep')) return false;
-  run.log.unshift(owner.name+'的夢魘發動了。');
+  abilityNotice(run,owner,123);run.log.unshift(owner.name+'的夢魘發動了。');
   return true;
 }
 async function resolveSpin(s,board,settledTracks=null){
   if(s.result) return;
+  globalThis.pokemonAbilityFeedback?.enter(s);
   const warning=s.enemyWarning;
   const originalKalosBoard=[300,304].includes(activeAbility(s.team[s.active]))?board.slice():null;
   for(const mon of [s.team[s.active],s.enemy]) delete mon.kalosGaleUsed;
@@ -5394,7 +5516,7 @@ async function resolveSpin(s,board,settledTracks=null){
     }
     if(!s.result){
       for(const [mon,opponent] of [[s.team[s.active],s.enemy],[s.enemy,s.team[s.active]]]){
-        if(mon.left&&activeAbility(mon)===28&&['poison','toxic','paralysis','burn'].includes(mon.status)) giveStatus(s,opponent,mon.status);
+        if(mon.left&&activeAbility(mon)===28&&['poison','toxic','paralysis','burn'].includes(mon.status)&&giveStatus(s,opponent,mon.status))abilityNotice(s,mon,28);
       }
       await playBerryAnimations(s);
     }
@@ -5405,6 +5527,7 @@ async function resolveSpin(s,board,settledTracks=null){
     if(originalKalosBoard&&s===state){s.board=originalKalosBoard;s.matches=[];renderBoard(originalKalosBoard,[]);}
     for(const mon of [s.team[s.active],s.enemy]){if(mon.receiveElectricUsed){delete mon.receiveElectric;delete mon.receiveElectricUsed;}delete mon.electrified;if(mon.kingsShield){changeAegislash(mon,false,s);delete mon.kingsShield;}if(mon===s.team[s.active]&&mon.holdHandsActing){delete mon.holdHands;delete mon.holdHandsActing;}}
     clearMoveHighlights(s);
+    globalThis.pokemonAbilityFeedback?.leave(s);
   }
 }
 function abilityBoard(run,original){
@@ -5478,6 +5601,7 @@ function abilityBoard(run,original){
 }
 function transferAbilityDebuffs(previous,next,opponent){
   if(activeAbility(opponent)!==21) return;
+  if(previous.stages.some(stage=>stage<0)||['taunted','disable','encore','follow','blockedMove','noSwitch','selfCounter','seeded','spinDrain'].some(key=>previous[key]))abilityNotice(state,opponent,21);
   previous.stages.forEach((stage,index)=>{if(stage<0) changeStage(next,index,stage);});
   for(const key of ['taunted','disable','encore','follow','blockedMove','noSwitch','selfCounter','seeded','seedRate','seedStart','spinDrain','drainStart','drainMove']){
     if(previous[key]) next[key]=previous[key];
@@ -5506,7 +5630,7 @@ function growSignatureReel(run,mon){
   const column=randomIndex(run.reels.length);
   run.reels=run.reels.map((reel,index)=>index===column?[...reel,type]:reel);
   run.reelsPhysical=true;
-  noteEffect(run,mon,'的'+abilityNames[activeAbility(mon)]+'讓圖庫增加 1 個'+type+'圖案。');
+  abilityNotice(run,mon);noteEffect(run,mon,'的'+abilityNames[activeAbility(mon)]+'讓圖庫增加 1 個'+type+'圖案。');
 }
 async function resolveSpinCore(s,board,settledTracks=null){
   if(s.result) return;
@@ -5536,7 +5660,8 @@ async function resolveSpinCore(s,board,settledTracks=null){
     await winBattle(s,lead);
     return;
   }
-  const modified=kalosAbilityBoard(s,abilityBoard(s,board));
+  const fromAbility=abilityBoard(s,board);if(fromAbility.some((type,index)=>board[index]!==type))abilityNotice(s,s.team[s.active]);
+  const modified=kalosAbilityBoard(s,fromAbility);if(modified.some((type,index)=>fromAbility[index]!==type))abilityNotice(s,s.team[s.active]);
   await animateKalosBoard(s,board,modified);
   growSignatureReel(s,s.team[s.active]);
   if(modified!==board){
@@ -5556,23 +5681,25 @@ async function resolveSpinCore(s,board,settledTracks=null){
   s.actionFlags={};
   const current=s.team[s.active];
   s.counterSpins=(s.counterSpins??0)+(activeAbility(current)===54||s.enemyTrickRoom?2:1);
+  {const ability=activeAbility(current);if([3,54,100].includes(ability)||ability===33&&s.weather?.kind==='rain'||ability===34&&s.weather?.kind==='sun'||ability===84&&itemTotal(s,'player')<itemTotal(s,'enemy'))abilityNotice(s,current,ability);}
   for(const [side,mon] of [['player',current],['enemy',s.enemy]]){
     if(activeAbility(mon)!==82) continue;
     const berry=randomBerry(s,side);
-    if(!berry) continue;
+    if(!berry||side==='enemy'&&recoveryItem(berry))continue;
     eatBattleBerry(s,mon,side,berry);
     changeStage(mon,2,1);
     changeStage(mon,4,1);
-    noteEffect(s,mon,'因貪吃鬼吃下樹果，防禦與特防提高。');
+    abilityNotice(s,mon,82);noteEffect(s,mon,'因貪吃鬼吃下樹果，防禦與特防提高。');
   }
-  if(activeAbility(current)===53&&hasStealableEnemyItem(s,s.enemy)&&Math.random()<.1) borrowEnemyItem(s,s.enemy,'撿拾');
-  if(activeAbility(current)===64) await abilityDamage(s,s.enemy,'enemy',.05,'汙泥漿');
-  if(activeAbility(s.enemy)===64) await abilityDamage(s,current,'player',.05,'汙泥漿');
+  if(activeAbility(current)===53&&hasStealableEnemyItem(s,s.enemy)&&Math.random()<.1){abilityNotice(s,current,53);borrowEnemyItem(s,s.enemy,'撿拾');}
+  if(activeAbility(current)===64){abilityNotice(s,current,64);await abilityDamage(s,s.enemy,'enemy',.05,'汙泥漿');}
+  if(activeAbility(s.enemy)===64){abilityNotice(s,s.enemy,64);await abilityDamage(s,current,'player',.05,'汙泥漿');}
   if(!current.left){await replaceFainted(s);if(s.result)return;}
   if(!s.enemy.left){await winBattle(s,s.team[s.active]);return;}
   renderBattleProgress(s);
   const p=s.team[s.active];
   const matched=matchingLines(board,false,activeAbility(p)===100,activeAbility(p)===230);
+  if([100,230].includes(activeAbility(p))&&matched.some(line=>!matchingLines(board,false,false,false).some(base=>base.cells.join()===line.cells.join()&&base.type===line.type)))abilityNotice(s,p);
   if(activeAbility(p)===140&&Math.random()<.5){
     const pool=enemyUsableMoves(s);
     if(pool.length){
@@ -5581,12 +5708,13 @@ async function resolveSpinCore(s,board,settledTracks=null){
       s.actionFlags.telepathyTarget=s.active;
       s.actionFlags.telepathyEnemy=s.foeIndex;
       paintCounterForecast(s);
-      s.log.unshift('心靈感應預知：'+displayMove(s.actionFlags.telepathy)+'。');
+      abilityNotice(s,p,140);s.log.unshift('心靈感應預知：'+displayMove(s.actionFlags.telepathy)+'。');
     }
   }
-  if(activeAbility(p)===303){const count=matched.filter(line=>lineMatchesMoveType(line,'妖精',303)).length;if(count)healMon(s,p,'player',Math.max(1,Math.floor(p.hp*.05*count)));}
+  if(activeAbility(p)===303){const count=matched.filter(line=>lineMatchesMoveType(line,'妖精',303)).length;if(count){if(p.left<p.hp&&!p.healBlocked)abilityNotice(s,p,303);healMon(s,p,'player',Math.max(1,Math.floor(p.hp*.05*count)));}}
   let attacks=moveQueue(p.moves,matched,p);
   if(activeAbility(p)===158&&attacks.length){
+    abilityNotice(s,p,158);
     const pool=p.moves.filter(name=>moveRules[name]?.shapes!=='P');
     attacks=attacks.map(()=>pick(pool)).map(name=>{
       const minimum=moveLineMinimum(name,p);
@@ -5596,7 +5724,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
   }
   const waterLines=matched.filter(line=>line.type==='水'||line.type===wildReelType).length;
   if(waterLines){
-    if(activeAbility(p)===44) healMon(s,p,'player',Math.max(1,Math.floor(p.hp*.05*waterLines)));
+    if(activeAbility(p)===44){if(waterLines&&p.left<p.hp&&!p.healBlocked)abilityNotice(s,p,44);healMon(s,p,'player',Math.max(1,Math.floor(p.hp*.05*waterLines)));}
   }
   s.matches=matched.map(result=>result.cells);
   const multiplier=lineMultiplier(s.matches.length);
@@ -5696,8 +5824,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
   if(s.result) return;
   const active=s.team[s.active];
   for(const mon of [active,s.enemy]){mon.protected=false;mon.enduring=false;}
-  const enemyLeftovers=enemyItemCount(s,'leftovers');
-  if(enemyLeftovers) healMon(s,s.enemy,'enemy',Math.max(1,Math.floor(s.enemy.hp*enemyLeftovers/20)));
+  // Opponent recovery gear is resolved only after an action that actually occurred.
   for(const [mon,side,opponent,opponentSide] of [[active,'player',s.enemy,'enemy'],[s.enemy,'enemy',active,'player']]){
     if(mon.left&&mon.rooted&&s.spins>=(mon.rootStart??0)) healMon(s,mon,side,Math.max(1,Math.floor(mon.hp*mon.rooted)));
     if(mon.left&&activeAbility(mon)!==98&&mon.seeded&&s.spins>=(mon.seedStart??0)){
@@ -5738,15 +5865,16 @@ async function applyMajorStatusTurnEnd(run,mon,side){
     await applyResidualHit(mon,side,loss,'惡夢','gray_smoke');
     noteEffect(run,mon,'因惡夢損失 '+loss+' HP。');
   }
-  if(weather==='rain'&&weatherAbility===93&&mon.status) cureBattleStatus(run,mon);
-  if(weather==='rain'&&weatherAbility===87) healMon(run,mon,side,Math.max(1,Math.floor(mon.hp/8)));
-  if(weather==='hail'&&weatherAbility===115) healMon(run,mon,side,Math.max(1,Math.floor(mon.hp/16)));
+  if(weather==='rain'&&weatherAbility===93&&mon.status){abilityNotice(run,mon,93);cureBattleStatus(run,mon);}
+  if(weather==='rain'&&weatherAbility===87){if(mon.left<mon.hp&&!mon.healBlocked)abilityNotice(run,mon,87);healMon(run,mon,side,Math.max(1,Math.floor(mon.hp/8)));}
+  if(weather==='hail'&&weatherAbility===115){if(mon.left<mon.hp&&!mon.healBlocked)abilityNotice(run,mon,115);healMon(run,mon,side,Math.max(1,Math.floor(mon.hp/16)));}
   if(weather==='sun'&&[87,94].includes(weatherAbility)) await abilityDamage(run,mon,side,1/8,abilityNames[weatherAbility]);
   if(weatherAbility===131&&Math.random()<.3){
     const reserve=(side==='player'?run.team:run.foes).filter(member=>member!==mon&&member.left&&member.status);
-    if(reserve.length) clearMajorStatus(pick(reserve));
+    if(reserve.length){abilityNotice(run,mon,131);clearMajorStatus(pick(reserve));}
   }
   if(weatherAbility===141){
+    abilityNotice(run,mon,141);
     const increase=pick([1,2,3,4,5,6,7]);
     const decrease=pick([1,2,3,4,5,6,7].filter(index=>index!==increase));
     changeStage(mon,increase,2);changeStage(mon,decrease,-1);
@@ -5763,11 +5891,13 @@ async function applyMajorStatusTurnEnd(run,mon,side){
   if(!['burn','poison','toxic'].includes(status)) return;
   const ability=activeAbility(mon);
   if(status==='toxic') mon.toxicTurns=(mon.toxicTurns??0)+1;
-  if(ability===98) return;
+  if(ability===98){abilityNotice(run,mon,98);return;}
   if(ability===90&&status!=='burn'){
+    if(mon.left<mon.hp&&!mon.healBlocked)abilityNotice(run,mon,90);
     healMon(run,mon,side,Math.max(1,Math.floor(mon.hp/8)));
     return;
   }
+  if(status==='burn'&&ability===85)abilityNotice(run,mon,85);
   const rate=status==='burn'?(ability===85?1/32:1/16):status==='poison'?1/8:mon.toxicTurns/16;
   const loss=Math.min(mon.left,Math.max(1,Math.floor(mon.hp*rate)));
   await applyResidualHit(mon,side,loss,statusNames[status],undefined,status);
@@ -5925,6 +6055,7 @@ function foreseenCounter(run){
   if(pool.length){
     const name=pick(pool);
     counterForecasts.set(run,{enemy,name});
+    abilityNotice(run,player,209);
     return name;
   }
 }
@@ -5959,6 +6090,7 @@ async function warnEnemyMove(s,move){
   finally{alert.hidden=true;}
 }
 async function enemyAct(s,random=false,switching=false){
+  const actingBefore=s.enemy,serialBefore=actingBefore.actionSerial??0;delete s.enemyRecoveryUsed;
   delete s.enemy.kalosGaleUsed;
   const warning=s.enemyWarning;
   if(warning){
@@ -5969,11 +6101,16 @@ async function enemyAct(s,random=false,switching=false){
   s.enemyTurns=(s.enemyTurns??0)+1;
   if(s.actionFlags) s.actionFlags.enemy=false;
   try{
+    await checkAutomaticEnemyHealingBerry(s);
     await enemyActCore(s,random,switching,warning?.move);
+    if(!s.result&&!s.won&&s.enemy===actingBefore&&actingBefore.left>0&&(actingBefore.actionSerial??0)>serialBefore&&!s.enemyRecoveryUsed){
+      const copies=enemyItemCount(s,'leftovers'),before=actingBefore.left;
+      if(copies&&before<actingBefore.hp&&!actingBefore.healBlocked){healMon(s,actingBefore,'enemy',Math.max(1,Math.floor(actingBefore.hp*copies/20)));const amount=actingBefore.left-before;if(amount>0){const text=musicLabel(actingBefore.name+'恢復 '+amount+' HP。',displayPokemon(actingBefore)+' recovered '+amount+' HP.');s.log.unshift(enemyRecoveryName('leftovers')+' → '+text);await showOpponentItemNotice(s,'leftovers',actingBefore,{text},true);}}
+    }
     if(random&&!s.result){
       const player=s.team[s.active];
       if(player.left&&s.enemy.left){
-        if(activeAbility(player)===22&&activeAbility(s.enemy)!==39&&changeStage(s.enemy,1,-1)) s.log.unshift(s.enemy.name+'因威嚇降低攻擊。');
+        if(activeAbility(player)===22&&activeAbility(s.enemy)!==39&&changeStage(s.enemy,1,-1)){abilityNotice(s,player,22);s.log.unshift(s.enemy.name+'因威嚇降低攻擊。');}
         if(activeAbility(player)===46) await abilityDamage(s,s.enemy,'enemy',.1,'壓迫感');
       }
     }
@@ -5994,10 +6131,60 @@ async function enemyAct(s,random=false,switching=false){
     for(const [id,field] of Object.entries(s.fieldEffects??{})) if(field.until<=s.enemyTurns) delete s.fieldEffects[id];
   }
 }
+function enemyRecoveryName(id){return musicLabel(itemCatalog[id]?.name??id,({'max-revive':'Max Revive',revive:'Revive',potion:'Potion','super-potion':'Super Potion','hyper-potion':'Hyper Potion','max-potion':'Max Potion','full-heal':'Full Heal','sitrus-berry':'Sitrus Berry','oran-berry':'Oran Berry','leppa-berry':'Leppa Berry','cheri-berry':'Cheri Berry','chesto-berry':'Chesto Berry','pecha-berry':'Pecha Berry','rawst-berry':'Rawst Berry','aspear-berry':'Aspear Berry','persim-berry':'Persim Berry','lum-berry':'Lum Berry',leftovers:'Leftovers'})[id]??'Recovery Item');}
+async function showOpponentItemNotice(run,id,target,outcome={},passive=false){
+  if(run!==state||$('battleScreen').hidden)return;
+  const box=document.createElement('div');box.className='opponent-item-notice';box.setAttribute('role','status');
+  const art=document.createElement('div');art.className='opponent-item-art';art.innerHTML=itemArt(id);
+  const content=document.createElement('div'),title=document.createElement('div'),name=document.createElement('strong'),result=document.createElement('p'),action=document.createElement('p');
+  title.className='item-announcer';title.textContent=musicLabel('對手使用道具','OPPONENT USED AN ITEM');
+  name.textContent=enemyRecoveryName(id);
+  result.className='item-result';result.textContent=outcome.text??musicLabel(target.name+'復活，恢復全部 HP。',displayPokemon(target)+' was revived with full HP.');
+  action.className='item-action-note';action.textContent=passive?musicLabel('對手行動後，道具效果發動','Item effect after the opponent’s action'):musicLabel('對手本次行動用於使用道具','Uses the opponent’s action');
+  content.append(title,name,result,action);box.append(art,content);document.querySelector('.desktop').append(box);
+  $('notice').textContent=musicLabel('對手使用'+name.textContent+' → '+result.textContent,'Opponent used '+name.textContent+' → '+result.textContent);
+  playGameSound('00E4');
+  const duration=Math.max(1000,1800/battleSpeed);
+  const animation=reducedMotion.matches?null:box.animate([{opacity:0,translate:'0 -.6cqw'},{opacity:1,translate:'0 0'}],{duration:180,easing:'ease-out'});
+  try{await new Promise(resolve=>setTimeout(resolve,duration));}finally{animation?.cancel();box.remove();}
+}
+function enemyRecoveryIntent(s,acting){
+  const available=id=>enemyItemCount(s,id)>0;
+  const reserve=s.foes.find(mon=>mon!==acting&&mon.left<=0);
+  if(s.trainer&&reserve){const id=['max-revive','revive'].find(available);if(id)return {id,target:reserve};}
+  const cure=['full-heal'].find(id=>available(id)&&usableTarget(id,acting));
+  if(cure)return {id:cure,target:acting};
+  if(acting.left>0&&acting.left*2<acting.hp&&!acting.healBlocked){const id=Object.keys(potionRates).find(available);if(id)return {id,target:acting};}
+  return null;
+}
+async function tryEnemyRecoveryItem(s,acting,player){
+  if(s.result||s.won||s.tutorial||s.enemy!==acting||acting.left<=0||player.left<=0||acting.deferredMove||acting.semiInvulnerable||s.actionFlags?.interruptingPlayerMoves)return false;
+  let intent=enemyRecoveryIntent(s,acting);if(!intent)return false;
+  if(acting.recharge){acting.recharge=false;await moveFailure(s,musicLabel(acting.name+'正在恢復體力，無法使用道具。',displayPokemon(acting)+' must recharge and cannot use an item.'));return true;}
+  if(await checkSleepOrFreeze(s,acting,'enemy',false,false)||await checkActionStatus(s,acting,player,'enemy'))return true;
+  if(s.result||s.won||s.enemy!==acting||acting.left<=0||player.left<=0)return true;
+  intent=enemyRecoveryIntent(s,acting);if(!intent)return false;
+  const {id,target}=intent,before=target.left,wasFainted=before<=0;
+  if(id==='max-revive'||id==='revive'){clearMonStatus(target);target.stages=neutralStages();target.left=id==='max-revive'?target.hp:Math.max(1,Math.floor(target.hp/2));}
+  else if(potionRates[id]||healingBerries[id])target.left=Math.min(target.hp,target.left+Math.max(1,Math.floor(target.hp*(potionRates[id]??healingBerries[id][2]))));
+  else if(id==='full-heal')clearMonStatus(target);
+  else{const statuses=statusBerries[id][1];if(!statuses||statuses.includes('confusion')){target.confusion=0;delete target.confusionUntil;}if(!statuses||statuses.includes(target.status)||target.burned&&statuses.includes('burn'))clearMajorStatus(target);}
+  if(healingBerries[id]||statusBerries[id])eatBattleBerry(s,target,'enemy',id);else consumeEnemyItem(s,id);
+  acting.actionSerial=(acting.actionSerial??0)+1;
+  const restored=target.left-before;
+  const text=wasFainted?musicLabel(target.name+'復活，恢復 '+target.left+' HP。',displayPokemon(target)+' was revived with '+target.left+' HP.'):restored>0?musicLabel(target.name+'恢復 '+restored+' HP。',displayPokemon(target)+' recovered '+restored+' HP.'):musicLabel(target.name+'解除了對應異常。',displayPokemon(target)+' was cured of the matching status.');
+  s.log.unshift(musicLabel('對手使用','Opponent used ')+enemyRecoveryName(id)+' → '+text);
+  s.enemyRecoveryUsed=true;
+  if(s===state){render(false);renderLog();await playBerryAnimations(s);await showOpponentItemNotice(s,id,target,{text});}
+  await checkPerish(s,acting,'enemy');delete player.counterGuard;delete player.tempDefense;
+  return true;
+}
 async function enemyActCore(s,random,switching,prepared){
   if(!random&&!switching) s.counterSpins=0;
   const acting=s.enemy;
   const player=s.team[s.active];
+  if(s.result||s.won||!acting?.left||!player?.left)return;
+  if(!prepared&&await tryEnemyRecoveryItem(s,acting,player))return;
   const telepathy=s.actionFlags?.telepathyEnemy===s.foeIndex&&s.actionFlags.telepathyTarget===s.active?s.actionFlags.telepathy:undefined;
   const forecast=!prepared&&!switching&&(telepathy||(random?foreseenCounter(s):undefined));
   const interrupting=Boolean(s.actionFlags?.interruptingPlayerMoves);
@@ -6076,7 +6263,7 @@ function portrait(p,back=false){
   const sizing=size?' data-sized style="--sprite-pixels:'+size[0]+';--sprite-ratio:'+(size[0]/size[1])+';--sprite-growth:'+growth+';--player-stance:'+stance+'cqw;--ink:':' style="--ink:';
   const crop=back&&(growth>0||sinnohLarge)?' data-crop-feet':'';
   const medium=(growth>0&&growth<.7?' data-medium':'')+(sinnohLarge?' data-sinnoh-large':'');
-  return '<div class="portrait" data-sprite-species="'+(p.displayId||p.id)+'"'+crop+medium+sizing+(p.color||'#514962')+'">'+fallback+'<img data-mon-id="'+p.id+'" src="'+art+'" alt="" onerror="this.hidden=true"></div>';
+  return '<div class="portrait"'+(p.semiInvulnerable?' data-preparation="'+preparationKind(p.semiInvulnerable)+'"':'')+' data-sprite-species="'+(p.displayId||p.id)+'"'+crop+medium+sizing+(p.color||'#514962')+'">'+fallback+'<img data-mon-id="'+p.id+'" src="'+art+'" alt="" onerror="this.hidden=true"></div>';
 }
 const moveEffectLabels={
   immune:['無效','No effect'],strong:['效果絕佳','Super effective'],
@@ -6413,7 +6600,7 @@ function renderLog(){
   const escape=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
   const rows=entries.slice(0,first).reverse().map(message=>{
     const safe=escape(message);
-    const color=message.includes('效果微弱')?'effect-weak':message.includes('效果絕佳')?'effect-strong':message.includes('免疫')?'effect-immune':'';
+    const color=(message.includes('效果微弱')||message.includes('效果不好')||message.includes('not very effective'))?'effect-weak':(message.includes('效果絕佳')||message.includes('super effective'))?'effect-strong':(message.includes('免疫')||message.includes('好像沒有效果')||message.includes('has no effect'))?'effect-immune':'';
     const damage=safe.replace(/(\d+)(?=\s*(?:點)?(?:傷害|HP 傷害))|(?<=損失 |扣除 |扣掉 |失去 )\d+(?=\s*HP)/g,value=>'<span class="damage-value">'+value+'</span>');
     return '<li class="'+color+'" title="'+safe+'">'+damage+'</li>';
   }).join('');
@@ -8186,6 +8373,7 @@ applySettings();
 startKantoMusic();
 function screen(id){
   if(id!=='battleScreen'){
+    globalThis.pokemonAbilityFeedback?.clear();
     $('tutorialHint').hidden=true;
     setLowerPanel(null);
     $('log').hidden=true;
@@ -10129,8 +10317,9 @@ function eatBattleBerry(run,mon,side,berry,owner=side){
   if(owner==='player') consumeItem(run,berry);
   else consumeEnemyItem(run,berry);
   queueBerryAnimation(run,mon,berry);
-  if(activeAbility(mon)===167)healMon(run,mon,side,Math.max(1,Math.floor(mon.hp/3)));
+  if(activeAbility(mon)===167){if(mon.left<mon.hp&&!mon.healBlocked)abilityNotice(run,mon,167);healMon(run,mon,side,Math.max(1,Math.floor(mon.hp/3)));}
   if(activeAbility(mon)===139){
+    abilityNotice(run,mon,139);
     const stock=side==='player'?run.items:(run.enemyItems??=Object.fromEntries(run.enemy.heldItem?[[run.enemy.heldItem,1]]:[]));
     stock['lum-berry']=(stock['lum-berry']??0)+1;
     noteEffect(run,mon,'因收穫得到一個木子果。');
@@ -11231,6 +11420,7 @@ function changeAegislash(mon,blade,run){
   if(mon.id!==681||activeAbility(mon)!==176) return;
   const data=blade?kalosData.alternates['aegislash-blade']:speciesById(681);
   if(!data) return;
+  if(mon.formKey!==(blade?'681-blade':'681'))abilityNotice(run,mon,176);
   mon.formKey=blade?'681-blade':'681';
   mon.base=data.base.slice();
   if(run.team.includes(mon)) setBattleLevel(mon,mon.level,run);
@@ -11294,7 +11484,7 @@ async function animateKalosBoard(run,before,after){
 async function kalosAfterDamage(run,source,target,skill,side,damage){
   if(!damage) return;
   if(activeAbility(target)===301&&target.left&&target.hoopaStage!==run.stage){
-    target.hoopaStage=run.stage;
+    abilityNotice(run,target,301);target.hoopaStage=run.stage;
     const id=pick(gachaLegendary.filter(id=>id!==720));
     const form=battleMon(id,target.level);
     target.transformOriginal={type:target.type.slice(),base:target.base.slice(),moves:target.moves.slice(),stats:target.stats.slice()};
@@ -11305,7 +11495,7 @@ async function kalosAfterDamage(run,source,target,skill,side,damage){
   }
   const ability=activeAbility(source);
   if(ability===170&&hasStealableEnemyItem(run,target)&&side==='player') borrowEnemyItem(run,target);
-  if(activeAbility(target)===183&&kalosContactMoves.has(Number(skill.id))) changeStage(source,5,-1);
+  if(activeAbility(target)===183&&kalosContactMoves.has(Number(skill.id))&&changeStage(source,5,-1))abilityNotice(run,target,183);
 }
 const kalosContactMoves=new Set([1,2,3,4,5,7,8,9,10,11,12,15,17,19,20,21,22,23,24,25,26,27,29,30,31,32,33,34,35,36,37,38,44,64,65,66,67,68,69,70,80,91,98,99,117,122,127,128,130,132,136,141,146,152,154,158,162,163,165,167,168,172,175,179,183,185,200,205,206,209,210,211,216,218,223,224,228,229,231,232,233,238,242,245,249,252,263,264,265,276,279,280,282,283,291,292,299,301,302,305,306,309,310,325,327,332,337,340,342,343,344,348,358,359,360,365,369,370,371,372,376,378,386,387,389,394,395,398,400,401,404,407,409,413,416,418,419,421,422,423,424,425,428,431,438,440,442,447,450,452,453,457,458,462,467,480,484,488,490,492,498,507,509,512,514,525,528,529,530,531,532,533,534,535,537,541,543,544,550,557,560,565,566,577,583,609,610,611,612,620]);
 function kalosDamageFactor(run,source,target,skill,side){
@@ -11335,7 +11525,7 @@ function kalosPreserveItem(run,side){
   run.symbiosisUsed??={};
   if(run.symbiosisUsed[side]) return false;
   run.symbiosisUsed[side]=true;
-  noteEffect(run,mon,'的共生保留了本關第一件道具。');
+  abilityNotice(run,mon,180);noteEffect(run,mon,'的共生保留了本關第一件道具。');
   return true;
 }
 
@@ -11603,11 +11793,17 @@ installCompleteMoveLearning();
 
 for(const [id,tm]of Object.entries(technicalMachines)){const move=skillDetails[tm.name];if(!move||!itemCatalog[id])continue;tm.power=move.power;itemCatalog[id].description='讓相容的寶可夢學會'+tm.name+'。';}
 for(const id of [163,498])Object.assign(moveRules[emeraldData.ms[id].name],{min:2,explicitLines:true});
+for(const skill of Object.values(skillDetails))if(skill.effect==='SEMI_INVULNERABLE'){
+  const rule=moveRules[skill.name];if(!rule)continue;if(['guard','protectCounter'].includes(rule.effect))delete rule.effect;
+  const description=musicLabel('暫時避開一般攻擊，下次拉霸結算時造成傷害。返回攻擊後，同次及下次拉霸無法再次進入躲藏狀態。','Temporarily avoids ordinary attacks, then deals damage on the next spin. After returning, cannot hide again during that spin or the next spin.');
+  rule.description=description;skill.description=description;
+}
 for(const [name,rule]of Object.entries(moveRules))if(isCounterProtectionMove(name)){const description=(rule.description??moveEffectText(name))+musicLabel(' 防護類招式不可在同次或連續兩次拉霸中成功施放。',' Protection moves cannot succeed twice in the same or consecutive spins.');rule.description=description;skillDetails[name].description=description;}
 state=fresh();
 render();
 showDex();
 
 </script>
+<script src="./assets/ability-notices.js?v=20261127-ability-bars-1"></script>
 <script defer src="./assets/player-account.js?v=20261127-future-regions"></script>
 </html>

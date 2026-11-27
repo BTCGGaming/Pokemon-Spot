@@ -72,6 +72,14 @@
     if (!entry || !arena?.offsetWidth || !source || !target) return false;
     const { animation, sheet, backgrounds } = entry;
     if (requireGraphic && !sheet) return false;
+    // Some authored files only contain tone/color events unsupported by this renderer.
+    // Do not report success and swallow the visible fallback for those animations.
+    const drawable = sheet && animation.frames.some(frames => frames.some(frame => frame.target === 2 && frame.visible !== false && (frame.opacity ?? 255) > 0));
+    const background = [...backgrounds.values()].some(Boolean);
+    const motion = !reduced && animation.frames.some(frames => frames.some(frame => frame.target !== 2 && !frame.locked &&
+      (frame.x !== (frame.target === 0 ? 0 : 128) || frame.y !== (frame.target === 0 ? 0 : -64) ||
+      (frame.zoomX ?? 100) !== 100 || (frame.zoomY ?? 100) !== 100 || (frame.opacity ?? 255) !== 255 || frame.visible === false)));
+    if (!drawable && !background && !motion) return false;
     const events = animation.frameTimedEvents ?? {};
     if (!Object.values(events).flat().some(event => event.eventType === 'AnimTimedSoundEvent' && (assets.sounds[event.resourceName] || !event.resourceName && cry))) fallbackSound?.();
     const field = arena.getBoundingClientRect();
@@ -108,6 +116,7 @@
     const reverseGraphic = to[0] < from[0];
     const saved = [...new Set(sprites.filter(Boolean))].map(sprite => [sprite, sprite.style.transform, sprite.style.opacity, sprite.style.filter]);
     let bg = null;
+    let painted = false;
     let lastFrame = -1;
     const ms = (reduced ? 20 : 50) / speed;
 
@@ -129,6 +138,7 @@
         const ctx = context(rear);
         ctx.globalAlpha = bg.opacity;
         ctx.drawImage(bg.image, 0, 0, 320, 144);
+        painted = true;
         ctx.globalAlpha = 1;
       }
       for (const [sprite, transform, opacity, filter] of saved) {
@@ -148,6 +158,7 @@
           const anchor = frame.target === 0 ? from : to;
           sprite.style.transform = 'translate(' + (x - anchor[0]) * field.width / 320 + 'px,' + (y - anchor[1]) * field.height / 144 + 'px) rotate(' + -(frame.angle ?? 0) + 'deg) scale(' + sx + ',' + sy + ')';
           sprite.style.opacity = frame.visible === false ? '0' : String(opacity);
+          if (x !== anchor[0] || y !== anchor[1] || sx !== 1 || sy !== 1 || opacity !== 1 || frame.visible === false) painted = true;
           continue;
         }
         if (!sheet || frame.visible === false) continue;
@@ -159,6 +170,7 @@
           ? rear : frame.priority === 2 || frame.priority === 3 && focus && !onPlayer ? between : overlay;
         const ctx = context(layer);
         const cell = frame.graphicFrame ?? 0;
+        if (cell < 0 || Math.floor(cell / columns) * 96 + 96 > sheet.height) continue;
         ctx.save();
         ctx.globalAlpha = opacity;
         ctx.globalCompositeOperation = frame.blendType === 1 ? 'lighter' : frame.blendType === 2 ? 'difference' : 'source-over';
@@ -167,6 +179,7 @@
         ctx.rotate(-(frame.angle ?? 0) * Math.PI / 180);
         ctx.scale(sx, sy);
         ctx.drawImage(sheet, cell % columns * 96, Math.floor(cell / columns) * 96, 96, 96, -48, -48, 96, 96);
+        painted = true;
         ctx.restore();
       }
     }
@@ -217,7 +230,7 @@
         sprite.style.filter = filter;
       }
     }
-    return completed;
+    return completed && painted;
   }
 
   globalThis.pokerogueArt = {

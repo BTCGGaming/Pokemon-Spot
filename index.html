@@ -1814,7 +1814,7 @@ body :is(img,svg,canvas){-webkit-user-drag:none}
 <script src="./assets/emerald-sprites.js"></script>
 <script src="./assets/pokerogue/manifest.js?v=kalos-mega-1"></script>
 <script src="./assets/pokerogue-player.js?v=visual-coverage-20261127"></script>
-<script src="./assets/sprite-recovery.js?v=20261125-1"></script>
+<script src="./assets/sprite-recovery.js?v=20261127-media-1"></script>
 <script type="text/plain" id="slotGameSource">
 'use strict';
 const typeColors={毒:'#d69afb'};
@@ -2590,6 +2590,7 @@ function rivalInventory(stage,starter,typeItem=rivalTypeItems[starter]){
   return addEnemyBerries(items,{25:1,55:3,85:5,100:10}[stage]??0);
 }
 function addEnemyBerries(items,count){
+  for(const id of ['revive','max-revive','max-potion'])if(items[id]>1)items[id]=1;
   const berryPool=[...Object.keys(statusBerries),...Object.keys(healingBerries),...Object.keys(resistanceBerries)];
   for(let i=0;i<count;i++){
     const id=pick(berryPool);
@@ -3325,7 +3326,7 @@ function setExperienceMeter(percent,animate=false){
   const meter=$('playerExp');
   meter.classList.toggle('filling',animate);
   meter.style.setProperty('--exp-duration',(reducedMotion.matches?120:540)/battleSpeed+'ms');
-  meter.style.setProperty('--exp',percent+'%');
+  if(meter.style.getPropertyValue('--exp')!==percent+'%')meter.style.setProperty('--exp',percent+'%');
   meter.setAttribute('aria-valuenow',Math.floor(percent));
 }
 async function showLevelStats(p,previous){
@@ -3463,10 +3464,17 @@ function ballParticles(ball,secured=false){
     return '<img class="ball-particle'+(secured?' capture-star':'')+'" style="--px:'+x+'cqw;--py:'+y+'cqw;--pd:'+delay+'s" alt="" src="'+src+'">';
   }).join('');
 }
+let trainerIntroGeometry=null;
+function prepareTrainerGeometry(run){
+  const field=document.querySelector('.desktop').getBoundingClientRect(),targets={};
+  for(const side of ['player','enemy']){const portrait=$(side).querySelector('.portrait');targets[side]=(portrait.querySelector('img[data-mon-id]:not([hidden])')??portrait).getBoundingClientRect();}
+  trainerIntroGeometry={run,field,targets,width:innerWidth,height:innerHeight};
+}
 function placeBall(ball,side,capture=false){
-  const field=document.querySelector('.desktop').getBoundingClientRect();
+  const cached=!capture&&trainerIntroGeometry?.run===state&&trainerIntroGeometry.width===innerWidth&&trainerIntroGeometry.height===innerHeight?trainerIntroGeometry:null;
+  const field=cached?.field??document.querySelector('.desktop').getBoundingClientRect();
   const portrait=$(side).querySelector('.portrait');
-  const target=(portrait.querySelector('img[data-mon-id]:not([hidden])')??portrait).getBoundingClientRect();
+  const target=cached?.targets[side]??(portrait.querySelector('img[data-mon-id]:not([hidden])')??portrait).getBoundingClientRect();
   const thrower=capture?$('player').querySelector('.portrait').getBoundingClientRect():target;
   const x=value=>(value-field.left)/field.width*100+'%';
   const y=value=>(value-field.top)/field.height*100+'%';
@@ -3844,7 +3852,17 @@ function consumeEnemyItem(run,id){
     run.items[id]--;
   }
 }
+const limitedEnemyRecoveryItems=['revive','max-revive','max-potion'];
+function capEnemyRecoveryItems(run){
+  if(!run.trainer&&!run.kind)return;
+  for(const id of limitedEnemyRecoveryItems){
+    if(run.enemyItems?.[id]>1)run.enemyItems[id]=1;
+    const own=run.enemyItems?.[id]??Number(run.enemy?.heldItem===id);
+    if(run.enemyStolenItems?.[id]>Math.max(0,1-own))run.enemyStolenItems[id]=Math.max(0,1-own);
+  }
+}
 function enemyItemCount(run,id){
+  capEnemyRecoveryItems(run);
   if(itemsSuppressed(run,id)) return 0;
   return id&&!berriesSuppressed(run,id,'enemy')?(run.enemyItems?.[id]??Number(run.enemy?.heldItem===id))+(run.enemyStolenItems?.[id]??0):0;
 }
@@ -4247,7 +4265,7 @@ async function applyCustomMove(s,source,target,skill,side,context){
         if(!reserves.length||blocksSwitch(target,source)) return false;
         await sendEnemy(s,pick(reserves),true);return true;
       }
-      return false;
+      return forcePlayerSwitch(s,source,skill.name);
     case 'pivot':case 'baton':case 'help':{
       if(side==='enemy'&&s.actionFlags?.interruptingPlayerMoves) return Boolean(inflicted);
       const team=side==='player'?s.team:s.foes;
@@ -5317,6 +5335,19 @@ function attackMoveTypes(run,mon,skill,custom){
   const weatherType=skill.effect==='WEATHER_BALL'?{sun:'火',rain:'水',sand:'岩石',hail:'冰'}[run.weather?.kind]:null;
   return [weatherType??skill.type];
 }
+async function forcePlayerSwitch(run,source,move){
+  const previous=run.team[run.active],reserves=run.team.flatMap((mon,index)=>index!==run.active&&mon.left>0?[index]:[]);
+  if(!reserves.length)return moveFailure(run,musicLabel(move+'失敗了：沒有可替換的隊員。',displayMove(move)+' failed: there is no available replacement.'));
+  const next=pick(reserves),portrait=$('player').querySelector('.portrait'),ball=$('playerSendBall');
+  if(run===state){prepareBall(ball,'poke');placeBall(ball,'player');ball.className='trainer-ball recalling';ball.hidden=false;playGameSound('000F');portrait?.classList.add('absorbed');try{await wait(reducedMotion.matches?250:650);}finally{portrait?.classList.remove('absorbed');ball.hidden=true;ball.replaceChildren();ball.className='trainer-ball';}}
+  transferAbilityDebuffs(previous,run.team[next],source);undoTransform(previous);leaveAbility(previous);
+  previous.stages=neutralStages();previous.seeded=false;previous.confusion=0;previous.protected=false;previous.enduring=false;previous.counterGuard=false;delete previous.tempDefense;
+  run.active=next;run.playerSending=true;
+  run.log.unshift(musicLabel(previous.name+'被'+move+'強制換下場，'+run.team[next].name+'上場！',displayPokemon(previous)+' was forced out by '+displayMove(move)+'! '+displayPokemon(run.team[next])+' entered!'));
+  if(run===state){render(false);await animatePlayerSendOut(run);}else activateAbility(run,run.team[next],run.enemy);
+  spikeDamage(run,'player',run.team[next]);await applySpillDamage(run,'player');if(!run.team[next].left)await replaceFainted(run);
+  return true;
+}
 function enemyMoveCanAffect(run,mon,target,name){
   const skill=skillDetails[name],custom=moveRules[name]?.effect;
   if(!skill||moveRules[name]?.shapes==='P') return false;
@@ -5329,6 +5360,13 @@ function enemyMoveCanAffect(run,mon,target,name){
   if(skill.power||custom==='fling'){
     return attackMoveTypes(run,mon,skill,custom).some(type=>!moveTypeImpact(type,target,mon,run,custom).immune);
   }
+  if(custom==='phaze'&&!run.team.some(member=>member!==target&&member.left>0))return false;
+  if(custom==='identify'&&(target.identified||!(target.stages[7]>0||target.type.includes('幽靈')&&mon.moves.some(move=>['普通','格鬥'].includes(skillDetails[move]?.type)))))return false;
+  if(custom==='healPulse'&&target.left>=target.hp)return false;
+  if(['RESTORE_HP','SOFTBOILED','SYNTHESIS','MOONLIGHT','REST'].includes(skill.effect)&&(mon.left>=mon.hp||mon.healBlocked))return false;
+  if(isCounterProtectionMove(name)){const last=mon.counterProtectionUse;if(last?.stage===run.stage&&run.spins>=last.spin&&run.spins-last.spin<=1)return false;}
+  if(skill.effect==='SEMI_INVULNERABLE'){const last=mon.semiReturnUse;if(mon.deferredMove||last?.stage===run.stage&&run.spins>=last.spin&&run.spins-last.spin<=1)return false;}
+  if(skill.stat!==undefined&&skill.delta){const recipient=skill.self?mon:target;if(skill.delta>0&&recipient.stages[skill.stat]>=6||skill.delta<0&&recipient.stages[skill.stat]<=-6)return false;}
   if(skill.effect==='PARALYZE'&&skill.type==='電'&&target.type.includes('地面')) return false;
   const status=directStatuses[skill.effect];
   return !status||(!target.status&&!target.burned&&!abilityImmuneToStatus(target,status)&&
@@ -5338,6 +5376,55 @@ function enemyMoveCanAffect(run,mon,target,name){
 function enemyUsableMoves(run,mon=run.enemy,target=run.team[run.active]){
   return mon.moves.filter(name=>enemyMoveCanAffect(run,mon,target,name));
 }
+// Selection follows PokéRogue's ranked SMART / SMART_RANDOM procedure.
+// Benefit scores are adapted to this game's counter/slot rules; no scoring function rolls damage or mutates combat state.
+function enemyPredictedDamage(run,mon,target,name,roll=92){
+  const original=skillDetails[name],custom=moveRules[name]?.effect;if(!original?.power&&custom!=='fling')return 0;
+  const type=kalosMoveType(run,mon,original,target),impact=moveTypeImpact(type,target,mon,run,custom);if(impact.immune)return 0;
+  let skill={...original,type,effectiveness:impact.effectiveness,power:unovaMovePower(run,mon,target,original,'enemy',custom)};
+  if(['COUNTER','MIRROR_COAT'].includes(skill.effect))return (mon.lastMoveDamage?.damage??0)*2;
+  if(skill.effect==='DRAGON_RAGE')return 40;if(skill.effect==='SONICBOOM')return 20;if(skill.effect==='LEVEL_DAMAGE')return mon.level;
+  if(skill.effect==='SUPER_FANG')return Math.max(1,Math.floor(target.left/2));if(skill.effect==='OHKO')return target.left;
+  if(skill.effect==='GEN5_FINAL_GAMBIT')return mon.left;
+  if(custom==='fling')skill.power=5*itemKinds(run,'enemy').length;
+  if(skill.effect==='ERUPTION')skill.power=Math.max(1,Math.floor(150*mon.left/mon.hp));
+  if(custom==='endeavor')return Math.max(0,target.left-mon.left);
+  const hits=['twoHits','petal'].includes(custom)||['DOUBLE_HIT','TWINEEDLE'].includes(skill.effect)?2:custom==='manyHits'||skill.effect==='MULTI_HIT'?3:1;
+  let damage=damageAt(mon,target,skill,roll)*hits;
+  const a=activeAbility(mon),d=impact.defenseAbility,physical=moveDamageCategory(skill)==='物理';
+  if(physical&&[37,74].includes(a))damage*=2;if(a===101&&skill.power<=60)damage*=1.5;
+  if(d===47&&['火','冰'].includes(type))damage*=.5;if([111,116].includes(d)&&impact.effectiveness>1)damage*=.75;
+  if(d===136&&target.left===target.hp||d===169&&physical)damage*=.5;if(d===5&&target.left===target.hp)damage*=.25;
+  if(d===132)damage*=.85;if(d===135&&type==='鋼')damage*=.75;
+  if(mon.deferredMove||['RAZOR_WIND','SOLAR_BEAM','SEMI_INVULNERABLE','FUTURE_SIGHT'].includes(skill.effect))damage*=.55;
+  return Math.max(0,Math.floor(damage));
+}
+function enemyMoveScore(run,mon,target,name){
+  if(!enemyMoveCanAffect(run,mon,target,name))return -20;
+  const skill=skillDetails[name],custom=moveRules[name]?.effect,damage=enemyPredictedDamage(run,mon,target,name);
+  const accuracy=(skill.accuracy||100)/100;
+  if(damage>0){
+    const low=enemyPredictedDamage(run,mon,target,name,85),high=enemyPredictedDamage(run,mon,target,name,100);
+    const ko=low>=target.left?10000:high>=target.left?1000:0;
+    return ko*accuracy+20+Math.min(300,damage/Math.max(1,target.left)*100)*accuracy;
+  }
+  let score=2;
+  if(custom==='phaze'){const buffs=target.stages.slice(1).reduce((sum,x)=>sum+Math.max(0,x),0);score=buffs>=3?24:3;}
+  else if(['RESTORE_HP','SOFTBOILED','SYNTHESIS','MOONLIGHT','REST'].includes(skill.effect))score=mon.left*3<mon.hp?65:mon.left*2<mon.hp?24:2;
+  else if(directStatuses[skill.effect])score=12;
+  else if(custom==='identify')score=target.type.includes('幽靈')&&mon.moves.some(move=>['普通','格鬥'].includes(skillDetails[move]?.type))?15:1;
+  else if(skill.stat!==undefined||stageEffects[skill.effect])score=9;
+  if(mon.lastMove===name)score*=.25;
+  return score;
+}
+function rankEnemyMoves(run,moves,mon=run.enemy,target=run.team[run.active]){return moves.map((name,index)=>({name,index,score:enemyMoveScore(run,mon,target,name)})).filter(entry=>entry.score>0).sort((a,b)=>b.score-a.score||a.index-b.index);}
+function chooseEnemyMove(run,moves,mon=run.enemy,target=run.team[run.active]){
+  const ranked=rankEnemyMoves(run,moves,mon,target);if(!ranked.length)return moves[0];
+  const smart=Boolean(run.trainer||run.kind);
+  let index=0;while(index<ranked.length-1){const current=ranked[index].score,next=ranked[index+1].score;const advance=smart?Math.sign(current)===Math.sign(next)&&Math.random()*100<Math.round(next/current*50):Math.random()<3/8;if(!advance)break;index++;}
+  return ranked[index].name;
+}
+function enemyMatchupValue(run,mon,player){const offense=matchupPressure(run,mon,player),danger=matchupPressure(run,player,mon);return (offense+.1)/(danger+.1)*(.5+.5*mon.left/Math.max(1,mon.hp));}
 function matchupPressure(run,attacker,defender){
   let pressure=0;
   for(const name of attacker.moves){
@@ -5362,6 +5449,7 @@ function bestEnemyReserve(s,defensive=false){
     const danger=matchupPressure(s,player,mon);
     const offense=matchupPressure(s,mon,player);
     if(defensive&&(!offense||danger>=incoming&&outgoing>0)) return;
+    if(defensive){const boss=/道館|天王|冠軍|老大|首領/.test(s.trainer?.[0]??'');if(enemyMatchupValue(s,mon,player)<enemyMatchupValue(s,s.enemy,player)*(boss?2:3))return;}
     const value=offense-danger;
     if(value>score){best=i;score=value;}
   });
@@ -5704,7 +5792,7 @@ async function resolveSpinCore(s,board,settledTracks=null){
     const pool=enemyUsableMoves(s);
     if(pool.length){
       const damaging=pool.filter(name=>skillDetails[name].power>0);
-      s.actionFlags.telepathy=s.enemyWarning?.move??pick(s.kind&&damaging.length?damaging:pool);
+      s.actionFlags.telepathy=s.enemyWarning?.move??chooseEnemyMove(s,pool,s.enemy,p);
       s.actionFlags.telepathyTarget=s.active;
       s.actionFlags.telepathyEnemy=s.foeIndex;
       paintCounterForecast(s);
@@ -6053,7 +6141,7 @@ function foreseenCounter(run){
   const prior=counterForecasts.get(run);
   if(prior?.enemy===enemy&&pool.includes(prior.name)) return prior.name;
   if(pool.length){
-    const name=pick(pool);
+    const name=chooseEnemyMove(run,pool,enemy,player);
     counterForecasts.set(run,{enemy,name});
     abilityNotice(run,player,209);
     return name;
@@ -6224,9 +6312,9 @@ async function enemyActCore(s,random,switching,prepared){
       delete player.counterGuard;delete player.tempDefense;return;
     }
   }
-  if(random&&(s.kind||acting.follow)){const attacks=moves.filter(name=>skillDetails[name].power>0);if(attacks.length)moves=attacks;}
+  if(random&&acting.follow){const attacks=moves.filter(name=>skillDetails[name].power>0);if(attacks.length)moves=attacks;}
   acting.follow=false;
-  let actions=random||switching?[pick(moves)]:moves;
+  let actions=random||switching?[chooseEnemyMove(s,moves,acting,player)]:rankEnemyMoves(s,moves,acting,player).map(entry=>entry.name);
   if(acting.encore){
     acting.encore=false;
     if(moves.length>1){const repeated=pick(moves),omitted=pick(moves.filter(name=>name!==repeated));actions=random?[repeated,repeated]:[...moves.filter(name=>name!==omitted),repeated];}
@@ -6560,7 +6648,7 @@ function paintBattleLevel(side,mon){
 }
 function paintBattleName(side,mon){
   const name=$(side+'BattleName');
-  name.querySelector('.battle-name-text').textContent=displayPokemon(mon);
+  const text=name.querySelector('.battle-name-text'),label=displayPokemon(mon);if(text.textContent!==label)text.textContent=label;
   const types=name.querySelector('.battle-name-types');
   updateMarkup(types,mon.type.map(typeIcon).join(''));
   types.setAttribute('aria-label',mon.type.join('／'));
@@ -6579,12 +6667,12 @@ function updateHp(id,p){
   meter.setAttribute('aria-valuemax',p.hp);
   meter.setAttribute('aria-valuenow',p.left);
   const fraction=Math.max(0,Math.min(1,p.left/p.hp));
-  meter.style.setProperty('--hp',fraction*100+'%');
+  const hpValue=fraction*100+'%';if(meter.style.getPropertyValue('--hp')!==hpValue)meter.style.setProperty('--hp',hpValue);
   const fill=meter.firstElementChild;
-  if(fill) fill.style.width=fraction*48/66*100+'%';
+  if(fill){const width=fraction*48/66*100+'%';if(fill.style.width!==width)fill.style.width=width;}
   meter.dataset.health=healthBand(p);
   if(id==='playerHp') paintBattleNumber('playerHpText',p.left+' / '+p.hp);
-  else {paintBossShields(meter,p);$('enemyHpText').textContent=p.left+' / '+p.hp;}
+  else {paintBossShields(meter,p);const text=$('enemyHpText'),value=p.left+' / '+p.hp;if(text.textContent!==value)text.textContent=value;}
 }
 let renderedLog;
 let renderedLogCount=0;
@@ -7534,6 +7622,7 @@ function prepareSpecialStageMusic(run){
   const trainer=regionalTrainer(stage,run.rivalStarter,run.adventure);
   if(trainer){
     const upcoming={...run,stage,trainer,kind:trainer[0]};
+    globalThis.prepareBattleMedia?.({...upcoming,enemy:{...speciesById(trainer[4][0]),left:1}});
     prepareBattleTrack(resolveMusicTrack('battleScreen',upcoming,true));
     prepareBattleTrack(resolveMusicTrack('battleScreen',upcoming));
   }else if(stage===90){
@@ -7727,15 +7816,29 @@ function playPokemonCry(mon,fainted=false){
   }
   return playSpeciesCry(mon,.161,fainted?.76:1);
 }
+const effectAudioCache=new Map();
+function readyEffectAudio(clip){
+  let voices=effectAudioCache.get(clip);if(!voices){voices=[];effectAudioCache.set(clip,voices);}
+  let audio=voices.find(a=>(a.paused||a.ended)&&a.readyState>=2)??voices.find(a=>a.paused||a.ended);
+  if(!audio){if(voices.length>=4){audio=voices.shift();audio.pause();voices.push(audio);}else{audio=new Audio(clip);audio.preload='auto';voices.push(audio);}}
+  if(audio.currentTime)audio.currentTime=0;
+  if(effectAudioCache.size>48){const old=[...effectAudioCache].find(([key,list])=>key!==clip&&list.every(a=>a.paused||a.ended));if(old){effectAudioCache.delete(old[0]);}}
+  return audio;
+}
+function warmBattleSounds(run){
+  if(typeof Audio==='undefined'||!settings.effectsVolume)return;
+  for(const cue of ['003D','000F','stat-up','stat-down','move-miss','move-immune']){const clip=cue==='stat-up'?'./assets/pokerogue/audio/se/stat_up.wav':cue==='stat-down'?'./assets/pokerogue/audio/se/stat_down.wav':gameSounds[cue];if(clip)readyEffectAudio(clip);}
+  for(const mon of [run.team?.[run.active],run.enemy].filter(Boolean)){const id=mon.displayId??mon.id,clip=id>=387&&id<=721?globalThis.pokerogueArt?.url('audio/cry/'+id+'.m4a'):pokemonCries[id];if(clip)readyEffectAudio(clip);}
+}
 function playSpeciesCry(mon,volume,rate=1){
   if(typeof Audio==='undefined'||settings.effectsVolume===0||!mon?.id) return;
   const id=mon.displayId??mon.id;
   const clip=id>=387&&id<=721?globalThis.pokerogueArt?.url('audio/cry/'+id+'.m4a'):pokemonCries[id];
   if(!clip) return;
-  const audio=new Audio(clip);
+  const audio=readyEffectAudio(clip);
   audio.volume=volume*settings.effectsVolume/100;
   audio.playbackRate=rate;
-  if(rate!==1) audio.preservesPitch=false;
+  audio.preservesPitch=rate===1;
   audio.play().catch(()=>{});
   return audio;
 }
@@ -7753,7 +7856,7 @@ function playGameSound(cue){
   if(!clip) return;
   const pool=hitSoundPools.get(cue);
   const ready=pool?.find(audio=>audio.paused||audio.ended);
-  const audio=ready??new Audio(clip);
+  const audio=ready??readyEffectAudio(clip);
   if(ready&&audio.currentTime) audio.currentTime=0;
   if(pool&&!ready) pool.push(audio);
   audio.volume=(pool?.50:cue==='caught'?.14:cue.startsWith('stat-')?.26:.22)*settings.effectsVolume/100;
@@ -9403,14 +9506,12 @@ async function slideTrainersIn(...trainers){
     trainer.classList.remove('arriving','retreat');
     trainer.hidden=true;
   }
-  await Promise.all(trainers.map(trainer=>trainer.decode?.().catch(()=>{})));
+  let decodeTimer;await Promise.race([Promise.all(trainers.map(trainer=>trainer.decode?.().catch(()=>{}))),new Promise(resolve=>{decodeTimer=setTimeout(resolve,700);})]);clearTimeout(decodeTimer);
   for(const trainer of trainers){
     trainer.classList.add('arriving');
     trainer.hidden=false;
   }
-  const animations=trainers.flatMap(trainer=>trainer.getAnimations?.()??[]);
-  if(animations.length) await Promise.allSettled(animations.map(animation=>animation.finished));
-  else await wait(reducedMotion.matches?220:580);
+  await wait(reducedMotion.matches?220:580);
   for(const trainer of trainers) trainer.classList.remove('arriving');
 }
 async function animateTrainerOpening(run){
@@ -9517,6 +9618,7 @@ async function openFormalTrainerIntro(run){
   const player=$('redOnField'),enemy=$('trainerOnField');
   const advance=$('trainerIntroAdvance');
   const [,name,art,line]=run.trainer;
+  prepareTrainerGeometry(run);
   const playerFrames=playerTrainerFrames();
   player.src=playerFrames[0];
   enemy.src=trainerSprite(art);
@@ -9536,7 +9638,7 @@ async function openFormalTrainerIntro(run){
     await animatePlayerSendOut(run,true);
     await sparkleShiny('player',run.team[run.active]);
   }finally{
-    advance.hidden=true;advance.onclick=null;
+    advance.hidden=true;advance.onclick=null;trainerIntroGeometry=null;
     for(const trainer of [player,enemy]){
       trainer.hidden=true;
       trainer.classList.remove('arriving','retreat');
@@ -9616,6 +9718,7 @@ async function animateWildEntrance(run){
   await sparkleShiny('enemy',run.enemy);
 }
 async function openBattleStage(entering=false,playerEnters=entering){
+  globalThis.prepareBattleMedia?.(state);warmBattleSounds(state);
   prepareHitSounds();
   for(const [animation] of Object.values(statusFeedback)) globalThis.pokerogueArt?.preload('common-'+animation);
   prepareSpecialStageMusic(state);
@@ -9649,9 +9752,9 @@ async function openBattleStage(entering=false,playerEnters=entering){
     return;
   }
   rolling=true;
-  render();
   const run=state;
-  if(run.trainer){run.playerSending=true;render(false);}
+  if(run.trainer)run.playerSending=true;
+  render();
   if(run.trainer&&(!run.tutorial||run.stage===3)){
     try{await openFormalTrainerIntro(run);}
     finally{rolling=false;render(false);}
@@ -10796,6 +10899,7 @@ function migrateRun(run){
   if(!Array.isArray(run.team)||run.team.some(mon=>!speciesById(mon.id)))throw new RangeError('This save contains an unimplemented Pokémon.');
   if(!run.evolutionItemRules){if(run.items?.['up-grade']){run.items['memory-mushroom']=(run.items['memory-mushroom']??0)+run.items['up-grade'];delete run.items['up-grade'];}run.evolutionItemRules=1;}
   delete run.megaInProgress;
+  capEnemyRecoveryItems(run);
   run.items??={};run.used??={};
   run.log??=[];
   run.matches??=[];
@@ -11804,6 +11908,7 @@ render();
 showDex();
 
 </script>
-<script src="./assets/ability-notices.js?v=20261127-ability-bars-1"></script>
+<script src="./assets/reliable-media.js?v=20261127-media-1"></script>
+<script src="./assets/ability-notices.js?v=20261127-ability-bars-2"></script>
 <script defer src="./assets/player-account.js?v=20261127-future-regions"></script>
 </html>

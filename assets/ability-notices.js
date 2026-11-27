@@ -68,7 +68,7 @@
         const speed = Math.max(1, Math.min(3, battleSpeed));
         const direction = side === 'enemy' ? 110 : -110;
         const motion = reducedMotion.matches ? null : element.animate([{ translate: direction + '% 0' }, { translate: '0 0' }], { duration: 500 / speed, easing: 'ease-out', fill: 'both' });
-        await delay(500 / speed + Math.max(650, 1000 / speed), lane.controller.signal);
+        await delay(500 / speed + Math.max(650, 1000 / speed) + 1000, lane.controller.signal);
         motion?.cancel();
         if (!lane.controller.signal.aborted && !reducedMotion.matches) {
           const exit = element.animate([{ translate: '0 0' }, { translate: direction + '% 0' }], { duration: 200 / speed, easing: 'ease-in', fill: 'both' });

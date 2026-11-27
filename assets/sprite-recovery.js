@@ -15,7 +15,7 @@
   if(!img.isConnected)return;
   state.expected=src;img.removeAttribute('onerror');img.hidden=false;img.src=src;
  }
- document.addEventListener('error',event=>{
+ function recover(event){
   const img=event.target;if(!(img instanceof HTMLImageElement))return;
   const art=artPath(img);let state=states.get(img);
   if(!art&&!(state&&img.src===state.expected))return;
@@ -30,8 +30,12 @@
   }
   const fallback=!state.embedded&&embedded(state.path);
   if(fallback){state.embedded=true;img.dataset.spriteFallback='true';assign(img,state,fallback);return;}
+  if(!state.frontTried&&state.path.includes('/back/')){state.frontTried=true;const front=new URL(state.original);front.pathname=front.pathname.replace('/pokemon/back/','/pokemon/');assign(img,state,front.href);return;}
   delete img.dataset.spriteRecovering;img.dataset.spriteUnavailable='true';
- },true);
+  const label=img.parentElement?.querySelector('.mon-fallback');if(label)label.textContent=typeof musicLabel==='function'?musicLabel('圖片暫時無法載入','Image temporarily unavailable'):'Image unavailable';
+ }
+ document.addEventListener('error',recover,true);
+ globalThis.recoverPokemonImage=img=>recover({target:img,stopImmediatePropagation(){}});
  document.addEventListener('load',event=>{
   const img=event.target;if(!(img instanceof HTMLImageElement))return;
   const state=states.get(img);if(!state||img.src!==state.expected)return;

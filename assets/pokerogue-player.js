@@ -6,6 +6,25 @@
   const graphics = new Set(assets.graphics);
   const requests = new Map();
   const pictures = new Map();
+  // Concurrent effects must share the pre-animation style, not capture each other's frames.
+  const spriteStyles = new WeakMap();
+  function retainSpriteStyle(sprite) {
+    let state = spriteStyles.get(sprite);
+    if (!state) {
+      state = { count: 0, transform: sprite.style.transform, opacity: sprite.style.opacity, filter: sprite.style.filter };
+      spriteStyles.set(sprite, state);
+    }
+    state.count++;
+    return [sprite, state.transform, state.opacity, state.filter];
+  }
+  function releaseSpriteStyle(sprite) {
+    const state = spriteStyles.get(sprite);
+    if (!state || --state.count > 0) return;
+    sprite.style.transform = state.transform;
+    sprite.style.opacity = state.opacity;
+    sprite.style.filter = state.filter;
+    spriteStyles.delete(sprite);
+  }
   const animationData = globalThis.pokerogueAnimationData = {};
 
   function loadAnimation(id) {
@@ -114,7 +133,7 @@
     }
     const sprites = [frameUser.querySelector('img'), frameTarget.querySelector('img')];
     const reverseGraphic = to[0] < from[0];
-    const saved = [...new Set(sprites.filter(Boolean))].map(sprite => [sprite, sprite.style.transform, sprite.style.opacity, sprite.style.filter]);
+    const saved = [...new Set(sprites.filter(Boolean))].map(retainSpriteStyle);
     let bg = null;
     let painted = false;
     let lastFrame = -1;
@@ -224,11 +243,7 @@
       clearTimeout(deadline);
       cancelAnimationFrame(frameRequest);
       for (const ctx of layers.values()) ctx.canvas.remove();
-      for (const [sprite, transform, opacity, filter] of saved) {
-        sprite.style.transform = transform;
-        sprite.style.opacity = opacity;
-        sprite.style.filter = filter;
-      }
+      for (const [sprite] of saved) releaseSpriteStyle(sprite);
     }
     return completed && painted;
   }

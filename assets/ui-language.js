@@ -6,6 +6,10 @@
   const cjk=/[\u3400-\u9fff]/;
   const escape=s=>s.replace(/[.*+?^$()|[\]\\]/g,'\\$&');
   Object.assign(dictionary,{
+    '神奇糖果':'Rare Candy',
+    '將隨機 5 個屬性圖案轉換為萬能屬性。':'Convert 5 random type symbols into Wild symbols.',
+    '全隊立即升 1 級。':'Your whole party immediately gains 1 level.',
+    '每件使我方可拉霸次數減少 1 次；每通過 5 的倍數關卡，每件讓全隊額外升 1 級。':'Each copy reduces your spin allowance by 1. On clearing a multiple of 5, your whole party gains 1 extra level per copy.',
     '③ 選道具 · 點一件領取，接著練習捕捉':'③ Choose an item · Claim one, then practice catching Pokémon',
     '↓ 點任一件道具，接著練習捕捉。':'↓ Choose any item, then practice catching Pokémon.',
     '加入球袋，可用來收服野生寶可夢。':'Added to your Ball Bag. Use it to catch wild Pokémon.',
